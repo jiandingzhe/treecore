@@ -1,0 +1,35 @@
+#ifndef TREEJUCE_CONFIG_H
+#define TREEJUCE_CONFIG_H
+
+// The content in this header is automatically generated during CMake build
+// stage. Do not directly copy & use this header across different computers and
+// OS.
+
+#define TREEJUCE_CPU_@TREEJUCE_CPU@
+#define TREEJUCE_OS_@TREEJUCE_OS@
+#define TREEJUCE_COMPILER_@TREEJUCE_COMPILER@
+#define TREEJUCE_SIZE_PTR @TREEJUCE_SIZE_PTR@
+#define TREEJUCE_SIZE_WCHAR @TREEJUCE_SIZE_WCHAR@
+
+#ifdef TREEJUCE_COMPILER_MSVC
+#   if _MSC_VER < 1500
+#       define JUCE_VC8_OR_EARLIER 1
+#       if _MSC_VER < 1400
+#           define JUCE_VC7_OR_EARLIER 1
+#           if _MSC_VER < 1300
+#               error "VC 6 not supported"
+#           endif
+#       endif
+#   endif
+#   if TREEJUCE_SIZE_PTR == 8 || ! JUCE_VC7_OR_EARLIER
+#       define JUCE_USE_INTRINSICS 1
+#   endif
+#endif
+
+#if defined TREEJUCE_CPU_X86
+#   define TREEJUCE_ENDIAN_LITTLE
+#else
+#   error "unsupported CPU"
+#endif
+
+#endif // TREEJUCE_CONFIG_H
