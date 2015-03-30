@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(treejuce)
 
+cmake_policy(SET CMP0054 NEW)
+
 set(TREEJUCE_VERSION_MAJOR 0)
 set(TREEJUCE_VERSION_MINOR 0)
 set(TREEJUCE_VERSION_PATCH 0)
@@ -37,7 +39,6 @@ else()
     message(FATAL_ERROR "unsupported compiler family: ${CMAKE_CXX_COMPILER_ID}")
 endif()
 
-
 # get some type size
 include(CheckTypeSize)
 CHECK_TYPE_SIZE("void*" TREEJUCE_SIZE_PTR)
@@ -56,6 +57,7 @@ endif()
 # add build directory to inc
 include_directories(
     ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/src/zlib
     ${CMAKE_BINARY_DIR}/src
 )
 
