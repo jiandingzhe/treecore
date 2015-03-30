@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.0)
 project(treejuce)
 
-cmake_policy(SET CMP0054 NEW)
+# if cmake >= 3.1, set policy for if
+if(CMAKE_VERSION_MAJOR GREATER 2 AND CMAKE_VERSION_MINOR GREATER 0)
+    cmake_policy(SET CMP0054 NEW)
+endif()
 
 set(TREEJUCE_VERSION_MAJOR 0)
 set(TREEJUCE_VERSION_MINOR 0)
