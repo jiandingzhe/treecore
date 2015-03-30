@@ -3,7 +3,6 @@
 #
 configure_file(treejuce/Config.h.in treejuce/Config.h @ONLY)
 
-
 #
 # zlib
 #
@@ -12,17 +11,16 @@ file(GLOB zlib_src_files
     "zlib/*.c"
 )
 
-# add to a separate target
-# otherwise it won't use C compiler
-add_library(treeface_zlib STATIC ${zlib_src_files})
+# add to a separate target, otherwise it won't use C compiler
+add_library(treejuce_zlib STATIC ${zlib_src_files})
 
 if(TREEJUCE_COMPILER STREQUAL "MSVC")
-        # TODO
+    # TODO
 else()
-        set_target_properties(treeface_zlib
-                PROPERTIES
-                COMPILE_FLAGS -fPIC
-        )
+    set_target_properties(treejuce_zlib
+        PROPERTIES
+        COMPILE_FLAGS -fPIC
+    )
 endif()
 
 #
@@ -57,8 +55,9 @@ else()
     message(SEND_ERROR "unsupported target system: ${CMAKE_SYSTEM_NAME}")
 endif()
 
-add_library(treejuce ${treejuce_common_src_files} ${treejuce_platform_src_files})
+add_library(treejuce SHARED ${treejuce_common_src_files} ${treejuce_platform_src_files})
 
+# link with dependent libs
 if(TREEFACE_OS STREQUAL "LINUX")
     target_link_libraries(treejuce pthread dl)
 elseif(TREEFACE_OS STREQUAL "WINDOWS")
@@ -66,6 +65,35 @@ elseif(TREEFACE_OS STREQUAL "WINDOWS")
 endif()
 
 target_link_libraries(treejuce
-    treeface_zlib
+    treejuce_zlib
 )
 
+#
+# install
+#
+if(UNIX)
+    include(GNUInstallDirs)
+    install(TARGETS treejuce
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    )
+    install(FILES ${CMAKE_BINARY_DIR}/src/treejuce/Config.h
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/treejuce
+    )
+    install(DIRECTORY treejuce/ treejuce/native/ treejuce/Atomic/ treejuce/SIMD/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/treejuce
+        FILES_MATCHING PATTERN "*.h"
+        PATTERN internal EXCLUDE
+    )
+else()
+    install(TARGETS treejuce
+        LIBRARY DESTINATION lib
+    )
+    install(FILES ${CMAKE_BINARY_DIR}/src/treejuce/Config.h
+        DESTINATION include/treejuce
+    )
+    install(DIRECTORY treejuce/ treejuce/native/ treejuce/Atomic/ treejuce/SIMD/
+        DESTINATION include/treejuce
+        FILES_MATCHING PATTERN "*.h"
+        PATTERN internal EXCLUDE
+    )
+endif()

@@ -29,7 +29,7 @@
 #include "treejuce/Logger.h"
 #include "treejuce/Memory.h"
 #include "treejuce/SystemStats.h"
-#include "treejuce/SystemStats_private.h"
+#include "treejuce/internal/SystemStats_private.h"
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
 

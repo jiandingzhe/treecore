@@ -33,7 +33,7 @@
 #include "treejuce/NewLine.h"
 #include "treejuce/OutputStream.h"
 #include "treejuce/String.h"
-#include "treejuce/String_private.h"
+#include "treejuce/internal/String_private.h"
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
 

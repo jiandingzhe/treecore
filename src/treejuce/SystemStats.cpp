@@ -32,7 +32,7 @@
 #include "treejuce/NewLine.h"
 #include "treejuce/StandardHeader.h"
 #include "treejuce/SystemStats.h"
-#include "treejuce/SystemStats_private.h"
+#include "treejuce/internal/SystemStats_private.h"
 
 #ifdef _MSC_VER
 #  include <DbgHelp.h>

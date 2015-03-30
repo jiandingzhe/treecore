@@ -27,7 +27,7 @@
 */
 
 #include "treejuce/BasicNativeHeaders.h"
-#include "treejuce/SystemStats_private.h"
+#include "treejuce/internal/SystemStats_private.h"
 #include "treejuce/File.h"
 #include "treejuce/Logger.h"
 #include "treejuce/StringArray.h"

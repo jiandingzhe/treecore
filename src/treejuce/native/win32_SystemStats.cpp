@@ -32,7 +32,7 @@
 #include "treejuce/HeapBlock.h"
 #include "treejuce/Logger.h"
 #include "treejuce/SystemStats.h"
-#include "treejuce/SystemStats_private.h"
+#include "treejuce/internal/SystemStats_private.h"
 #include "treejuce/Time.h"
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
