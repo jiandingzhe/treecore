@@ -58,10 +58,12 @@ endif()
 add_library(treejuce SHARED ${treejuce_common_src_files} ${treejuce_platform_src_files})
 
 # link with dependent libs
-if(TREEFACE_OS STREQUAL "LINUX")
+if(TREEJUCE_OS STREQUAL "LINUX")
     target_link_libraries(treejuce pthread dl)
-elseif(TREEFACE_OS STREQUAL "WINDOWS")
+elseif(TREEJUCE_OS STREQUAL "WINDOWS")
     target_link_libraries(treejuce version winmm Shlwapi Dbghelp)
+else()
+	message(FATAL_ERROR "unimplemented TREEJUCE_OS: ${TREEJUCE_OS}")
 endif()
 
 target_link_libraries(treejuce
@@ -86,6 +88,7 @@ if(UNIX)
     )
 else()
     install(TARGETS treejuce
+		ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
     )
     install(FILES ${CMAKE_BINARY_DIR}/src/treejuce/Config.h
