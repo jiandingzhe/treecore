@@ -112,9 +112,9 @@ inline Type* createCopyIfNotNull (const Type* pointer)     { return pointer != n
  extern JUCE_API void  juceDLL_free (void*);
 
  #define JUCE_LEAK_DETECTOR(OwnerClass)  public:\
-    static void* operator new (size_t sz)           { return juce::juceDLL_malloc (sz); } \
+    static void* operator new (size_t sz)           { return treejuce::juceDLL_malloc (sz); } \
     static void* operator new (size_t, void* p)     { return p; } \
-    static void operator delete (void* p)           { juce::juceDLL_free (p); } \
+    static void operator delete (void* p)           { treejuce::juceDLL_free (p); } \
     static void operator delete (void*, void*)      {}
 #endif
 

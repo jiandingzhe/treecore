@@ -37,7 +37,7 @@
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
 
-#if defined JUCE_COMPILER_MSVC
+#if defined TREEJUCE_COMPILER_MSVC
  #pragma warning (push)
  #pragma warning (disable: 4514 4996)
 #endif

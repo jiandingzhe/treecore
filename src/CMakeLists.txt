@@ -56,6 +56,14 @@ else()
 endif()
 
 add_library(treejuce SHARED ${treejuce_common_src_files} ${treejuce_platform_src_files})
+add_library(treejuce_s STATIC ${treejuce_common_src_files} ${treejuce_platform_src_files})
+
+if(WIN32)
+    set_target_properties(treejuce
+        PROPERTIES
+        COMPILE_DEFINITIONS -DJUCE_DLL_BUILD
+    )
+endif()
 
 # link with dependent libs
 if(TREEJUCE_OS STREQUAL "LINUX")
@@ -75,7 +83,9 @@ target_link_libraries(treejuce
 #
 if(UNIX)
     include(GNUInstallDirs)
-    install(TARGETS treejuce
+    install(TARGETS treejuce treejuce_s
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     )
     install(FILES ${CMAKE_BINARY_DIR}/src/treejuce/Config.h
@@ -87,7 +97,8 @@ if(UNIX)
         PATTERN internal EXCLUDE
     )
 else()
-    install(TARGETS treejuce
+    install(TARGETS treejuce treejuce_s
+        RUNTIME DESTINATION bin
 		ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
     )

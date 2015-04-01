@@ -11,7 +11,7 @@ class TestFramework;
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
 
-class Object
+class JUCE_API Object
 {
     friend class ::TestFramework;
 public:
