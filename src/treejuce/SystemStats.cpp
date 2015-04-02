@@ -147,23 +147,7 @@ String SystemStats::getStackBacktrace()
 }
 
 //==============================================================================
-static SystemStats::CrashHandlerFunction globalCrashHandler = nullptr;
-
-#if defined TREEJUCE_OS_WINDOWS
-static LONG WINAPI handleCrash (LPEXCEPTION_POINTERS)
-{
-    globalCrashHandler();
-    return EXCEPTION_EXECUTE_HANDLER;
-}
-#else
-static void handleCrash (int)
-{
-    globalCrashHandler();
-    kill (getpid(), SIGKILL);
-}
-
-int juce_siginterrupt (int sig, int flag);
-#endif
+SystemStats::CrashHandlerFunction globalCrashHandler = nullptr;
 
 void SystemStats::setApplicationCrashHandler (CrashHandlerFunction handler)
 {
