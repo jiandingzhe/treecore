@@ -125,7 +125,7 @@ String File::parseAbsolutePath (const String& p)
 
         return File::getCurrentWorkingDirectory().getChildFile (path).getFullPathName();
     }
-#elif defined TREEJUCE_OS_LINUX
+#elif defined TREEJUCE_OS_LINUX || defined TREEJUCE_OS_ANDROID || defined TREEJUCE_OS_OSX || defined TREEJUCE_OS_IOS
     // Mac or Linux..
 
     // Yes, I know it's legal for a unix pathname to contain a backslash, but this assertion is here
@@ -192,7 +192,11 @@ String File::addTrailingSeparator (const String& path)
 
 //==============================================================================
 #if defined TREEJUCE_OS_LINUX
- #define NAMES_ARE_CASE_SENSITIVE 1
+#  define NAMES_ARE_CASE_SENSITIVE 1
+#elif defined TREEJUCE_OS_WINDOWS
+#
+#else
+#  error "TODO"
 #endif
 
 bool File::areFileNamesCaseSensitive()

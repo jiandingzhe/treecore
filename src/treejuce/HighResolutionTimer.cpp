@@ -31,7 +31,8 @@
 #include "treejuce/HighResolutionTimer.h"
 #include "treejuce/Config.h"
 
-#if defined TREEJUCE_OS_LINUX
+// TODO: android and ios
+#if defined TREEJUCE_OS_LINUX || defined TREEJUCE_OS_OSX
 #  include "treejuce/native/posix_HighResolutionTimer.h"
 #elif defined TREEJUCE_OS_WINDOWS
 #  include "treejuce/native/win32_HighResolutionTimer.h"

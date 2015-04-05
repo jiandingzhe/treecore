@@ -113,11 +113,12 @@ void FileLogger::trimFileSize (int64 maxFileSizeBytes) const
 //==============================================================================
 File FileLogger::getSystemLogFileFolder()
 {
-   #ifdef TREEJUCE_OS_OSX
+    //TODO: should IOS also use this?
+#ifdef TREEJUCE_OS_OSX
     return File ("~/Library/Logs");
-   #else
+#else
     return File::getSpecialLocation (File::userApplicationDataDirectory);
-   #endif
+#endif
 }
 
 FileLogger* FileLogger::createDefaultAppLogger (const String& logFileSubDirectoryName,

@@ -129,25 +129,25 @@ inline uint16 ByteOrder::swap (uint16 n) NOEXCEPT
 
 inline uint32 ByteOrder::swap (uint32 n) NOEXCEPT
 {
-   #if defined TREEJUCE_OS_OSX || defined TREEJUCE_OS_IOS
+#if defined TREEJUCE_OS_OSX || defined TREEJUCE_OS_IOS
     return OSSwapInt32 (n);
-   #elif defined TREEJUCE_COMPILER_GCC && defined TREEJUCE_CPU_X86 && ! JUCE_NO_INLINE_ASM
+#elif defined TREEJUCE_COMPILER_GCC && defined TREEJUCE_CPU_X86 && ! JUCE_NO_INLINE_ASM
     asm("bswap %%eax" : "=a"(n) : "a"(n));
     return n;
-   #elif JUCE_USE_INTRINSICS
+#elif JUCE_USE_INTRINSICS
     return _byteswap_ulong (n);
-   #elif defined TREEJUCE_COMPILER_MSVC && ! JUCE_NO_INLINE_ASM
+#elif defined TREEJUCE_COMPILER_MSVC && ! JUCE_NO_INLINE_ASM
     __asm {
         mov eax, n
-        bswap eax
-        mov n, eax
+                bswap eax
+                mov n, eax
     }
     return n;
-   #elif defined TREEJUCE_OS_ANDROID
+#elif defined TREEJUCE_OS_ANDROID
     return bswap_32 (n);
-   #else
+#else
     return (n << 24) | (n >> 24) | ((n & 0xff00) << 8) | ((n & 0xff0000) >> 8);
-   #endif
+#endif
 }
 
 inline uint64 ByteOrder::swap (uint64 value) NOEXCEPT

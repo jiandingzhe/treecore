@@ -282,6 +282,7 @@ public:
 
     int compareIgnoreCase (const CharPointer_ASCII other) const
     {
+        // TODO: IOS
 #if defined TREEJUCE_OS_WINDOWS
         return _stricmp (data, other.data);
 #elif defined TREEJUCE_OS_LINUX || defined TREEJUCE_OS_ANDROID || defined TREEJUCE_OS_OSX
@@ -352,6 +353,7 @@ public:
     /** Parses this string as a 64-bit integer. */
     int64 getIntValue64() const NOEXCEPT
     {
+        // TODO: OSX and IOS
 #if defined TREEJUCE_OS_LINUX || defined TREEJUCE_OS_ANDROID
         return atoll (data);
 #elif defined TREEJUCE_OS_WINDOWS

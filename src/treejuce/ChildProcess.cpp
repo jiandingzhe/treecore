@@ -109,16 +109,14 @@ public:
     void runTest()
     {
         beginTest ("Child Processes");
-
-#if defined TREEJUCE_OS_WINDOWS || defined TREEJUCE_OS_LINUX
+        // TODO: how to work with android and ios?
+#if defined TREEJUCE_OS_WINDOWS || defined TREEJUCE_OS_LINUX || defined TREEJUCE_OS_OSX
         ChildProcess p;
 
 #  if defined TREEJUCE_OS_WINDOWS
         expect (p.start ("tasklist"));
-#  elif defined TREEJUCE_OS_LINUX
-        expect (p.start ("ls /"));
 #  else
-#    error "unsupported OS"
+        expect (p.start ("ls /"));
 #  endif
         //String output (p.readAllProcessOutput());
         //expect (output.isNotEmpty());

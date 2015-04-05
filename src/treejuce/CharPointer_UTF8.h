@@ -484,6 +484,7 @@ public:
     /** Parses this string as a 64-bit integer. */
     int64 getIntValue64() const NOEXCEPT
     {
+        //TODO ios and osx
 #if defined TREEJUCE_OS_LINUX || defined TREEJUCE_OS_ANDROID
         return atoll (data);
 #elif defined TREEJUCE_OS_WINDOWS

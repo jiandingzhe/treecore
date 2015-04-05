@@ -112,18 +112,18 @@ public:
 
 private:
     //==============================================================================
-   #ifdef TREEJUCE_OS_WINDOWS
+#ifdef TREEJUCE_OS_WINDOWS
     // To avoid including windows.h in the public JUCE headers, we'll just allocate
     // a block of memory here that's big enough to be used internally as a windows
     // CRITICAL_SECTION structure.
-    #if TREEJUCE_SIZE_PTR == 8
-     uint8 lock[44];
-    #else
-     uint8 lock[24];
-    #endif
-   #else
+#  if TREEJUCE_SIZE_PTR == 8
+    uint8 lock[44];
+#  else
+    uint8 lock[24];
+#  endif
+#else
     mutable pthread_mutex_t lock;
-   #endif
+#endif
 
     JUCE_DECLARE_NON_COPYABLE (CriticalSection)
 };
