@@ -323,6 +323,14 @@ public:
         return data.elements;
     }
 
+    /**
+     * Returns a const pointer to the actual array data.
+     */
+    inline const ElementType* getRawDataConstPointer() const NOEXCEPT
+    {
+        return data.elements;
+    }
+
     //==============================================================================
     /** Returns a pointer to the first element in the array.
         This method is provided for compatibility with standard C++ iteration mechanisms.
