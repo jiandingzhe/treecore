@@ -200,9 +200,6 @@ public:
         {
             if (entry->key == key)
             {
-                int n_remove = entry->values.size();
-                m_size -= n_remove;
-
                 Entry* next = entry->next;
                 if (prev == nullptr)
                 {
@@ -214,6 +211,7 @@ public:
                 }
 
                 delete entry;
+                m_size--;
                 return true;
             }
             else
@@ -266,6 +264,13 @@ public:
     }
 
 protected:
+    int generateHashFor (KeyType key) const
+    {
+        const int hash = m_hash_func.generateHash (key, getNumSlots());
+        jassert (isPositiveAndBelow (hash, getNumSlots())); // your hash function is generating out-of-range numbers!
+        return hash;
+    }
+
     HashFunctionType m_hash_func;
     Array<Entry*>    m_slots;
     int              m_size = 0;
