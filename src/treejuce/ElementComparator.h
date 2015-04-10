@@ -50,7 +50,7 @@ struct SortFunctionConverter
 
 private:
     ElementComparator& comparator;
-    SortFunctionConverter& operator= (const SortFunctionConverter&) JUCE_DELETED_FUNCTION;
+    SortFunctionConverter& operator= (const SortFunctionConverter&) = delete;
 };
 
 #endif

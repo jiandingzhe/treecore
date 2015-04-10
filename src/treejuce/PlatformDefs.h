@@ -181,8 +181,12 @@ TREEFACE_JUCE_NAMESPACE_END
     };@endcode
 */
 #define JUCE_DECLARE_NON_COPYABLE(className) \
-    className (const className&) JUCE_DELETED_FUNCTION;\
-    className& operator= (const className&) JUCE_DELETED_FUNCTION;
+    className (const className&) = delete;\
+    className& operator= (const className&) = delete;
+
+#define JUCE_DECLARE_NON_MOVABLE(class_name) \
+    class_name(class_name&&) = delete;\
+    class_name& operator = (class_name&&) = delete;
 
 /** This is a shorthand way of writing both a JUCE_DECLARE_NON_COPYABLE and
     JUCE_LEAK_DETECTOR macro for a class.
@@ -196,8 +200,8 @@ TREEFACE_JUCE_NAMESPACE_END
 */
 #define JUCE_PREVENT_HEAP_ALLOCATION \
    private: \
-    static void* operator new (size_t) JUCE_DELETED_FUNCTION; \
-    static void operator delete (void*) JUCE_DELETED_FUNCTION;
+    static void* operator new (size_t) = delete; \
+    static void operator delete (void*) = delete;
 
 
 //==============================================================================
@@ -319,10 +323,6 @@ TREEFACE_JUCE_NAMESPACE_END
  #if (__GNUC__ * 100 + __GNUC_MINOR__) >= 407 && ! defined (JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL)
   #define JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL 1
  #endif
-
- #if (__GNUC__ * 100 + __GNUC_MINOR__) >= 407 && ! defined (JUCE_DELETED_FUNCTION)
-  #define JUCE_DELETED_FUNCTION = delete
- #endif
 #endif
 
 #if defined TREEJUCE_COMPILER_CLANG && defined (__has_feature)
@@ -336,10 +336,6 @@ TREEFACE_JUCE_NAMESPACE_END
 
  #if __has_feature (cxx_rvalue_references)
   #define JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS 1
- #endif
-
- #if __has_feature (cxx_deleted_functions)
-  #define JUCE_DELETED_FUNCTION = delete
  #endif
 
  #ifndef JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL
@@ -358,10 +354,6 @@ TREEFACE_JUCE_NAMESPACE_END
 
 #if defined (_MSC_VER) && _MSC_VER >= 1700
  #define JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL 1
-#endif
-
-#ifndef JUCE_DELETED_FUNCTION
- #define JUCE_DELETED_FUNCTION
 #endif
 
 //==============================================================================

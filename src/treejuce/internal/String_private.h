@@ -18,7 +18,7 @@ extern const EmptyString emptyString;
 class StringHolder
 {
 public:
-    StringHolder() JUCE_DELETED_FUNCTION;
+    StringHolder() = delete;
 
     typedef String::CharPointerType CharPointerType;
     typedef String::CharPointerType::CharType CharType;

@@ -107,7 +107,7 @@ public:
     static bool isBigEndian() NOEXCEPT;
 
 private:
-    ByteOrder() JUCE_DELETED_FUNCTION;
+    ByteOrder() = delete;
 
     JUCE_DECLARE_NON_COPYABLE (ByteOrder)
 };
