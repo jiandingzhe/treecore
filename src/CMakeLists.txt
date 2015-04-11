@@ -79,11 +79,17 @@ target_link_libraries(treejuce
 )
 
 #
+# utility binaries
+#
+add_executable(treejuce_bin_builder treejuce_bin_builder.cpp)
+target_link_libraries(treejuce_bin_builder treejuce)
+
+#
 # install
 #
 if(UNIX)
     include(GNUInstallDirs)
-    install(TARGETS treejuce treejuce_s
+    install(TARGETS treejuce treejuce_s treejuce_bin_builder
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
