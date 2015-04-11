@@ -1,4 +1,4 @@
-s/*
+/*
   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
@@ -29,7 +29,8 @@ s/*
 #ifndef JUCE_SINGLETON_H_INCLUDED
 #define JUCE_SINGLETON_H_INCLUDED
 
-#include "treejuce/Common.h"
+#include "treejuce/CriticalSection.h"
+#include "treejuce/ScopedLock.h"
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
 
@@ -95,13 +96,13 @@ TREEFACE_JUCE_NAMESPACE_BEGIN
 #define juce_DeclareSingleton(classname, doNotRecreateAfterDeletion) \
 \
     static classname* _singletonInstance;  \
-    static juce::CriticalSection _singletonLock; \
+    static treejuce::CriticalSection _singletonLock; \
 \
     static classname* JUCE_CALLTYPE getInstance() \
     { \
         if (_singletonInstance == nullptr) \
         {\
-            const juce::ScopedLock sl (_singletonLock); \
+            const treejuce::ScopedLock sl (_singletonLock); \
 \
             if (_singletonInstance == nullptr) \
             { \
@@ -132,7 +133,7 @@ TREEFACE_JUCE_NAMESPACE_BEGIN
 \
     static void JUCE_CALLTYPE deleteInstance() \
     { \
-        const juce::ScopedLock sl (_singletonLock); \
+        const treejuce::ScopedLock sl (_singletonLock); \
         if (_singletonInstance != nullptr) \
         { \
             classname* const old = _singletonInstance; \
@@ -157,7 +158,7 @@ TREEFACE_JUCE_NAMESPACE_BEGIN
 #define juce_ImplementSingleton(classname) \
 \
     classname* classname::_singletonInstance = nullptr; \
-    juce::CriticalSection classname::_singletonLock;
+    treejuce::CriticalSection classname::_singletonLock;
 
 
 //==============================================================================
