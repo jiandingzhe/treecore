@@ -161,7 +161,7 @@ inline uint64 ByteOrder::swap (uint64 value) NOEXCEPT
    #endif
 }
 
-#if JUCE_LITTLE_ENDIAN
+#if defined TREEJUCE_ENDIAN_LITTLE
  inline uint16 ByteOrder::swapIfBigEndian (const uint16 v) NOEXCEPT                                  { return v; }
  inline uint32 ByteOrder::swapIfBigEndian (const uint32 v) NOEXCEPT                                  { return v; }
  inline uint64 ByteOrder::swapIfBigEndian (const uint64 v) NOEXCEPT                                  { return v; }
@@ -175,7 +175,7 @@ inline uint64 ByteOrder::swap (uint64 value) NOEXCEPT
  inline uint64 ByteOrder::bigEndianInt64 (const void* const bytes) NOEXCEPT                          { return swap (*static_cast<const uint64*> (bytes)); }
  inline uint16 ByteOrder::bigEndianShort (const void* const bytes) NOEXCEPT                          { return swap (*static_cast<const uint16*> (bytes)); }
  inline bool ByteOrder::isBigEndian() NOEXCEPT                                                       { return false; }
-#else
+#elif defined TREEJUCE_ENDIAN_BIG
  inline uint16 ByteOrder::swapIfBigEndian (const uint16 v) NOEXCEPT                                  { return swap (v); }
  inline uint32 ByteOrder::swapIfBigEndian (const uint32 v) NOEXCEPT                                  { return swap (v); }
  inline uint64 ByteOrder::swapIfBigEndian (const uint64 v) NOEXCEPT                                  { return swap (v); }
@@ -189,6 +189,8 @@ inline uint64 ByteOrder::swap (uint64 value) NOEXCEPT
  inline uint64 ByteOrder::bigEndianInt64 (const void* const bytes) NOEXCEPT                          { return *static_cast<const uint64*> (bytes); }
  inline uint16 ByteOrder::bigEndianShort (const void* const bytes) NOEXCEPT                          { return *static_cast<const uint16*> (bytes); }
  inline bool ByteOrder::isBigEndian() NOEXCEPT                                                       { return true; }
+#else
+#   error "neither little endian nor big endian"
 #endif
 
 inline int  ByteOrder::littleEndian24Bit (const void* const bytes) NOEXCEPT                          { return (((int) static_cast<const int8*> (bytes)[2]) << 16) | (((int) static_cast<const uint8*> (bytes)[1]) << 8) | ((int) static_cast<const uint8*> (bytes)[0]); }

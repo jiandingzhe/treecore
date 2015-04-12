@@ -3,9 +3,18 @@ add_library(testframework STATIC TestFramework.cpp)
 add_executable(t_hash_multi_map t_hash_multi_map.cpp)
 target_link_libraries(t_hash_multi_map
     testframework
-    treejuce)
+    treejuce
+)
 
 add_executable(t_hash_set t_hash_set.cpp)
 target_link_libraries(t_hash_set
     testframework
-    treejuce)
+    treejuce
+)
+
+file(COPY zip_input.zip DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+add_executable(t_zip_file t_zip_file.cpp)
+target_link_libraries(t_zip_file
+    testframework
+    treejuce
+)
