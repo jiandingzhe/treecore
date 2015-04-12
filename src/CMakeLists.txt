@@ -82,7 +82,12 @@ target_link_libraries(treejuce
 # utility binaries
 #
 add_executable(treejuce_bin_builder treejuce_bin_builder.cpp)
-target_link_libraries(treejuce_bin_builder treejuce)
+target_link_libraries(treejuce_bin_builder treejuce_s)
+if(TREEJUCE_OS STREQUAL "LINUX")
+    target_link_libraries(treejuce_bin_builder pthread dl)
+elseif(TREEJUCE_OS STREQUAL "WINDOWS")
+    target_link_libraries(treejuce_bin_builder version winmm Shlwapi Dbghelp)
+endif()
 
 #
 # install
