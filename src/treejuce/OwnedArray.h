@@ -29,7 +29,7 @@
 #ifndef JUCE_OWNEDARRAY_H_INCLUDED
 #define JUCE_OWNEDARRAY_H_INCLUDED
 
-#include "treejuce/Common.h"
+#include "treejuce/ArrayAllocationBase.h"
 #include "treejuce/ContainerDeletePolicy.h"
 #include "treejuce/CriticalSection.h"
 #include "treejuce/ScopedPointer.h"
