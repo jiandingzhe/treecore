@@ -30,7 +30,7 @@
 #define JUCE_MATHSFUNCTIONS_H_INCLUDED
 
 #include "treejuce/StandardHeader.h"
-#include "treejuce/Config.h"
+#include "treejuce/IntTypes.h"
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
 
@@ -39,33 +39,7 @@ TREEFACE_JUCE_NAMESPACE_BEGIN
     This file sets up some handy mathematical typdefs and functions.
 */
 
-//==============================================================================
-// Definitions for the int8, int16, int32, int64 and pointer_sized_int types.
 
-/** A platform-independent 8-bit signed integer type. */
-typedef signed char                 int8;
-/** A platform-independent 8-bit unsigned integer type. */
-typedef unsigned char               uint8;
-/** A platform-independent 16-bit signed integer type. */
-typedef signed short                int16;
-/** A platform-independent 16-bit unsigned integer type. */
-typedef unsigned short              uint16;
-/** A platform-independent 32-bit signed integer type. */
-typedef signed int                  int32;
-/** A platform-independent 32-bit unsigned integer type. */
-typedef unsigned int                uint32;
-
-#if defined TREEJUCE_COMPILER_MSVC
-  /** A platform-independent 64-bit integer type. */
-  typedef __int64                   int64;
-  /** A platform-independent 64-bit unsigned integer type. */
-  typedef unsigned __int64          uint64;
-#else
-  /** A platform-independent 64-bit integer type. */
-  typedef long long                 int64;
-  /** A platform-independent 64-bit unsigned integer type. */
-  typedef unsigned long long        uint64;
-#endif
 
 #ifndef DOXYGEN
  /** A macro for creating 64-bit literals.
@@ -74,20 +48,6 @@ typedef unsigned int                uint32;
      LL and ULL suffixes, so you should use those in preference to this macro.
  */
  #define literal64bit(longLiteral)     (longLiteral##LL)
-#endif
-
-#if TREEJUCE_SIZE_PTR == 8
-typedef int64 pointer_sized_int;
-typedef uint64 pointer_sized_uint;
-#elif TREEJUCE_SIZE_PTR == 4
-typedef int32 pointer_sized_int;
-typedef uint32 pointer_sized_uint;
-#else
-#   error "unsupported pointer size"
-#endif
-
-#if defined TREEJUCE_COMPILER_MSVC
-  typedef pointer_sized_int ssize_t;
 #endif
 
 //==============================================================================
@@ -520,8 +480,8 @@ namespace TypeHelpers
     template <>              struct ParameterType <unsigned int>    { typedef unsigned int type; };
     template <>              struct ParameterType <long>            { typedef long type; };
     template <>              struct ParameterType <unsigned long>   { typedef unsigned long type; };
-    template <>              struct ParameterType <int64>           { typedef int64 type; };
-    template <>              struct ParameterType <uint64>          { typedef uint64 type; };
+//    template <>              struct ParameterType <int64>           { typedef int64 type; };
+//    template <>              struct ParameterType <uint64>          { typedef uint64 type; };
     template <>              struct ParameterType <bool>            { typedef bool type; };
     template <>              struct ParameterType <float>           { typedef float type; };
     template <>              struct ParameterType <double>          { typedef double type; };

@@ -7,9 +7,20 @@
 
 #define TREEJUCE_CPU_@TREEJUCE_CPU@
 #define TREEJUCE_OS_@TREEJUCE_OS@
-#define TREEJUCE_COMPILER_@TREEJUCE_COMPILER@
+
 #define TREEJUCE_SIZE_PTR @TREEJUCE_SIZE_PTR@
-#define TREEJUCE_SIZE_WCHAR @TREEJUCE_SIZE_WCHAR@
+
+#if defined _MSC_VER
+#   define TREEJUCE_COMPILER_MSVC
+#elif defined __GNUC__
+#   define TREEJUCE_COMPILER_GCC
+#elif defined __clang__
+#   define TREEJUCE_COMPILER_CLANG
+#elif defined DOXYGEN
+#   define TREEJUCE_COMPILER_DOXYGEN
+#else // TODO intel icc
+#   error "unknown compiler"
+#endif
 
 #ifdef TREEJUCE_COMPILER_MSVC
 #   if _MSC_VER < 1500
