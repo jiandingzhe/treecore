@@ -112,7 +112,7 @@ public:
 
         const HashMultiMap& target = nullptr;
         int i_slot = -1;
-        const HashMultiMap::Entry* entry = nullptr;
+        const typename HashMultiMap::Entry* entry = nullptr;
         int i_entry_value = 0;
     };
 
