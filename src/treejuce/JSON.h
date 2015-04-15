@@ -29,7 +29,8 @@
 #ifndef JUCE_JSON_H_INCLUDED
 #define JUCE_JSON_H_INCLUDED
 
-#include "StandardHeader.h"
+#include "treejuce/Array.h"
+#include "treejuce/StandardHeader.h"
 #include "treejuce/String.h"
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
