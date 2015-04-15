@@ -89,7 +89,7 @@ public:
 
         const HashSet& target = nullptr;
         int i_slot = -1;
-        const HashSet::Entry* entry = nullptr;
+        const typename HashSet::Entry* entry = nullptr;
     };
 
     HashSet(int n_initial_slots = 101, HashFunctionType hash_func = HashFunctionType())
