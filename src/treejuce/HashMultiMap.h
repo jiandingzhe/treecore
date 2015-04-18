@@ -131,7 +131,7 @@ public:
     {
         const ScopedLockType lock(m_mutex);
 
-        for (int i = m_slots.size(); i >= 0; i--)
+        for (int i = m_slots.size() - 1; i >= 0; i--)
         {
             Entry* curr_bucket = m_slots.getUnchecked(i);
 
