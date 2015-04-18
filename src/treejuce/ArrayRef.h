@@ -19,8 +19,8 @@ public:
     {
     }
 
-    ArrayRef(const Array<T>& data)
-        : m_data(data.getRawDataConstPointer())
+    ArrayRef(Array<T>& data)
+        : m_data(data.getRawDataPointer())
         , m_size(data.size())
     {
     }
@@ -68,13 +68,23 @@ public:
         return m_data[index];
     }
 
+    inline T* get_data() NOEXCEPT
+    {
+        return m_data;
+    }
+
+    inline const T* get_const_data() const NOEXCEPT
+    {
+        return m_data;
+    }
+
     inline int size() const NOEXCEPT
     {
         return m_size;
     }
 
 protected:
-    const T* m_data = nullptr;
+    T* m_data = nullptr;
     int m_size = 0;
 };
 
