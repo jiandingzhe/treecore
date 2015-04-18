@@ -12,9 +12,16 @@ target_link_libraries(t_hash_set
     treejuce
 )
 
+add_executable(t_hash_set_string t_hash_set_string.cpp)
+target_link_libraries(t_hash_set_string
+    testframework
+    treejuce
+)
+
 file(COPY zip_input.zip DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 add_executable(t_zip_file t_zip_file.cpp)
 target_link_libraries(t_zip_file
     testframework
     treejuce
 )
+
