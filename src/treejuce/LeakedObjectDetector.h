@@ -30,7 +30,9 @@
 #define JUCE_LEAKEDOBJECTDETECTOR_H_INCLUDED
 
 #include "treejuce/Atomic.h"
+#include "treejuce/Logger.h"
 #include "treejuce/StandardHeader.h"
+#include "treejuce/String.h"
 
 //==============================================================================
 TREEFACE_JUCE_NAMESPACE_BEGIN

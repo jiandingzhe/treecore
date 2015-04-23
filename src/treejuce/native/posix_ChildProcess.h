@@ -3,6 +3,8 @@
 
 #include "treejuce/ChildProcess.h"
 #include "treejuce/BasicNativeHeaders.h"
+#include "treejuce/File.h"
+#include "treejuce/StringRef.h"
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
 
