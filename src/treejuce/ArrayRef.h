@@ -68,6 +68,16 @@ public:
         return m_data[index];
     }
 
+    inline T& get_reference(int index) NOEXCEPT
+    {
+        return m_data[index];
+    }
+
+    inline const T& get_const_reference(int index) const NOEXCEPT
+    {
+        return m_data[index];
+    }
+
     inline T* get_data() NOEXCEPT
     {
         return m_data;
