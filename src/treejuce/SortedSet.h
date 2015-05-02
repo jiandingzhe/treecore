@@ -29,7 +29,7 @@
 #ifndef JUCE_SORTEDSET_H_INCLUDED
 #define JUCE_SORTEDSET_H_INCLUDED
 
-#include "treejuce/Common.h"
+#include "treejuce/Array.h"
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
 
