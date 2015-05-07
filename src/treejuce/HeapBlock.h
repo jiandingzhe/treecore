@@ -141,7 +141,6 @@ public:
         std::free (data);
     }
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     HeapBlock (HeapBlock&& other) NOEXCEPT
         : data (other.data)
     {
@@ -153,7 +152,6 @@ public:
         std::swap (data, other.data);
         return *this;
     }
-   #endif
 
     //==============================================================================
     /** Returns a raw pointer to the allocated data.

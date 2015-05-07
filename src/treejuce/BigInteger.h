@@ -77,10 +77,8 @@ public:
     /** Creates a copy of another BigInteger. */
     BigInteger (const BigInteger&);
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     BigInteger (BigInteger&&) NOEXCEPT;
     BigInteger& operator= (BigInteger&&) NOEXCEPT;
-   #endif
 
     /** Destructor. */
     ~BigInteger();

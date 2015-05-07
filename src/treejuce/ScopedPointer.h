@@ -149,7 +149,6 @@ public:
         return *this;
     }
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     ScopedPointer (ScopedPointer&& other) NOEXCEPT
         : object (other.object)
     {
@@ -162,7 +161,6 @@ public:
         other.object = nullptr;
         return *this;
     }
-   #endif
 
     //==============================================================================
     /** Returns the object that this ScopedPointer refers to. */

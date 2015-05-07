@@ -62,7 +62,6 @@ public:
     {
     }
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     ArrayAllocationBase (ArrayAllocationBase<ElementType, TypeOfCriticalSectionToUse>&& other) NOEXCEPT
         : elements (static_cast <HeapBlock <ElementType>&&> (other.elements)),
           numAllocated (other.numAllocated)
@@ -75,7 +74,6 @@ public:
         numAllocated = other.numAllocated;
         return *this;
     }
-   #endif
 
     //==============================================================================
     /** Changes the amount of storage allocated.

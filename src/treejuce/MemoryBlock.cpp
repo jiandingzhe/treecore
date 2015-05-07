@@ -91,7 +91,6 @@ MemoryBlock& MemoryBlock::operator= (const MemoryBlock& other)
     return *this;
 }
 
-#if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 MemoryBlock::MemoryBlock (MemoryBlock&& other) NOEXCEPT
     : data (static_cast <HeapBlock<char>&&> (other.data)),
       size (other.size)
@@ -104,8 +103,6 @@ MemoryBlock& MemoryBlock::operator= (MemoryBlock&& other) NOEXCEPT
     size = other.size;
     return *this;
 }
-#endif
-
 
 //==============================================================================
 bool MemoryBlock::operator== (const MemoryBlock& other) const NOEXCEPT

@@ -93,7 +93,6 @@ BigInteger::BigInteger (const BigInteger& other)
     memcpy (values, other.values, sizeof (uint32) * (numValues + 1));
 }
 
-#if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 BigInteger::BigInteger (BigInteger&& other) NOEXCEPT
     : values (static_cast <HeapBlock <uint32>&&> (other.values)),
       numValues (other.numValues),
@@ -110,7 +109,6 @@ BigInteger& BigInteger::operator= (BigInteger&& other) NOEXCEPT
     negative = other.negative;
     return *this;
 }
-#endif
 
 BigInteger::~BigInteger()
 {

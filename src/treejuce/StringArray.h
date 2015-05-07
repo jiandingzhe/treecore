@@ -51,9 +51,7 @@ public:
     /** Creates a copy of another string array */
     StringArray (const StringArray&);
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     StringArray (StringArray&&) NOEXCEPT;
-   #endif
 
     /** Creates an array containing a single string. */
     explicit StringArray (const String& firstValue);
@@ -97,9 +95,7 @@ public:
     /** Copies the contents of another string array into this one */
     StringArray& operator= (const StringArray&);
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     StringArray& operator= (StringArray&&) NOEXCEPT;
-   #endif
 
     /** Swaps the contents of this and another StringArray. */
     void swapWith (StringArray&) NOEXCEPT;
@@ -173,10 +169,8 @@ public:
     /** Appends a string at the end of the array. */
     void add (const String& stringToAdd);
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     /** Appends a string at the end of the array. */
     void add (String&& stringToAdd);
-   #endif
 
     /** Inserts a string into the array.
 

@@ -73,9 +73,7 @@ public:
     /** Creates a copy of another string. */
     String (const String& other) NOEXCEPT;
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     String (String&& other) NOEXCEPT;
-   #endif
 
     /** Creates a string from a zero-terminated ascii text string.
 
@@ -213,9 +211,7 @@ public:
     /** Replaces this string's contents with another string. */
     String& operator= (const String& other) NOEXCEPT;
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     String& operator= (String&& other) NOEXCEPT;
-   #endif
 
     /** Appends another string at the end of this one. */
     String& operator+= (const String& stringToAppend);

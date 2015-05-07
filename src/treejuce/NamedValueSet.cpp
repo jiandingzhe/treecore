@@ -40,7 +40,6 @@ struct NamedValueSet::NamedValue
     NamedValue (Identifier n, const var& v)  : name (n), value (v) {}
     NamedValue (const NamedValue& other) : name (other.name), value (other.value) {}
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     NamedValue (NamedValue&& other) NOEXCEPT
         : name (static_cast<Identifier&&> (other.name)),
           value (static_cast<var&&> (other.value))
@@ -57,7 +56,6 @@ struct NamedValueSet::NamedValue
         value = static_cast<var&&> (other.value);
         return *this;
     }
-   #endif
 
     bool operator== (const NamedValue& other) const NOEXCEPT   { return name == other.name && value == other.value; }
     bool operator!= (const NamedValue& other) const NOEXCEPT   { return ! operator== (other); }
@@ -83,7 +81,6 @@ NamedValueSet& NamedValueSet::operator= (const NamedValueSet& other)
     return *this;
 }
 
-#if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 NamedValueSet::NamedValueSet (NamedValueSet&& other) NOEXCEPT
     : values (static_cast <Array<NamedValue>&&> (other.values))
 {
@@ -94,7 +91,6 @@ NamedValueSet& NamedValueSet::operator= (NamedValueSet&& other) NOEXCEPT
     other.values.swapWith (values);
     return *this;
 }
-#endif
 
 NamedValueSet::~NamedValueSet()
 {
@@ -146,7 +142,6 @@ var* NamedValueSet::getVarPointer (const Identifier& name) const NOEXCEPT
     return nullptr;
 }
 
-#if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 bool NamedValueSet::set (Identifier name, var&& newValue)
 {
     if (var* const v = getVarPointer (name))
@@ -161,7 +156,6 @@ bool NamedValueSet::set (Identifier name, var&& newValue)
     values.add (NamedValue (name, static_cast<var&&> (newValue)));
     return true;
 }
-#endif
 
 bool NamedValueSet::set (Identifier name, const var& newValue)
 {

@@ -104,10 +104,8 @@ public:
     Result (const Result&);
     Result& operator= (const Result&);
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     Result (Result&&) NOEXCEPT;
     Result& operator= (Result&&) NOEXCEPT;
-   #endif
 
     bool operator== (const Result& other) const NOEXCEPT;
     bool operator!= (const Result& other) const NOEXCEPT;

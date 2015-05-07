@@ -961,7 +961,6 @@ Expression& Expression::operator= (const Expression& other)
     return *this;
 }
 
-#if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 Expression::Expression (Expression&& other) NOEXCEPT
     : term (static_cast <Holder<Term>&&> (other.term))
 {
@@ -972,7 +971,6 @@ Expression& Expression::operator= (Expression&& other) NOEXCEPT
     term = static_cast <Holder<Term>&&> (other.term);
     return *this;
 }
-#endif
 
 Expression::Expression (const String& stringToParse)
 {

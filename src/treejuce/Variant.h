@@ -114,14 +114,12 @@ public:
     var& operator= (Object* object);
     var& operator= (NativeFunction method);
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     var (var&& other) NOEXCEPT;
     var (String&& value);
     var (MemoryBlock&& binaryData);
     var (Array<var>&& value);
     var& operator= (var&& other) NOEXCEPT;
     var& operator= (String&& value);
-   #endif
 
     void swapWith (var& other) NOEXCEPT;
 

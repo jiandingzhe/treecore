@@ -40,12 +40,10 @@ StringArray::StringArray (const StringArray& other)
 {
 }
 
-#if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 StringArray::StringArray (StringArray&& other) NOEXCEPT
     : strings (static_cast <Array <String>&&> (other.strings))
 {
 }
-#endif
 
 StringArray::StringArray (const String& firstValue)
 {
@@ -83,13 +81,11 @@ StringArray& StringArray::operator= (const StringArray& other)
     return *this;
 }
 
-#if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 StringArray& StringArray::operator= (StringArray&& other) NOEXCEPT
 {
     strings = static_cast <Array<String>&&> (other.strings);
     return *this;
 }
-#endif
 
 StringArray::~StringArray()
 {
@@ -138,12 +134,10 @@ void StringArray::add (const String& newString)
     strings.add (newString);
 }
 
-#if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 void StringArray::add (String&& stringToAdd)
 {
     strings.add (static_cast<String&&> (stringToAdd));
 }
-#endif
 
 void StringArray::insert (const int index, const String& newString)
 {

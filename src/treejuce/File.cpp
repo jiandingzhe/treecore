@@ -70,7 +70,6 @@ File& File::operator= (const File& other)
     return *this;
 }
 
-#if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 File::File (File&& other) NOEXCEPT
     : fullPath (static_cast <String&&> (other.fullPath))
 {
@@ -81,7 +80,6 @@ File& File::operator= (File&& other) NOEXCEPT
     fullPath = static_cast <String&&> (other.fullPath);
     return *this;
 }
-#endif
 
 const File File::nonexistent;
 

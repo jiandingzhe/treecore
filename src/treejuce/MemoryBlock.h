@@ -75,10 +75,8 @@ public:
     */
     MemoryBlock& operator= (const MemoryBlock&);
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     MemoryBlock (MemoryBlock&&) NOEXCEPT;
     MemoryBlock& operator= (MemoryBlock&&) NOEXCEPT;
-   #endif
 
     //==============================================================================
     /** Compares two memory blocks.

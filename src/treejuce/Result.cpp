@@ -48,7 +48,6 @@ Result& Result::operator= (const Result& other)
     return *this;
 }
 
-#if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 Result::Result (Result&& other) NOEXCEPT
     : errorMessage (static_cast <String&&> (other.errorMessage))
 {
@@ -59,7 +58,6 @@ Result& Result::operator= (Result&& other) NOEXCEPT
     errorMessage = static_cast <String&&> (other.errorMessage);
     return *this;
 }
-#endif
 
 bool Result::operator== (const Result& other) const NOEXCEPT
 {

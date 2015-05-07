@@ -87,7 +87,7 @@ public:
             }
         }
 
-        const HashSet& target = nullptr;
+        const HashSet& target;
         int i_slot = -1;
         const typename HashSet::Entry* entry = nullptr;
     };

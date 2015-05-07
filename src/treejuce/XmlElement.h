@@ -173,10 +173,8 @@ public:
     /** Creates a (deep) copy of another element. */
     XmlElement& operator= (const XmlElement&);
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     XmlElement (XmlElement&&) NOEXCEPT;
     XmlElement& operator= (XmlElement&&) NOEXCEPT;
-   #endif
 
     /** Deleting an XmlElement will also delete all of its child elements. */
     ~XmlElement() NOEXCEPT;

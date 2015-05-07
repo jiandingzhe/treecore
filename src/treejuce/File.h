@@ -102,10 +102,8 @@ public:
     /** Copies from another file object. */
     File& operator= (const File& otherFile);
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     File (File&&) NOEXCEPT;
     File& operator= (File&&) NOEXCEPT;
-   #endif
 
     //==============================================================================
     /** This static constant is used for referring to an 'invalid' file. */

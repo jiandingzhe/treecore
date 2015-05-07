@@ -78,7 +78,6 @@ public:
         deleteAllObjects();
     }
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     OwnedArray (OwnedArray&& other) NOEXCEPT
         : data (static_cast <ArrayAllocationBase <ObjectClass*, TypeOfCriticalSectionToUse>&&> (other.data)),
           numUsed (other.numUsed)
@@ -96,7 +95,6 @@ public:
         other.numUsed = 0;
         return *this;
     }
-   #endif
 
     //==============================================================================
     /** Clears the array, optionally deleting the objects inside it first. */

@@ -157,7 +157,6 @@ String& String::operator= (const String& other) NOEXCEPT
     return *this;
 }
 
-#if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 String::String (String&& other) NOEXCEPT   : text (other.text)
 {
     other.text = &(emptyString.text);
@@ -168,7 +167,6 @@ String& String::operator= (String&& other) NOEXCEPT
     std::swap (text, other.text);
     return *this;
 }
-#endif
 
 inline String::PreallocationBytes::PreallocationBytes (const size_t num) NOEXCEPT : numBytes (num) {}
 
