@@ -1,19 +1,20 @@
 #include "TestFramework.h"
 
 #include "treejuce/HashMap.h"
+#include "treejuce/String.h"
 
 using namespace treejuce;
 
 void TestFramework::content()
 {
-    HashMap<int, int> map;
-    map.set(1, 2);
-    IS(map[1], 2);
-    IS(map.getReference(1), 2);
+    HashMap<String, String> map;
+    map.set("a", "b");
+    IS(map["a"], "b");
+    IS(map.getReference("a"), "b");
 
-    map.getReference(1) = 3;
-    IS(map[1], 3);
+    map.getReference("a") = "c";
+    IS(map["a"], "c");
 
-    IS(map.getReference(2), 0);
-    OK(map.contains(2));
+    IS(map.getReference("d"), "");
+    OK(map.contains("d"));
 }

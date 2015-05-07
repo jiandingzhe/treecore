@@ -173,7 +173,7 @@ public:
                 return entry->value;
 
         // create a new one
-        HashEntry* entry = new HashEntry(key, ValueTypeParameter(), old_first);
+        HashEntry* entry = new HashEntry(key, ValueType(), old_first);
         hashSlots.set(hash_value, entry);
 
         return entry->value;
