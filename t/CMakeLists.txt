@@ -6,6 +6,12 @@ target_link_libraries(t_hash_multi_map
     treejuce
 )
 
+add_executable(t_hash_multi_map_move t_hash_multi_map_move.cpp)
+target_link_libraries(t_hash_multi_map_move
+    testframework
+    treejuce
+)
+
 add_executable(t_hash_set t_hash_set.cpp)
 target_link_libraries(t_hash_set
     testframework

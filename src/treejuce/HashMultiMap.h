@@ -49,7 +49,7 @@ public:
                 // move from previous position
                 if (entry)
                 {
-                    return move_to_next_valid_value();
+                    return move_to_next_valid_entry();
                 }
                 // we have arrived tail
                 else
@@ -64,27 +64,18 @@ public:
             return entry->key;
         }
 
-        ValueType getValue() const NOEXCEPT
+        ArrayRef<ValueType> getValues() NOEXCEPT
         {
-            return entry->values[i_entry_value];
+            return ArrayRef<ValueType>(entry->values);
         }
 
     protected:
-        inline bool move_to_next_valid_value() NOEXCEPT
-        {
-            i_entry_value++;
-            if (i_entry_value < entry->values.size())
-                return true;
-            else
-                return move_to_next_valid_entry();
-        }
 
         inline bool move_to_next_valid_entry() NOEXCEPT
         {
             entry = entry->next;
             if (entry)
             {
-                i_entry_value = 0;
                 return true;
             }
             else
@@ -104,16 +95,14 @@ public:
                 entry = target.m_slots.getUnchecked(i_slot);
                 if (entry)
                 {
-                    i_entry_value = 0;
                     return true;
                 }
             }
         }
 
-        const HashMultiMap& target = nullptr;
+        const HashMultiMap& target;
         int i_slot = -1;
-        const typename HashMultiMap::Entry* entry = nullptr;
-        int i_entry_value = 0;
+        typename HashMultiMap::Entry* entry = nullptr;
     };
 
     HashMultiMap(int n_init_slots = 101, HashFunctionType hash_func = HashFunctionType())
@@ -121,6 +110,16 @@ public:
     {
         m_slots.insertMultiple(0, nullptr, n_init_slots);
     }
+
+    HashMultiMap(HashMultiMap&& other)
+        : m_hash_func(other.m_hash_func)
+        , m_size(other.m_size)
+        , m_slots(std::move(other.m_slots))
+    {
+        other.m_size = 0;
+    }
+
+    JUCE_DECLARE_NON_COPYABLE(HashMultiMap);
 
     ~HashMultiMap()
     {

@@ -82,20 +82,31 @@ void TestFramework::content()
         while (it.next())
         {
             int key = it.getKey();
-            int value = it.getValue();
+            ArrayRef<int> values = it.getValues();
 
-            n_got++;
-            if (key == 1 && value == 10)
-                got_1_10 = true;
-            else if (key == 1 && value == 2)
-                got_1_2 = true;
-            else if (key == 4 && value == 3)
-                got_4_3 = true;
-            else if (key == 700 && value == 1)
-                got_700_1 = true;
-            else
+            if (key == 1)
+                IS(values.size(), 2);
+            else if (key == 4)
+                IS(values.size(), 1);
+            else if (key == 700)
+                IS(values.size(), 1);
+
+            for (int i_value = 0; i_value < values.size(); i_value++)
             {
-                fprintf(stderr, "got unexpected: key %d value %d\n", key, value);
+                int value = values[i_value];
+                n_got++;
+                if (key == 1 && value == 10)
+                    got_1_10 = true;
+                else if (key == 1 && value == 2)
+                    got_1_2 = true;
+                else if (key == 4 && value == 3)
+                    got_4_3 = true;
+                else if (key == 700 && value == 1)
+                    got_700_1 = true;
+                else
+                {
+                    fprintf(stderr, "got unexpected: key %d value %d\n", key, value);
+                }
             }
         }
 
@@ -159,20 +170,31 @@ void TestFramework::content()
         while (it.next())
         {
             int key = it.getKey();
-            int value = it.getValue();
+            ArrayRef<int> values = it.getValues();
 
-            n_got++;
-            if (key == 1 && value == 10)
-                got_1_10 = true;
-            else if (key == 1 && value == 2)
-                got_1_2 = true;
-            else if (key == 4 && value == 3)
-                got_4_3 = true;
-            else if (key == 700 && value == 1)
-                got_700_1 = true;
-            else
+            if (key == 1)
+                IS(values.size(), 2);
+            else if (key == 4)
+                IS(values.size(), 1);
+            else if (key == 700)
+                IS(values.size(), 1);
+
+            for (int i_value = 0; i_value < values.size(); i_value++)
             {
-                fprintf(stderr, "got unexpected: key %d value %d\n", key, value);
+                int value = values[i_value];
+                n_got++;
+                if (key == 1 && value == 10)
+                    got_1_10 = true;
+                else if (key == 1 && value == 2)
+                    got_1_2 = true;
+                else if (key == 4 && value == 3)
+                    got_4_3 = true;
+                else if (key == 700 && value == 1)
+                    got_700_1 = true;
+                else
+                {
+                    fprintf(stderr, "got unexpected: key %d value %d\n", key, value);
+                }
             }
         }
 
@@ -183,7 +205,7 @@ void TestFramework::content()
         IS(n_got, 4);
     }
 
-    // TODO tests for delete and clear
+    // tests for delete and clear
     OK("remove items");
     IS(map.remove(1), 2);
     IS(map.size(), 2);
@@ -203,16 +225,20 @@ void TestFramework::content()
         while (it.next())
         {
             int key = it.getKey();
-            int value = it.getValue();
+            ArrayRef<int> values = it.getValues();
 
-            n_got++;
-            if (key == 4 && value == 3)
-                got_4_3 = true;
-            else if (key == 700 && value == 1)
-                got_700_1 = true;
-            else
+            for (int i = 0; i < values.size(); i++)
             {
-                fprintf(stderr, "got unexpected: key %d value %d\n", key, value);
+                int value = values[i];
+                n_got++;
+                if (key == 4 && value == 3)
+                    got_4_3 = true;
+                else if (key == 700 && value == 1)
+                    got_700_1 = true;
+                else
+                {
+                    fprintf(stderr, "got unexpected: key %d value %d\n", key, value);
+                }
             }
         }
 
