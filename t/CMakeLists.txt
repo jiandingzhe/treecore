@@ -25,3 +25,8 @@ target_link_libraries(t_zip_file
     treejuce
 )
 
+add_executable(t_hash_map t_hash_map.cpp)
+target_link_libraries(t_hash_map
+    testframework
+    treejuce
+)

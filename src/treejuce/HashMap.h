@@ -160,6 +160,25 @@ public:
         return ValueType();
     }
 
+    inline ValueType& getReference(KeyTypeParameter key)
+    {
+        const ScopedLockType sl(getLock());
+
+        int hash_value = generateHashFor(key);
+
+        // find existing one
+        HashEntry* old_first = hashSlots.getUnchecked(hash_value);
+        for (HashEntry* entry = old_first; entry != nullptr; entry = entry->nextEntry)
+            if (entry->key == key)
+                return entry->value;
+
+        // create a new one
+        HashEntry* entry = new HashEntry(key, ValueTypeParameter(), old_first);
+        hashSlots.set(hash_value, entry);
+
+        return entry->value;
+    }
+
     //==============================================================================
     /** Returns true if the map contains an item with the specied key. */
     bool contains (KeyTypeParameter keyToLookFor) const
