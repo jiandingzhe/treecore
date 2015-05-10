@@ -108,7 +108,7 @@ if(UNIX)
         PATTERN internal EXCLUDE
     )
 else()
-    install(TARGETS treejuce treejuce_s
+    install(TARGETS treejuce treejuce_s treejuce_bin_builder
         RUNTIME DESTINATION bin
 		ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
