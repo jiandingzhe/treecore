@@ -26,6 +26,7 @@
   ==============================================================================
 */
 
+#include "treejuce/Config.h"
 #include "treejuce/File.h"
 #include "treejuce/Logger.h"
 #include "treejuce/String.h"

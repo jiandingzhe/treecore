@@ -61,8 +61,15 @@ else()
 endif()
 
 # get some type size
-include(CheckTypeSize)
-CHECK_TYPE_SIZE("void*"   TREEJUCE_SIZE_PTR)
+#include(CheckTypeSize)
+#CHECK_TYPE_SIZE("void*" TREEJUCE_SIZE_PTR BUILTIN_TYPES_ONLY)
+#if(NOT HAVE_TREEJUCE_SIZE_PTR)
+#    message(FATAL_ERROR "do not have type void*,  WTF??!!")
+#endif()
+#if(NOT TREEJUCE_SIZE_PTR)
+#    message(FATAL_ERROR "failed to get pointer size")
+#endif()
+#message(STATUS "pointer size: ${TREEJUCE_SIZE_PTR}")
 
 # compiler specific flags
 if(TREEJUCE_CMAKE_COMPILER STREQUAL "MSVC")

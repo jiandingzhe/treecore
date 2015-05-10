@@ -61,7 +61,7 @@ add_library(treejuce_s STATIC ${treejuce_common_src_files} ${treejuce_platform_s
 if(WIN32)
     set_target_properties(treejuce
         PROPERTIES
-        COMPILE_DEFINITIONS -DJUCE_DLL_BUILD
+        COMPILE_DEFINITIONS JUCE_DLL_BUILD
     )
 endif()
 
