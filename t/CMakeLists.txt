@@ -36,3 +36,16 @@ target_link_libraries(t_hash_map
     testframework
     treejuce
 )
+
+add_executable(t_var t_var.cpp)
+target_link_libraries(t_var
+    testframework
+    treejuce
+)
+
+if(WIN32)
+    set_target_properties(t_var
+        PROPERTIES
+        COMPILE_DEFINITIONS JUCE_DLL
+    )
+endif()
