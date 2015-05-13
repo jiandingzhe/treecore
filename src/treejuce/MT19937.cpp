@@ -109,15 +109,15 @@ void _get_seed_from_device_(const char* device_file, uint64_t* seeds, size_t len
     FILE* fh = fopen(device_file, "rb");
     if (!fh)
     {
-        fprintf(stderr, "ERROR: MT19937 failed to open %s: %s\n",
-                RAND_DEV, strerror(errno));
+        fprintf(stderr, "ERROR: MT19937 failed to open random device %s: %s\n",
+                device_file, strerror(errno));
         abort();
     }
 
 
     if (fread(seeds, sizeof(uint64_t), len, fh) != len)
     {
-        fprintf(stderr, "ERROR: MT19937 failed to read %s\n", RAND_DEV);
+        fprintf(stderr, "ERROR: MT19937 failed to read random device %s\n", device_file);
         abort();
     }
 }
