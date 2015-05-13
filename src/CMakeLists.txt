@@ -14,14 +14,14 @@ file(GLOB zlib_src_files
 # add to a separate target, otherwise it won't use C compiler
 add_library(treejuce_zlib STATIC ${zlib_src_files})
 
-#if(TREEJUCE_COMPILER STREQUAL "MSVC")
-#    # TODO
-#else()
-#    set_target_properties(treejuce_zlib
-#        PROPERTIES
-#        COMPILE_FLAGS -fPIC
-#    )
-#endif()
+if(TREEJUCE_COMPILER STREQUAL "MSVC")
+    # TODO
+else()
+    set_target_properties(treejuce_zlib
+        PROPERTIES
+        COMPILE_FLAGS -fPIC
+    )
+endif()
 
 #
 # treejuce

@@ -43,15 +43,18 @@ target_link_libraries(t_var
     treejuce
 )
 
-add_executable(t_static_lib t_static_lib.cpp)
-target_link_libraries(t_static_lib
-    testframework
-    treejuce_s
-)
-
 if(WIN32)
     set_target_properties(t_var
         PROPERTIES
         COMPILE_DEFINITIONS JUCE_DLL
     )
+endif()
+
+add_executable(t_static_lib t_static_lib.cpp)
+target_link_libraries(t_static_lib
+    testframework
+    treejuce_s
+)
+if(TREEJUCE_OS STREQUAL "LINUX")
+    target_link_libraries(t_static_lib pthread dl)
 endif()

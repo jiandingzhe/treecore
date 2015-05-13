@@ -42,6 +42,13 @@ find_path(TREEJUCE_INCLUDE_DIR treejuce/Config.h
 #
 # find library
 #
+
+if(WIN32)
+    set(treejuce_dep_libs version winmm Shlwapi Dbghelp)
+elseif(UNIX)
+    set(treejuce_dep_libs pthread dl)
+endif()
+
 if(TREEJUCE_SEARCH_STATIC)
     set(treejuce_lib_name "treejuce_s")
     set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_STATIC_LIBRARY_SUFFIX})
@@ -49,12 +56,16 @@ else()
     set(treejuce_lib_name "treejuce")
 endif()
 
-find_library(TREEJUCE_LIBRARIES ${treejuce_lib_name}
-    HINTS
-        ${TREEJUCE_SEARCH_PREFIX_LIB}
-        ${TREEJUCE_SEARCH_PREFIX}/${CMAKE_INSTALL_LIBDIR}
-        ${TREEJUCE_SEARCH_PREFIX}/lib
-)
+if(NOT TREEJUCE_LIBRARIES)
+    unset(TREEJUCE_LIBRARIES)
+    find_library(TREEJUCE_LIBRARIES ${treejuce_lib_name}
+        HINTS
+            ${TREEJUCE_SEARCH_PREFIX_LIB}
+            ${TREEJUCE_SEARCH_PREFIX}/${CMAKE_INSTALL_LIBDIR}
+            ${TREEJUCE_SEARCH_PREFIX}/lib
+    )
+    list(APPEND TREEJUCE_LIBRARIES ${treejuce_dep_libs})
+endif()
 
 #
 # finalize
