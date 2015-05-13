@@ -57,14 +57,20 @@ else()
 endif()
 
 if(NOT TREEJUCE_LIBRARIES)
-    unset(TREEJUCE_LIBRARIES)
-    find_library(TREEJUCE_LIBRARIES ${treejuce_lib_name}
+    message("find treejuce libraries")
+    find_library(treejuce_main_lib ${treejuce_lib_name}
         HINTS
             ${TREEJUCE_SEARCH_PREFIX_LIB}
             ${TREEJUCE_SEARCH_PREFIX}/${CMAKE_INSTALL_LIBDIR}
             ${TREEJUCE_SEARCH_PREFIX}/lib
     )
-    list(APPEND TREEJUCE_LIBRARIES ${treejuce_dep_libs})
+    set_property(CACHE treejuce_main_lib
+        PROPERTY
+            ADVANCED 1
+    )
+    message(${treejuce_main_lib})
+    set(TREEJUCE_LIBRARIES ${treejuce_dep_libs} ${treejuce_main_lib} CACHE STRING "" FORCE)
+    message("for user: ${TREEJUCE_LIBRARIES}")
 endif()
 
 #
@@ -72,6 +78,7 @@ endif()
 #
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(TREEJUCE
     REQUIRED_VARS
+        treejuce_main_lib
         TREEJUCE_BIN_BUILDER
         TREEJUCE_INCLUDE_DIR
         TREEJUCE_LIBRARIES
