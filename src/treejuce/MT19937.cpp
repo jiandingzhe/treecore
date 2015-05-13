@@ -99,11 +99,14 @@ uint64_t _get_seed_from_pid_()
     return result;
 }
 
-#define RAND_DEV "/dev/urandom"
+#if defined TREEJUCE_OS_LINUX || defined TREEJUCE_OS_OSX
 
-void _get_seed_from_dev_random_(uint64_t* seeds, size_t len)
+#define DEV_RAND "/dev/random"
+#define DEV_URAND "/dev/urandom"
+
+void _get_seed_from_device_(const char* device_file, uint64_t* seeds, size_t len)
 {
-    FILE* fh = fopen(RAND_DEV, "rb");
+    FILE* fh = fopen(device_file, "rb");
     if (!fh)
     {
         fprintf(stderr, "ERROR: MT19937 failed to open %s: %s\n",
@@ -118,6 +121,7 @@ void _get_seed_from_dev_random_(uint64_t* seeds, size_t len)
         abort();
     }
 }
+#endif
 
 #if defined(_MSC_VER) && _MSC_VER >= 1400
 void _get_seed_from_rand_s_(uint64_t* seeds, size_t len)
@@ -133,35 +137,32 @@ void _get_seed_from_rand_s_(uint64_t* seeds, size_t len)
 
 MT19937::MT19937()
 {
-    static bool has_dev_random = true;
-    if (has_dev_random)
-    {
-        File path_dev_random("/dev/random");
-        if (path_dev_random.existsAsFile())
-        {
-            uint64_t seeds[4];
-            _get_seed_from_dev_random_(seeds, 4);
-            set_seed_array(seeds, 4);
-        }
-        else
-        {
-            has_dev_random = false;
-        }
-    }
+#if defined TREEJUCE_OS_LINUX || defined TREEJUCE_OS_OSX || defined TREEJUCE_OS_ANDROID
+    File path_dev_urand(DEV_URAND);
 
-    if (!has_dev_random)
+    if (path_dev_urand.existsAsFile())
     {
-#if defined(_MSC_VER) && _MSC_VER >= 1400
         uint64_t seeds[4];
-        _get_seed_from_rand_s_(seeds, 4);
+        _get_seed_from_device_(DEV_URAND, seeds, 4);
         set_seed_array(seeds, 4);
-#else
+    }
+    else
+    {
         uint64_t seeds[2];
         seeds[0] = _get_seed_from_time_();
         seeds[1] = _get_seed_from_pid_();
         set_seed_array(seeds, 2);
-#endif
     }
+#elif defined(_MSC_VER) && _MSC_VER >= 1400
+    uint64_t seeds[4];
+    _get_seed_from_rand_s_(seeds, 4);
+    set_seed_array(seeds, 4);
+#else
+    uint64_t seeds[2];
+    seeds[0] = _get_seed_from_time_();
+    seeds[1] = _get_seed_from_pid_();
+    set_seed_array(seeds, 2);
+#endif
 }
 
 MT19937::MT19937(uint64_t seed)

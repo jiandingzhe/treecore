@@ -14,14 +14,14 @@ file(GLOB zlib_src_files
 # add to a separate target, otherwise it won't use C compiler
 add_library(treejuce_zlib STATIC ${zlib_src_files})
 
-if(TREEJUCE_COMPILER STREQUAL "MSVC")
-    # TODO
-else()
-    set_target_properties(treejuce_zlib
-        PROPERTIES
-        COMPILE_FLAGS -fPIC
-    )
-endif()
+#if(TREEJUCE_COMPILER STREQUAL "MSVC")
+#    # TODO
+#else()
+#    set_target_properties(treejuce_zlib
+#        PROPERTIES
+#        COMPILE_FLAGS -fPIC
+#    )
+#endif()
 
 #
 # treejuce
@@ -55,8 +55,16 @@ else()
     message(SEND_ERROR "unsupported target system: ${CMAKE_SYSTEM_NAME}")
 endif()
 
-add_library(treejuce SHARED ${treejuce_common_src_files} ${treejuce_platform_src_files})
-add_library(treejuce_s STATIC ${treejuce_common_src_files} ${treejuce_platform_src_files})
+add_library(treejuce SHARED 
+    ${treejuce_common_src_files} 
+    ${treejuce_platform_src_files}
+)
+
+add_library(treejuce_s STATIC
+    ${zlib_src_files} 
+    ${treejuce_common_src_files} 
+    ${treejuce_platform_src_files}
+)
 
 if(WIN32)
     set_target_properties(treejuce
