@@ -57,4 +57,6 @@ target_link_libraries(t_static_lib
 )
 if(TREEJUCE_OS STREQUAL "LINUX")
     target_link_libraries(t_static_lib pthread dl)
+elseif(TREEJUCE_OS STREQUAL "WINDOWS")
+    target_link_libraries(t_static_lib treejuce version winmm Shlwapi Dbghelp)
 endif()
