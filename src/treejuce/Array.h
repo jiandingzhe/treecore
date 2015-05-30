@@ -33,6 +33,7 @@
 #include "treejuce/CriticalSection.h"
 #include "treejuce/ElementComparator.h"
 #include "treejuce/MathsFunctions.h"
+#include "treejuce/Object.h"
 #include "treejuce/StandardHeader.h"
 
 //==============================================================================
@@ -64,7 +65,7 @@ TREEFACE_JUCE_NAMESPACE_BEGIN
 template <typename ElementType,
           typename TypeOfCriticalSectionToUse = DummyCriticalSection,
           int minimumAllocatedSize = 0>
-class Array
+class Array: public Object
 {
 private:
     typedef PARAMETER_TYPE (ElementType) ParameterType;

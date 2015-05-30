@@ -3,13 +3,14 @@
 
 #include "treejuce/Array.h"
 #include "treejuce/HashFunctions.h"
+#include "treejuce/Object.h"
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
 
 template<typename KeyType,
          typename HashFunctionType = DefaultHashFunctions,
          typename MutexType = DummyCriticalSection>
-class HashSet
+class HashSet: public Object
 {
 protected:
     struct Entry

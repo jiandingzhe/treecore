@@ -32,6 +32,7 @@
 #include "treejuce/Array.h"
 #include "treejuce/HashFunctions.h"
 #include "treejuce/LeakedObjectDetector.h"
+#include "treejuce/Object.h"
 #include "treejuce/ScopedPointer.h"
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
@@ -82,7 +83,7 @@ template <typename KeyType,
           typename ValueType,
           class HashFunctionType = DefaultHashFunctions,
           class TypeOfCriticalSectionToUse = DummyCriticalSection>
-class HashMap
+class HashMap: public Object
 {
 private:
     typedef PARAMETER_TYPE (KeyType)   KeyTypeParameter;
