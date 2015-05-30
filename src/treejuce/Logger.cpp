@@ -55,7 +55,6 @@ void Logger::writeToLog (const String& message)
         outputDebugString (message);
 }
 
-#if JUCE_LOG_ASSERTIONS || JUCE_DEBUG
 void JUCE_API JUCE_CALLTYPE logAssertion (const char* const filename, const int lineNum) NOEXCEPT
 {
     String m ("JUCE Assertion failure in ");
@@ -67,6 +66,5 @@ void JUCE_API JUCE_CALLTYPE logAssertion (const char* const filename, const int 
     DBG (m);
    #endif
 }
-#endif
 
 TREEFACE_JUCE_NAMESPACE_END
