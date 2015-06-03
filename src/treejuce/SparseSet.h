@@ -30,6 +30,7 @@
 #define JUCE_SPARSESET_H_INCLUDED
 
 #include "treejuce/Common.h"
+#include "treejuce/Object.h"
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
 
@@ -45,7 +46,7 @@ TREEFACE_JUCE_NAMESPACE_BEGIN
     int64, etc.
 */
 template <class Type>
-class SparseSet
+class SparseSet: public Object
 {
 public:
     //==============================================================================

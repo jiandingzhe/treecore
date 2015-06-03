@@ -30,6 +30,7 @@
 #define JUCE_SORTEDSET_H_INCLUDED
 
 #include "treejuce/Array.h"
+#include "treejuce/Object.h"
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
 
@@ -61,7 +62,7 @@ TREEFACE_JUCE_NAMESPACE_BEGIN
     @see Array, OwnedArray, ReferenceCountedArray, StringArray, CriticalSection
 */
 template <class ElementType, class TypeOfCriticalSectionToUse = DummyCriticalSection>
-class SortedSet
+class SortedSet: public Object
 {
 public:
     //==============================================================================
