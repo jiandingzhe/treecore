@@ -317,7 +317,6 @@ TREEFACE_JUCE_NAMESPACE_END
 // a few workarounds, so that we can still use some of the newer language features.
 #if (__cplusplus >= 201103L || defined (__GXX_EXPERIMENTAL_CXX0X__)) && (__GNUC__ * 100 + __GNUC_MINOR__) >= 405
  #define JUCE_COMPILER_SUPPORTS_NOEXCEPT 1
- #define JUCE_COMPILER_SUPPORTS_NULLPTR 1
 
  #if (__GNUC__ * 100 + __GNUC_MINOR__) >= 407 && ! defined (JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL)
   #define JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL 1
@@ -325,10 +324,6 @@ TREEFACE_JUCE_NAMESPACE_END
 #endif
 
 #if defined TREEJUCE_COMPILER_CLANG && defined (__has_feature)
- #if __has_feature (cxx_nullptr)
-  #define JUCE_COMPILER_SUPPORTS_NULLPTR 1
- #endif
-
  #if __has_feature (cxx_NOEXCEPT)
   #define JUCE_COMPILER_SUPPORTS_NOEXCEPT 1
  #endif
@@ -340,10 +335,6 @@ TREEFACE_JUCE_NAMESPACE_END
  #ifndef JUCE_COMPILER_SUPPORTS_ARC
   #define JUCE_COMPILER_SUPPORTS_ARC 1
  #endif
-#endif
-
-#if defined (_MSC_VER) && _MSC_VER >= 1600
- #define JUCE_COMPILER_SUPPORTS_NULLPTR 1
 #endif
 
 #if defined (_MSC_VER) && _MSC_VER >= 1700
@@ -362,13 +353,6 @@ TREEFACE_JUCE_NAMESPACE_END
  #endif
 #else
 #  define NOEXCEPT noexcept
-#endif
-
-#if ! (DOXYGEN || JUCE_COMPILER_SUPPORTS_NULLPTR)
- #ifdef nullptr
-  #undef nullptr
- #endif
- #define nullptr (0)
 #endif
 
 #if ! (DOXYGEN || JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL)
