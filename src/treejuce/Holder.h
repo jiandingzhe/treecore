@@ -124,6 +124,14 @@ private:
     T* ms_ptr = nullptr;
 }; // class ObjectHolder
 
+inline void smart_ref(decltype(nullptr) p)
+{
+}
+
+inline void smart_unref(decltype(nullptr) p)
+{
+}
+
 template<typename T1, typename T2>
 bool operator == (const Holder<T1>& a, const Holder<T2>& b)
 {
