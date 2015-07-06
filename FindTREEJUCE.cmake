@@ -16,6 +16,7 @@ find_program(TREEJUCE_BIN_BUILDER treejuce_bin_builder
         ${TREEJUCE_SEARCH_PREFIX_BIN}
         ${TREEJUCE_SEARCH_PREFIX}/${CMAKE_INSTALL_BINDIR}
         ${TREEJUCE_SEARCH_PREFIX}/bin
+        $ENV{TREEJUCE_PREFIX}/bin
 )
 
 function(TREEJUCE_WRAP_RESOURCE input_dir class_name)
@@ -37,6 +38,7 @@ find_path(TREEJUCE_INCLUDE_DIR treejuce/Config.h
         ${TREEJUCE_SEARCH_PREFIX_INC}
         ${TREEJUCE_SEARCH_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}
         ${TREEJUCE_SEARCH_PREFIX}/include
+        $ENV{TREEJUCE_PREFIX}/include
 )
 
 #
@@ -63,6 +65,7 @@ if(NOT TREEJUCE_LIBRARIES)
             ${TREEJUCE_SEARCH_PREFIX_LIB}
             ${TREEJUCE_SEARCH_PREFIX}/${CMAKE_INSTALL_LIBDIR}
             ${TREEJUCE_SEARCH_PREFIX}/lib
+            $ENV{TREEJUCE_PREFIX}/lib
     )
     set_property(CACHE treejuce_main_lib
         PROPERTY
