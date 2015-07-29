@@ -37,7 +37,7 @@
 #include "treejuce/StandardHeader.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     Holds a resizable array of primitive or copy-by-value objects.
@@ -1119,6 +1119,6 @@ private:
     }
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_ARRAY_H_INCLUDED

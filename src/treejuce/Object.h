@@ -9,7 +9,7 @@
 
 class TestFramework;
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class JUCE_API Object
 {
@@ -50,6 +50,6 @@ inline void smart_ref(const Object* obj)
 inline void smart_unref(const Object* obj)
 { obj->unref(); }
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif // TREEFACE_OBJECT_H

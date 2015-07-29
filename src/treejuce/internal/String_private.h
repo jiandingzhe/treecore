@@ -4,7 +4,8 @@
 #include "treejuce/Config.h"
 #include "treejuce/String.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce
+{
 
 struct EmptyString
 {
@@ -196,6 +197,6 @@ namespace NumberToStringConverters
     String::CharPointerType createFromDouble (const double number, const int numberOfDecimalPlaces);
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+} // namespace treejuce
 
 #endif // TREEJUCE_STRING_PRIVATE_H

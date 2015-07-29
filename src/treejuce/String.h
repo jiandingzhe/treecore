@@ -38,7 +38,7 @@
 #include "treejuce/CharPointer_UTF16.h"
 #include "treejuce/CharPointer_UTF32.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class OutputStream;
 class StringRef;
@@ -172,25 +172,12 @@ public:
 
     /** This is the character encoding type used internally to store the string.
 
-        By setting the value of JUCE_STRING_UTF_TYPE to 8, 16, or 32, you can change the
-        internal storage format of the String class. UTF-8 uses the least space (if your strings
-        contain few extended characters), but call operator[] involves iterating the string to find
-        the required index. UTF-32 provides instant random access to its characters, but uses 4 bytes
-        per character to store them. UTF-16 uses more space than UTF-8 and is also slow to index,
-        but is the native wchar_t format used in Windows.
+        Fixed to UTF8 by Xi Yang
 
         It doesn't matter too much which format you pick, because the toUTF8(), toUTF16() and
         toUTF32() methods let you access the string's content in any of the other formats.
     */
-   #if (JUCE_STRING_UTF_TYPE == 32)
-    typedef CharPointer_UTF32 CharPointerType;
-   #elif (JUCE_STRING_UTF_TYPE == 16)
-    typedef CharPointer_UTF16 CharPointerType;
-   #elif (DOXYGEN || JUCE_STRING_UTF_TYPE == 8)
     typedef CharPointer_UTF8  CharPointerType;
-   #else
-    #error "You must set the value of JUCE_STRING_UTF_TYPE to be either 8, 16, or 32!"
-   #endif
 
     //==============================================================================
     /** Generates a probably-unique 32-bit hashcode from this string. */
@@ -1383,6 +1370,6 @@ JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const Str
 /** Writes a string to an OutputStream as UTF8. */
 JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, StringRef stringToWrite);
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_STRING_H_INCLUDED

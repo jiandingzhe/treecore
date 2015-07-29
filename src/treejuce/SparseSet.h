@@ -32,7 +32,7 @@
 #include "treejuce/Common.h"
 #include "treejuce/Object.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -297,6 +297,6 @@ private:
     }
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_SPARSESET_H_INCLUDED

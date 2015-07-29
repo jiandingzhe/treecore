@@ -33,7 +33,7 @@
 #include "treejuce/LeakedObjectDetector.h"
 #include "treejuce/String.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -416,6 +416,6 @@ private:
     JUCE_LEAK_DETECTOR (StringArray)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_STRINGARRAY_H_INCLUDED

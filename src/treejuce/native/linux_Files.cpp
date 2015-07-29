@@ -34,7 +34,7 @@
 
 #include "treejuce/native/posix_private.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 enum
 {
@@ -253,4 +253,4 @@ void File::revealToUser() const
         getParentDirectory().startAsProcess();
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

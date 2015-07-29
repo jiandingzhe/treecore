@@ -34,7 +34,7 @@
 #include "treejuce/Config.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 #if defined TREEJUCE_OS_WINDOWS && ! DOXYGEN
  #define JUCE_NATIVE_WCHAR_IS_UTF8      0
@@ -630,6 +630,6 @@ private:
     static double mulexp10 (const double value, int exponent) NOEXCEPT;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_CHARACTERFUNCTIONS_H_INCLUDED

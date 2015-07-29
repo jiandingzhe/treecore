@@ -35,7 +35,7 @@
 #include "treejuce/String.h"
 #include "treejuce/Time.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class File;
 class InputStream;
@@ -267,6 +267,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ZipFile)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_ZIPFILE_H_INCLUDED

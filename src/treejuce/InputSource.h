@@ -33,7 +33,7 @@
 #include "treejuce/MathsFunctions.h"
 #include "treejuce/LeakedObjectDetector.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class InputStream;
 class String;
@@ -82,6 +82,6 @@ private:
     JUCE_LEAK_DETECTOR (InputSource)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_INPUTSOURCE_H_INCLUDED

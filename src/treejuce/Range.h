@@ -31,7 +31,7 @@
 
 #include "treejuce/Common.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /** A general-purpose range object, that simply represents any linear range with
@@ -303,6 +303,6 @@ private:
     ValueType start, end;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_RANGE_H_INCLUDED

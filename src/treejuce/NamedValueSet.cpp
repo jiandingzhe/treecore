@@ -32,7 +32,7 @@
 #include "treejuce/Variant.h"
 #include "treejuce/XmlElement.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 struct NamedValueSet::NamedValue
 {
@@ -272,4 +272,4 @@ void NamedValueSet::copyToXmlAttributes (XmlElement& xml) const
     }
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

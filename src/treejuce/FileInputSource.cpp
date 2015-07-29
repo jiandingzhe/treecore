@@ -31,7 +31,7 @@
 #include "treejuce/StringRef.h"
 #include "treejuce/Time.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 FileInputSource::FileInputSource (const File& f, bool useFileTimeInHash)
     : file (f), useFileTimeInHashGeneration (useFileTimeInHash)
@@ -62,4 +62,4 @@ int64 FileInputSource::hashCode() const
     return h;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

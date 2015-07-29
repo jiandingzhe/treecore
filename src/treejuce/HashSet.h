@@ -5,7 +5,7 @@
 #include "treejuce/HashFunctions.h"
 #include "treejuce/Object.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 template<typename KeyType,
          typename HashFunctionType = DefaultHashFunctions,
@@ -278,6 +278,6 @@ protected:
     MutexType        m_mutex;
 }; // class HashSet
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif // TREEJUCE_HASH_SET_H

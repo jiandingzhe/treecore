@@ -32,7 +32,7 @@
 #include "treejuce/File.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     Interface for deciding which files are suitable for something.
@@ -76,6 +76,6 @@ protected:
     String description;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_FILEFILTER_H_INCLUDED

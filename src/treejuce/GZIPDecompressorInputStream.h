@@ -34,7 +34,7 @@
 #include "treejuce/OptionalScopedPointer.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     This stream will decompress a source-stream using zlib.
@@ -99,6 +99,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GZIPDecompressorInputStream)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_GZIPDECOMPRESSORINPUTSTREAM_H_INCLUDED

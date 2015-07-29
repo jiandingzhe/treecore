@@ -32,7 +32,7 @@
 #include "treejuce/StandardHeader.h"
 #include "treejuce/String.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -122,12 +122,6 @@ public:
     //==============================================================================
     /** The text that is referenced. */
     String::CharPointerType text;
-
-    #if JUCE_STRING_UTF_TYPE != 8 && ! defined (DOXYGEN)
-     // Sorry, non-UTF8 people, you're unable to take advantage of StringRef, because
-     // you've chosen a character encoding that doesn't match C++ string literals.
-     String stringCopy;
-    #endif
 };
 
 //==============================================================================
@@ -136,10 +130,6 @@ JUCE_API bool JUCE_CALLTYPE operator== (const String& string1, StringRef string2
 /** Case-sensitive comparison of two strings. */
 JUCE_API bool JUCE_CALLTYPE operator!= (const String& string1, StringRef string2) NOEXCEPT;
 
-#if JUCE_STRING_UTF_TYPE != 8 && ! defined (DOXYGEN)
-inline String operator+ (String s1, StringRef s2)      { return s1 += String (s2.text); }
-#endif
-
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_STRINGREF_H_INCLUDED

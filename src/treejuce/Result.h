@@ -32,7 +32,7 @@
 #include "treejuce/Common.h"
 #include "treejuce/String.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -123,6 +123,6 @@ private:
     operator void*() const;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_RESULT_H_INCLUDED

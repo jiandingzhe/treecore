@@ -31,7 +31,7 @@
 
 #include "treejuce/Array.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class String;
 
@@ -81,6 +81,6 @@ public:
     Array<Change> changes;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_TEXTDIFF_H_INCLUDED

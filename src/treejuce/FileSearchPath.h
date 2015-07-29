@@ -32,7 +32,7 @@
 #include "treejuce/LeakedObjectDetector.h"
 #include "treejuce/StringArray.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class File;
 
@@ -168,6 +168,6 @@ private:
     JUCE_LEAK_DETECTOR (FileSearchPath)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_FILESEARCHPATH_H_INCLUDED

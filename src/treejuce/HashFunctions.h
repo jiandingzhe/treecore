@@ -5,7 +5,7 @@
 #include "treejuce/String.h"
 #include "treejuce/Variant.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 
@@ -26,6 +26,6 @@ struct DefaultHashFunctions
     int generateHash (const var& key, const int upperLimit) const NOEXCEPT       { return generateHash (key.toString(), upperLimit); }
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif // TREEJUCE_HASH_FUNCTIONS_H

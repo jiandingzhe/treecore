@@ -32,7 +32,7 @@
 #include "treejuce/StandardHeader.h"
 #include "treejuce/IntTypes.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /*
@@ -505,6 +505,6 @@ namespace TypeHelpers
 #define checkPowerOfTwo(number) jassert( ((number)>1) && (((number)&(number-1))==0) )
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_MATHSFUNCTIONS_H_INCLUDED

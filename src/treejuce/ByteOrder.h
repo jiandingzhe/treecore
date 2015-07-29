@@ -32,7 +32,7 @@
 #include "treejuce/StandardHeader.h"
 #include "treejuce/MathsFunctions.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /** Contains static methods for converting the byte order between different
@@ -198,6 +198,6 @@ inline int  ByteOrder::bigEndian24Bit (const void* const bytes) NOEXCEPT        
 inline void ByteOrder::littleEndian24BitToChars (const int value, void* const destBytes) NOEXCEPT    { static_cast<uint8*> (destBytes)[0] = (uint8) value;         static_cast<uint8*> (destBytes)[1] = (uint8) (value >> 8); static_cast<uint8*> (destBytes)[2] = (uint8) (value >> 16); }
 inline void ByteOrder::bigEndian24BitToChars (const int value, void* const destBytes) NOEXCEPT       { static_cast<uint8*> (destBytes)[0] = (uint8) (value >> 16); static_cast<uint8*> (destBytes)[1] = (uint8) (value >> 8); static_cast<uint8*> (destBytes)[2] = (uint8) value; }
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_BYTEORDER_H_INCLUDED

@@ -32,7 +32,7 @@
 #include "treejuce/StandardHeader.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     Helps to manipulate singly-linked lists of objects.
@@ -368,6 +368,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE (LinkedListPointer)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_LINKEDLISTPOINTER_H_INCLUDED

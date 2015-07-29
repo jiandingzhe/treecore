@@ -33,7 +33,7 @@
 #include "treejuce/InputSource.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     A type of InputSource that represents a normal file.
@@ -66,6 +66,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FileInputSource)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_FILEINPUTSOURCE_H_INCLUDED

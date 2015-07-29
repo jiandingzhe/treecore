@@ -140,12 +140,12 @@
 //==============================================================================
 #ifndef DOXYGEN
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 template <bool b> struct JuceStaticAssert;
 template <> struct JuceStaticAssert <true> { static void dummy() {} };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif
 

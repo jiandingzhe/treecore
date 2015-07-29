@@ -34,7 +34,7 @@
 #include "treejuce/LeakedObjectDetector.h"
 #include "treejuce/StringArray.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -87,6 +87,6 @@ private:
     JUCE_LEAK_DETECTOR (WildcardFileFilter)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_WILDCARDFILEFILTER_H_INCLUDED

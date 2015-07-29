@@ -31,7 +31,7 @@
 
 #include "treejuce/StandardHeader.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class ReadWriteLock;
 
@@ -91,6 +91,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE (ScopedReadLock)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_SCOPEDREADLOCK_H_INCLUDED

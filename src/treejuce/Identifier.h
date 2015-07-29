@@ -32,7 +32,7 @@
 #include "treejuce/String.h"
 #include "treejuce/StringRef.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -120,6 +120,6 @@ private:
     String name;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_IDENTIFIER_H_INCLUDED

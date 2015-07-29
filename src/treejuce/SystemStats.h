@@ -32,7 +32,7 @@
 #include "treejuce/StandardHeader.h"
 #include "treejuce/String.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -195,6 +195,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE (SystemStats)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_SYSTEMSTATS_H_INCLUDED

@@ -6,7 +6,8 @@
 #include <cstdint>
 #include <emmintrin.h>
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce
+{
 
 template<>
 union SIMDType<16>
@@ -269,6 +270,6 @@ inline float simd_sum<float, 16>(const SIMDType<16>& a)
     return _mm_cvtss_f32(b.simd_by_float);
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+} // namespace treejuce
 
 #endif // TREEJUCE_SIMD_FUNC_SSE2_H

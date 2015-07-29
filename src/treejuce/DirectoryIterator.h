@@ -35,7 +35,7 @@
 #include "treejuce/File.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 template <typename ObjectType>
 struct ContainerDeletePolicy;
@@ -165,6 +165,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DirectoryIterator)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_DIRECTORYITERATOR_H_INCLUDED

@@ -34,7 +34,7 @@
 #include "treejuce/LeakedObjectDetector.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class MemoryBlock;
 class OutputStream;
@@ -338,6 +338,6 @@ OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const BigInteger& 
  typedef BigInteger BitArray;
 #endif
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_BIGINTEGER_H_INCLUDED

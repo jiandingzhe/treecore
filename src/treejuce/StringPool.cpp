@@ -29,7 +29,7 @@
 #include "treejuce/StringPool.h"
 #include "treejuce/Time.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 static const int minNumberOfStringsForGarbageCollection = 300;
 static const uint32 garbageCollectionInterval = 30000;
@@ -170,4 +170,4 @@ StringPool& StringPool::getGlobalPool() NOEXCEPT
     return pool;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

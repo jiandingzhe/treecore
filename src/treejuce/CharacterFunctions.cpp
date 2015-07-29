@@ -29,7 +29,7 @@
 #include "treejuce/CharacterFunctions.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 #if defined TREEJUCE_COMPILER_MSVC
  #pragma warning (push)
@@ -157,4 +157,4 @@ double CharacterFunctions::mulexp10 (const double value, int exponent) NOEXCEPT
     return negative ? (value / result) : (value * result);
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

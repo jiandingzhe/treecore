@@ -30,7 +30,7 @@
 #include "treejuce/FileSearchPath.h"
 #include "treejuce/StringRef.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 FileSearchPath::FileSearchPath() {}
 FileSearchPath::~FileSearchPath() {}
@@ -177,4 +177,4 @@ bool FileSearchPath::isFileInPath (const File& fileToCheck,
     return false;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

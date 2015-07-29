@@ -33,7 +33,7 @@
 #include "treejuce/InputStream.h"
 #include "treejuce/OptionalScopedPointer.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /** Wraps another input stream, and reads from it using an intermediate buffer
@@ -94,6 +94,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BufferedInputStream)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_BUFFEREDINPUTSTREAM_H_INCLUDED

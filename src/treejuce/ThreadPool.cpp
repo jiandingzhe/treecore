@@ -32,7 +32,7 @@
 #include "treejuce/ThreadPool.h"
 #include "treejuce/Time.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class ThreadPool::ThreadPoolThread  : public Thread
 {
@@ -391,4 +391,4 @@ void ThreadPool::addToDeleteList (OwnedArray<ThreadPoolJob>& deletionList, Threa
         deletionList.add (job);
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

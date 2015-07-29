@@ -45,7 +45,7 @@ extern "C"
 #include "zlib.h"
 }
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class ZipFile::ZipEntryHolder
 {
@@ -628,4 +628,4 @@ bool ZipFile::Builder::writeToStream (OutputStream& target, double* const progre
     return true;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

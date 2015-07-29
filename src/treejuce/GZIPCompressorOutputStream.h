@@ -35,7 +35,7 @@
 #include "treejuce/ScopedPointer.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     A stream which uses zlib to compress the data written into it.
@@ -104,6 +104,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GZIPCompressorOutputStream)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_GZIPCOMPRESSOROUTPUTSTREAM_H_INCLUDED

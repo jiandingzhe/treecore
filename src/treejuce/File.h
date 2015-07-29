@@ -35,7 +35,7 @@
 #include "treejuce/Result.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class File;
 class FileInputStream;
@@ -981,6 +981,6 @@ private:
     bool setFileReadOnlyInternal (bool) const;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_FILE_H_INCLUDED

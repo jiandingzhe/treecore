@@ -5,7 +5,7 @@
 #include "treejuce/Config.h"
 #include "treejuce/MathsFunctions.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class File;
 class String;
@@ -26,6 +26,6 @@ File juce_getExecutableFile();
 void updateStatInfoForFile(const String& path, bool* const isDir, int64* const fileSize,
                            Time* const modTime, Time* const creationTime, bool* const isReadOnly);
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif // TREEJUCE_NATIVE_POSIX_PRIVATE_H

@@ -35,7 +35,7 @@
 #include "treejuce/String.h"
 #include "treejuce/internal/String_private.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 #if defined TREEJUCE_COMPILER_MSVC
  #pragma warning (push)
@@ -641,12 +641,7 @@ String& String::operator+= (const int number)
     char buffer [16];
     char* end = buffer + numElementsInArray (buffer);
     char* start = NumberToStringConverters::numberToString (end, number);
-
-   #if (JUCE_STRING_UTF_TYPE == 8)
     appendCharPointer (CharPointerType (start), CharPointerType (end));
-   #else
-    appendCharPointer (CharPointer_ASCII (start), CharPointer_ASCII (end));
-   #endif
     return *this;
 }
 
@@ -655,12 +650,7 @@ String& String::operator+= (int64 number)
     char buffer [32];
     char* end = buffer + numElementsInArray (buffer);
     char* start = NumberToStringConverters::numberToString (end, number);
-
-   #if (JUCE_STRING_UTF_TYPE == 8)
     appendCharPointer (CharPointerType (start), CharPointerType (end));
-   #else
-    appendCharPointer (CharPointer_ASCII (start), CharPointer_ASCII (end));
-   #endif
     return *this;
 }
 
@@ -707,16 +697,7 @@ JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const Str
 JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, StringRef text)
 {
     const size_t numBytes = CharPointer_UTF8::getBytesRequiredFor (text.text);
-
-   #if (JUCE_STRING_UTF_TYPE == 8)
     stream.write (text.text.getAddress(), numBytes);
-   #else
-    // (This avoids using toUTF8() to prevent the memory bloat that it would leave behind
-    // if lots of large, persistent strings were to be written to streams).
-    HeapBlock<char> temp (numBytes + 1);
-    CharPointer_UTF8 (temp).writeAll (text.text);
-    stream.write (temp, numBytes);
-   #endif
 
     return stream;
 }
@@ -1978,16 +1959,8 @@ StringRef::StringRef() NOEXCEPT  : text ((const String::CharPointerType::CharTyp
 }
 
 StringRef::StringRef (const char* stringLiteral) NOEXCEPT
-   #if JUCE_STRING_UTF_TYPE != 8
-    : text (nullptr), stringCopy (stringLiteral)
-   #else
     : text (stringLiteral)
-   #endif
 {
-   #if JUCE_STRING_UTF_TYPE != 8
-    text = stringCopy.getCharPointer();
-   #endif
-
     jassert (stringLiteral != nullptr); // This must be a valid string literal, not a null pointer!!
 
    #if JUCE_NATIVE_WCHAR_IS_UTF8
@@ -2388,4 +2361,4 @@ static StringTests stringUnitTests;
 
 #endif
 
-TREEFACE_JUCE_NAMESPACE_END
+}

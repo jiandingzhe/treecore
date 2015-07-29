@@ -32,7 +32,7 @@
 #include "treejuce/ContainerDeletePolicy.h"
 #include "treejuce/LeakedObjectDetector.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -253,6 +253,6 @@ template <typename Type>
 void deleteAndZero (ScopedPointer<Type>&)  { static_jassert (sizeof (Type) == 12345); }
 #endif
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_SCOPEDPOINTER_H_INCLUDED

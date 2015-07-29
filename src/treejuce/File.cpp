@@ -39,7 +39,7 @@
 #include "treejuce/TemporaryFile.h"
 #include "treejuce/Time.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 File::File (const String& fullPathName)
     : fullPath (parseAbsolutePath (fullPathName))
@@ -1104,4 +1104,4 @@ static FileTests fileUnitTests;
 
 #endif
 
-TREEFACE_JUCE_NAMESPACE_END
+}

@@ -33,7 +33,7 @@
 #include "treejuce/InputStream.h"
 #include "treejuce/MathsFunctions.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /** Wraps another input stream, and reads from a specific part of it.
@@ -90,6 +90,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SubregionStream)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_SUBREGIONSTREAM_H_INCLUDED

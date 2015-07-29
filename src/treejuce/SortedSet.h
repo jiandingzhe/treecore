@@ -32,7 +32,7 @@
 #include "treejuce/Array.h"
 #include "treejuce/Object.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 #if defined TREEJUCE_COMPILER_MSVC
  #pragma warning (push)
@@ -497,6 +497,6 @@ private:
  #pragma warning (pop)
 #endif
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_SORTEDSET_H_INCLUDED

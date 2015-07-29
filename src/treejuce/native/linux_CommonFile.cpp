@@ -35,7 +35,7 @@
 
 #include "treejuce/native/posix_private.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 bool File::copyInternal (const File& dest) const
 {
@@ -163,4 +163,4 @@ bool DirectoryIterator::NativeIterator::next (String& filenameFound,
     return pimpl->next (filenameFound, isDir, isHidden, fileSize, modTime, creationTime, isReadOnly);
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

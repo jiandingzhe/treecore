@@ -32,7 +32,7 @@
 #include "treejuce/String.h"
 #include "treejuce/ScopedPointer.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -128,6 +128,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE (InterProcessLock)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_INTERPROCESSLOCK_H_INCLUDED

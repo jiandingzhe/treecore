@@ -35,7 +35,7 @@
 #include <stddef.h>
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     Wraps a pointer to a null-terminated UTF-16 character string, and provides
@@ -528,6 +528,6 @@ private:
     }
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_CHARPOINTER_UTF16_H_INCLUDED

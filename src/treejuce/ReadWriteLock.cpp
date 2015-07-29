@@ -28,7 +28,7 @@
 
 #include "treejuce/ReadWriteLock.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 ReadWriteLock::ReadWriteLock() NOEXCEPT
     : numWaitingWriters (0),
@@ -153,4 +153,4 @@ void ReadWriteLock::exitWrite() const NOEXCEPT
     }
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

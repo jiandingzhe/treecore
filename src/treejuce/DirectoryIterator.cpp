@@ -29,7 +29,7 @@
 #include "treejuce/DirectoryIterator.h"
 #include "treejuce/StringRef.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 DirectoryIterator::DirectoryIterator (const File& directory, bool recursive,
                                       const String& pattern, const int type)
@@ -163,4 +163,4 @@ float DirectoryIterator::getEstimatedProgress() const
     return detailedIndex / totalNumFiles;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

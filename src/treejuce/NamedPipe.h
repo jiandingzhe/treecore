@@ -33,7 +33,7 @@
 #include "treejuce/ReadWriteLock.h"
 #include "treejuce/ScopedPointer.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -105,6 +105,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NamedPipe)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_NAMEDPIPE_H_INCLUDED

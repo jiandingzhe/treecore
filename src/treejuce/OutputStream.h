@@ -33,7 +33,7 @@
 #include "treejuce/LeakedObjectDetector.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class File;
 class InputStream;
@@ -283,6 +283,6 @@ JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, InputStre
 */
 JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const NewLine&);
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_OUTPUTSTREAM_H_INCLUDED

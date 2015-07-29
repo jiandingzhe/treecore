@@ -35,7 +35,7 @@
 #include "treejuce/Object.h"
 #include "treejuce/ScopedPointer.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -460,6 +460,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HashMap)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_HASHMAP_H_INCLUDED

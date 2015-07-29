@@ -40,7 +40,7 @@
 #  error "unimplemented OS"
 #endif
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 HighResolutionTimer::HighResolutionTimer()                    { pimpl = new Pimpl (*this); }
 HighResolutionTimer::~HighResolutionTimer()                   { stopTimer(); }
@@ -51,4 +51,4 @@ void HighResolutionTimer::stopTimer()                         { pimpl->stop(); }
 bool HighResolutionTimer::isTimerRunning() const NOEXCEPT     { return pimpl->periodMs != 0; }
 int HighResolutionTimer::getTimerInterval() const NOEXCEPT    { return pimpl->periodMs; }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

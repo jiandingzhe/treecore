@@ -28,7 +28,7 @@
 
 #include "treejuce/FileInputStream.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 int64 juce_fileSetPosition (void* handle, int64 pos);
 
@@ -87,4 +87,4 @@ bool FileInputStream::setPosition (int64 pos)
     return currentPosition == pos;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

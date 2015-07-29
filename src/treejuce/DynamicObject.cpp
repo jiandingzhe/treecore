@@ -31,7 +31,7 @@
 #include "treejuce/NewLine.h"
 #include "treejuce/OutputStream.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 DynamicObject::DynamicObject()
 {
@@ -139,4 +139,4 @@ void DynamicObject::writeAsJSON (OutputStream& out, const int indentLevel, const
     out << '}';
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

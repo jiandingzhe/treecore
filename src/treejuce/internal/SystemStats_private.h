@@ -5,7 +5,8 @@
 #include "treejuce/PlatformDefs.h"
 #include "treejuce/SystemStats.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce
+{
 
 extern SystemStats::CrashHandlerFunction globalCrashHandler;
 
@@ -40,6 +41,6 @@ static void handleCrash (int)
 int juce_siginterrupt (int sig, int flag);
 #endif
 
-TREEFACE_JUCE_NAMESPACE_END
+} // namespace treejuce
 
 #endif // TREEJUCE_SYSTEM_STATS_PRIVATE_H

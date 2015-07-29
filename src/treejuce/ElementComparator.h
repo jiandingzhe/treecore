@@ -32,7 +32,7 @@
 #include "treejuce/StandardHeader.h"
 #include "treejuce/MathsFunctions.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 #ifndef DOXYGEN
 
@@ -196,6 +196,6 @@ public:
     }
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_ELEMENTCOMPARATOR_H_INCLUDED

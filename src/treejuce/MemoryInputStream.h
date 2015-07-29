@@ -33,7 +33,7 @@
 #include "treejuce/HeapBlock.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class MemoryBlock;
 
@@ -100,6 +100,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MemoryInputStream)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_MEMORYINPUTSTREAM_H_INCLUDED

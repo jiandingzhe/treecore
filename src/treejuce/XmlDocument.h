@@ -35,7 +35,7 @@
 #include "treejuce/StandardHeader.h"
 #include "treejuce/StringArray.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class File;
 class XmlElement;
@@ -187,6 +187,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (XmlDocument);
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_XMLDOCUMENT_H_INCLUDED

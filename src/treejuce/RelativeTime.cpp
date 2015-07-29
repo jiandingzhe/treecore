@@ -30,7 +30,7 @@
 #include "treejuce/RelativeTime.h"
 #include "treejuce/StringRef.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 RelativeTime::RelativeTime (const double secs) NOEXCEPT           : numSeconds (secs) {}
 RelativeTime::RelativeTime (const RelativeTime& other) NOEXCEPT   : numSeconds (other.numSeconds) {}
@@ -144,4 +144,4 @@ String RelativeTime::getDescription (const String& returnValueForZeroTime) const
     return result.trimEnd();
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

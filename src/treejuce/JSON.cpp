@@ -36,7 +36,7 @@
 #include "treejuce/StringRef.h"
 #include "treejuce/Variant.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 var JSON::parse (const String& text)
@@ -642,4 +642,4 @@ static JSONTests JSONUnitTests;
 
 #endif
 
-TREEFACE_JUCE_NAMESPACE_END
+}

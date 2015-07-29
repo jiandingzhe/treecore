@@ -6,7 +6,7 @@
 #include "treejuce/File.h"
 #include "treejuce/StringRef.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class ChildProcess::ActiveProcess
 {
@@ -133,6 +133,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ActiveProcess)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif // TREEJUCE_NATIVE_POSIX_CHILD_PROCESS_H

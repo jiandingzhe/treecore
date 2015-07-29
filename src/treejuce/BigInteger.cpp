@@ -32,7 +32,7 @@
 #include "treejuce/String.h"
 #include "treejuce/StringRef.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 namespace
 {
@@ -1019,4 +1019,4 @@ void BigInteger::loadFromMemoryBlock (const MemoryBlock& data)
         this->setBitRangeAsInt (i << 3, 8, (uint32) data [i]);
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

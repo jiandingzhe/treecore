@@ -29,7 +29,7 @@
 #include "treejuce/MemoryInputStream.h"
 #include "treejuce/MemoryBlock.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 MemoryInputStream::MemoryInputStream (const void* const sourceData,
                                       const size_t sourceDataSize,
@@ -163,4 +163,4 @@ static MemoryStreamTests memoryInputStreamUnitTests;
 
 #endif
 
-TREEFACE_JUCE_NAMESPACE_END
+}

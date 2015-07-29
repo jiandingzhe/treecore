@@ -32,7 +32,7 @@
 #include "treejuce/String.h"
 #include "treejuce/RelativeTime.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -404,6 +404,6 @@ JUCE_API bool operator>  (Time time1, Time time2) NOEXCEPT;
 /** Compares two Time objects. */
 JUCE_API bool operator>= (Time time1, Time time2) NOEXCEPT;
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_TIME_H_INCLUDED

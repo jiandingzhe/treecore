@@ -32,7 +32,7 @@
 #include "treejuce/StandardHeader.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class String;
 
@@ -98,6 +98,6 @@ private:
     static Logger* currentLogger;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_LOGGER_H_INCLUDED

@@ -35,7 +35,7 @@
 #include "treejuce/LinkedListPointer.h"
 #include "treejuce/String.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class File;
 
@@ -766,6 +766,6 @@ private:
     JUCE_LEAK_DETECTOR (XmlElement)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_XMLELEMENT_H_INCLUDED

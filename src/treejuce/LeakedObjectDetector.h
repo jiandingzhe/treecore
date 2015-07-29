@@ -35,7 +35,7 @@
 #include "treejuce/String.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     Embedding an instance of this class inside another class can be used as a low-overhead
@@ -156,6 +156,6 @@ private:
  #endif
 #endif
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_LEAKEDOBJECTDETECTOR_H_INCLUDED

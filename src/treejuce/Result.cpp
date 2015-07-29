@@ -28,7 +28,7 @@
 
 #include "treejuce/Result.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 Result::Result() NOEXCEPT {}
 
@@ -84,4 +84,4 @@ Result::operator bool() const NOEXCEPT      { return errorMessage.isEmpty(); }
 bool Result::failed() const NOEXCEPT        { return errorMessage.isNotEmpty(); }
 bool Result::operator!() const NOEXCEPT     { return errorMessage.isNotEmpty(); }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

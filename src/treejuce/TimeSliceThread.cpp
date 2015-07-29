@@ -28,7 +28,7 @@
 
 #include "treejuce/TimeSliceThread.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 TimeSliceThread::TimeSliceThread (const String& name)
     : Thread (name),
@@ -174,4 +174,4 @@ void TimeSliceThread::run()
     }
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

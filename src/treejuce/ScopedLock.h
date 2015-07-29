@@ -31,7 +31,7 @@
 
 #include "treejuce/StandardHeader.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -236,6 +236,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE (GenericScopedTryLock)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_SCOPEDLOCK_H_INCLUDED

@@ -75,7 +75,7 @@ using namespace std;
 #define UM 0xFFFFFFFF80000000ull /* Most significant 33 bits */
 #define LM 0x7FFFFFFFull /* Least significant 31 bits */
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 MT19937 MT19937::easy;
 
@@ -283,4 +283,4 @@ double MT19937::next_double_nn()
     return ((next_uint64() >> 12) + 0.5) * (1.0/4503599627370496.0);
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

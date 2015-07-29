@@ -4,7 +4,8 @@
 #include "treejuce/Atomic/template.h"
 #include "treejuce/Common.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce
+{
 
 // get and set
 template<typename T>
@@ -107,6 +108,6 @@ inline bool atomic_cas(T* store, T expect, T value) noexcept
     return __atomic_compare_exchange_n(store, &expect, value, false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+} // namespace treejuce
 
 #endif // TREEJUCE_ATOMIC_GCC_H

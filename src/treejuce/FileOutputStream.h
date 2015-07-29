@@ -33,7 +33,7 @@
 #include "treejuce/File.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     An output stream that writes into a local file.
@@ -117,6 +117,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FileOutputStream)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_FILEOUTPUTSTREAM_H_INCLUDED

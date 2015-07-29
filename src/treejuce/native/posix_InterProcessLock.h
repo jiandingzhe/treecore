@@ -4,7 +4,7 @@
 #include "treejuce/InterProcessLock.h"
 #include "treejuce/BasicNativeHeaders.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class InterProcessLock::Pimpl
 {
@@ -94,6 +94,6 @@ public:
     int handle, refCount;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif // TREEJUCE_NATIVE_POSIX_INTER_PROCESS_LOCK_H

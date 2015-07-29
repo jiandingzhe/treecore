@@ -33,7 +33,7 @@
 #include "treejuce/SpinLock.h"
 #include "treejuce/ScopedPointer.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 LocalisedStrings::LocalisedStrings (const String& fileContents, bool ignoreCase)
 {
@@ -220,4 +220,4 @@ JUCE_API String translate (const String& text, const String& resultIfNotFound)
     return resultIfNotFound;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

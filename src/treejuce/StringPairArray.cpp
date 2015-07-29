@@ -29,7 +29,7 @@
 #include "treejuce/StringPairArray.h"
 #include "treejuce/StringRef.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 StringPairArray::StringPairArray (const bool ignoreCase_)
     : ignoreCase (ignoreCase_)
@@ -151,4 +151,4 @@ void StringPairArray::minimiseStorageOverheads()
     values.minimiseStorageOverheads();
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

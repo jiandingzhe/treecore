@@ -32,7 +32,7 @@
 #include "treejuce/BasicNativeHeaders.h"
 #include "treejuce/StandardHeader.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class String;
 class StringArray;
@@ -156,6 +156,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE (Process)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_PROCESS_H_INCLUDED

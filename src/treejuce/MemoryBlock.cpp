@@ -29,7 +29,7 @@
 #include "treejuce/MemoryBlock.h"
 #include "treejuce/StringRef.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 MemoryBlock::MemoryBlock() NOEXCEPT
     : size (0)
@@ -417,4 +417,4 @@ bool MemoryBlock::fromBase64Encoding (StringRef s)
     }
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

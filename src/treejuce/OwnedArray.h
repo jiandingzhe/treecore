@@ -35,7 +35,7 @@
 #include "treejuce/ScopedPointer.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /** An array designed for holding objects.
 
@@ -897,6 +897,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OwnedArray)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_OWNEDARRAY_H_INCLUDED

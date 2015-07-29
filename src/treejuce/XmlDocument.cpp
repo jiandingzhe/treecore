@@ -32,7 +32,7 @@
 #include "treejuce/XmlDocument.h"
 #include "treejuce/XmlElement.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 XmlDocument::XmlDocument (const String& documentText)
     : originalText (documentText),
@@ -130,7 +130,6 @@ XmlElement* XmlDocument::getDocumentElement (const bool onlyReadOuterDocumentEle
             MemoryOutputStream data;
             data.writeFromInputStream (*in, onlyReadOuterDocumentElement ? 8192 : -1);
 
-           #if JUCE_STRING_UTF_TYPE == 8
             if (data.getDataSize() > 2)
             {
                 data.writeByte (0);
@@ -150,9 +149,6 @@ XmlElement* XmlDocument::getDocumentElement (const bool onlyReadOuterDocumentEle
                     return parseDocumentElement (String::CharPointerType (text), onlyReadOuterDocumentElement);
                 }
             }
-           #else
-            originalText = data.toString();
-           #endif
         }
     }
 
@@ -898,4 +894,4 @@ String XmlDocument::getParameterEntity (const String& entity)
     return entity;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

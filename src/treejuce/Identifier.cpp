@@ -29,7 +29,7 @@
 #include "treejuce/Identifier.h"
 #include "treejuce/StringPool.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 Identifier::Identifier() NOEXCEPT {}
 Identifier::~Identifier() NOEXCEPT {}
@@ -74,4 +74,4 @@ bool Identifier::isValidIdentifier (const String& possibleIdentifier) NOEXCEPT
             && possibleIdentifier.containsOnly ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-:#@$%");
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

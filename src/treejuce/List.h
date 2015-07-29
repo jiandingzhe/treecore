@@ -3,7 +3,7 @@
 
 #include "treejuce/Object.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 template<typename T>
 class List: public Object
@@ -98,6 +98,6 @@ private:
     Node ms_root;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif // TREEJUCE_LIST_H

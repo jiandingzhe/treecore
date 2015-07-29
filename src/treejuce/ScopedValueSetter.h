@@ -31,7 +31,7 @@
 
 #include "treejuce/Common.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -99,6 +99,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE (ScopedValueSetter)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_SCOPEDVALUESETTER_H_INCLUDED

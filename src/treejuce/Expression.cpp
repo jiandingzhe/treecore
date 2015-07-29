@@ -34,7 +34,7 @@
 #include "treejuce/ScopedPointer.h"
 #include "treejuce/StringRef.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class Expression::Term  : public Object
 {
@@ -1193,4 +1193,4 @@ String Expression::Scope::getScopeUID() const
     return String();
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

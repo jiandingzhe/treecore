@@ -35,7 +35,7 @@
 
 #include "treejuce/internal/SystemStats_private.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class NamedPipe::Pimpl
 {
@@ -234,4 +234,4 @@ int NamedPipe::write (const void* sourceBuffer, int numBytesToWrite, int timeOut
     return pimpl != nullptr ? pimpl->write (static_cast <const char*> (sourceBuffer), numBytesToWrite, timeOutMilliseconds) : -1;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

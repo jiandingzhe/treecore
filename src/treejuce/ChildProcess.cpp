@@ -41,7 +41,7 @@
 #  error "TODO"
 #endif
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 ChildProcess::ChildProcess() {}
 ChildProcess::~ChildProcess() {}
@@ -130,4 +130,4 @@ static ChildProcessTests childProcessUnitTests;
 
 #endif
 
-TREEFACE_JUCE_NAMESPACE_END
+}

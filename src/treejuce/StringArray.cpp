@@ -29,7 +29,7 @@
 #include "treejuce/StringArray.h"
 #include "treejuce/StringRef.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 StringArray::StringArray() NOEXCEPT
 {
@@ -483,4 +483,4 @@ void StringArray::minimiseStorageOverheads()
     strings.minimiseStorageOverheads();
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

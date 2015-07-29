@@ -33,7 +33,7 @@
 #include "treejuce/LeakedObjectDetector.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /** A timer for measuring performance of code and dumping the results to a file.
 
@@ -127,6 +127,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PerformanceCounter);
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_PERFORMANCECOUNTER_H_INCLUDED

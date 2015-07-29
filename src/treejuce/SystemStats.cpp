@@ -38,7 +38,7 @@
 #  include <DbgHelp.h>
 #endif
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 String SystemStats::getJUCEVersion()
 {
@@ -167,4 +167,4 @@ void SystemStats::setApplicationCrashHandler (CrashHandlerFunction handler)
    #endif
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

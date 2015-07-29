@@ -34,7 +34,7 @@
 #include "treejuce/Logger.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     A simple implementation of a Logger that writes to a file.
@@ -136,6 +136,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FileLogger)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_FILELOGGER_H_INCLUDED

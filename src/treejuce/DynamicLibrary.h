@@ -31,7 +31,7 @@
 
 #include "treejuce/LeakedObjectDetector.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class String;
 
@@ -87,6 +87,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DynamicLibrary)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_DYNAMICLIBRARY_H_INCLUDED

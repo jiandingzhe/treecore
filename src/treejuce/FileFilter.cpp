@@ -28,7 +28,7 @@
 
 #include "treejuce/FileFilter.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 FileFilter::FileFilter (const String& filterDescription)
     : description (filterDescription)
@@ -44,4 +44,4 @@ const String& FileFilter::getDescription() const NOEXCEPT
     return description;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

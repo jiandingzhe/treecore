@@ -34,7 +34,7 @@
 #include "treejuce/StandardHeader.h"
 #include "treejuce/ScopedLock.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -268,6 +268,6 @@ typedef CriticalSection::ScopedUnlockType  ScopedUnlock;
 */
 typedef CriticalSection::ScopedTryLockType  ScopedTryLock;
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_CRITICALSECTION_H_INCLUDED

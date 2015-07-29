@@ -35,7 +35,7 @@
 
 //==============================================================================
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class DynamicObject;
 class Identifier;
@@ -335,6 +335,6 @@ bool operator!= (const var& v1, const String& v2);
 bool operator== (const var& v1, const char* v2);
 bool operator!= (const var& v1, const char* v2);
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_VARIANT_H_INCLUDED

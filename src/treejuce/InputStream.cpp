@@ -31,7 +31,7 @@
 #include "treejuce/MemoryBlock.h"
 #include "treejuce/MemoryOutputStream.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 int64 InputStream::getNumBytesRemaining()
 {
@@ -242,4 +242,4 @@ void InputStream::skipNextBytes (int64 numBytesToSkip)
     }
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

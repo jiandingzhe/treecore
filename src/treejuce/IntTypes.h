@@ -5,7 +5,7 @@
 
 #include <cstdint>
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 using std::size_t;
 
@@ -28,6 +28,6 @@ typedef std::uintptr_t pointer_sized_uint;
 typedef pointer_sized_int ssize_t;
 #endif
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif // TREEJUCE_INT_TYPES_H

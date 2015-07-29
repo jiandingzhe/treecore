@@ -5,7 +5,7 @@
 #include "treejuce/ArrayRef.h"
 #include "treejuce/HashFunctions.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
  * Values of each key are stored in an Array. So we don't allow you to remove
@@ -367,6 +367,6 @@ protected:
     MutexType        m_mutex;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif // TREEJUCE_HASH_MULTI_MAP_H

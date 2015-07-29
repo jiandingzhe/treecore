@@ -33,7 +33,7 @@
 #include "treejuce/HeapBlock.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     Implements some basic array storage allocation functions.
@@ -136,6 +136,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE (ArrayAllocationBase)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_ARRAYALLOCATIONBASE_H_INCLUDED

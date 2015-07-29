@@ -37,7 +37,7 @@
 #include "treejuce/NamedValueSet.h"
 #include "treejuce/Variant.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class OutputStream;
 
@@ -145,6 +145,6 @@ private:
     JUCE_LEAK_DETECTOR (DynamicObject)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_DYNAMICOBJECT_H_INCLUDED

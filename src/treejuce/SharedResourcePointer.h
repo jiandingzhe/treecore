@@ -31,7 +31,7 @@
 
 #include "treejuce/Common.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -151,6 +151,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SharedResourcePointer)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_SHAREDRESOURCEPOINTER_H_INCLUDED

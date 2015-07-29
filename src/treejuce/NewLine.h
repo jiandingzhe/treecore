@@ -33,7 +33,7 @@
 #include "treejuce/StringRef.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /** This class is used for represent a new-line character sequence.
 
@@ -83,10 +83,6 @@ extern NewLine newLine;
 */
 JUCE_API String& JUCE_CALLTYPE operator<< (String& string1, const NewLine&);
 
-#if JUCE_STRING_UTF_TYPE != 8 && ! defined (DOXYGEN)
- inline String operator+ (String s1, const NewLine&)      { return s1 += NewLine::getDefault(); }
-#endif
-
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_NEWLINE_H_INCLUDED

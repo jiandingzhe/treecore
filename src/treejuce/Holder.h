@@ -6,7 +6,7 @@
 
 class TestFramework;
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 template<typename T>
 class Holder
@@ -175,6 +175,6 @@ bool operator < (const Holder<T1>& a, const Holder<T2>& b)
     return a.ms_ptr < b.ms_ptr;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif // TREEFACE_OJBECT_HOLDER_H

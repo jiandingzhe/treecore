@@ -29,7 +29,7 @@
 #include "treejuce/InputStream.h"
 #include "treejuce/MemoryOutputStream.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 MemoryOutputStream::MemoryOutputStream (const size_t initialSize)
   : blockToUse (&internalBlock), externalData (nullptr),
@@ -218,4 +218,4 @@ OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const MemoryOutput
     return stream;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

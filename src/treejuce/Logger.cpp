@@ -31,7 +31,7 @@
 #include "treejuce/Logger.h"
 #include "treejuce/String.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 Logger::Logger() {}
 
@@ -67,4 +67,4 @@ void JUCE_API JUCE_CALLTYPE logAssertion (const char* const filename, const int 
    #endif
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

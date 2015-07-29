@@ -29,7 +29,7 @@
 #include "treejuce/String.h"
 #include "treejuce/TextDiff.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 struct TextDiffHelpers
 {
@@ -251,4 +251,4 @@ static DiffTests diffTests;
 
 #endif
 
-TREEFACE_JUCE_NAMESPACE_END
+}

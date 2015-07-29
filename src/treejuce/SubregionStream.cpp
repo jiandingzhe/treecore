@@ -28,7 +28,7 @@
 
 #include "treejuce/SubregionStream.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 SubregionStream::SubregionStream (InputStream* const sourceStream,
                                   const int64 start, const int64 length,
@@ -85,4 +85,4 @@ bool SubregionStream::isExhausted()
     return source->isExhausted();
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

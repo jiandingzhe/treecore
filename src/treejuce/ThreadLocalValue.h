@@ -34,7 +34,7 @@
 #include "treejuce/SpinLock.h"
 #include "treejuce/Thread.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 // (NB: on win32, native thread-locals aren't possible in a dynamically loaded DLL in XP).
 #if ! ((defined TREEJUCE_COMIPLER_MSVC && (TREEJUCE_SIZE_PTR == 8 || ! defined (JucePlugin_PluginCode))) \
@@ -203,6 +203,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE (ThreadLocalValue)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_THREADLOCALVALUE_H_INCLUDED

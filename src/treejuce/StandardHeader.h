@@ -157,9 +157,9 @@
 #   define JUCE_CATCH_DEPRECATED_CODE_MISUSE 1
 #endif
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 extern JUCE_API bool JUCE_CALLTYPE juce_isRunningUnderDebugger();
 extern JUCE_API void JUCE_CALLTYPE logAssertion (const char* file, int line) NOEXCEPT;
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_STANDARDHEADER_H_INCLUDED

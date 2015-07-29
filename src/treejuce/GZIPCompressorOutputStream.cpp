@@ -33,7 +33,7 @@ extern "C"
 }
 
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class GZIPCompressorOutputStream::GZIPCompressorHelper
 {
@@ -218,4 +218,4 @@ static GZIPTests gzipTests;
 
 #endif
 
-TREEFACE_JUCE_NAMESPACE_END
+}

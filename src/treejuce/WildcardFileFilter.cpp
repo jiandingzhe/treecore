@@ -29,7 +29,7 @@
 #include "treejuce/WildcardFileFilter.h"
 #include "treejuce/StringRef.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 WildcardFileFilter::WildcardFileFilter (const String& fileWildcardPatterns,
                                         const String& directoryWildcardPatterns,
@@ -81,4 +81,4 @@ bool WildcardFileFilter::match (const File& file, const StringArray& wildcards)
     return false;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

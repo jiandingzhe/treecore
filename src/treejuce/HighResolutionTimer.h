@@ -32,7 +32,7 @@
 #include "treejuce/ScopedPointer.h"
 #include "treejuce/LeakedObjectDetector.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     A high-resolution periodic timer.
@@ -110,6 +110,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HighResolutionTimer)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_HIGHRESOLUTIONTIMER_H_INCLUDED

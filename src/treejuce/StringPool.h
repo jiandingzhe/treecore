@@ -34,7 +34,7 @@
 #include "treejuce/StringRef.h"
 #include "treejuce/Array.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -96,6 +96,6 @@ private:
     void garbageCollectIfNeeded();
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_STRINGPOOL_H_INCLUDED

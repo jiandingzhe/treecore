@@ -33,7 +33,7 @@
 #include "treejuce/ScopedLock.h"
 #include "treejuce/StandardHeader.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -92,6 +92,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE (SpinLock)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_SPINLOCK_H_INCLUDED

@@ -34,7 +34,7 @@
 #include "treejuce/Thread.h"
 #include "treejuce/WaitableEvent.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -154,6 +154,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE (ReadWriteLock)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_READWRITELOCK_H_INCLUDED

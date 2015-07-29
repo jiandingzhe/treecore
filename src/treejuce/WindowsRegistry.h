@@ -33,7 +33,7 @@
 
 #include "treejuce/BasicNativeHeaders.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class String;
 
@@ -143,7 +143,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE (WindowsRegistry)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif
 #endif   // JUCE_WINDOWSREGISTRY_H_INCLUDED

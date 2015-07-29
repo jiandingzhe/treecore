@@ -1,7 +1,7 @@
 #error "not implemented"
 #include "treejuce/Object.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 template<typename Type, typename DummyType>
 class IntrusiveListAgent
@@ -108,4 +108,4 @@ protected:
     AgentType root;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}

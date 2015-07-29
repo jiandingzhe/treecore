@@ -4,7 +4,7 @@
 #include "treejuce/Common.h"
 #include "treejuce/PlatformDefs.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 // get and set
 template<typename T>
@@ -49,6 +49,6 @@ template<typename T>
 bool atomic_cas(T* store, T expect, T value) NOEXCEPT;
 
 
-TREEFACE_JUCE_NAMESPACE_END
+} // namespace treejuce
 
 #endif // TREEJUCE_ATOMIC_TEMPLATE_H

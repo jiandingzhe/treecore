@@ -34,7 +34,7 @@
 #include "treejuce/Result.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     An input stream that reads from a local file.
@@ -97,6 +97,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FileInputStream)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_FILEINPUTSTREAM_H_INCLUDED

@@ -33,7 +33,7 @@
 #include "treejuce/Thread.h"
 #include "treejuce/ThreadLocalValue.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 Thread::Thread (const String& threadName_)
     : threadName (threadName_),
@@ -379,4 +379,4 @@ static AtomicTests atomicUnitTests;
 
 #endif
 
-TREEFACE_JUCE_NAMESPACE_END
+}

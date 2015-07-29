@@ -29,7 +29,7 @@
 #include "treejuce/NamedPipe.h"
 #include "treejuce/ScopedWriteLock.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 NamedPipe::NamedPipe()
 {
@@ -68,6 +68,6 @@ String NamedPipe::getName() const
     return currentPipeName;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 // other methods for this class are implemented in the platform-specific files

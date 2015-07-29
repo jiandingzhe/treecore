@@ -6,7 +6,7 @@
 #include "treejuce/MathsFunctions.h"
 #include "treejuce/Thread.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 struct HighResolutionTimer::Pimpl
 {
@@ -177,6 +177,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE (Pimpl)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif // TREEJUCE_NATIVE_POSIX_HIGH_RESOLUTION_TIMER_H

@@ -33,7 +33,7 @@
 #include "treejuce/MathsFunctions.h"
 #include "treejuce/String.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class MemoryBlock;
 
@@ -270,6 +270,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InputStream)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_INPUTSTREAM_H_INCLUDED

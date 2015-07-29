@@ -33,7 +33,7 @@
 #include "treejuce/String.h"
 #include "treejuce/MathsFunctions.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /** A relative measure of time.
@@ -184,6 +184,6 @@ RelativeTime  operator+  (RelativeTime t1, RelativeTime t2) NOEXCEPT;
 /** Subtracts two RelativeTimes. */
 RelativeTime  operator-  (RelativeTime t1, RelativeTime t2) NOEXCEPT;
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_RELATIVETIME_H_INCLUDED

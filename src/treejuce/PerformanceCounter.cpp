@@ -33,7 +33,7 @@
 #include "treejuce/PerformanceCounter.h"
 #include "treejuce/Time.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 static void appendToFile (const File& f, const String& s)
 {
@@ -140,4 +140,4 @@ PerformanceCounter::Statistics PerformanceCounter::getStatisticsAndReset()
     return s;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

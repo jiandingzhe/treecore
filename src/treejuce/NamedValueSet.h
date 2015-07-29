@@ -31,7 +31,7 @@
 
 #include "treejuce/Array.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class Identifier;
 class XmlElement;
@@ -144,6 +144,6 @@ private:
     Array<NamedValue> values;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_NAMEDVALUESET_H_INCLUDED

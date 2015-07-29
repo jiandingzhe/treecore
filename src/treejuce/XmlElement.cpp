@@ -35,7 +35,7 @@
 #include "treejuce/TemporaryFile.h"
 #include "treejuce/XmlElement.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 XmlElement::XmlAttributeNode::XmlAttributeNode (const XmlAttributeNode& other) NOEXCEPT
     : name (other.name),
@@ -896,4 +896,4 @@ void XmlElement::deleteAllTextElements() NOEXCEPT
     }
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

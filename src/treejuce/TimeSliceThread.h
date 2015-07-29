@@ -35,7 +35,7 @@
 #include "treejuce/Time.h"
 #include "treejuce/Thread.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class TimeSliceThread;
 
@@ -152,6 +152,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSliceThread)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_TIMESLICETHREAD_H_INCLUDED

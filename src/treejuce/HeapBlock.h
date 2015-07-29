@@ -33,7 +33,7 @@
 #include "treejuce/StandardHeader.h"
 #include "treejuce/LeakedObjectDetector.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 #ifndef DOXYGEN
 namespace HeapBlockHelper
@@ -308,6 +308,6 @@ private:
    #endif
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_HEAPBLOCK_H_INCLUDED

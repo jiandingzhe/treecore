@@ -5,7 +5,7 @@
 #include "treejuce/StringRef.h"
 #include "treejuce/URL.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class WebInputStream  : public InputStream
 {
@@ -78,6 +78,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WebInputStream)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif // TREEJUCE_NATIVE_LINUX_PRIVATE_H

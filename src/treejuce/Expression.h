@@ -35,7 +35,7 @@
 #include "treejuce/StandardHeader.h"
 #include "treejuce/String.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 template <typename ObjectType>
 struct ContainerDeletePolicy;
@@ -275,6 +275,6 @@ private:
     explicit Expression (Term*);
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_EXPRESSION_H_INCLUDED

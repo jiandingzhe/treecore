@@ -32,7 +32,7 @@
 #include "treejuce/StandardHeader.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /** Fills a block of memory with zeros. */
 inline void zeromem (void* memory, size_t numBytes) NOEXCEPT        { memset (memory, 0, numBytes); }
@@ -132,6 +132,6 @@ inline Type* createCopyIfNotNull (const Type* pointer)     { return pointer != n
 #define checkPtrSIMD_nonZero(x,size) checkSizeSIMD(x,size); jassert(x>0);
 
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_MEMORY_H_INCLUDED

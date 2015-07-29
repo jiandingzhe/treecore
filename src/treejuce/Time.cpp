@@ -38,7 +38,7 @@
 #  include <sys/timeb.h>
 #endif
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 namespace TimeHelpers
 {
@@ -482,4 +482,4 @@ Time Time::getCompilationDate()
                  dateTokens[1].getIntValue(), 12, 0);
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

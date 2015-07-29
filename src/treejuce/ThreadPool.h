@@ -34,7 +34,7 @@
 #include "treejuce/OwnedArray.h"
 #include "treejuce/String.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class StringArray;
 class ThreadPool;
@@ -324,6 +324,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThreadPool)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_THREADPOOL_H_INCLUDED

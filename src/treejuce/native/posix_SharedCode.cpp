@@ -50,7 +50,7 @@
 #include "treejuce/native/posix_ChildProcess.h"
 #include "treejuce/native/posix_InterProcessLock.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 CriticalSection::CriticalSection() NOEXCEPT
 {
@@ -923,4 +923,4 @@ bool ChildProcess::start (const StringArray& args, int streamFlags)
 //==============================================================================
 
 
-TREEFACE_JUCE_NAMESPACE_END
+}

@@ -33,7 +33,7 @@
 #include "treejuce/TemporaryFile.h"
 #include "treejuce/Time.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 FileLogger::FileLogger (const File& file,
                         const String& welcomeMessage,
@@ -143,4 +143,4 @@ FileLogger* FileLogger::createDateStampedLogger (const String& logFileSubDirecto
                            welcomeMessage, 0);
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

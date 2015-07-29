@@ -32,7 +32,7 @@
 #include "treejuce/Common.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     Used by container classes as an indirect way to delete an object of a
@@ -53,6 +53,6 @@ struct ContainerDeletePolicy
     }
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_CONTAINERDELETEPOLICY_H_INCLUDED

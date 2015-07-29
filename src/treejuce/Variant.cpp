@@ -31,7 +31,7 @@
 #include "treejuce/InputStream.h"
 #include "treejuce/MemoryOutputStream.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 enum VariantStreamMarkers
 {
@@ -782,4 +782,4 @@ var::NativeFunctionArgs::NativeFunctionArgs (const var& t, const var* args, int 
     : thisObject (t), arguments (args), numArguments (numArgs)
 {}
 
-TREEFACE_JUCE_NAMESPACE_END
+}

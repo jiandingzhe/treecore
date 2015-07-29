@@ -33,7 +33,7 @@
 #include "treejuce/ScopedPointer.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     Holds a pointer to an object which can optionally be deleted when this pointer
@@ -186,6 +186,6 @@ private:
     bool shouldDelete;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_OPTIONALSCOPEDPOINTER_H_INCLUDED

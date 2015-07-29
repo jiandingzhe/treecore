@@ -32,7 +32,7 @@
 #include "treejuce/StringPairArray.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class XmlElement;
 class var;
@@ -213,6 +213,6 @@ private:
     JUCE_LEAK_DETECTOR (PropertySet)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_PROPERTYSET_H_INCLUDED

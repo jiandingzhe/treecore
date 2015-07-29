@@ -33,7 +33,7 @@
 #include "treejuce/StandardHeader.h"
 #include "treejuce/String.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class File;
 class InputStream;
@@ -182,6 +182,6 @@ public:
     enum { indentSize = 2 };
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_JSON_H_INCLUDED

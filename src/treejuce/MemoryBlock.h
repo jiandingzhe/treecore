@@ -33,7 +33,7 @@
 #include "treejuce/MathsFunctions.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class String;
 class StringRef;
@@ -254,6 +254,6 @@ private:
     JUCE_LEAK_DETECTOR (MemoryBlock)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_MEMORYBLOCK_H_INCLUDED

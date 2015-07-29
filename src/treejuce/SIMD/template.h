@@ -3,7 +3,9 @@
 
 #include "treejuce/Common.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce
+{
+
 template<int SZ>
 union SIMDType;
 
@@ -55,6 +57,6 @@ inline SIMDType<SZ> simd_shuffle(const SIMDType<SZ>&input);
 template<typename T, int SZ>
 T simd_sum(const SIMDType<SZ>&value);
 
-TREEFACE_JUCE_NAMESPACE_END
+} // namespace treejuce
 
 #endif // TREEJUCE_SIMD_FUNC_TEMP_H

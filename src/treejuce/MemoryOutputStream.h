@@ -33,7 +33,7 @@
 #include "treejuce/MemoryBlock.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     Writes data to an internal memory buffer, which grows as required.
@@ -139,6 +139,6 @@ private:
 /** Copies all the data that has been written to a MemoryOutputStream into another stream. */
 OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const MemoryOutputStream& streamToRead);
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_MEMORYOUTPUTSTREAM_H_INCLUDED

@@ -62,7 +62,7 @@
 
 class TestFramework;
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 #define NN 312
 
@@ -93,6 +93,6 @@ protected:
     int mti = NN + 1;
 }; // class MT19937
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif // TREEJUCE_MT19937_H

@@ -28,7 +28,7 @@
 
 #include "treejuce/BufferedInputStream.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 namespace
 {
@@ -201,4 +201,4 @@ String BufferedInputStream::readString()
     return InputStream::readString();
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

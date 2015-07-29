@@ -33,7 +33,7 @@
 #include "treejuce/StringRef.h"
 #include "treejuce/Uuid.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 Uuid::Uuid()
 {
@@ -124,4 +124,4 @@ Uuid& Uuid::operator= (const uint8* const rawData) NOEXCEPT
     return *this;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

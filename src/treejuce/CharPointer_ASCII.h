@@ -35,7 +35,7 @@
 #include <stddef.h>
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     Wraps a pointer to a null-terminated ASCII character string, and provides
@@ -394,6 +394,6 @@ private:
     CharType* data;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_CHARPOINTER_ASCII_H_INCLUDED

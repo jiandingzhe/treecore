@@ -37,7 +37,7 @@
 
 #include <langinfo.h>
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 void Logger::outputDebugString (const String& text)
 {
@@ -203,4 +203,4 @@ bool Time::setSystemTimeToThisTime() const
     return settimeofday (&t, 0) == 0;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

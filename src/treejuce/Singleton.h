@@ -32,7 +32,7 @@
 #include "treejuce/CriticalSection.h"
 #include "treejuce/ScopedLock.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 /**
@@ -291,6 +291,6 @@ TREEFACE_JUCE_NAMESPACE_BEGIN
 \
     classname* classname::_singletonInstance = nullptr;
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_SINGLETON_H_INCLUDED

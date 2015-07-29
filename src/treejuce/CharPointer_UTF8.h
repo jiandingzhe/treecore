@@ -33,7 +33,7 @@
 #include "treejuce/CharacterFunctions.h"
 
 //==============================================================================
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 /**
     Wraps a pointer to a null-terminated UTF-8 character string, and provides
@@ -577,6 +577,6 @@ private:
     CharType* data;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_CHARPOINTER_UTF8_H_INCLUDED

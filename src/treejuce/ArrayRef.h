@@ -3,7 +3,7 @@
 
 #include "treejuce/Array.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 template<typename T>
 class ArrayRef
@@ -98,6 +98,6 @@ protected:
     int m_size = 0;
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif // TREEJUCE_ARRAY_REF_H

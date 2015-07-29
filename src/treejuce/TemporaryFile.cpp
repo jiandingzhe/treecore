@@ -30,7 +30,7 @@
 #include "treejuce/TemporaryFile.h"
 #include "treejuce/Thread.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 static File createTempFile (const File& parentDirectory, String name,
                             const String& suffix, const int optionFlags)
@@ -122,4 +122,4 @@ bool TemporaryFile::deleteTemporaryFile() const
     return false;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

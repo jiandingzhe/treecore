@@ -31,7 +31,7 @@
 #include "treejuce/XmlElement.h"
 #include "treejuce/XmlDocument.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 PropertySet::PropertySet (const bool ignoreCaseOfKeyNames)
     : properties (ignoreCaseOfKeyNames),
@@ -225,4 +225,4 @@ void PropertySet::propertyChanged()
 {
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

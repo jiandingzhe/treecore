@@ -33,7 +33,7 @@
 #include "treejuce/LeakedObjectDetector.h"
 #include "treejuce/MathsFunctions.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 class String;
 
@@ -124,6 +124,6 @@ private:
     JUCE_LEAK_DETECTOR (Uuid)
 };
 
-TREEFACE_JUCE_NAMESPACE_END
+}
 
 #endif   // JUCE_UUID_H_INCLUDED

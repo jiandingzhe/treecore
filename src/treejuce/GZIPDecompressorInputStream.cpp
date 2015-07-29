@@ -33,7 +33,7 @@ extern "C"
 #include "zlib.h"
 }
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 
 //==============================================================================
@@ -236,4 +236,4 @@ bool GZIPDecompressorInputStream::setPosition (int64 newPos)
     return true;
 }
 
-TREEFACE_JUCE_NAMESPACE_END
+}

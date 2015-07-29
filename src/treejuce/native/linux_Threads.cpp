@@ -34,7 +34,7 @@
 #include "treejuce/Process.h"
 #include "treejuce/Thread.h"
 
-TREEFACE_JUCE_NAMESPACE_BEGIN
+namespace treejuce {
 
 //==============================================================================
 JUCE_API void JUCE_CALLTYPE Process::setPriority (const ProcessPriority prior)
@@ -94,4 +94,4 @@ static bool swapUserAndEffectiveUser()
 JUCE_API void JUCE_CALLTYPE Process::raisePrivilege()  { if (geteuid() != 0 && getuid() == 0) swapUserAndEffectiveUser(); }
 JUCE_API void JUCE_CALLTYPE Process::lowerPrivilege()  { if (geteuid() == 0 && getuid() != 0) swapUserAndEffectiveUser(); }
 
-TREEFACE_JUCE_NAMESPACE_END
+}
