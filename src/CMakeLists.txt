@@ -7,25 +7,19 @@ configure_file(treejuce/Config.h.in treejuce/Config.h @ONLY)
 # zlib
 #
 file(GLOB zlib_src_files
-    "zlib/*.h"
     "zlib/*.c"
 )
 
-# add to a separate target, otherwise it won't use C compiler
-add_library(treejuce_zlib STATIC ${zlib_src_files})
-
-if(TREEJUCE_COMPILER STREQUAL "MSVC")
-    # TODO
-else()
-    set_target_properties(treejuce_zlib
-        PROPERTIES
-        COMPILE_FLAGS -fPIC
-    )
-endif()
+set_source_files_properties(${zlib_src_files}
+    PROPERTIES
+        LANGUAGE C
+)
 
 #
 # treejuce
 #
+
+# collect source files
 file(GLOB treejuce_common_src_files
     "treejuce/*.h"
     "treejuce/*.cpp"
@@ -55,22 +49,29 @@ else()
     message(SEND_ERROR "unsupported target system: ${CMAKE_SYSTEM_NAME}")
 endif()
 
+# library target
 add_library(treejuce SHARED 
-    ${treejuce_common_src_files} 
+    ${zlib_src_files}
+    ${treejuce_common_src_files}
     ${treejuce_platform_src_files}
 )
 
 add_library(treejuce_s STATIC
-    ${zlib_src_files} 
+    ${zlib_src_files}
     ${treejuce_common_src_files} 
     ${treejuce_platform_src_files}
 )
 
+# compile options
 if(WIN32)
     set_target_properties(treejuce
         PROPERTIES
         COMPILE_DEFINITIONS JUCE_DLL_BUILD
     )
+endif()
+
+if(NOT MSVC)
+    add_definitions(-fPIC)
 endif()
 
 # link with dependent libs
@@ -81,10 +82,6 @@ elseif(TREEJUCE_OS STREQUAL "WINDOWS")
 else()
 	message(FATAL_ERROR "unimplemented TREEJUCE_OS: ${TREEJUCE_OS}")
 endif()
-
-target_link_libraries(treejuce
-    treejuce_zlib
-)
 
 #
 # utility binaries

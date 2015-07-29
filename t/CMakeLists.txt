@@ -56,6 +56,12 @@ if(WIN32)
     )
 endif()
 
+add_executable(t_aligned_malloc t_aligned_malloc.cpp)
+target_link_libraries(t_aligned_malloc
+    testframework
+    treejuce
+)
+
 add_executable(t_static_lib t_static_lib.cpp)
 target_link_libraries(t_static_lib
     testframework

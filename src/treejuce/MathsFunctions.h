@@ -501,6 +501,8 @@ namespace TypeHelpers
     template <>              struct SmallestFloatType <double>    { typedef double type; };
 }
 
+#define isPowOfTwo(number) ( ((number)>1) && (((number)&(number-1))==0) )
+#define checkPowerOfTwo(number) jassert( ((number)>1) && (((number)&(number-1))==0) )
 
 //==============================================================================
 TREEFACE_JUCE_NAMESPACE_END

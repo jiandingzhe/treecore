@@ -279,6 +279,24 @@ TREEFACE_JUCE_NAMESPACE_END
   #define JUCE_ALIGN(bytes)   __attribute__ ((aligned (bytes)))
 #endif
 
+//
+#if defined TREEJUCE_COMPILER_MSVC
+#   define restrict __restrict
+#endif
+
+#if defined TREEJUCE_COMPILER_GCC
+#   define likely(arg) __builtin_expect(!!(arg),1)
+#   define unlikely(arg) __builtin_expect(!!(arg),0)
+#else
+#   define likely(arg) (arg)
+#   define unlikely(arg) (arg)
+#endif
+
+#define likely_if(x) if(likely(x))
+#define unlikely_if(x) if(unlikely(x))
+#define likely_while(x) while(likely(x))
+#define unlikely_while(x) while(unlikely(x))
+
 //==============================================================================
 // Cross-compiler deprecation macros..
 #ifdef DOXYGEN

@@ -7,6 +7,8 @@
 
 TREEFACE_JUCE_NAMESPACE_BEGIN
 
+using std::size_t;
+
 typedef std::int8_t int8;
 typedef std::uint8_t uint8;
 

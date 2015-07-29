@@ -126,6 +126,12 @@ inline Type* createCopyIfNotNull (const Type* pointer)     { return pointer != n
  #define juce_UseDebuggingNewOperator
 #endif
 
+#define checkPtrSIMD(ptr,size) jassert( ((uintptr_t)(ptr))%size==0 );
+#define checkPtrSIMD_nonNullptr(ptr,size) checkPtrSIMD(ptr,size); jassert(ptr!=nullptr);
+#define checkSizeSIMD(x,size) jassert(x%size==0);
+#define checkPtrSIMD_nonZero(x,size) checkSizeSIMD(x,size); jassert(x>0);
+
+
 TREEFACE_JUCE_NAMESPACE_END
 
 #endif   // JUCE_MEMORY_H_INCLUDED
