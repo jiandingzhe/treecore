@@ -1,8 +1,8 @@
 #include "TestFramework.h"
-#include "treejuce/String.h"
-#include "treejuce/MT19937.h"
+#include "treecore/String.h"
+#include "treecore/MT19937.h"
 
-using namespace treejuce;
+using namespace treecore;
 
 const char* data[] = {
     "ZGXGQ",

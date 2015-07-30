@@ -1,4 +1,0 @@
-#ifndef TREEJUCE_COMMON_H
-#define TREEJUCE_COMMON_H
-
-#endif // TREEFACE_JUCE_COMMON_H

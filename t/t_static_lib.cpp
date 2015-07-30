@@ -1,16 +1,16 @@
 #include "TestFramework.h"
 
-#include "treejuce/File.h"
-#include "treejuce/Holder.h"
-#include "treejuce/JSON.h"
-#include "treejuce/Object.h"
-#include "treejuce/Result.h"
-#include "treejuce/String.h"
-#include "treejuce/StringRef.h"
-#include "treejuce/Variant.h"
-#include "treejuce/ZipFile.h"
+#include "treecore/File.h"
+#include "treecore/Holder.h"
+#include "treecore/JSON.h"
+#include "treecore/Object.h"
+#include "treecore/Result.h"
+#include "treecore/String.h"
+#include "treecore/StringRef.h"
+#include "treecore/Variant.h"
+#include "treecore/ZipFile.h"
 
-using namespace treejuce;
+using namespace treecore;
 
 const char* json_content = 
     "{"

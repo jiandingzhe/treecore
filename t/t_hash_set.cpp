@@ -1,7 +1,7 @@
 #include "TestFramework.h"
-#include "treejuce/HashSet.h"
+#include "treecore/HashSet.h"
 
-using namespace treejuce;
+using namespace treecore;
 
 void TestFramework::content()
 {

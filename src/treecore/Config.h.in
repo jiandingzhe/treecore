@@ -1,0 +1,50 @@
+#ifndef TREECORE_CONFIG_H
+#define TREECORE_CONFIG_H
+
+// The content in this header is automatically generated during CMake build
+// stage. Do not directly copy & use this header across different computers and
+// OS.
+
+#define TREECORE_CPU_@TREECORE_CPU@
+#define TREECORE_OS_@TREECORE_OS@
+
+#define TREECORE_SIZE_PTR @CMAKE_SIZEOF_VOID_P@
+
+#if defined _MSC_VER
+#   define TREECORE_COMPILER_MSVC
+#elif defined __GNUC__
+#   define TREECORE_COMPILER_GCC
+#elif defined __clang__
+#   define TREECORE_COMPILER_CLANG
+#elif defined DOXYGEN
+#   define TREECORE_COMPILER_DOXYGEN
+#else // TODO intel icc
+#   error "unknown compiler"
+#endif
+
+#ifdef TREECORE_COMPILER_MSVC
+#   if _MSC_VER < 1500
+#       define JUCE_VC8_OR_EARLIER 1
+#       if _MSC_VER < 1400
+#           define JUCE_VC7_OR_EARLIER 1
+#           if _MSC_VER < 1300
+#               error "VC 6 not supported"
+#           endif
+#       endif
+#   endif
+#   if TREECORE_SIZE_PTR == 8 || ! JUCE_VC7_OR_EARLIER
+#       define JUCE_USE_INTRINSICS 1
+#   endif
+#endif
+
+#if defined TREECORE_CPU_X86
+#   define TREECORE_ENDIAN_LITTLE
+#else
+#   error "unsupported CPU"
+#endif
+
+#ifndef NDEBUG
+#   define JUCE_DEBUG 1
+#endif
+
+#endif // TREECORE_CONFIG_H

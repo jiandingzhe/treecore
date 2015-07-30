@@ -1,8 +1,8 @@
 #include "TestFramework.h"
 
-#include "treejuce/Variant.h"
+#include "treecore/Variant.h"
 
-using namespace treejuce;
+using namespace treecore;
 
 void TestFramework::content()
 {

@@ -1,9 +1,9 @@
 #include "TestFramework.h"
 
-#include "treejuce/HashMap.h"
-#include "treejuce/String.h"
+#include "treecore/HashMap.h"
+#include "treecore/String.h"
 
-using namespace treejuce;
+using namespace treecore;
 
 void TestFramework::content()
 {

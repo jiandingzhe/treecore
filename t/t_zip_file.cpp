@@ -1,10 +1,10 @@
 #include "TestFramework.h"
 
-#include "treejuce/File.h"
-#include "treejuce/InputStream.h"
-#include "treejuce/ZipFile.h"
+#include "treecore/File.h"
+#include "treecore/InputStream.h"
+#include "treecore/ZipFile.h"
 
-using namespace treejuce;
+using namespace treecore;
 
 void TestFramework::content()
 {

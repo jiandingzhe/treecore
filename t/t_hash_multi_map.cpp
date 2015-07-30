@@ -1,8 +1,8 @@
 #include "TestFramework.h"
 
-#include "treejuce/HashMultiMap.h"
+#include "treecore/HashMultiMap.h"
 
-using namespace treejuce;
+using namespace treecore;
 
 void TestFramework::content()
 {

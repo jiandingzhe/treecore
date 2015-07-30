@@ -1,0 +1,4 @@
+#ifndef TREECORE_COMMON_H
+#define TREECORE_COMMON_H
+
+#endif // TREEFACE_JUCE_COMMON_H

@@ -1,11 +1,11 @@
 #include "TestFramework.h"
 
-#include "treejuce/AlignedMalloc.h"
-#include "treejuce/Holder.h"
-#include "treejuce/IntTypes.h"
-#include "treejuce/SIMD.h"
+#include "treecore/AlignedMalloc.h"
+#include "treecore/Holder.h"
+#include "treecore/IntTypes.h"
+#include "treecore/SIMD.h"
 
-using namespace treejuce;
+using namespace treecore;
 
 struct Foo: public AlignedMalloc<32>
 {
@@ -57,7 +57,7 @@ void TestFramework::content()
     OK(bar);
     IS(pointer_sized_int(bar) % 32, 0);
 
-    Vec4f* baz = (Vec4f*) treejuce::aligned_malloc(sizeof(Vec4f), sizeof(float)*4);
+    Vec4f* baz = (Vec4f*) treecore::aligned_malloc(sizeof(Vec4f), sizeof(float)*4);
     OK(baz);
     IS(pointer_sized_int(baz) % 16, 0);
 

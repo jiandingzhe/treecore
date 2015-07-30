@@ -1,9 +1,9 @@
 #include "TestFramework.h"
 
-#include "treejuce/HashSet.h"
-#include "treejuce/String.h"
+#include "treecore/HashSet.h"
+#include "treecore/String.h"
 
-using namespace treejuce;
+using namespace treecore;
 
 typedef HashSet<String> StrSet;
 
