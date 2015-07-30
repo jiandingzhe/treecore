@@ -53,9 +53,6 @@ void TestFramework::content()
     Foo* foo = new Foo();
     OK(foo);
     IS(pointer_sized_int(foo) % 32, 0);
-    Bar* bar = new Bar();
-    OK(bar);
-    IS(pointer_sized_int(bar) % 32, 0);
 
     Vec4f* baz = (Vec4f*) treecore::aligned_malloc(sizeof(Vec4f), sizeof(float)*4);
     OK(baz);

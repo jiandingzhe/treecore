@@ -1,0 +1,6 @@
+function(target_use_treecore target_name)
+    target_link_libraries(${target_name} treecore)
+    treecore_set_dep_libraries(${target_name})
+    treecore_set_compiler_options(${target_name})
+    treecore_set_compiler_definitions(${target_name})
+endfunction()

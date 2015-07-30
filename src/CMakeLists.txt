@@ -25,19 +25,19 @@ file(GLOB treecore_common_src_files
     "treecore/*.cpp"
 )
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(TREECORE_OS STREQUAL "LINUX")
     file(GLOB treecore_platform_src_files
         "treecore/native/linux_*.h"
         "treecore/native/linux_*.cpp"
         "treecore/native/posix_*.h"
         "treecore/native/posix_*.cpp"
     )
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+elseif(TREECORE_OS STREQUAL "WINDOWS")
     file(GLOB treecore_platform_src_files
         "treecore/native/win32_*.h"
         "treecore/native/win32_*.cpp"
     )
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+elseif(TREECORE_OS STREQUAL "OSX")
     file(GLOB treecore_platform_src_files
         "treecore/native/mac_*.mm"
         "treecore/native/osx_*.h"
@@ -50,80 +50,40 @@ else()
 endif()
 
 # library target
-add_library(treecore SHARED 
-    ${zlib_src_files}
-    ${treecore_common_src_files}
-    ${treecore_platform_src_files}
-)
-
-add_library(treecore_s STATIC
+add_library(treecore STATIC
     ${zlib_src_files}
     ${treecore_common_src_files} 
     ${treecore_platform_src_files}
 )
 
-# compile options
-if(WIN32)
-    set_target_properties(treecore
-        PROPERTIES
-        COMPILE_DEFINITIONS JUCE_DLL_BUILD
-    )
-endif()
-
-if(NOT MSVC)
-    add_definitions(-fPIC)
-endif()
-
-# link with dependent libs
-if(TREECORE_OS STREQUAL "LINUX")
-    target_link_libraries(treecore pthread dl)
-elseif(TREECORE_OS STREQUAL "WINDOWS")
-    target_link_libraries(treecore version winmm Shlwapi Dbghelp)
-else()
-	message(FATAL_ERROR "unimplemented TREECORE_OS: ${TREECORE_OS}")
-endif()
+treecore_set_compiler_definitions(treecore)
+treecore_set_compiler_options(treecore)
+target_include_directories(treecore PUBLIC
+    ${PROJECT_SOURCE_DIR}/src
+    ${PROJECT_SOURCE_DIR}/src/zlib
+    ${PROJECT_BINARY_DIR}/src
+)
 
 #
 # utility binaries
 #
 add_executable(treecore_bin_builder treecore_bin_builder.cpp)
-target_link_libraries(treecore_bin_builder treecore_s)
-if(TREECORE_OS STREQUAL "LINUX")
-    target_link_libraries(treecore_bin_builder pthread dl)
-elseif(TREECORE_OS STREQUAL "WINDOWS")
-    target_link_libraries(treecore_bin_builder version winmm Shlwapi Dbghelp)
-endif()
+target_use_treecore(treecore_bin_builder)
 
 #
 # install
 #
-if(UNIX)
-    include(GNUInstallDirs)
-    install(TARGETS treecore treecore_s treecore_bin_builder
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    )
-    install(FILES ${CMAKE_BINARY_DIR}/src/treecore/Config.h
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/treecore
-    )
-    install(DIRECTORY treecore/ treecore/native/ treecore/Atomic/ treecore/SIMD/
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/treecore
-        FILES_MATCHING PATTERN "*.h"
-        PATTERN internal EXCLUDE
-    )
-else()
-    install(TARGETS treecore treecore_s treecore_bin_builder
-        RUNTIME DESTINATION bin
-		ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-    )
-    install(FILES ${CMAKE_BINARY_DIR}/src/treecore/Config.h
-        DESTINATION include/treecore
-    )
-    install(DIRECTORY treecore/ treecore/native/ treecore/Atomic/ treecore/SIMD/
-        DESTINATION include/treecore
-        FILES_MATCHING PATTERN "*.h"
-        PATTERN internal EXCLUDE
-    )
-endif()
+include(GNUInstallDirs)
+install(TARGETS treecore treecore_bin_builder
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+install(FILES ${CMAKE_BINARY_DIR}/src/treecore/Config.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/treecore
+)
+install(DIRECTORY treecore/ treecore/native/ treecore/Atomic/ treecore/SIMD/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/treecore
+    FILES_MATCHING PATTERN "*.h"
+    PATTERN internal EXCLUDE
+)

@@ -37,13 +37,6 @@
 */
 
 //==============================================================================
-#ifdef JUCE_FORCE_DEBUG
- #undef JUCE_DEBUG
-
- #if JUCE_FORCE_DEBUG
-  #define JUCE_DEBUG 1
- #endif
-#endif
 
 /** This macro defines the C calling convention used as the standard for Juce calls. */
 #if defined TREECORE_COMPILER_MSVC
