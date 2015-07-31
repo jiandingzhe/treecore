@@ -30,6 +30,7 @@
 #define JUCE_MEMORYBLOCK_H_INCLUDED
 
 #include "treecore/HeapBlock.h"
+#include "treecore/LeakedObjectDetector.h"
 #include "treecore/MathsFunctions.h"
 
 //==============================================================================

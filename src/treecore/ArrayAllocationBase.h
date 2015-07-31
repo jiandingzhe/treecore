@@ -46,7 +46,7 @@ namespace treecore {
 
     @see Array, OwnedArray, ReferenceCountedArray
 */
-template <class ElementType, class TypeOfCriticalSectionToUse>
+template <class ElementType, class TypeOfCriticalSectionToUse, size_t align_size = 0>
 class ArrayAllocationBase  : public TypeOfCriticalSectionToUse
 {
 public:
@@ -129,7 +129,7 @@ public:
     }
 
     //==============================================================================
-    HeapBlock <ElementType> elements;
+    HeapBlock <ElementType, align_size> elements;
     int numAllocated;
 
 private:

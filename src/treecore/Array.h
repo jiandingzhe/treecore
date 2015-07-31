@@ -63,6 +63,7 @@ namespace treecore {
     @see OwnedArray, ReferenceCountedArray, StringArray, CriticalSection
 */
 template <typename ElementType,
+          int align_size = 0,
           typename TypeOfCriticalSectionToUse = DummyCriticalSection,
           int minimumAllocatedSize = 0>
 class Array: public Object
@@ -81,7 +82,7 @@ public:
     /** Creates a copy of another array.
         @param other    the array to copy
     */
-    Array (const Array<ElementType, TypeOfCriticalSectionToUse>& other)
+    Array (const Array<ElementType, align_size, TypeOfCriticalSectionToUse>& other)
     {
         const ScopedLockType lock (other.getLock());
         numUsed = other.numUsed;
@@ -91,7 +92,7 @@ public:
             new (data.elements + i) ElementType (other.data.elements[i]);
     }
 
-    Array (Array<ElementType, TypeOfCriticalSectionToUse>&& other) NOEXCEPT
+    Array (Array<ElementType, align_size, TypeOfCriticalSectionToUse>&& other) NOEXCEPT
         : data (static_cast<ArrayAllocationBase<ElementType, TypeOfCriticalSectionToUse>&&> (other.data)),
           numUsed (other.numUsed)
     {
@@ -138,7 +139,7 @@ public:
     {
         if (this != &other)
         {
-            Array<ElementType, TypeOfCriticalSectionToUse> otherCopy (other);
+            Array<ElementType, align_size, TypeOfCriticalSectionToUse> otherCopy (other);
             swapWith (otherCopy);
         }
 
@@ -149,7 +150,7 @@ public:
     {
         const ScopedLockType lock (getLock());
         deleteAllElements();
-        data = static_cast<ArrayAllocationBase<ElementType, TypeOfCriticalSectionToUse>&&> (other.data);
+        data = static_cast<ArrayAllocationBase<ElementType, TypeOfCriticalSectionToUse, align_size>&&> (other.data);
         numUsed = other.numUsed;
         other.numUsed = 0;
         return *this;
@@ -1090,7 +1091,7 @@ public:
 
 private:
     //==============================================================================
-    ArrayAllocationBase <ElementType, TypeOfCriticalSectionToUse> data;
+    ArrayAllocationBase <ElementType, TypeOfCriticalSectionToUse, align_size> data;
     int numUsed;
 
     void removeInternal (const int indexToRemove)
@@ -1119,6 +1120,6 @@ private:
     }
 };
 
-}
+} // namespace treecore
 
 #endif   // JUCE_ARRAY_H_INCLUDED

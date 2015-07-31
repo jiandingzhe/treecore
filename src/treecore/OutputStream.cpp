@@ -54,7 +54,7 @@ struct DanglingStreamChecker
         jassert (activeStreams.size() == 0);
     }
 
-    Array<void*, CriticalSection> activeStreams;
+    Array<void*, 0, CriticalSection> activeStreams;
 };
 
 static DanglingStreamChecker danglingStreamChecker;

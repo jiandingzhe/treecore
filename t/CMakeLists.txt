@@ -13,7 +13,9 @@ foreach(test_name
         t_zip_file
         t_hash_map
         t_var
-        t_aligned_malloc)
+        t_aligned_malloc
+        t_aligned_array
+        )
     add_executable(${test_name} ${test_name}.cpp)
     target_link_libraries(${test_name} testframework)
     target_use_treecore(${test_name})

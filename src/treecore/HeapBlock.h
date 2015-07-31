@@ -31,9 +31,58 @@
 
 #include "treecore/Memory.h"
 #include "treecore/StandardHeader.h"
-#include "treecore/LeakedObjectDetector.h"
+#include "treecore/AlignedMalloc.h"
 
 namespace treecore {
+
+#if JUCE_DEBUG
+
+struct NumberCheck {
+
+        void setNum(int64 num) { m_num=num; }
+
+        template<typename IntType>
+        void check(const IntType& ii) const
+        {
+                int64 i=(int64)ii;
+                jassert(i>=0&&i<m_num); //哥，您数组越界了
+        }
+
+        template<typename IntType>
+        void checkNum(const IntType& num2) const
+        {
+                int64 num=(int64)num2;
+                jassert(num>=0&&num<=m_num);
+        }
+
+        void swap( NumberCheck& other )
+        {
+                std::swap(m_num,other.m_num);
+        }
+
+private:
+        int64 m_num=0;
+};
+
+#else
+
+struct NumberCheck {
+
+        void setNum(size_t)const {}
+
+        template<typename IntType>
+        void check(const IntType&) const
+        {}
+
+        template<typename IntType>
+        void checkNum(const IntType&) const
+        {}
+
+        void swap(NumberCheck&){};
+
+};
+
+#endif
 
 #ifndef DOXYGEN
 namespace HeapBlockHelper
@@ -92,7 +141,7 @@ namespace HeapBlockHelper
 
     @see Array, OwnedArray, MemoryBlock
 */
-template <class ElementType, bool throwOnFailure = false>
+template <class ElementType, size_t AlignSize = 0>
 class HeapBlock
 {
 public:
@@ -102,8 +151,9 @@ public:
         After creation, you can resize the array using the malloc(), calloc(),
         or realloc() methods.
     */
-    HeapBlock() NOEXCEPT  : data (nullptr)
+    HeapBlock() noexcept  : data (nullptr)
     {
+        m_checker.setNum(0);
     }
 
     /** Creates a HeapBlock containing a number of elements.
@@ -115,9 +165,9 @@ public:
         other constructor that takes an InitialisationState parameter.
     */
     explicit HeapBlock (const size_t numElements)
-        : data (static_cast <ElementType*> (std::malloc (numElements * sizeof (ElementType))))
+        : data (static_cast <ElementType*> (aligned_malloc<AlignSize> (numElements * sizeof (ElementType))))
     {
-        throwOnAllocationFailure();
+        m_checker.setNum(numElements);
     }
 
     /** Creates a HeapBlock containing a number of elements.
@@ -127,10 +177,10 @@ public:
     */
     HeapBlock (const size_t numElements, const bool initialiseToZero)
         : data (static_cast <ElementType*> (initialiseToZero
-                                               ? std::calloc (numElements, sizeof (ElementType))
-                                               : std::malloc (numElements * sizeof (ElementType))))
+                                               ? aligned_calloc<AlignSize> (numElements * sizeof (ElementType))
+                                               : aligned_malloc<AlignSize> (numElements * sizeof (ElementType))))
     {
-        throwOnAllocationFailure();
+        m_checker.setNum(numElements);
     }
 
     /** Destructor.
@@ -138,17 +188,20 @@ public:
     */
     ~HeapBlock()
     {
-        std::free (data);
+        m_checker.setNum(0);
+        aligned_free<AlignSize> (data);
     }
 
-    HeapBlock (HeapBlock&& other) NOEXCEPT
+    HeapBlock (HeapBlock&& other) noexcept
         : data (other.data)
     {
+        m_checker.swap(other.m_checker);
         other.data = nullptr;
     }
 
-    HeapBlock& operator= (HeapBlock&& other) NOEXCEPT
+    HeapBlock& operator= (HeapBlock&& other) noexcept
     {
+        m_checker.swap(other.m_checker);
         std::swap (data, other.data);
         return *this;
     }
@@ -158,55 +211,59 @@ public:
         This may be a null pointer if the data hasn't yet been allocated, or if it has been
         freed by calling the free() method.
     */
-    inline operator ElementType*() const NOEXCEPT                           { return data; }
+    inline operator ElementType*() const noexcept                           { return data; }
 
     /** Returns a raw pointer to the allocated data.
         This may be a null pointer if the data hasn't yet been allocated, or if it has been
         freed by calling the free() method.
     */
-    inline ElementType* getData() const NOEXCEPT                            { return data; }
+    inline ElementType* getData() const noexcept                            { return data; }
 
     /** Returns a void pointer to the allocated data.
         This may be a null pointer if the data hasn't yet been allocated, or if it has been
         freed by calling the free() method.
     */
-    inline operator void*() const NOEXCEPT                                  { return static_cast <void*> (data); }
+    inline operator void*() const noexcept                                  { return static_cast <void*> (data); }
 
     /** Returns a void pointer to the allocated data.
         This may be a null pointer if the data hasn't yet been allocated, or if it has been
         freed by calling the free() method.
     */
-    inline operator const void*() const NOEXCEPT                            { return static_cast <const void*> (data); }
+    inline operator const void*() const noexcept                            { return static_cast <const void*> (data); }
 
     /** Lets you use indirect calls to the first element in the array.
         Obviously this will cause problems if the array hasn't been initialised, because it'll
         be referencing a null pointer.
     */
-    inline ElementType* operator->() const  NOEXCEPT                        { return data; }
+    inline ElementType* operator->() const  noexcept                        { return data; }
 
     /** Returns a reference to one of the data elements.
         Obviously there's no bounds-checking here, as this object is just a dumb pointer and
         has no idea of the size it currently has allocated.
     */
     template <typename IndexType>
-    inline ElementType& operator[] (IndexType index) const NOEXCEPT         { return data [index]; }
+    inline ElementType& operator[] (IndexType index) const noexcept
+    {
+        m_checker.check(index);
+        return data [index];
+    }
 
     /** Returns a pointer to a data element at an offset from the start of the array.
         This is the same as doing pointer arithmetic on the raw pointer itself.
     */
     template <typename IndexType>
-    inline ElementType* operator+ (IndexType index) const NOEXCEPT          { return data + index; }
+    inline ElementType* operator+ (IndexType index) const noexcept          { m_checker.checkNum(index); return data + index; }
 
     //==============================================================================
     /** Compares the pointer with another pointer.
         This can be handy for checking whether this is a null pointer.
     */
-    inline bool operator== (const ElementType* const otherPointer) const NOEXCEPT   { return otherPointer == data; }
+    inline bool operator== (const ElementType* const otherPointer) const noexcept   { return otherPointer == data; }
 
     /** Compares the pointer with another pointer.
         This can be handy for checking whether this is a null pointer.
     */
-    inline bool operator!= (const ElementType* const otherPointer) const NOEXCEPT   { return otherPointer != data; }
+    inline bool operator!= (const ElementType* const otherPointer) const noexcept   { return otherPointer != data; }
 
     //==============================================================================
     /** Allocates a specified amount of memory.
@@ -223,9 +280,9 @@ public:
     */
     void malloc (const size_t newNumElements, const size_t elementSize = sizeof (ElementType))
     {
-        std::free (data);
-        data = static_cast <ElementType*> (std::malloc (newNumElements * elementSize));
-        throwOnAllocationFailure();
+        aligned_free<AlignSize> (data);
+        data = static_cast <ElementType*> (aligned_malloc<AlignSize> (newNumElements * elementSize));
+        m_checker.setNum(newNumElements);
     }
 
     /** Allocates a specified amount of memory and clears it.
@@ -233,9 +290,17 @@ public:
     */
     void calloc (const size_t newNumElements, const size_t elementSize = sizeof (ElementType))
     {
-        std::free (data);
-        data = static_cast <ElementType*> (std::calloc (newNumElements, elementSize));
-        throwOnAllocationFailure();
+        aligned_free<AlignSize> (data);
+        data = static_cast <ElementType*> (aligned_calloc<AlignSize> (newNumElements * elementSize));
+        m_checker.setNum(newNumElements);
+    }
+
+    void allocAndSet( const size_t newNumElements ,const ElementType& initValue , const size_t elementSize = sizeof( ElementType ) )
+    {
+        malloc( newNumElements , elementSize );
+        for( size_t i = 0; i < newNumElements; ++i ) {
+            data[i] = initValue;
+        }
     }
 
     /** Allocates a specified amount of memory and optionally clears it.
@@ -244,11 +309,10 @@ public:
     */
     void allocate (const size_t newNumElements, bool initialiseToZero)
     {
-        std::free (data);
-        data = static_cast <ElementType*> (initialiseToZero
-                                             ? std::calloc (newNumElements, sizeof (ElementType))
-                                             : std::malloc (newNumElements * sizeof (ElementType)));
-        throwOnAllocationFailure();
+        aligned_free<AlignSize> (data);
+        data = static_cast <ElementType*> (initialiseToZero ? aligned_calloc<AlignSize> (newNumElements * sizeof (ElementType))
+                                                            : aligned_malloc<AlignSize> (newNumElements * sizeof (ElementType)));
+        m_checker.setNum(newNumElements);
     }
 
     /** Re-allocates a specified amount of memory.
@@ -258,9 +322,9 @@ public:
     */
     void realloc (const size_t newNumElements, const size_t elementSize = sizeof (ElementType))
     {
-        data = static_cast <ElementType*> (data == nullptr ? std::malloc (newNumElements * elementSize)
-                                                           : std::realloc (data, newNumElements * elementSize));
-        throwOnAllocationFailure();
+        data = static_cast <ElementType*> (data == nullptr ? aligned_malloc<AlignSize> (newNumElements * elementSize)
+                                                           : aligned_realloc<AlignSize> (data, newNumElements * elementSize));
+        m_checker.setNum(newNumElements);
     }
 
     /** Frees any currently-allocated data.
@@ -268,16 +332,17 @@ public:
     */
     void free()
     {
-        std::free (data);
+        aligned_free<AlignSize> (data);
+        m_checker.setNum(0);
         data = nullptr;
     }
 
     /** Swaps this object's data with the data of another HeapBlock.
         The two objects simply exchange their data pointers.
     */
-    template <bool otherBlockThrows>
-    void swapWith (HeapBlock <ElementType, otherBlockThrows>& other) NOEXCEPT
+    void swapWith (HeapBlock<ElementType>& other) noexcept
     {
+        m_checker.swap(other.m_checker);
         std::swap (data, other.data);
     }
 
@@ -285,8 +350,9 @@ public:
         Since the block has no way of knowing its own size, you must make sure that the number of
         elements you specify doesn't exceed the allocated size.
     */
-    void clear (size_t numElements) NOEXCEPT
+    void clear (size_t numElements) noexcept
     {
+        m_checker.checkNum(numElements);
         zeromem (data, sizeof (ElementType) * numElements);
     }
 
@@ -296,16 +362,7 @@ public:
 private:
     //==============================================================================
     ElementType* data;
-
-    void throwOnAllocationFailure() const
-    {
-        HeapBlockHelper::ThrowOnFail<throwOnFailure>::check (data);
-    }
-
-   #if ! (defined (JUCE_DLL) || defined (JUCE_DLL_BUILD))
-    JUCE_DECLARE_NON_COPYABLE (HeapBlock)
-    JUCE_PREVENT_HEAP_ALLOCATION // Creating a 'new HeapBlock' would be missing the point!
-   #endif
+    NumberCheck  m_checker;
 };
 
 }
