@@ -56,17 +56,17 @@ public:
     //==============================================================================
     LeakedObjectDetector() NOEXCEPT
     {
-        treecore::atomic_fetch_add(&getCounter().numObjects);
+        treecore::atomic_fetch_add(&getCounter().numObjects, 1);
     }
 
     LeakedObjectDetector (const LeakedObjectDetector&) NOEXCEPT
     {
-        treecore::atomic_fetch_add(&getCounter().numObjects);
+        treecore::atomic_fetch_add(&getCounter().numObjects, 1);
     }
 
     ~LeakedObjectDetector()
     {
-        if (treecore::atomic_sub_fetch(getCounter().numObjects) < 0)
+        if (treecore::atomic_sub_fetch(&getCounter().numObjects, 1) < 0)
         {
             DBG ("*** Dangling pointer deletion! Class: " << getLeakedObjectClassName());
 
@@ -148,9 +148,9 @@ private:
       @see JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR, LeakedObjectDetector
   */
   #define JUCE_LEAK_DETECTOR(OwnerClass) \
-        friend class juce::LeakedObjectDetector<OwnerClass>; \
+        friend class treecore::LeakedObjectDetector<OwnerClass>; \
         static const char* getLeakedObjectClassName() NOEXCEPT { return #OwnerClass; } \
-        juce::LeakedObjectDetector<OwnerClass> JUCE_JOIN_MACRO (leakDetector, __LINE__);
+        treecore::LeakedObjectDetector<OwnerClass> JUCE_JOIN_MACRO (leakDetector, __LINE__);
  #else
   #define JUCE_LEAK_DETECTOR(OwnerClass)
  #endif
