@@ -55,6 +55,11 @@ add_library(treecore STATIC
     ${treecore_common_src_files} 
     ${treecore_platform_src_files}
 )
+set_target_properties(treecore PROPERTIES
+    DEBUG_POSTFIX          _dbg
+    RELEASE_POSTFIX        _rel
+    RELWITHDEBINFO_POSTFIX _reldbg
+)
 
 treecore_set_compiler_definitions(treecore)
 treecore_set_compiler_options(treecore)

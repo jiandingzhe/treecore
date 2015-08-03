@@ -1,3 +1,16 @@
+# set default build type to Debug, in avoid of empty build type
+if(DEFINED CMAKE_BUILD_TYPE AND NOT CMAKE_BUILD_TYPE)
+    message(WARNING "CMAKE_BUILD_TYPE has no value, set to Debug")
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Debug")
+endif()
+
+# remove MinSizeRel build type
+if(DEFINED CMAKE_CONFIGURATION_TYPES)
+    get_property(_config_types_ CACHE CMAKE_CONFIGURATION_TYPES PROPERTY VALUE)
+    list(REMOVE_ITEM _config_types_ "MinSizeRel")
+    set_property(CACHE CMAKE_CONFIGURATION_TYPES PROPERTY VALUE ${_config_types_})
+endif()
+
 # force /MT instead of /MD, in avoid of being fucked by MSVC
 foreach(flag_var
         CMAKE_C_FLAGS_DEBUG

@@ -11,3 +11,11 @@ include(GNUInstallDirs)
 # add build directory to inc
 add_subdirectory(src)
 add_subdirectory(t)
+
+# install cmake modules
+install(
+    FILES
+        cmake/FindTreeCore.cmake
+        cmake/TreeCoreConfig.cmake
+    DESTINATION
+        ${CMAKE_ROOT}/Modules)
