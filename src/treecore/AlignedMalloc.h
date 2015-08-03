@@ -70,6 +70,10 @@ public:
         return ptr;
     }
 
+    void* operator new (std::size_t size, void* ptr) noexcept
+    {
+    }
+
     void operator delete (void* ptr) noexcept
     {
         aligned_free(ptr);
@@ -78,6 +82,10 @@ public:
     void operator delete (void* ptr, const std::nothrow_t& nothrow_constant) noexcept
     {
         aligned_free(ptr);
+    }
+
+    void operator delete (void* ptr, void* ptr2) noexcept
+    {
     }
 };
 

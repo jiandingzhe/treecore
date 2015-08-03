@@ -6,10 +6,11 @@
 #include <treecore/SIMD.h>
 
 using treecore::Array;
+using treecore::AlignedMalloc;
 using treecore::SIMDType;
 using treecore::pointer_sized_int;
 
-struct Foo
+struct Foo: AlignedMalloc<32>
 {
     SIMDType<16> a;
     SIMDType<16> b;
