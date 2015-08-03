@@ -15,6 +15,7 @@ foreach(test_name
         t_var
         t_aligned_malloc
         t_aligned_array
+        t_sorted_set
         )
     add_executable(${test_name} ${test_name}.cpp)
     target_link_libraries(${test_name} testframework)

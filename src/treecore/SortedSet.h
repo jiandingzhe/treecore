@@ -61,7 +61,7 @@ namespace treecore {
 
     @see Array, OwnedArray, ReferenceCountedArray, StringArray, CriticalSection
 */
-template <class ElementType, class TypeOfCriticalSectionToUse = DummyCriticalSection>
+template <class ElementType, int align_size = 0, class TypeOfCriticalSectionToUse = DummyCriticalSection>
 class SortedSet: public Object
 {
 public:
@@ -489,7 +489,7 @@ public:
 
 private:
     //==============================================================================
-    Array<ElementType, TypeOfCriticalSectionToUse> data;
+    Array<ElementType, align_size, TypeOfCriticalSectionToUse> data;
 };
 
 
