@@ -63,4 +63,7 @@ void TestFramework::content()
     IS(baz->get_y(), 2);
     IS(baz->get_z(), 3);
     IS(baz->get_w(), 4);
+
+    void* aaa = treecore::aligned_malloc<0>(4);
+    OK(aaa);
 }

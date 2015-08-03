@@ -4,6 +4,7 @@
 #include "treecore/PlatformDefs.h"
 #include "treecore/IntTypes.h"
 #include <new>
+#include <malloc.h>
 
 namespace treecore
 {
@@ -25,17 +26,30 @@ void* aligned_realloc(void* ptr,size_t length_byte_0,size_t const algn_val_ispw2
 namespace helper
 {
 
-template<size_t alignSize,bool isAlignSizeMinThanNativeMalloc = alignSize<=8 >
+template<size_t alignSize>
 class AlignedMallocHelper
 {
 public:
-	static forcedinline void* malloc(size_t len) { return aligned_malloc(len,alignSize); }
+    static forcedinline void* malloc(size_t len) { return aligned_malloc(len,alignSize); }
 
-	static forcedinline void* calloc(size_t len) { return aligned_calloc(len,alignSize); }
+    static forcedinline void* calloc(size_t len) { return aligned_calloc(len,alignSize); }
 
-	static forcedinline void free(void* ptr) { aligned_free(ptr); }
+    static forcedinline void free(void* ptr) { aligned_free(ptr); }
 
-	static forcedinline void* realloc(void* const ptr,size_t len) { return aligned_realloc(ptr,len,alignSize); }
+    static forcedinline void* realloc(void* const ptr,size_t len) { return aligned_realloc(ptr,len,alignSize); }
+};
+
+template<>
+class AlignedMallocHelper<0>
+{
+public:
+    static forcedinline void* malloc(size_t len) { return ::malloc(len); }
+
+    static forcedinline void* calloc(size_t len) { return ::calloc(1, len); }
+
+    static forcedinline void free(void* ptr) { free(ptr); }
+
+    static forcedinline void* realloc(void* const ptr,size_t len) { return realloc(ptr,len); }
 };
 
 } // namespace helper
@@ -58,7 +72,7 @@ class AlignedMalloc
 public:
     void* operator new (std::size_t size)
     {
-        void* ptr = aligned_malloc(size, ALIGN);
+        void* ptr = aligned_malloc<ALIGN>(size);
         if (!ptr)
             throw std::bad_alloc();
         return ptr;
@@ -66,7 +80,7 @@ public:
 
     void* operator new (std::size_t size, const std::nothrow_t& nothrow_value) noexcept
     {
-        void* ptr = aligned_malloc(size, ALIGN);
+        void* ptr = aligned_malloc<ALIGN>(size);
         return ptr;
     }
 
@@ -76,12 +90,12 @@ public:
 
     void operator delete (void* ptr) noexcept
     {
-        aligned_free(ptr);
+        aligned_free<ALIGN>(ptr);
     }
 
     void operator delete (void* ptr, const std::nothrow_t& nothrow_constant) noexcept
     {
-        aligned_free(ptr);
+        aligned_free<ALIGN>(ptr);
     }
 
     void operator delete (void* ptr, void* ptr2) noexcept
