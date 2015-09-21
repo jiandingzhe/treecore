@@ -47,9 +47,9 @@ public:
 
     static forcedinline void* calloc(size_t len) { return ::calloc(1, len); }
 
-    static forcedinline void free(void* ptr) { free(ptr); }
+    static forcedinline void free(void* ptr) { ::free(ptr); }
 
-    static forcedinline void* realloc(void* const ptr,size_t len) { return realloc(ptr,len); }
+    static forcedinline void* realloc(void* const ptr,size_t len) { return ::realloc(ptr,len); }
 };
 
 } // namespace helper
