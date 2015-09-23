@@ -26,9 +26,9 @@
   ==============================================================================
 */
 
-#include "treecore/Holder.h"
+#include "treecore/RefCountHolder.h"
 #include "treecore/Logger.h"
-#include "treecore/Object.h"
+#include "treecore/RefCountObject.h"
 #include "treecore/Time.h"
 #include "treecore/Thread.h"
 #include "treecore/ThreadLocalValue.h"
@@ -62,11 +62,11 @@ Thread::~Thread()
 //==============================================================================
 // Use a ref-counted object to hold this shared data, so that it can outlive its static
 // shared pointer when threads are still running during static shutdown.
-struct CurrentThreadHolder   : public Object
+struct CurrentThreadHolder   : public RefCountObject
 {
     CurrentThreadHolder() NOEXCEPT {}
 
-    typedef Holder<CurrentThreadHolder> Ptr;
+    typedef RefCountHolder<CurrentThreadHolder> Ptr;
     ThreadLocalValue<Thread*> value;
 
     JUCE_DECLARE_NON_COPYABLE (CurrentThreadHolder)

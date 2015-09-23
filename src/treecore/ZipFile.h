@@ -29,7 +29,7 @@
 #ifndef JUCE_ZIPFILE_H_INCLUDED
 #define JUCE_ZIPFILE_H_INCLUDED
 
-#include "treecore/Object.h"
+#include "treecore/RefCountObject.h"
 #include "treecore/OwnedArray.h"
 #include "treecore/Result.h"
 #include "treecore/String.h"
@@ -48,7 +48,7 @@ class InputSource;
     This can enumerate the items in a ZIP file and can create suitable stream objects
     to read each one.
 */
-class JUCE_API  ZipFile: public Object
+class JUCE_API  ZipFile: public RefCountObject
 {
 public:
     /** Creates a ZipFile based for a file. */

@@ -38,7 +38,7 @@ DynamicObject::DynamicObject()
 }
 
 DynamicObject::DynamicObject (const DynamicObject& other)
-   : Object(), properties (other.properties)
+   : RefCountObject(), properties (other.properties)
 {
 }
 

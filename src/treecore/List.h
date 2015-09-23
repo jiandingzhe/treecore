@@ -1,12 +1,12 @@
 #ifndef TREECORE_LIST_H
 #define TREECORE_LIST_H
 
-#include "treecore/Object.h"
+#include "treecore/RefCountObject.h"
 
 namespace treecore {
 
 template<typename T>
-class List: public Object
+class List: public RefCountObject
 {
     struct Node
     {

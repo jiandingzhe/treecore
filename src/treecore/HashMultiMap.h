@@ -15,7 +15,7 @@ template<typename KeyType,
          typename ValueType,
          typename HashFunctionType = DefaultHashFunctions,
          typename MutexType = DummyCriticalSection>
-class HashMultiMap: public Object
+class HashMultiMap: public RefCountObject
 {
 protected:
     struct Entry

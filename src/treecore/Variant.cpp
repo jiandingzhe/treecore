@@ -58,7 +58,7 @@ public:
     virtual double toDouble (const ValueUnion&) const NOEXCEPT                  { return 0; }
     virtual String toString (const ValueUnion&) const                           { return String::empty; }
     virtual bool toBool (const ValueUnion&) const NOEXCEPT                      { return false; }
-    virtual Object* toObject (const ValueUnion&) const NOEXCEPT { return nullptr; }
+    virtual RefCountObject* toObject (const ValueUnion&) const NOEXCEPT { return nullptr; }
     virtual Array<var>* toArray (const ValueUnion&) const NOEXCEPT              { return nullptr; }
     virtual MemoryBlock* toBinary (const ValueUnion&) const NOEXCEPT            { return nullptr; }
     virtual var clone (const var& original) const                               { return original; }
@@ -282,7 +282,7 @@ public:
 
     String toString (const ValueUnion& data) const override                            { return "Object 0x" + String::toHexString ((int) (pointer_sized_int) data.objectValue); }
     bool toBool (const ValueUnion& data) const NOEXCEPT override                       { return data.objectValue != 0; }
-    Object* toObject (const ValueUnion& data) const NOEXCEPT override  { return data.objectValue; }
+    RefCountObject* toObject (const ValueUnion& data) const NOEXCEPT override  { return data.objectValue; }
     bool isObject() const NOEXCEPT override                                            { return true; }
 
     bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const NOEXCEPT override
@@ -314,7 +314,7 @@ public:
     static const VariantType_Array instance;
 
     String toString (const ValueUnion&) const override                           { return "[Array]"; }
-    Object* toObject (const ValueUnion&) const NOEXCEPT override { return nullptr; }
+    RefCountObject* toObject (const ValueUnion&) const NOEXCEPT override { return nullptr; }
     bool isArray() const NOEXCEPT override                                       { return true; }
 
     Array<var>* toArray (const ValueUnion& data) const NOEXCEPT override
@@ -360,7 +360,7 @@ public:
         }
     }
 
-    struct RefCountedArray  : public Object
+    struct RefCountedArray  : public RefCountObject
     {
         RefCountedArray (const Array<var>& a)  : array (a)  { ref(); }
         RefCountedArray (Array<var>&& a)  : array (static_cast<Array<var>&&> (a)) { ref(); }
@@ -459,7 +459,7 @@ var::var (const wchar_t* const v)     : type (&VariantType_String::instance) { n
 var::var (const void* v, size_t sz)   : type (&VariantType_Binary::instance) { value.binaryValue = new MemoryBlock (v, sz); }
 var::var (const MemoryBlock& v)       : type (&VariantType_Binary::instance) { value.binaryValue = new MemoryBlock (v); }
 
-var::var (Object* const object)  : type (&VariantType_Object::instance)
+var::var (RefCountObject* const object)  : type (&VariantType_Object::instance)
 {
     value.objectValue = object;
 
@@ -489,7 +489,7 @@ var::operator float() const NOEXCEPT                    { return (float) type->t
 var::operator double() const NOEXCEPT                   { return type->toDouble (value); }
 String var::toString() const                            { return type->toString (value); }
 var::operator String() const                            { return type->toString (value); }
-Object* var::getObject() const NOEXCEPT       { return type->toObject (value); }
+RefCountObject* var::getObject() const NOEXCEPT       { return type->toObject (value); }
 Array<var>* var::getArray() const NOEXCEPT              { return type->toArray (value); }
 MemoryBlock* var::getBinaryData() const NOEXCEPT        { return type->toBinary (value); }
 DynamicObject* var::getDynamicObject() const NOEXCEPT   { return dynamic_cast <DynamicObject*> (getObject()); }
@@ -510,7 +510,7 @@ var& var::operator= (const char* const v)        { type->cleanUp (value); type =
 var& var::operator= (const wchar_t* const v)     { type->cleanUp (value); type = &VariantType_String::instance; new (value.stringValue) String (v); return *this; }
 var& var::operator= (const String& v)            { type->cleanUp (value); type = &VariantType_String::instance; new (value.stringValue) String (v); return *this; }
 var& var::operator= (const Array<var>& v)        { var v2 (v); swapWith (v2); return *this; }
-var& var::operator= (Object* v)        { var v2 (v); swapWith (v2); return *this; }
+var& var::operator= (RefCountObject* v)        { var v2 (v); swapWith (v2); return *this; }
 var& var::operator= (NativeFunction v)           { var v2 (v); swapWith (v2); return *this; }
 
 var::var (var&& other) NOEXCEPT

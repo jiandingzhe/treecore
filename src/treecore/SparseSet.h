@@ -30,7 +30,7 @@
 #define JUCE_SPARSESET_H_INCLUDED
 
 #include "treecore/Common.h"
-#include "treecore/Object.h"
+#include "treecore/RefCountObject.h"
 
 namespace treecore {
 
@@ -46,7 +46,7 @@ namespace treecore {
     int64, etc.
 */
 template <class Type>
-class SparseSet: public Object
+class SparseSet: public RefCountObject
 {
 public:
     //==============================================================================

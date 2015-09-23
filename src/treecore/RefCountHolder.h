@@ -9,58 +9,58 @@ class TestFramework;
 namespace treecore {
 
 template<typename T>
-class Holder
+class RefCountHolder
 {
     friend class ::TestFramework;
 
     template<typename T1, typename T2>
-    friend bool operator == (const Holder<T1>& a, const Holder<T2>& b);
+    friend bool operator == (const RefCountHolder<T1>& a, const RefCountHolder<T2>& b);
 
     template<typename T1, typename T2>
-    friend bool operator == (const Holder<T1>& a, const T2 b);
+    friend bool operator == (const RefCountHolder<T1>& a, const T2 b);
 
     template<typename T1, typename T2>
-    friend bool operator == (const T1 a, const Holder<T2>& b);
+    friend bool operator == (const T1 a, const RefCountHolder<T2>& b);
 
     template<typename T1, typename T2>
-    friend bool operator != (const Holder<T1>& a, const Holder<T2>& b);
+    friend bool operator != (const RefCountHolder<T1>& a, const RefCountHolder<T2>& b);
 
     template<typename T1, typename T2>
-    friend bool operator != (const Holder<T1>& a, const T2 b);
+    friend bool operator != (const RefCountHolder<T1>& a, const T2 b);
 
     template<typename T1, typename T2>
-    friend bool operator != (const T1 a, const Holder<T2>& b);
+    friend bool operator != (const T1 a, const RefCountHolder<T2>& b);
 
     template<typename T1, typename T2>
-    friend bool operator < (const Holder<T1>& a, const Holder<T2>& b);
+    friend bool operator < (const RefCountHolder<T1>& a, const RefCountHolder<T2>& b);
 
 public:
-    Holder() {}
+    RefCountHolder() {}
 
-    Holder(const Holder& other): ms_ptr(other.ms_ptr)
+    RefCountHolder(const RefCountHolder& other): ms_ptr(other.ms_ptr)
     {
         if (ms_ptr)
             smart_ref(ms_ptr);
     }
 
-    Holder(Holder&& other): ms_ptr(other.ms_ptr)
+    RefCountHolder(RefCountHolder&& other): ms_ptr(other.ms_ptr)
     {
         other.ms_ptr = nullptr;
     }
 
-    Holder(T* other): ms_ptr(other)
+    RefCountHolder(T* other): ms_ptr(other)
     {
         if (ms_ptr)
             smart_ref(ms_ptr);
     }
 
-    ~Holder()
+    ~RefCountHolder()
     {
         if (ms_ptr)
             smart_unref(ms_ptr);
     }
 
-    Holder& operator = (const Holder& other)
+    RefCountHolder& operator = (const RefCountHolder& other)
     {
         if (ms_ptr)
             smart_unref(ms_ptr);
@@ -73,7 +73,7 @@ public:
         return *this;
     }
 
-    Holder& operator = (Holder&& other)
+    RefCountHolder& operator = (RefCountHolder&& other)
     {
         T* tmp = ms_ptr;
         ms_ptr = other.ms_ptr;
@@ -82,7 +82,7 @@ public:
         return *this;
     }
 
-    Holder& operator = (T* other)
+    RefCountHolder& operator = (T* other)
     {
         if (ms_ptr)
             smart_unref(ms_ptr);
@@ -133,44 +133,44 @@ inline void smart_unref(decltype(nullptr) p)
 }
 
 template<typename T1, typename T2>
-bool operator == (const Holder<T1>& a, const Holder<T2>& b)
+bool operator == (const RefCountHolder<T1>& a, const RefCountHolder<T2>& b)
 {
     return a.ms_ptr == b.ms_ptr;
 }
 
 template<typename T1, typename T2>
-bool operator == (const Holder<T1>& a, const T2 b)
+bool operator == (const RefCountHolder<T1>& a, const T2 b)
 {
     return a.ms_ptr == b;
 }
 
 template<typename T1, typename T2>
-bool operator == (const T1 a, const Holder<T2>& b)
+bool operator == (const T1 a, const RefCountHolder<T2>& b)
 {
     return a == b.ms_ptr;
 }
 
 template<typename T1, typename T2>
-bool operator != (const Holder<T1>& a, const Holder<T2>& b)
+bool operator != (const RefCountHolder<T1>& a, const RefCountHolder<T2>& b)
 {
     return a.ms_ptr != b.ms_ptr;
 }
 
 template<typename T1, typename T2>
-bool operator != (const Holder<T1>& a, const T2 b)
+bool operator != (const RefCountHolder<T1>& a, const T2 b)
 {
     return a.ms_ptr != b;
 }
 
 template<typename T1, typename T2>
-bool operator != (const T1 a, const Holder<T2>& b)
+bool operator != (const T1 a, const RefCountHolder<T2>& b)
 {
     return a != b.ms_ptr;
 }
 
 
 template<typename T1, typename T2>
-bool operator < (const Holder<T1>& a, const Holder<T2>& b)
+bool operator < (const RefCountHolder<T1>& a, const RefCountHolder<T2>& b)
 {
     return a.ms_ptr < b.ms_ptr;
 }

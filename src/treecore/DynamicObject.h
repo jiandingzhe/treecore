@@ -29,8 +29,8 @@
 #ifndef JUCE_DYNAMICOBJECT_H_INCLUDED
 #define JUCE_DYNAMICOBJECT_H_INCLUDED
 
-#include "treecore/Object.h"
-#include "treecore/Holder.h"
+#include "treecore/RefCountObject.h"
+#include "treecore/RefCountHolder.h"
 
 #include "treecore/Identifier.h"
 #include "treecore/LeakedObjectDetector.h"
@@ -52,7 +52,7 @@ class OutputStream;
     by subclassing hasMethod() and invokeMethod(), you can give your object
     methods.
 */
-class JUCE_API  DynamicObject  : public Object
+class JUCE_API  DynamicObject  : public RefCountObject
 {
 public:
     //==============================================================================
@@ -60,7 +60,7 @@ public:
     DynamicObject (const DynamicObject&);
     ~DynamicObject();
 
-    typedef Holder<DynamicObject> Ptr;
+    typedef RefCountHolder<DynamicObject> Ptr;
 
     //==============================================================================
     /** Returns true if the object has a property with this name.

@@ -11,16 +11,16 @@ class TestFramework;
 
 namespace treecore {
 
-class JUCE_API Object
+class JUCE_API RefCountObject
 {
     friend class ::TestFramework;
 public:
-    Object()                    { atomic_fetch_set(&ms_count, 0u); }
-    Object(const Object& other) { atomic_fetch_set(&ms_count, 0u); }
+    RefCountObject()                    { atomic_fetch_set(&ms_count, 0u); }
+    RefCountObject(const RefCountObject& other) { atomic_fetch_set(&ms_count, 0u); }
 
-    virtual ~Object() {}
+    virtual ~RefCountObject() {}
 
-    Object& operator = (const Object& other) { return *this; }
+    RefCountObject& operator = (const RefCountObject& other) { return *this; }
 
     void ref() const NOEXCEPT
     {
@@ -41,13 +41,13 @@ public:
 private:
     mutable std::uint32_t ms_count;
 
-    JUCE_LEAK_DETECTOR(Object);
+    JUCE_LEAK_DETECTOR(RefCountObject);
 }; // class Object
 
-inline void smart_ref(const Object* obj)
+inline void smart_ref(const RefCountObject* obj)
 { obj->ref(); }
 
-inline void smart_unref(const Object* obj)
+inline void smart_unref(const RefCountObject* obj)
 { obj->unref(); }
 
 }

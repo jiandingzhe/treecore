@@ -33,7 +33,7 @@
 #include "treecore/CriticalSection.h"
 #include "treecore/ElementComparator.h"
 #include "treecore/MathsFunctions.h"
-#include "treecore/Object.h"
+#include "treecore/RefCountObject.h"
 #include "treecore/StandardHeader.h"
 
 //==============================================================================
@@ -66,7 +66,7 @@ template <typename ElementType,
           int align_size = 0,
           typename TypeOfCriticalSectionToUse = DummyCriticalSection,
           int minimumAllocatedSize = 0>
-class Array: public Object
+class Array: public RefCountObject
 {
 private:
     typedef PARAMETER_TYPE (ElementType) ParameterType;

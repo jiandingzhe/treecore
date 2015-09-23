@@ -1,7 +1,7 @@
 #include "TestFramework.h"
 
 #include "treecore/AlignedMalloc.h"
-#include "treecore/Holder.h"
+#include "treecore/RefCountHolder.h"
 #include "treecore/IntTypes.h"
 #include "treecore/SIMD.h"
 

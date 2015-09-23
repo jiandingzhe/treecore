@@ -26,17 +26,16 @@
   ==============================================================================
 */
 
-#include "treecore/Object.h"
-#include "treecore/Holder.h"
-
 #include "treecore/Expression.h"
+
+#include "treecore/RefCountObject.h"
 #include "treecore/Logger.h"
 #include "treecore/ScopedPointer.h"
 #include "treecore/StringRef.h"
 
 namespace treecore {
 
-class Expression::Term  : public Object
+class Expression::Term  : public RefCountObject
 {
 public:
     Term() {}
@@ -57,7 +56,7 @@ public:
                                                                        double /*overallTarget*/, Term* /*topLevelTerm*/) const
     {
         jassertfalse;
-        return Holder<Term>();
+        return RefCountHolder<Term>();
     }
 
     virtual String getName() const
@@ -93,7 +92,7 @@ private:
 //==============================================================================
 struct Expression::Helpers
 {
-    typedef Holder<Term> TermPtr;
+    typedef RefCountHolder<Term> TermPtr;
 
     static void checkRecursionDepth (const int depth)
     {
@@ -962,13 +961,13 @@ Expression& Expression::operator= (const Expression& other)
 }
 
 Expression::Expression (Expression&& other) NOEXCEPT
-    : term (static_cast <Holder<Term>&&> (other.term))
+    : term (static_cast <RefCountHolder<Term>&&> (other.term))
 {
 }
 
 Expression& Expression::operator= (Expression&& other) NOEXCEPT
 {
-    term = static_cast <Holder<Term>&&> (other.term);
+    term = static_cast <RefCountHolder<Term>&&> (other.term);
     return *this;
 }
 

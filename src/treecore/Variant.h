@@ -41,7 +41,7 @@ class DynamicObject;
 class Identifier;
 class InputStream;
 class MemoryBlock;
-class Object;
+class RefCountObject;
 
 /**
     A variant class, that can be used to hold a range of primitive values.
@@ -97,7 +97,7 @@ public:
     var (const wchar_t* value);
     var (const String& value);
     var (const Array<var>& value);
-    var (Object* object);
+    var (RefCountObject* object);
     var (NativeFunction method) NOEXCEPT;
     var (const void* binaryData, size_t dataSize);
     var (const MemoryBlock& binaryData);
@@ -111,7 +111,7 @@ public:
     var& operator= (const wchar_t* value);
     var& operator= (const String& value);
     var& operator= (const Array<var>& value);
-    var& operator= (Object* object);
+    var& operator= (RefCountObject* object);
     var& operator= (NativeFunction method);
 
     var (var&& other) NOEXCEPT;
@@ -151,7 +151,7 @@ public:
     */
     MemoryBlock* getBinaryData() const NOEXCEPT;
 
-    Object* getObject() const NOEXCEPT;
+    RefCountObject* getObject() const NOEXCEPT;
     DynamicObject* getDynamicObject() const NOEXCEPT;
 
     //==============================================================================
@@ -314,7 +314,7 @@ private:
         bool boolValue;
         double doubleValue;
         char stringValue [sizeof (String)];
-        Object* objectValue;
+        RefCountObject* objectValue;
         MemoryBlock* binaryValue;
         NativeFunction methodValue;
     };

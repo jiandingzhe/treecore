@@ -56,8 +56,7 @@
 #define TREECORE_MT19937_H
 
 #include "treecore/Common.h"
-#include "treecore/Object.h"
-#include "treecore/Holder.h"
+#include "treecore/RefCountObject.h"
 #include "cstddef"
 
 class TestFramework;
@@ -66,7 +65,7 @@ namespace treecore {
 
 #define NN 312
 
-class MT19937: public Object
+class MT19937: public RefCountObject
 {
     friend class ::TestFramework;
 

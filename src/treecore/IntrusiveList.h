@@ -1,5 +1,5 @@
 #error "not implemented"
-#include "treecore/Object.h"
+#include "treecore/RefCountObject.h"
 
 namespace treecore {
 
@@ -19,7 +19,7 @@ class IntrusiveListAgent
 };
 
 template<typename Type, typename DummyType>
-class IntrusiveList: public treecore::Object
+class IntrusiveList: public treecore::RefCountObject
 {
 public:
     typedef IntrusiveListAgent<Type, DummyType> AgentType;

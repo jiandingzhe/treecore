@@ -3,14 +3,14 @@
 
 #include "treecore/Array.h"
 #include "treecore/HashFunctions.h"
-#include "treecore/Object.h"
+#include "treecore/RefCountObject.h"
 
 namespace treecore {
 
 template<typename KeyType,
          typename HashFunctionType = DefaultHashFunctions,
          typename MutexType = DummyCriticalSection>
-class HashSet: public Object
+class HashSet: public RefCountObject
 {
 protected:
     struct Entry

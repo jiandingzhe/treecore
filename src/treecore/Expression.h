@@ -29,7 +29,7 @@
 #ifndef JUCE_EXPRESSION_H_INCLUDED
 #define JUCE_EXPRESSION_H_INCLUDED
 
-#include "treecore/Holder.h"
+#include "treecore/RefCountHolder.h"
 
 #include "treecore/Array.h"
 #include "treecore/StandardHeader.h"
@@ -269,8 +269,8 @@ private:
     friend class Term;
     friend struct Helpers;
     friend struct ContainerDeletePolicy<Term>;
-    friend class Holder<Term>;
-    Holder<Term> term;
+    friend class RefCountHolder<Term>;
+    RefCountHolder<Term> term;
 
     explicit Expression (Term*);
 };

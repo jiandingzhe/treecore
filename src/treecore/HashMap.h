@@ -32,7 +32,7 @@
 #include "treecore/Array.h"
 #include "treecore/HashFunctions.h"
 #include "treecore/LeakedObjectDetector.h"
-#include "treecore/Object.h"
+#include "treecore/RefCountObject.h"
 #include "treecore/ScopedPointer.h"
 
 namespace treecore {
@@ -83,7 +83,7 @@ template <typename KeyType,
           typename ValueType,
           class HashFunctionType = DefaultHashFunctions,
           class TypeOfCriticalSectionToUse = DummyCriticalSection>
-class HashMap: public Object
+class HashMap: public RefCountObject
 {
 private:
     typedef PARAMETER_TYPE (KeyType)   KeyTypeParameter;

@@ -30,7 +30,7 @@
 #define JUCE_SORTEDSET_H_INCLUDED
 
 #include "treecore/Array.h"
-#include "treecore/Object.h"
+#include "treecore/RefCountObject.h"
 
 namespace treecore {
 
@@ -62,7 +62,7 @@ namespace treecore {
     @see Array, OwnedArray, ReferenceCountedArray, StringArray, CriticalSection
 */
 template <class ElementType, int align_size = 0, class TypeOfCriticalSectionToUse = DummyCriticalSection>
-class SortedSet: public Object
+class SortedSet: public RefCountObject
 {
 public:
     //==============================================================================
