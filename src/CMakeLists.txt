@@ -23,8 +23,11 @@ set_source_files_properties(${zlib_src_files}
 file(GLOB treecore_common_src_files
     "treecore/*.h"
     "treecore/*.cpp"
+    "treecore/Atomic/template.h"
+    "treecore/SIMD/template.h"
 )
 
+# OS-specific source
 if(TREECORE_OS STREQUAL "LINUX")
     file(GLOB treecore_platform_src_files
         "treecore/native/linux_*.h"
@@ -46,10 +49,26 @@ elseif(TREECORE_OS STREQUAL "OSX")
         "treecore/native/posix_*.cpp"
     )
 else()
-    message(SEND_ERROR "unsupported target system: ${CMAKE_SYSTEM_NAME}")
+    message(SEND_ERROR "unsupported target system: ${TREECORE_OS}")
 endif()
 
-# library target
+# CPU-specific
+if(TREECORE_CPU STREQUAL "X86")
+    list(APPEND treecore_platform_src_files "treecore/SIMD/sse2.h")
+else()
+    message(SEND_ERROR "unsupported CPU: ${TREECORE_CPU}")
+endif()
+
+# compiler-specific
+if(TREECORE_CMAKE_COMPILER STREQUAL "_GCC" OR TREECORE_CMAKE_COMPILER STREQUAL "_CLANG" OR (TREECORE_CMAKE_COMPILER STREQUAL "_ICC" AND (TREECORE_OS STREQUAL "LINUX" OR TREECORE_OS STREQUAL "OSX")))
+    list(APPEND treecore_platform_src_files "treecore/Atomic/gcc.h")
+elseif(TREECORE_CMAKE_COMPILER STREQUAL "_MSVC" OR (TREECORE_CMAKE_COMPILER STREQUAL "_ICC" AND TREECORE_OS STREQUAL "WINDOWS"))
+    list(APPEND treecore_platform_src_files "treecore/Atomic/msvc.h")
+else()
+    message(SEND_ERROR "unsupported compiler: ${TREECORE_CMAKE_COMPILER}")
+endif()
+
+# declare library target
 add_library(treecore STATIC
     ${zlib_src_files}
     ${treecore_common_src_files} 
