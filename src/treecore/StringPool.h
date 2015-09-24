@@ -52,7 +52,7 @@ class JUCE_API  StringPool
 public:
     //==============================================================================
     /** Creates an empty pool. */
-    StringPool() NOEXCEPT;
+    StringPool() noexcept;
 
     /** Destructor */
     ~StringPool();
@@ -86,7 +86,7 @@ public:
     void garbageCollect();
 
     /** Returns a shared global pool which is used for things like Identifiers, XML parsing. */
-    static StringPool& getGlobalPool() NOEXCEPT;
+    static StringPool& getGlobalPool() noexcept;
 
 private:
     Array<String> strings;

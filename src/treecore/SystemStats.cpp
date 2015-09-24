@@ -79,18 +79,18 @@ String SystemStats::getJUCEVersion()
 //==============================================================================
 
 
-static const CPUInformation& getCPUInformation() NOEXCEPT
+static const CPUInformation& getCPUInformation() noexcept
 {
     static CPUInformation info;
     return info;
 }
 
-int SystemStats::getNumCpus() NOEXCEPT        { return getCPUInformation().numCpus; }
-bool SystemStats::hasMMX() NOEXCEPT           { return getCPUInformation().hasMMX; }
-bool SystemStats::hasSSE() NOEXCEPT           { return getCPUInformation().hasSSE; }
-bool SystemStats::hasSSE2() NOEXCEPT          { return getCPUInformation().hasSSE2; }
-bool SystemStats::hasSSE3() NOEXCEPT          { return getCPUInformation().hasSSE3; }
-bool SystemStats::has3DNow() NOEXCEPT         { return getCPUInformation().has3DNow; }
+int SystemStats::getNumCpus() noexcept        { return getCPUInformation().numCpus; }
+bool SystemStats::hasMMX() noexcept           { return getCPUInformation().hasMMX; }
+bool SystemStats::hasSSE() noexcept           { return getCPUInformation().hasSSE; }
+bool SystemStats::hasSSE2() noexcept          { return getCPUInformation().hasSSE2; }
+bool SystemStats::hasSSE3() noexcept          { return getCPUInformation().hasSSE3; }
+bool SystemStats::has3DNow() noexcept         { return getCPUInformation().has3DNow; }
 
 
 //==============================================================================

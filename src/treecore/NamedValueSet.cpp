@@ -36,11 +36,11 @@ namespace treecore {
 
 struct NamedValueSet::NamedValue
 {
-    NamedValue() NOEXCEPT {}
+    NamedValue() noexcept {}
     NamedValue (Identifier n, const var& v)  : name (n), value (v) {}
     NamedValue (const NamedValue& other) : name (other.name), value (other.value) {}
 
-    NamedValue (NamedValue&& other) NOEXCEPT
+    NamedValue (NamedValue&& other) noexcept
         : name (static_cast<Identifier&&> (other.name)),
           value (static_cast<var&&> (other.value))
     {
@@ -50,22 +50,22 @@ struct NamedValueSet::NamedValue
     {
     }
 
-    NamedValue& operator= (NamedValue&& other) NOEXCEPT
+    NamedValue& operator= (NamedValue&& other) noexcept
     {
         name = static_cast<Identifier&&> (other.name);
         value = static_cast<var&&> (other.value);
         return *this;
     }
 
-    bool operator== (const NamedValue& other) const NOEXCEPT   { return name == other.name && value == other.value; }
-    bool operator!= (const NamedValue& other) const NOEXCEPT   { return ! operator== (other); }
+    bool operator== (const NamedValue& other) const noexcept   { return name == other.name && value == other.value; }
+    bool operator!= (const NamedValue& other) const noexcept   { return ! operator== (other); }
 
     Identifier name;
     var value;
 };
 
 //==============================================================================
-NamedValueSet::NamedValueSet() NOEXCEPT
+NamedValueSet::NamedValueSet() noexcept
 {
 }
 
@@ -81,12 +81,12 @@ NamedValueSet& NamedValueSet::operator= (const NamedValueSet& other)
     return *this;
 }
 
-NamedValueSet::NamedValueSet (NamedValueSet&& other) NOEXCEPT
+NamedValueSet::NamedValueSet (NamedValueSet&& other) noexcept
     : values (static_cast <Array<NamedValue>&&> (other.values))
 {
 }
 
-NamedValueSet& NamedValueSet::operator= (NamedValueSet&& other) NOEXCEPT
+NamedValueSet& NamedValueSet::operator= (NamedValueSet&& other) noexcept
 {
     other.values.swapWith (values);
     return *this;
@@ -112,7 +112,7 @@ bool NamedValueSet::operator!= (const NamedValueSet& other) const
     return ! operator== (other);
 }
 
-int NamedValueSet::size() const NOEXCEPT
+int NamedValueSet::size() const noexcept
 {
     return values.size();
 }
@@ -133,7 +133,7 @@ var NamedValueSet::getWithDefault (const Identifier& name, const var& defaultRet
     return defaultReturnValue;
 }
 
-var* NamedValueSet::getVarPointer (const Identifier& name) const NOEXCEPT
+var* NamedValueSet::getVarPointer (const Identifier& name) const noexcept
 {
     for (NamedValue* e = values.end(), *i = values.begin(); i != e; ++i)
         if (i->name == name)
@@ -177,7 +177,7 @@ bool NamedValueSet::contains (const Identifier& name) const
     return getVarPointer (name) != nullptr;
 }
 
-int NamedValueSet::indexOf (const Identifier& name) const NOEXCEPT
+int NamedValueSet::indexOf (const Identifier& name) const noexcept
 {
     const int numValues = values.size();
 
@@ -204,7 +204,7 @@ bool NamedValueSet::remove (const Identifier& name)
     return false;
 }
 
-Identifier NamedValueSet::getName (const int index) const NOEXCEPT
+Identifier NamedValueSet::getName (const int index) const noexcept
 {
     if (isPositiveAndBelow (index, values.size()))
         return values.getReference (index).name;
@@ -213,7 +213,7 @@ Identifier NamedValueSet::getName (const int index) const NOEXCEPT
     return Identifier();
 }
 
-const var& NamedValueSet::getValueAt (const int index) const NOEXCEPT
+const var& NamedValueSet::getValueAt (const int index) const noexcept
 {
     if (isPositiveAndBelow (index, values.size()))
         return values.getReference (index).value;
@@ -222,7 +222,7 @@ const var& NamedValueSet::getValueAt (const int index) const NOEXCEPT
     return var::null;
 }
 
-var* NamedValueSet::getVarPointerAt (int index) const NOEXCEPT
+var* NamedValueSet::getVarPointerAt (int index) const noexcept
 {
     if (isPositiveAndBelow (index, values.size()))
         return &(values.getReference (index).value);

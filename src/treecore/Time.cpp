@@ -42,7 +42,7 @@ namespace treecore {
 
 namespace TimeHelpers
 {
-    static struct tm millisToLocal (const int64 millis) NOEXCEPT
+    static struct tm millisToLocal (const int64 millis) noexcept
     {
         struct tm result;
         const int64 seconds = millis / 1000;
@@ -96,7 +96,7 @@ namespace TimeHelpers
         return result;
     }
 
-    static int extendedModulo (const int64 value, const int modulo) NOEXCEPT
+    static int extendedModulo (const int64 value, const int modulo) noexcept
     {
         return (int) (value >= 0 ? (value % modulo)
                                  : (value - ((value / modulo) + 1) * modulo));
@@ -134,17 +134,17 @@ namespace TimeHelpers
 }
 
 //==============================================================================
-Time::Time() NOEXCEPT
+Time::Time() noexcept
     : millisSinceEpoch (0)
 {
 }
 
-Time::Time (const Time& other) NOEXCEPT
+Time::Time (const Time& other) noexcept
     : millisSinceEpoch (other.millisSinceEpoch)
 {
 }
 
-Time::Time (const int64 ms) NOEXCEPT
+Time::Time (const int64 ms) noexcept
     : millisSinceEpoch (ms)
 {
 }
@@ -156,7 +156,7 @@ Time::Time (const int year,
             const int minutes,
             const int seconds,
             const int milliseconds,
-            const bool useLocalTime) NOEXCEPT
+            const bool useLocalTime) noexcept
 {
     jassert (year > 100); // year must be a 4-digit version
 
@@ -196,18 +196,18 @@ Time::Time (const int year,
     }
 }
 
-Time::~Time() NOEXCEPT
+Time::~Time() noexcept
 {
 }
 
-Time& Time::operator= (const Time& other) NOEXCEPT
+Time& Time::operator= (const Time& other) noexcept
 {
     millisSinceEpoch = other.millisSinceEpoch;
     return *this;
 }
 
 //==============================================================================
-int64 Time::currentTimeMillis() NOEXCEPT
+int64 Time::currentTimeMillis() noexcept
 {
   #if defined TREECORE_OS_WINDOWS
     struct _timeb t;
@@ -224,15 +224,15 @@ int64 Time::currentTimeMillis() NOEXCEPT
   #endif
 }
 
-Time JUCE_CALLTYPE Time::getCurrentTime() NOEXCEPT
+Time JUCE_CALLTYPE Time::getCurrentTime() noexcept
 {
     return Time (currentTimeMillis());
 }
 
 //==============================================================================
-uint32 juce_millisecondsSinceStartup() NOEXCEPT;
+uint32 juce_millisecondsSinceStartup() noexcept;
 
-uint32 Time::getMillisecondCounter() NOEXCEPT
+uint32 Time::getMillisecondCounter() noexcept
 {
     const uint32 now = juce_millisecondsSinceStartup();
 
@@ -252,7 +252,7 @@ uint32 Time::getMillisecondCounter() NOEXCEPT
     return now;
 }
 
-uint32 Time::getApproximateMillisecondCounter() NOEXCEPT
+uint32 Time::getApproximateMillisecondCounter() noexcept
 {
     if (TimeHelpers::lastMSCounterValue == 0)
         getMillisecondCounter();
@@ -260,7 +260,7 @@ uint32 Time::getApproximateMillisecondCounter() NOEXCEPT
     return TimeHelpers::lastMSCounterValue;
 }
 
-void Time::waitForMillisecondCounter (const uint32 targetTime) NOEXCEPT
+void Time::waitForMillisecondCounter (const uint32 targetTime) noexcept
 {
     for (;;)
     {
@@ -286,12 +286,12 @@ void Time::waitForMillisecondCounter (const uint32 targetTime) NOEXCEPT
 }
 
 //==============================================================================
-double Time::highResolutionTicksToSeconds (const int64 ticks) NOEXCEPT
+double Time::highResolutionTicksToSeconds (const int64 ticks) noexcept
 {
     return ticks / (double) getHighResolutionTicksPerSecond();
 }
 
-int64 Time::secondsToHighResolutionTicks (const double seconds) NOEXCEPT
+int64 Time::secondsToHighResolutionTicks (const double seconds) noexcept
 {
     return (int64) (seconds * (double) getHighResolutionTicksPerSecond());
 }
@@ -300,7 +300,7 @@ int64 Time::secondsToHighResolutionTicks (const double seconds) NOEXCEPT
 String Time::toString (const bool includeDate,
                        const bool includeTime,
                        const bool includeSeconds,
-                       const bool use24HourClock) const NOEXCEPT
+                       const bool use24HourClock) const noexcept
 {
     String result;
 
@@ -341,17 +341,17 @@ String Time::formatted (const String& format) const
 }
 
 //==============================================================================
-int Time::getYear() const NOEXCEPT          { return TimeHelpers::millisToLocal (millisSinceEpoch).tm_year + 1900; }
-int Time::getMonth() const NOEXCEPT         { return TimeHelpers::millisToLocal (millisSinceEpoch).tm_mon; }
-int Time::getDayOfYear() const NOEXCEPT     { return TimeHelpers::millisToLocal (millisSinceEpoch).tm_yday; }
-int Time::getDayOfMonth() const NOEXCEPT    { return TimeHelpers::millisToLocal (millisSinceEpoch).tm_mday; }
-int Time::getDayOfWeek() const NOEXCEPT     { return TimeHelpers::millisToLocal (millisSinceEpoch).tm_wday; }
-int Time::getHours() const NOEXCEPT         { return TimeHelpers::millisToLocal (millisSinceEpoch).tm_hour; }
-int Time::getMinutes() const NOEXCEPT       { return TimeHelpers::millisToLocal (millisSinceEpoch).tm_min; }
-int Time::getSeconds() const NOEXCEPT       { return TimeHelpers::extendedModulo (millisSinceEpoch / 1000, 60); }
-int Time::getMilliseconds() const NOEXCEPT  { return TimeHelpers::extendedModulo (millisSinceEpoch, 1000); }
+int Time::getYear() const noexcept          { return TimeHelpers::millisToLocal (millisSinceEpoch).tm_year + 1900; }
+int Time::getMonth() const noexcept         { return TimeHelpers::millisToLocal (millisSinceEpoch).tm_mon; }
+int Time::getDayOfYear() const noexcept     { return TimeHelpers::millisToLocal (millisSinceEpoch).tm_yday; }
+int Time::getDayOfMonth() const noexcept    { return TimeHelpers::millisToLocal (millisSinceEpoch).tm_mday; }
+int Time::getDayOfWeek() const noexcept     { return TimeHelpers::millisToLocal (millisSinceEpoch).tm_wday; }
+int Time::getHours() const noexcept         { return TimeHelpers::millisToLocal (millisSinceEpoch).tm_hour; }
+int Time::getMinutes() const noexcept       { return TimeHelpers::millisToLocal (millisSinceEpoch).tm_min; }
+int Time::getSeconds() const noexcept       { return TimeHelpers::extendedModulo (millisSinceEpoch / 1000, 60); }
+int Time::getMilliseconds() const noexcept  { return TimeHelpers::extendedModulo (millisSinceEpoch, 1000); }
 
-int Time::getHoursInAmPmFormat() const NOEXCEPT
+int Time::getHoursInAmPmFormat() const noexcept
 {
     const int hours = getHours();
 
@@ -361,17 +361,17 @@ int Time::getHoursInAmPmFormat() const NOEXCEPT
     return hours - 12;
 }
 
-bool Time::isAfternoon() const NOEXCEPT
+bool Time::isAfternoon() const noexcept
 {
     return getHours() >= 12;
 }
 
-bool Time::isDaylightSavingTime() const NOEXCEPT
+bool Time::isDaylightSavingTime() const noexcept
 {
     return TimeHelpers::millisToLocal (millisSinceEpoch).tm_isdst != 0;
 }
 
-String Time::getTimeZone() const NOEXCEPT
+String Time::getTimeZone() const noexcept
 {
     String zone[2];
 
@@ -444,22 +444,22 @@ String Time::getWeekdayName (int day, const bool threeLetterVersion)
 }
 
 //==============================================================================
-Time& Time::operator+= (RelativeTime delta) NOEXCEPT           { millisSinceEpoch += delta.inMilliseconds(); return *this; }
-Time& Time::operator-= (RelativeTime delta) NOEXCEPT           { millisSinceEpoch -= delta.inMilliseconds(); return *this; }
+Time& Time::operator+= (RelativeTime delta) noexcept           { millisSinceEpoch += delta.inMilliseconds(); return *this; }
+Time& Time::operator-= (RelativeTime delta) noexcept           { millisSinceEpoch -= delta.inMilliseconds(); return *this; }
 
-Time operator+ (Time time, RelativeTime delta) NOEXCEPT        { Time t (time); return t += delta; }
-Time operator- (Time time, RelativeTime delta) NOEXCEPT        { Time t (time); return t -= delta; }
-Time operator+ (RelativeTime delta, Time time) NOEXCEPT        { Time t (time); return t += delta; }
-const RelativeTime operator- (Time time1, Time time2) NOEXCEPT { return RelativeTime::milliseconds (time1.toMilliseconds() - time2.toMilliseconds()); }
+Time operator+ (Time time, RelativeTime delta) noexcept        { Time t (time); return t += delta; }
+Time operator- (Time time, RelativeTime delta) noexcept        { Time t (time); return t -= delta; }
+Time operator+ (RelativeTime delta, Time time) noexcept        { Time t (time); return t += delta; }
+const RelativeTime operator- (Time time1, Time time2) noexcept { return RelativeTime::milliseconds (time1.toMilliseconds() - time2.toMilliseconds()); }
 
-bool operator== (Time time1, Time time2) NOEXCEPT      { return time1.toMilliseconds() == time2.toMilliseconds(); }
-bool operator!= (Time time1, Time time2) NOEXCEPT      { return time1.toMilliseconds() != time2.toMilliseconds(); }
-bool operator<  (Time time1, Time time2) NOEXCEPT      { return time1.toMilliseconds() <  time2.toMilliseconds(); }
-bool operator>  (Time time1, Time time2) NOEXCEPT      { return time1.toMilliseconds() >  time2.toMilliseconds(); }
-bool operator<= (Time time1, Time time2) NOEXCEPT      { return time1.toMilliseconds() <= time2.toMilliseconds(); }
-bool operator>= (Time time1, Time time2) NOEXCEPT      { return time1.toMilliseconds() >= time2.toMilliseconds(); }
+bool operator== (Time time1, Time time2) noexcept      { return time1.toMilliseconds() == time2.toMilliseconds(); }
+bool operator!= (Time time1, Time time2) noexcept      { return time1.toMilliseconds() != time2.toMilliseconds(); }
+bool operator<  (Time time1, Time time2) noexcept      { return time1.toMilliseconds() <  time2.toMilliseconds(); }
+bool operator>  (Time time1, Time time2) noexcept      { return time1.toMilliseconds() >  time2.toMilliseconds(); }
+bool operator<= (Time time1, Time time2) noexcept      { return time1.toMilliseconds() <= time2.toMilliseconds(); }
+bool operator>= (Time time1, Time time2) noexcept      { return time1.toMilliseconds() >= time2.toMilliseconds(); }
 
-static int getMonthNumberForCompileDate (const String& m) NOEXCEPT
+static int getMonthNumberForCompileDate (const String& m) noexcept
 {
     for (int i = 0; i < 12; ++i)
         if (m.equalsIgnoreCase (shortMonthNames[i]))

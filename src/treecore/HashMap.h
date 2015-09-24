@@ -141,7 +141,7 @@ public:
 
     //==============================================================================
     /** Returns the current number of items in the map. */
-    inline int size() const NOEXCEPT
+    inline int size() const noexcept
     {
         return totalNumItems;
     }
@@ -320,7 +320,7 @@ public:
         Each slot corresponds to a single hash-code, and each one can contain multiple items.
         @see getNumSlots()
     */
-    inline int getNumSlots() const NOEXCEPT
+    inline int getNumSlots() const noexcept
     {
         return hashSlots.size();
     }
@@ -328,7 +328,7 @@ public:
     //==============================================================================
     /** Efficiently swaps the contents of two hash-maps. */
     template <class OtherHashMapType>
-    void swapWith (OtherHashMapType& otherHashMap) NOEXCEPT
+    void swapWith (OtherHashMapType& otherHashMap) noexcept
     {
         const ScopedLockType lock1 (getLock());
         const typename OtherHashMapType::ScopedLockType lock2 (otherHashMap.getLock());
@@ -342,7 +342,7 @@ public:
         To lock, you can call getLock().enter() and getLock().exit(), or preferably use
         an object of ScopedLockType as an RAII lock for it.
     */
-    inline const TypeOfCriticalSectionToUse& getLock() const NOEXCEPT      { return lock; }
+    inline const TypeOfCriticalSectionToUse& getLock() const noexcept      { return lock; }
 
     /** Returns the type of scoped lock to use for locking this array */
     typedef typename TypeOfCriticalSectionToUse::ScopedLockType ScopedLockType;

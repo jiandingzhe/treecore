@@ -53,30 +53,7 @@ void* getUser32Function (const char* functionName)
 }
 
 //==============================================================================
-#if ! JUCE_USE_INTRINSICS
-// In newer compilers, the inline versions of these are used (in juce_Atomic.h), but in
-// older ones we have to actually call the ops as win32 functions..
-long juce_InterlockedExchange (volatile long* a, long b) NOEXCEPT                { return InterlockedExchange (a, b); }
-long juce_InterlockedIncrement (volatile long* a) NOEXCEPT                       { return InterlockedIncrement (a); }
-long juce_InterlockedDecrement (volatile long* a) NOEXCEPT                       { return InterlockedDecrement (a); }
-long juce_InterlockedExchangeAdd (volatile long* a, long b) NOEXCEPT             { return InterlockedExchangeAdd (a, b); }
-long juce_InterlockedCompareExchange (volatile long* a, long b, long c) NOEXCEPT { return InterlockedCompareExchange (a, b, c); }
-
-__int64 juce_InterlockedCompareExchange64 (volatile __int64* value, __int64 newValue, __int64 valueToCompare) NOEXCEPT
-{
-    jassertfalse; // This operation isn't available in old MS compiler versions!
-
-    __int64 oldValue = *value;
-    if (oldValue == valueToCompare)
-        *value = newValue;
-
-    return oldValue;
-}
-
-#endif
-
-//==============================================================================
-CriticalSection::CriticalSection() NOEXCEPT
+CriticalSection::CriticalSection() noexcept
 {
     // (just to check the MS haven't changed this structure and broken things...)
    #if JUCE_VC7_OR_EARLIER
@@ -88,22 +65,22 @@ CriticalSection::CriticalSection() NOEXCEPT
     InitializeCriticalSection ((CRITICAL_SECTION*) lock);
 }
 
-CriticalSection::~CriticalSection() NOEXCEPT        { DeleteCriticalSection ((CRITICAL_SECTION*) lock); }
-void CriticalSection::enter() const NOEXCEPT        { EnterCriticalSection ((CRITICAL_SECTION*) lock); }
-bool CriticalSection::tryEnter() const NOEXCEPT     { return TryEnterCriticalSection ((CRITICAL_SECTION*) lock) != FALSE; }
-void CriticalSection::exit() const NOEXCEPT         { LeaveCriticalSection ((CRITICAL_SECTION*) lock); }
+CriticalSection::~CriticalSection() noexcept        { DeleteCriticalSection ((CRITICAL_SECTION*) lock); }
+void CriticalSection::enter() const noexcept        { EnterCriticalSection ((CRITICAL_SECTION*) lock); }
+bool CriticalSection::tryEnter() const noexcept     { return TryEnterCriticalSection ((CRITICAL_SECTION*) lock) != FALSE; }
+void CriticalSection::exit() const noexcept         { LeaveCriticalSection ((CRITICAL_SECTION*) lock); }
 
 
 //==============================================================================
-WaitableEvent::WaitableEvent (const bool manualReset) NOEXCEPT
+WaitableEvent::WaitableEvent (const bool manualReset) noexcept
     : handle (CreateEvent (0, manualReset ? TRUE : FALSE, FALSE, 0)) {}
 
-WaitableEvent::~WaitableEvent() NOEXCEPT        { CloseHandle (handle); }
+WaitableEvent::~WaitableEvent() noexcept        { CloseHandle (handle); }
 
-void WaitableEvent::signal() const NOEXCEPT     { SetEvent (handle); }
-void WaitableEvent::reset() const NOEXCEPT      { ResetEvent (handle); }
+void WaitableEvent::signal() const noexcept     { SetEvent (handle); }
+void WaitableEvent::reset() const noexcept      { ResetEvent (handle); }
 
-bool WaitableEvent::wait (const int timeOutMs) const NOEXCEPT
+bool WaitableEvent::wait (const int timeOutMs) const noexcept
 {
     return WaitForSingleObject (handle, (DWORD) timeOutMs) == WAIT_OBJECT_0;
 }
@@ -205,7 +182,7 @@ void JUCE_CALLTYPE Thread::setCurrentThreadAffinityMask (const uint32 affinityMa
 //==============================================================================
 struct SleepEvent
 {
-    SleepEvent() NOEXCEPT
+    SleepEvent() noexcept
         : handle (CreateEvent (nullptr, FALSE, FALSE,
                               #if JUCE_DEBUG
                                _T("JUCE Sleep Event")))
@@ -214,7 +191,7 @@ struct SleepEvent
                               #endif
     {}
 
-    ~SleepEvent() NOEXCEPT
+    ~SleepEvent() noexcept
     {
         CloseHandle (handle);
         handle = 0;
@@ -288,7 +265,7 @@ bool JUCE_CALLTYPE Process::isRunningUnderDebugger()
 
 static void* currentModuleHandle = nullptr;
 
-void* JUCE_CALLTYPE Process::getCurrentModuleInstanceHandle() NOEXCEPT
+void* JUCE_CALLTYPE Process::getCurrentModuleInstanceHandle() noexcept
 {
     if (currentModuleHandle == nullptr)
         currentModuleHandle = GetModuleHandleA (nullptr);
@@ -296,7 +273,7 @@ void* JUCE_CALLTYPE Process::getCurrentModuleInstanceHandle() NOEXCEPT
     return currentModuleHandle;
 }
 
-void JUCE_CALLTYPE Process::setCurrentModuleInstanceHandle (void* const newHandle) NOEXCEPT
+void JUCE_CALLTYPE Process::setCurrentModuleInstanceHandle (void* const newHandle) noexcept
 {
     currentModuleHandle = newHandle;
 }
@@ -354,7 +331,7 @@ void DynamicLibrary::close()
     JUCE_CATCH_ALL
 }
 
-void* DynamicLibrary::getFunction (const String& functionName) NOEXCEPT
+void* DynamicLibrary::getFunction (const String& functionName) noexcept
 {
     return handle != nullptr ? (void*) GetProcAddress ((HMODULE) handle, functionName.toUTF8()) // (void* cast is required for mingw)
                              : nullptr;
@@ -452,7 +429,7 @@ void InterProcessLock::Pimpl::close()
 }
 
 //==============================================================================
-HighResolutionTimer::Pimpl::Pimpl (HighResolutionTimer& t) NOEXCEPT  : owner (t), periodMs (0)
+HighResolutionTimer::Pimpl::Pimpl (HighResolutionTimer& t) noexcept  : owner (t), periodMs (0)
 {
 }
 

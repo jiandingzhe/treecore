@@ -75,49 +75,49 @@ public:
         ensure that the data does not change during the lifetime of the StringRef.
         Note that this pointer not be null!
     */
-    StringRef (const char* stringLiteral) NOEXCEPT;
+    StringRef (const char* stringLiteral) noexcept;
 
     /** Creates a StringRef from a raw char pointer.
         The StringRef object does NOT take ownership or copy this data, so you must
         ensure that the data does not change during the lifetime of the StringRef.
     */
-    StringRef (String::CharPointerType stringLiteral) NOEXCEPT;
+    StringRef (String::CharPointerType stringLiteral) noexcept;
 
     /** Creates a StringRef from a String.
         The StringRef object does NOT take ownership or copy the data from the String,
         so you must ensure that the String is not modified or deleted during the lifetime
         of the StringRef.
     */
-    StringRef (const String& string) NOEXCEPT;
+    StringRef (const String& string) noexcept;
 
     /** Creates a StringRef pointer to an empty string. */
-    StringRef() NOEXCEPT;
+    StringRef() noexcept;
 
     //==============================================================================
     /** Returns a raw pointer to the underlying string data. */
-    operator const String::CharPointerType::CharType*() const NOEXCEPT  { return text.getAddress(); }
+    operator const String::CharPointerType::CharType*() const noexcept  { return text.getAddress(); }
     /** Returns a pointer to the underlying string data as a char pointer object. */
-    operator String::CharPointerType() const NOEXCEPT                   { return text; }
+    operator String::CharPointerType() const noexcept                   { return text; }
 
     /** Returns true if the string is empty. */
-    bool isEmpty() const NOEXCEPT                                       { return text.isEmpty(); }
+    bool isEmpty() const noexcept                                       { return text.isEmpty(); }
     /** Returns true if the string is not empty. */
-    bool isNotEmpty() const NOEXCEPT                                    { return ! text.isEmpty(); }
+    bool isNotEmpty() const noexcept                                    { return ! text.isEmpty(); }
     /** Returns the number of characters in the string. */
-    int length() const NOEXCEPT                                         { return (int) text.length(); }
+    int length() const noexcept                                         { return (int) text.length(); }
 
     /** Retrieves a character by index. */
-    juce_wchar operator[] (int index) const NOEXCEPT                    { return text[index]; }
+    juce_wchar operator[] (int index) const noexcept                    { return text[index]; }
 
     /** Compares this StringRef with a String. */
-    bool operator== (const String& s) const NOEXCEPT                    { return text.compare (s.getCharPointer()) == 0; }
+    bool operator== (const String& s) const noexcept                    { return text.compare (s.getCharPointer()) == 0; }
     /** Compares this StringRef with a String. */
-    bool operator!= (const String& s) const NOEXCEPT                    { return text.compare (s.getCharPointer()) != 0; }
+    bool operator!= (const String& s) const noexcept                    { return text.compare (s.getCharPointer()) != 0; }
 
     /** Case-sensitive comparison of two StringRefs. */
-    bool operator== (StringRef s) const NOEXCEPT                        { return text.compare (s.text) == 0; }
+    bool operator== (StringRef s) const noexcept                        { return text.compare (s.text) == 0; }
     /** Case-sensitive comparison of two StringRefs. */
-    bool operator!= (StringRef s) const NOEXCEPT                        { return text.compare (s.text) != 0; }
+    bool operator!= (StringRef s) const noexcept                        { return text.compare (s.text) != 0; }
 
     //==============================================================================
     /** The text that is referenced. */
@@ -126,9 +126,9 @@ public:
 
 //==============================================================================
 /** Case-sensitive comparison of two strings. */
-JUCE_API bool JUCE_CALLTYPE operator== (const String& string1, StringRef string2) NOEXCEPT;
+JUCE_API bool JUCE_CALLTYPE operator== (const String& string1, StringRef string2) noexcept;
 /** Case-sensitive comparison of two strings. */
-JUCE_API bool JUCE_CALLTYPE operator!= (const String& string1, StringRef string2) NOEXCEPT;
+JUCE_API bool JUCE_CALLTYPE operator!= (const String& string1, StringRef string2) noexcept;
 
 }
 

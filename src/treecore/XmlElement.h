@@ -173,11 +173,11 @@ public:
     /** Creates a (deep) copy of another element. */
     XmlElement& operator= (const XmlElement&);
 
-    XmlElement (XmlElement&&) NOEXCEPT;
-    XmlElement& operator= (XmlElement&&) NOEXCEPT;
+    XmlElement (XmlElement&&) noexcept;
+    XmlElement& operator= (XmlElement&&) noexcept;
 
     /** Deleting an XmlElement will also delete all of its child elements. */
-    ~XmlElement() NOEXCEPT;
+    ~XmlElement() noexcept;
 
     //==============================================================================
     /** Compares two XmlElements to see if they contain the same text and attiributes.
@@ -192,7 +192,7 @@ public:
                                         be in the same order as well
     */
     bool isEquivalentTo (const XmlElement* other,
-                         bool ignoreOrderOfAttributes) const NOEXCEPT;
+                         bool ignoreOrderOfAttributes) const noexcept;
 
     //==============================================================================
     /** Returns an XML text document that represents this element.
@@ -269,7 +269,7 @@ public:
         E.g. for an element such as \<MOOSE legs="4" antlers="2">, this would return "MOOSE".
         @see hasTagName
     */
-    const String& getTagName() const NOEXCEPT            { return tagName; }
+    const String& getTagName() const noexcept            { return tagName; }
 
     /** Returns the namespace portion of the tag-name, or an empty string if none is specified. */
     String getNamespace() const;
@@ -281,7 +281,7 @@ public:
         @param possibleTagName  the tag name you're comparing it with
         @see getTagName
     */
-    bool hasTagName (StringRef possibleTagName) const NOEXCEPT;
+    bool hasTagName (StringRef possibleTagName) const noexcept;
 
     /** Tests whether this element has a particular tag name, ignoring any XML namespace prefix.
         So a test for e.g. "xyz" will return true for "xyz" and also "foo:xyz", "bar::xyz", etc.
@@ -295,7 +295,7 @@ public:
         E.g. for an element such as \<MOOSE legs="4" antlers="2">, this would
         return 2.
     */
-    int getNumAttributes() const NOEXCEPT;
+    int getNumAttributes() const noexcept;
 
     /** Returns the name of one of the elements attributes.
 
@@ -304,7 +304,7 @@ public:
 
         @see getAttributeValue, getStringAttribute
     */
-    const String& getAttributeName (int attributeIndex) const NOEXCEPT;
+    const String& getAttributeName (int attributeIndex) const noexcept;
 
     /** Returns the value of one of the elements attributes.
 
@@ -313,18 +313,18 @@ public:
 
         @see getAttributeName, getStringAttribute
     */
-    const String& getAttributeValue (int attributeIndex) const NOEXCEPT;
+    const String& getAttributeValue (int attributeIndex) const noexcept;
 
     //==============================================================================
     // Attribute-handling methods..
 
     /** Checks whether the element contains an attribute with a certain name. */
-    bool hasAttribute (StringRef attributeName) const NOEXCEPT;
+    bool hasAttribute (StringRef attributeName) const noexcept;
 
     /** Returns the value of a named attribute.
         @param attributeName        the name of the attribute to look up
     */
-    const String& getStringAttribute (StringRef attributeName) const NOEXCEPT;
+    const String& getStringAttribute (StringRef attributeName) const noexcept;
 
     /** Returns the value of a named attribute.
         @param attributeName        the name of the attribute to look up
@@ -343,7 +343,7 @@ public:
     */
     bool compareAttribute (StringRef attributeName,
                            StringRef stringToCompareAgainst,
-                           bool ignoreCase = false) const NOEXCEPT;
+                           bool ignoreCase = false) const noexcept;
 
     /** Returns the value of a named attribute as an integer.
 
@@ -429,10 +429,10 @@ public:
         @param attributeName    the name of the attribute to remove
         @see removeAllAttributes
     */
-    void removeAttribute (const Identifier& attributeName) NOEXCEPT;
+    void removeAttribute (const Identifier& attributeName) noexcept;
 
     /** Removes all attributes from this element. */
-    void removeAllAttributes() NOEXCEPT;
+    void removeAllAttributes() noexcept;
 
     //==============================================================================
     // Child element methods..
@@ -441,7 +441,7 @@ public:
         see getNextElement() for an example of how to iterate the sub-elements.
         @see forEachXmlChildElement
     */
-    XmlElement* getFirstChildElement() const NOEXCEPT       { return firstChildElement; }
+    XmlElement* getFirstChildElement() const noexcept       { return firstChildElement; }
 
     /** Returns the next of this element's siblings.
 
@@ -469,7 +469,7 @@ public:
 
         @see getNextElement, isTextElement, forEachXmlChildElement
     */
-    inline XmlElement* getNextElement() const NOEXCEPT          { return nextListItem; }
+    inline XmlElement* getNextElement() const noexcept          { return nextListItem; }
 
     /** Returns the next of this element's siblings which has the specified tag
         name.
@@ -484,7 +484,7 @@ public:
     /** Returns the number of sub-elements in this element.
         @see getChildElement
     */
-    int getNumChildElements() const NOEXCEPT;
+    int getNumChildElements() const noexcept;
 
     /** Returns the sub-element at a certain index.
 
@@ -494,7 +494,7 @@ public:
         @returns the n'th child of this element, or nullptr if the index is out-of-range
         @see getNextElement, isTextElement, getChildByName
     */
-    XmlElement* getChildElement (int index) const NOEXCEPT;
+    XmlElement* getChildElement (int index) const noexcept;
 
     /** Returns the first sub-element with a given tag-name.
 
@@ -502,7 +502,7 @@ public:
         @returns the first element with this tag name, or nullptr if none is found
         @see getNextElement, isTextElement, getChildElement, getChildByAttribute
     */
-    XmlElement* getChildByName (StringRef tagNameToLookFor) const NOEXCEPT;
+    XmlElement* getChildByName (StringRef tagNameToLookFor) const noexcept;
 
     /** Returns the first sub-element which has an attribute that matches the given value.
 
@@ -512,7 +512,7 @@ public:
         @see getChildByName
     */
     XmlElement* getChildByAttribute (StringRef attributeName,
-                                     StringRef attributeValue) const NOEXCEPT;
+                                     StringRef attributeValue) const noexcept;
 
     //==============================================================================
     /** Appends an element to this element's list of children.
@@ -528,7 +528,7 @@ public:
         @see getFirstChildElement, getNextElement, getNumChildElements,
              getChildElement, removeChildElement
     */
-    void addChildElement (XmlElement* newChildElement) NOEXCEPT;
+    void addChildElement (XmlElement* newChildElement) noexcept;
 
     /** Inserts an element into this element's list of children.
 
@@ -542,7 +542,7 @@ public:
         @see addChildElement, insertChildElement
     */
     void insertChildElement (XmlElement* newChildElement,
-                             int indexToInsertAt) NOEXCEPT;
+                             int indexToInsertAt) noexcept;
 
     /** Inserts an element at the beginning of this element's list of children.
 
@@ -556,7 +556,7 @@ public:
 
         @see addChildElement, insertChildElement
     */
-    void prependChildElement (XmlElement* newChildElement) NOEXCEPT;
+    void prependChildElement (XmlElement* newChildElement) noexcept;
 
     /** Creates a new element with the given name and returns it, after adding it
         as a child element.
@@ -582,7 +582,7 @@ public:
         will return true.
     */
     bool replaceChildElement (XmlElement* currentChildElement,
-                              XmlElement* newChildNode) NOEXCEPT;
+                              XmlElement* newChildNode) noexcept;
 
     /** Removes a child element.
 
@@ -591,25 +591,25 @@ public:
                                         just remove it
     */
     void removeChildElement (XmlElement* childToRemove,
-                             bool shouldDeleteTheChild) NOEXCEPT;
+                             bool shouldDeleteTheChild) noexcept;
 
     /** Deletes all the child elements in the element.
         @see removeChildElement, deleteAllChildElementsWithTagName
     */
-    void deleteAllChildElements() NOEXCEPT;
+    void deleteAllChildElements() noexcept;
 
     /** Deletes all the child elements with a given tag name.
         @see removeChildElement
     */
-    void deleteAllChildElementsWithTagName (StringRef tagName) NOEXCEPT;
+    void deleteAllChildElementsWithTagName (StringRef tagName) noexcept;
 
     /** Returns true if the given element is a child of this one. */
-    bool containsChildElement (const XmlElement* possibleChild) const NOEXCEPT;
+    bool containsChildElement (const XmlElement* possibleChild) const noexcept;
 
     /** Recursively searches all sub-elements to find one that contains the specified
         child element.
     */
-    XmlElement* findParentElementOf (const XmlElement* elementToLookFor) NOEXCEPT;
+    XmlElement* findParentElementOf (const XmlElement* elementToLookFor) noexcept;
 
     //==============================================================================
     /** Sorts the child elements using a comparator.
@@ -657,7 +657,7 @@ public:
 
         @see getAllText, addTextElement, deleteAllTextElements
     */
-    bool isTextElement() const NOEXCEPT;
+    bool isTextElement() const noexcept;
 
     /** Returns the text for a text element.
 
@@ -675,7 +675,7 @@ public:
 
         @see isTextElement, getAllSubText, getChildElementAllSubText
     */
-    const String& getText() const NOEXCEPT;
+    const String& getText() const noexcept;
 
     /** Sets the text in a text element.
 
@@ -719,7 +719,7 @@ public:
     /** Removes all the text elements from this element.
         @see isTextElement, getText, getAllSubText, addTextElement
     */
-    void deleteAllTextElements() NOEXCEPT;
+    void deleteAllTextElements() noexcept;
 
     /** Creates a text element that can be added to a parent element. */
     static XmlElement* createTextElement (const String& text);
@@ -728,8 +728,8 @@ public:
 private:
     struct XmlAttributeNode
     {
-        XmlAttributeNode (const XmlAttributeNode&) NOEXCEPT;
-        XmlAttributeNode (const Identifier&, const String&) NOEXCEPT;
+        XmlAttributeNode (const XmlAttributeNode&) noexcept;
+        XmlAttributeNode (const Identifier&, const String&) noexcept;
         XmlAttributeNode (String::CharPointerType, String::CharPointerType);
 
         LinkedListPointer<XmlAttributeNode> nextListItem;
@@ -751,12 +751,12 @@ private:
     LinkedListPointer<XmlAttributeNode> attributes;
     String tagName;
 
-    XmlElement (int) NOEXCEPT;
+    XmlElement (int) noexcept;
     void copyChildrenAndAttributesFrom (const XmlElement&);
     void writeElementAsText (OutputStream&, int indentationLevel, int lineWrapLength) const;
-    void getChildElementsAsArray (XmlElement**) const NOEXCEPT;
-    void reorderChildElements (XmlElement**, int) NOEXCEPT;
-    XmlAttributeNode* getAttribute (StringRef) const NOEXCEPT;
+    void getChildElementsAsArray (XmlElement**) const noexcept;
+    void reorderChildElements (XmlElement**, int) noexcept;
+    XmlAttributeNode* getAttribute (StringRef) const noexcept;
 
     // Sigh.. L"" or _T("") string literals are problematic in general, and really inappropriate
     // for XML tags. Use a UTF-8 encoded literal instead, or if you're really determined to use

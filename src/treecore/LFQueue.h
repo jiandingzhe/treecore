@@ -1,9 +1,13 @@
 ﻿#ifndef ztd_ZlogfdssssssssssckfreeCgggggggggggggircularBuffer_h__ffffffffffffffff
 #define ztd_ZlogfdssssssssssckfreeCgggggggggggggircularBuffer_h__ffffffffffffffff
 
+#include "treecore/AtomicObject.h"
+#include "treecore/ClassUtil.h"
+#include "treecore/IntTypes.h"
 #include "treecore/QueueBase.h"
+#include "treecore/SpinRWLock.h"
 
-namespace juce
+namespace treecore
 {
 
 /*
@@ -70,7 +74,7 @@ public:
     FORCE_TRIVIAL_CLASS( LfQueueNode );
 public:
     T m_dataInNode;
-    Atomic<int> m_stateInNode;
+    AtomicObject<int32> m_stateInNode;
 };
 
 class index_t
@@ -88,15 +92,15 @@ public:
 
 
 template<typename T>
-class LfQueue :private impl::QueueBase<impl::LfQueueNode<T>,uint32>
+class LfQueue: private impl::QueueBase<impl::LfQueueNode<T>, uint32>
 {
 public:
     typedef int mark_t;
 public:
-    using impl::QueueBase<impl::LfQueueNode<T>,uint32>::m_p2size;
+    using impl::QueueBase<impl::LfQueueNode<T>, uint32>::m_p2size;
 
     explicit forcedinline LfQueue( uint32 p2size=12 )
-        : impl::QueueBase<impl::LfQueueNode<T>,uint32>(p2size,true)
+        : impl::QueueBase<impl::LfQueueNode<T>, uint32>(p2size,true)
         , m_readPos( impl::index_t( 0 , 0 ) )
         , m_writePos( impl::index_t( 0 , 0 ) )
         , m_reallocLock()
@@ -117,23 +121,31 @@ public:
 #endif
 
         using namespace impl;
+        const SpinRWLock::ScopedReadLock scopedLock( m_reallocLock );
 
-        const SpinReadWriteLock::ScopedReadLock scopedLock( m_reallocLock );
-        for( ;; ) {
-            const index_t readPos = m_readPos.get();
-            const index_t k = m_writePos.get();
+        for( ;; )
+        {
+            const index_t readPos = m_readPos;
+            const index_t k = m_writePos;
             unlikely_if( _isFull( k.index , readPos.index ) ) return false; //如果已经满了就返回
-            mark_t mark = this->getDataInModIndex( k ).m_stateInNode.compareAndSetValue(  Pushing , FreeToUse );
-            likely_if( mark == FreeToUse ) {
+
+            mark_t mark = FreeToUse;
+            this->getDataInModIndex( k ).m_stateInNode.compare_exchange(&mark, Pushing);
+            likely_if( mark == FreeToUse )
+            {
                 func( this->getDataInModIndex( k ).m_dataInNode );
-                run_with_assert( this->getDataInModIndex( k ).m_stateInNode.compareAndSetBool(  HasNode , Pushing  ) );
-                m_writePos.compareAndSetBool( index_t( k + 1 , k.count + 3 ) , k );
+                this->getDataInModIndex( k ).m_stateInNode.compare_set(Pushing, HasNode);
+                m_writePos.compare_set(k, index_t( k + 1 , k.count + 3 ) );
                 break;
-            } else unlikely_if( mark == Poping ) {
+            }
+            else unlikely_if( mark == Poping )
+            {
                 return false; //如果等于Poping,我们可以想点别的办法,这里没想清楚,其实加锁也无妨,不是常见情况
-            } else {
+            }
+            else
+            {
                 jassert(mark == Pushing || mark == HasNode);
-                m_writePos.compareAndSetBool( index_t( k + 1 , k.count + 3 ) ,  k  );
+                m_writePos.compare_set(k, index_t( k + 1 , k.count + 3 ));
                 //有可能,例如两条线程A和B同时push,由于A的push行为如此之频繁,
                 //使得B每次循环重试时总是获取不到正确的writePos,
                 //极端情况下会导致这里重试多次(超过2000次),
@@ -151,24 +163,33 @@ public:
 #endif
 
         using namespace impl;
-        const SpinReadWriteLock::ScopedReadLock scopedLock( m_reallocLock );
-        for( ;; ) {
-            const index_t k = m_readPos.get();
-            unlikely_if( _isEmpty( m_writePos.get() , k ) ) { return false; }
-            mark_t const mark = this->getDataInModIndex( k ).m_stateInNode.compareAndSetValue(  Poping ,HasNode );
-            likely_if( mark == HasNode ) {
+        const SpinRWLock::ScopedReadLock scopedLock( m_reallocLock );
+        for( ;; )
+        {
+            const index_t k = m_readPos;
+            unlikely_if( _isEmpty(m_writePos.load(), k) )
+                return false;
+
+            mark_t mark = HasNode;
+            this->getDataInModIndex( k ).m_stateInNode.compare_exchange( &mark, Poping);
+            likely_if( mark == HasNode )
+            {
                 T& a = this->getDataInModIndex( k ).m_dataInNode;
                 func( a );
-                run_with_assert( this->getDataInModIndex( k ).m_stateInNode.compareAndSetBool( FreeToUse ,Poping ) );
-                m_readPos.compareAndSetBool(  index_t( k + 1 , k.count + 3 ) , k );
+                this->getDataInModIndex( k ).m_stateInNode.compare_set( Poping, FreeToUse );
+                m_readPos.compare_set( k, index_t(k + 1, k.count + 3) );
                 break;
-            } else unlikely_if( mark == Pushing ) {
+            }
+            else unlikely_if( mark == Pushing )
+            {
                 //如果向队列中写数据的方法相当相当慢,这里便可能出现pushing并没结束时有人已经在pop的情况,这时,我们返回false,代表队列中没有元素(因为第一个要读的元素都没写完,那后面的即使写完了也访问不到).
                 //这不是锁,而是队列其确确实实没有东西
                 return false;
-            } else {
+            }
+            else
+            {
                 jassert(mark == FreeToUse || mark == Poping);
-                m_readPos.compareAndSetBool( index_t( k + 1 , k.count + 3 ) , k );
+                m_readPos.compare_set(k, index_t( k + 1 , k.count + 3 ));
             }
         }
         return true;
@@ -214,14 +235,14 @@ public:
 
     forcedinline bool isFull()
     {
-        const SpinReadWriteLock::ScopedReadLock scopedLock( m_reallocLock );
-        return _isFull( m_writePos.get() , m_readPos.get() );
+        const SpinRWLock::ScopedReadLock scopedLock( m_reallocLock );
+        return _isFull( m_writePos.load() , m_readPos.load() );
     }
 
     forcedinline bool isEmpty()
     {
-        const SpinReadWriteLock::ScopedReadLock scopedLock( m_reallocLock );
-        return _isEmpty( m_writePos.get() , m_readPos.get() );
+        const SpinRWLock::ScopedReadLock scopedLock( m_reallocLock );
+        return _isEmpty( m_writePos.load() , m_readPos.load() );
     }
 
 private:
@@ -233,9 +254,9 @@ private:
         Poping
     };
 
-    Atomic<impl::index_t> m_readPos;
-    Atomic<impl::index_t> m_writePos;
-    SpinReadWriteLock m_reallocLock;
+    AtomicObject<impl::index_t> m_readPos;
+    AtomicObject<impl::index_t> m_writePos;
+    SpinRWLock m_reallocLock;
 
     forcedinline bool _isFull( uint32 writePos , uint32 startPos ) const noexcept
     {
@@ -258,10 +279,10 @@ private:
 #endif
 
         if(m_reallocLock.EnterWriteAny()==-1) return;
-        uint32 const m = this->realloc( ++m_p2size, m_readPos.get( ) , m_writePos.get( ) , true );
-        m_readPos.get_raw().index=0;
+        uint32 const m = this->realloc( ++m_p2size, m_readPos.load( ) , m_writePos.load( ) , true );
+        m_readPos.get_raw()->index=0;
         //m_readPos.m_data.count += 3; //TODO
-        m_writePos.get_raw().index=m;
+        m_writePos.get_raw()->index=m;
         //m_writePos.m_data.count += 3 ; //TODO
         m_reallocLock.ExitWrite();
     }

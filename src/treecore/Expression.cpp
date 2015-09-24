@@ -41,7 +41,7 @@ public:
     Term() {}
     virtual ~Term() {}
 
-    virtual Type getType() const NOEXCEPT = 0;
+    virtual Type getType() const noexcept = 0;
     virtual Term* clone() const = 0;
     virtual Term* resolve (const Scope&, int recursionDepth) = 0;
     virtual String toString() const = 0;
@@ -122,7 +122,7 @@ struct Expression::Helpers
         Constant (const double val, const bool resolutionTarget)
             : value (val), isResolutionTarget (resolutionTarget) {}
 
-        Type getType() const NOEXCEPT                { return constantType; }
+        Type getType() const noexcept                { return constantType; }
         Term* clone() const                          { return new Constant (value, isResolutionTarget); }
         Term* resolve (const Scope&, int)          { return this; }
         double toDouble() const                      { return value; }
@@ -155,7 +155,7 @@ struct Expression::Helpers
             return possibleInput == left ? 0 : (possibleInput == right ? 1 : -1);
         }
 
-        Type getType() const NOEXCEPT       { return operatorType; }
+        Type getType() const noexcept       { return operatorType; }
         int getNumInputs() const            { return 2; }
         Term* getInput (int index) const    { return index == 0 ? left.get() : (index == 1 ? right.get() : 0); }
 
@@ -216,7 +216,7 @@ struct Expression::Helpers
             return scope.getSymbolValue (symbol).term->resolve (scope, recursionDepth + 1);
         }
 
-        Type getType() const NOEXCEPT   { return symbolType; }
+        Type getType() const noexcept   { return symbolType; }
         Term* clone() const             { return new SymbolTerm (symbol); }
         String toString() const         { return symbol; }
         String getName() const          { return symbol; }
@@ -247,7 +247,7 @@ struct Expression::Helpers
             : functionName (name), parameters (params)
         {}
 
-        Type getType() const NOEXCEPT   { return functionType; }
+        Type getType() const noexcept   { return functionType; }
         Term* clone() const             { return new Function (functionName, parameters); }
         int getNumInputs() const        { return parameters.size(); }
         Term* getInput (int i) const    { return parameters.getReference(i).term.get(); }
@@ -420,7 +420,7 @@ struct Expression::Helpers
             jassert (t != nullptr);
         }
 
-        Type getType() const NOEXCEPT                           { return operatorType; }
+        Type getType() const noexcept                           { return operatorType; }
         int getInputIndexFor (const Term* possibleInput) const  { return possibleInput == input ? 0 : -1; }
         int getNumInputs() const                                { return 1; }
         Term* getInput (int index) const                        { return index == 0 ? input.get() : nullptr; }
@@ -690,12 +690,12 @@ struct Expression::Helpers
         String::CharPointerType& text;
 
         //==============================================================================
-        static inline bool isDecimalDigit (const juce_wchar c) NOEXCEPT
+        static inline bool isDecimalDigit (const juce_wchar c) noexcept
         {
             return c >= '0' && c <= '9';
         }
 
-        bool readChar (const juce_wchar required) NOEXCEPT
+        bool readChar (const juce_wchar required) noexcept
         {
             if (*text == required)
             {
@@ -706,7 +706,7 @@ struct Expression::Helpers
             return false;
         }
 
-        bool readOperator (const char* ops, char* const opType = nullptr) NOEXCEPT
+        bool readOperator (const char* ops, char* const opType = nullptr) noexcept
         {
             text = text.findEndOfWhitespace();
 
@@ -726,7 +726,7 @@ struct Expression::Helpers
             return false;
         }
 
-        bool readIdentifier (String& identifier) NOEXCEPT
+        bool readIdentifier (String& identifier) noexcept
         {
             text = text.findEndOfWhitespace();
             String::CharPointerType t (text);
@@ -754,7 +754,7 @@ struct Expression::Helpers
             return false;
         }
 
-        Term* readNumber() NOEXCEPT
+        Term* readNumber() noexcept
         {
             text = text.findEndOfWhitespace();
             String::CharPointerType t (text);
@@ -960,12 +960,12 @@ Expression& Expression::operator= (const Expression& other)
     return *this;
 }
 
-Expression::Expression (Expression&& other) NOEXCEPT
+Expression::Expression (Expression&& other) noexcept
     : term (static_cast <RefCountHolder<Term>&&> (other.term))
 {
 }
 
-Expression& Expression::operator= (Expression&& other) NOEXCEPT
+Expression& Expression::operator= (Expression&& other) noexcept
 {
     term = static_cast <RefCountHolder<Term>&&> (other.term);
     return *this;
@@ -1102,7 +1102,7 @@ void Expression::findReferencedSymbols (Array<Symbol>& results, const Scope& sco
 
 String Expression::toString() const                     { return term->toString(); }
 bool Expression::usesAnySymbols() const                 { return Helpers::containsAnySymbols (term); }
-Expression::Type Expression::getType() const NOEXCEPT   { return term->getType(); }
+Expression::Type Expression::getType() const noexcept   { return term->getType(); }
 String Expression::getSymbolOrFunction() const          { return term->getName(); }
 int Expression::getNumInputs() const                    { return term->getNumInputs(); }
 Expression Expression::getInput (int index) const       { return Expression (term->getInput (index)); }
@@ -1126,12 +1126,12 @@ Expression::Symbol::Symbol (const String& scopeUID_, const String& symbolName_)
 {
 }
 
-bool Expression::Symbol::operator== (const Symbol& other) const NOEXCEPT
+bool Expression::Symbol::operator== (const Symbol& other) const noexcept
 {
     return symbolName == other.symbolName && scopeUID == other.scopeUID;
 }
 
-bool Expression::Symbol::operator!= (const Symbol& other) const NOEXCEPT
+bool Expression::Symbol::operator!= (const Symbol& other) const noexcept
 {
     return ! operator== (other);
 }

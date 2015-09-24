@@ -63,7 +63,7 @@ class OwnedArray
 public:
     //==============================================================================
     /** Creates an empty array. */
-    OwnedArray() NOEXCEPT
+    OwnedArray() noexcept
         : numUsed (0)
     {
     }
@@ -78,14 +78,14 @@ public:
         deleteAllObjects();
     }
 
-    OwnedArray (OwnedArray&& other) NOEXCEPT
+    OwnedArray (OwnedArray&& other) noexcept
         : data (static_cast <ArrayAllocationBase <ObjectClass*, TypeOfCriticalSectionToUse>&&> (other.data)),
           numUsed (other.numUsed)
     {
         other.numUsed = 0;
     }
 
-    OwnedArray& operator= (OwnedArray&& other) NOEXCEPT
+    OwnedArray& operator= (OwnedArray&& other) noexcept
     {
         const ScopedLockType lock (getLock());
         deleteAllObjects();
@@ -125,7 +125,7 @@ public:
     /** Returns the number of items currently in the array.
         @see operator[]
     */
-    inline int size() const NOEXCEPT
+    inline int size() const noexcept
     {
         return numUsed;
     }
@@ -138,7 +138,7 @@ public:
 
         @see getUnchecked
     */
-    inline ObjectClass* operator[] (const int index) const NOEXCEPT
+    inline ObjectClass* operator[] (const int index) const noexcept
     {
         const ScopedLockType lock (getLock());
         if (isPositiveAndBelow (index, numUsed))
@@ -155,7 +155,7 @@ public:
         This is a faster and less safe version of operator[] which doesn't check the index passed in, so
         it can be used when you're sure the index is always going to be legal.
     */
-    inline ObjectClass* getUnchecked (const int index) const NOEXCEPT
+    inline ObjectClass* getUnchecked (const int index) const noexcept
     {
         const ScopedLockType lock (getLock());
         jassert (isPositiveAndBelow (index, numUsed) && data.elements != nullptr);
@@ -167,7 +167,7 @@ public:
         This will return a null pointer if the array's empty.
         @see getLast
     */
-    inline ObjectClass* getFirst() const NOEXCEPT
+    inline ObjectClass* getFirst() const noexcept
     {
         const ScopedLockType lock (getLock());
 
@@ -185,7 +185,7 @@ public:
         This will return a null pointer if the array's empty.
         @see getFirst
     */
-    inline ObjectClass* getLast() const NOEXCEPT
+    inline ObjectClass* getLast() const noexcept
     {
         const ScopedLockType lock (getLock());
 
@@ -202,7 +202,7 @@ public:
         This pointer will only be valid until the next time a non-const method
         is called on the array.
     */
-    inline ObjectClass** getRawDataPointer() NOEXCEPT
+    inline ObjectClass** getRawDataPointer() noexcept
     {
         return data.elements;
     }
@@ -211,7 +211,7 @@ public:
     /** Returns a pointer to the first element in the array.
         This method is provided for compatibility with standard C++ iteration mechanisms.
     */
-    inline ObjectClass** begin() const NOEXCEPT
+    inline ObjectClass** begin() const noexcept
     {
         return data.elements;
     }
@@ -219,7 +219,7 @@ public:
     /** Returns a pointer to the element which follows the last element in the array.
         This method is provided for compatibility with standard C++ iteration mechanisms.
     */
-    inline ObjectClass** end() const NOEXCEPT
+    inline ObjectClass** end() const noexcept
     {
        #if JUCE_DEBUG
         if (data.elements == nullptr || numUsed <= 0) // (to keep static analysers happy)
@@ -235,7 +235,7 @@ public:
         @param objectToLookFor    the object to look for
         @returns                  the index at which the object was found, or -1 if it's not found
     */
-    int indexOf (const ObjectClass* objectToLookFor) const NOEXCEPT
+    int indexOf (const ObjectClass* objectToLookFor) const noexcept
     {
         const ScopedLockType lock (getLock());
         ObjectClass* const* e = data.elements.getData();
@@ -253,7 +253,7 @@ public:
         @param objectToLookFor      the object to look for
         @returns                    true if the object is in the array
     */
-    bool contains (const ObjectClass* objectToLookFor) const NOEXCEPT
+    bool contains (const ObjectClass* objectToLookFor) const noexcept
     {
         const ScopedLockType lock (getLock());
         ObjectClass* const* e = data.elements.getData();
@@ -279,7 +279,7 @@ public:
         @returns            the new object that was added
         @see set, insert, addIfNotAlreadyThere, addSorted
     */
-    ObjectClass* add (ObjectClass* newObject) NOEXCEPT
+    ObjectClass* add (ObjectClass* newObject) noexcept
     {
         const ScopedLockType lock (getLock());
         data.ensureAllocatedSize (numUsed + 1);
@@ -306,7 +306,7 @@ public:
         @returns                    the new object that was added
         @see add, addSorted, addIfNotAlreadyThere, set
     */
-    ObjectClass* insert (int indexToInsertAt, ObjectClass* newObject) NOEXCEPT
+    ObjectClass* insert (int indexToInsertAt, ObjectClass* newObject) noexcept
     {
         if (indexToInsertAt < 0)
             return add (newObject);
@@ -378,7 +378,7 @@ public:
         @param newObject   the new object to add to the array
         @returns           the new object that was added
     */
-    ObjectClass* addIfNotAlreadyThere (ObjectClass* newObject) NOEXCEPT
+    ObjectClass* addIfNotAlreadyThere (ObjectClass* newObject) noexcept
     {
         const ScopedLockType lock (getLock());
 
@@ -525,7 +525,7 @@ public:
         @see add, sort, indexOfSorted
     */
     template <class ElementComparator>
-    int addSorted (ElementComparator& comparator, ObjectClass* const newObject) NOEXCEPT
+    int addSorted (ElementComparator& comparator, ObjectClass* const newObject) noexcept
     {
         (void) comparator;  // if you pass in an object with a static compareElements() method, this
                             // avoids getting warning messages about the parameter being unused
@@ -548,7 +548,7 @@ public:
         @see addSorted, sort
     */
     template <typename ElementComparator>
-    int indexOfSorted (ElementComparator& comparator, const ObjectClass* const objectToLookFor) const NOEXCEPT
+    int indexOfSorted (ElementComparator& comparator, const ObjectClass* const objectToLookFor) const noexcept
     {
         (void) comparator;
         const ScopedLockType lock (getLock());
@@ -733,7 +733,7 @@ public:
         otherwise the two objects at these positions will be exchanged.
     */
     void swap (int index1,
-               int index2) NOEXCEPT
+               int index2) noexcept
     {
         const ScopedLockType lock (getLock());
 
@@ -758,7 +758,7 @@ public:
         @param newIndex         the index at which you'd like this object to end up. If this
                                 is less than zero, it will be moved to the end of the array
     */
-    void move (int currentIndex, int newIndex) NOEXCEPT
+    void move (int currentIndex, int newIndex) noexcept
     {
         if (currentIndex != newIndex)
         {
@@ -795,7 +795,7 @@ public:
         because it just swaps their internal pointers.
     */
     template <class OtherArrayType>
-    void swapWith (OtherArrayType& otherArray) NOEXCEPT
+    void swapWith (OtherArrayType& otherArray) noexcept
     {
         const ScopedLockType lock1 (getLock());
         const typename OtherArrayType::ScopedLockType lock2 (otherArray.getLock());
@@ -810,7 +810,7 @@ public:
         removing elements, they may have quite a lot of unused space allocated.
         This method will reduce the amount of allocated storage to a minimum.
     */
-    void minimiseStorageOverheads() NOEXCEPT
+    void minimiseStorageOverheads() noexcept
     {
         const ScopedLockType lock (getLock());
         data.shrinkToNoMoreThan (numUsed);
@@ -822,7 +822,7 @@ public:
         the array won't have to keep dynamically resizing itself as the elements
         are added, and it'll therefore be more efficient.
     */
-    void ensureStorageAllocated (const int minNumElements) NOEXCEPT
+    void ensureStorageAllocated (const int minNumElements) noexcept
     {
         const ScopedLockType lock (getLock());
         data.ensureAllocatedSize (minNumElements);
@@ -856,7 +856,7 @@ public:
     */
     template <class ElementComparator>
     void sort (ElementComparator& comparator,
-               bool retainOrderOfEquivalentItems = false) const NOEXCEPT
+               bool retainOrderOfEquivalentItems = false) const noexcept
     {
         (void) comparator;  // if you pass in an object with a static compareElements() method, this
                             // avoids getting warning messages about the parameter being unused
@@ -870,7 +870,7 @@ public:
         To lock, you can call getLock().enter() and getLock().exit(), or preferably use
         an object of ScopedLockType as an RAII lock for it.
     */
-    inline const TypeOfCriticalSectionToUse& getLock() const NOEXCEPT      { return data; }
+    inline const TypeOfCriticalSectionToUse& getLock() const noexcept      { return data; }
 
     /** Returns the type of scoped lock to use for locking this array */
     typedef typename TypeOfCriticalSectionToUse::ScopedLockType ScopedLockType;
@@ -880,7 +880,7 @@ public:
    #ifndef DOXYGEN
     // Note that the swapWithArray method has been replaced by a more flexible templated version,
     // and renamed "swapWith" to be more consistent with the names used in other classes.
-    JUCE_DEPRECATED_WITH_BODY (void swapWithArray (OwnedArray& other) NOEXCEPT, { swapWith (other); })
+    JUCE_DEPRECATED_WITH_BODY (void swapWithArray (OwnedArray& other) noexcept, { swapWith (other); })
    #endif
 
 private:

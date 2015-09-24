@@ -37,10 +37,10 @@ struct TextDiffHelpers
 
     struct StringRegion
     {
-        StringRegion (const String& s) NOEXCEPT
+        StringRegion (const String& s) noexcept
             : text (s.getCharPointer()), start (0), length (s.length()) {}
 
-        StringRegion (const String::CharPointerType t, int s, int len)  NOEXCEPT
+        StringRegion (const String::CharPointerType t, int s, int len)  noexcept
             : text (t), start (s), length (len) {}
 
         String::CharPointerType text;
@@ -176,12 +176,12 @@ String TextDiff::appliedTo (String text) const
     return text;
 }
 
-bool TextDiff::Change::isDeletion() const NOEXCEPT
+bool TextDiff::Change::isDeletion() const noexcept
 {
     return insertedText.isEmpty();
 }
 
-String TextDiff::Change::appliedTo (const String& text) const NOEXCEPT
+String TextDiff::Change::appliedTo (const String& text) const noexcept
 {
     return text.substring (0, start) + (isDeletion() ? text.substring (start + length)
                                                      : (insertedText + text.substring (start)));

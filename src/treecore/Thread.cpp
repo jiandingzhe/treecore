@@ -64,7 +64,7 @@ Thread::~Thread()
 // shared pointer when threads are still running during static shutdown.
 struct CurrentThreadHolder   : public RefCountObject
 {
-    CurrentThreadHolder() NOEXCEPT {}
+    CurrentThreadHolder() noexcept {}
 
     typedef RefCountHolder<CurrentThreadHolder> Ptr;
     ThreadLocalValue<Thread*> value;
@@ -261,7 +261,7 @@ void Thread::notify() const
 }
 
 //==============================================================================
-void SpinLock::enter() const NOEXCEPT
+void SpinLock::enter() const noexcept
 {
     if (! tryEnter())
     {

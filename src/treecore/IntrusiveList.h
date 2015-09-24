@@ -51,7 +51,7 @@ public:
             other.ms_agent = nullptr;
         }
 
-        Type* operator -> () NOEXCEPT
+        Type* operator -> () noexcept
         {
             return ms_agent;
         }
@@ -70,7 +70,7 @@ public:
     {
     }
 
-    void append(Type& value) NOEXCEPT
+    void append(Type& value) noexcept
     {
         AgentType* agent = &value;
         AgentType* old_tail = root.prev;
@@ -82,7 +82,7 @@ public:
         root.prev = agent;
     }
 
-    void prepend(Type& value) NOEXCEPT
+    void prepend(Type& value) noexcept
     {
         AgentType* agent = &value;
         AgentType* old_head = &root.next;
@@ -94,12 +94,12 @@ public:
         agent->prev = root;
     }
 
-    Type* begin() NOEXCEPT
+    Type* begin() noexcept
     {
         return root.next;
     }
 
-    Type* end() NOEXCEPT
+    Type* end() noexcept
     {
         return &root;
     }

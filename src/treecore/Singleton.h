@@ -126,7 +126,7 @@ namespace treecore {
         return _singletonInstance; \
     } \
 \
-    static inline classname* JUCE_CALLTYPE getInstanceWithoutCreating() NOEXCEPT\
+    static inline classname* JUCE_CALLTYPE getInstanceWithoutCreating() noexcept\
     { \
         return _singletonInstance; \
     } \
@@ -142,7 +142,7 @@ namespace treecore {
         } \
     } \
 \
-    void clearSingletonInstance() NOEXCEPT\
+    void clearSingletonInstance() noexcept\
     { \
         if (_singletonInstance == this) \
             _singletonInstance = nullptr; \
@@ -208,7 +208,7 @@ namespace treecore {
         return _singletonInstance; \
     } \
 \
-    static inline classname* getInstanceWithoutCreating() NOEXCEPT\
+    static inline classname* getInstanceWithoutCreating() noexcept\
     { \
         return _singletonInstance; \
     } \
@@ -223,7 +223,7 @@ namespace treecore {
         } \
     } \
 \
-    void clearSingletonInstance() NOEXCEPT\
+    void clearSingletonInstance() noexcept\
     { \
         if (_singletonInstance == this) \
             _singletonInstance = nullptr; \
@@ -259,7 +259,7 @@ namespace treecore {
         return _singletonInstance; \
     } \
 \
-    static inline classname* getInstanceWithoutCreating() NOEXCEPT\
+    static inline classname* getInstanceWithoutCreating() noexcept\
     { \
         return _singletonInstance; \
     } \
@@ -274,7 +274,7 @@ namespace treecore {
         } \
     } \
 \
-    void clearSingletonInstance() NOEXCEPT\
+    void clearSingletonInstance() noexcept\
     { \
         if (_singletonInstance == this) \
             _singletonInstance = nullptr; \

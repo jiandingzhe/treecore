@@ -63,32 +63,32 @@ public:
         return *this;
     }
 
-    inline T operator [] (int index) const NOEXCEPT
+    inline T operator [] (int index) const noexcept
     {
         return m_data[index];
     }
 
-    inline T& get_reference(int index) NOEXCEPT
+    inline T& get_reference(int index) noexcept
     {
         return m_data[index];
     }
 
-    inline const T& get_const_reference(int index) const NOEXCEPT
+    inline const T& get_const_reference(int index) const noexcept
     {
         return m_data[index];
     }
 
-    inline T* get_data() NOEXCEPT
+    inline T* get_data() noexcept
     {
         return m_data;
     }
 
-    inline const T* get_const_data() const NOEXCEPT
+    inline const T* get_const_data() const noexcept
     {
         return m_data;
     }
 
-    inline int size() const NOEXCEPT
+    inline int size() const noexcept
     {
         return m_size;
     }

@@ -55,13 +55,13 @@ class JUCE_API  CriticalSection
 public:
     //==============================================================================
     /** Creates a CriticalSection object. */
-    CriticalSection() NOEXCEPT;
+    CriticalSection() noexcept;
 
     /** Destructor.
         If the critical section is deleted whilst locked, any subsequent behaviour
         is unpredictable.
     */
-    ~CriticalSection() NOEXCEPT;
+    ~CriticalSection() noexcept;
 
     //==============================================================================
     /** Acquires the lock.
@@ -74,7 +74,7 @@ public:
 
         @see exit, tryEnter, ScopedLock
     */
-    void enter() const NOEXCEPT;
+    void enter() const noexcept;
 
     /** Attempts to lock this critical section without blocking.
 
@@ -84,7 +84,7 @@ public:
         @returns false if the lock is currently held by another thread, true otherwise.
         @see enter
     */
-    bool tryEnter() const NOEXCEPT;
+    bool tryEnter() const noexcept;
 
     /** Releases the lock.
 
@@ -96,7 +96,7 @@ public:
 
         @see enter, ScopedLock
     */
-    void exit() const NOEXCEPT;
+    void exit() const noexcept;
 
 
     //==============================================================================
@@ -142,18 +142,18 @@ private:
 class JUCE_API  DummyCriticalSection
 {
 public:
-    inline DummyCriticalSection() NOEXCEPT      {}
-    inline ~DummyCriticalSection() NOEXCEPT     {}
+    inline DummyCriticalSection() noexcept      {}
+    inline ~DummyCriticalSection() noexcept     {}
 
-    inline void enter() const NOEXCEPT          {}
-    inline bool tryEnter() const NOEXCEPT       { return true; }
-    inline void exit() const NOEXCEPT           {}
+    inline void enter() const noexcept          {}
+    inline bool tryEnter() const noexcept       { return true; }
+    inline void exit() const noexcept           {}
 
     //==============================================================================
     /** A dummy scoped-lock type to use with a dummy critical section. */
     struct ScopedLockType
     {
-        ScopedLockType (const DummyCriticalSection&) NOEXCEPT {}
+        ScopedLockType (const DummyCriticalSection&) noexcept {}
     };
 
     /** A dummy scoped-unlocker type to use with a dummy critical section. */

@@ -66,31 +66,31 @@ class LinkedListPointer
 public:
     //==============================================================================
     /** Creates a null pointer to an empty list. */
-    LinkedListPointer() NOEXCEPT
+    LinkedListPointer() noexcept
         : item (nullptr)
     {
     }
 
     /** Creates a pointer to a list whose head is the item provided. */
-    explicit LinkedListPointer (ObjectType* const headItem) NOEXCEPT
+    explicit LinkedListPointer (ObjectType* const headItem) noexcept
         : item (headItem)
     {
     }
 
     /** Sets this pointer to point to a new list. */
-    LinkedListPointer& operator= (ObjectType* const newItem) NOEXCEPT
+    LinkedListPointer& operator= (ObjectType* const newItem) noexcept
     {
         item = newItem;
         return *this;
     }
 
-    LinkedListPointer (LinkedListPointer&& other) NOEXCEPT
+    LinkedListPointer (LinkedListPointer&& other) noexcept
         : item (other.item)
     {
         other.item = nullptr;
     }
 
-    LinkedListPointer& operator= (LinkedListPointer&& other) NOEXCEPT
+    LinkedListPointer& operator= (LinkedListPointer&& other) noexcept
     {
         jassert (this != &other); // hopefully the compiler should make this situation impossible!
 
@@ -101,13 +101,13 @@ public:
 
     //==============================================================================
     /** Returns the item which this pointer points to. */
-    inline operator ObjectType*() const NOEXCEPT
+    inline operator ObjectType*() const noexcept
     {
         return item;
     }
 
     /** Returns the item which this pointer points to. */
-    inline ObjectType* get() const NOEXCEPT
+    inline ObjectType* get() const noexcept
     {
         return item;
     }
@@ -119,7 +119,7 @@ public:
         If you're planning on appending a number of items to your list, it's much more
         efficient to use the Appender class than to repeatedly call getLast() to find the end.
     */
-    LinkedListPointer& getLast() NOEXCEPT
+    LinkedListPointer& getLast() noexcept
     {
         LinkedListPointer* l = this;
 
@@ -133,7 +133,7 @@ public:
         Obviously with a simple linked list, getting the size involves iterating the list, so
         this can be a lengthy operation - be careful when using this method in your code.
     */
-    int size() const NOEXCEPT
+    int size() const noexcept
     {
         int total = 0;
 
@@ -147,7 +147,7 @@ public:
         Since the only way to find an item is to iterate the list, this operation can obviously
         be slow, depending on its size, so you should be careful when using this in algorithms.
     */
-    LinkedListPointer& operator[] (int index) NOEXCEPT
+    LinkedListPointer& operator[] (int index) noexcept
     {
         LinkedListPointer* l = this;
 
@@ -161,7 +161,7 @@ public:
         Since the only way to find an item is to iterate the list, this operation can obviously
         be slow, depending on its size, so you should be careful when using this in algorithms.
     */
-    const LinkedListPointer& operator[] (int index) const NOEXCEPT
+    const LinkedListPointer& operator[] (int index) const noexcept
     {
         const LinkedListPointer* l = this;
 
@@ -172,7 +172,7 @@ public:
     }
 
     /** Returns true if the list contains the given item. */
-    bool contains (const ObjectType* const itemToLookFor) const NOEXCEPT
+    bool contains (const ObjectType* const itemToLookFor) const noexcept
     {
         for (ObjectType* i = item; i != nullptr; i = i->nextListItem)
             if (itemToLookFor == i)
@@ -214,7 +214,7 @@ public:
     /** Replaces the object that this pointer points to, appending the rest of the list to
         the new object, and returning the old one.
     */
-    ObjectType* replaceNext (ObjectType* const newItem) NOEXCEPT
+    ObjectType* replaceNext (ObjectType* const newItem) noexcept
     {
         jassert (newItem != nullptr);
         jassert (newItem->nextListItem == nullptr);
@@ -256,7 +256,7 @@ public:
         This won't delete the object that is removed, but returns it, so the caller can
         delete it if necessary.
     */
-    ObjectType* removeNext() NOEXCEPT
+    ObjectType* removeNext() noexcept
     {
         ObjectType* const oldItem = item;
 
@@ -295,7 +295,7 @@ public:
         If the item is found in the list, this returns the pointer that points to it. If
         the item isn't found, this returns null.
     */
-    LinkedListPointer* findPointerTo (ObjectType* const itemToLookFor) NOEXCEPT
+    LinkedListPointer* findPointerTo (ObjectType* const itemToLookFor) noexcept
     {
         LinkedListPointer* l = this;
 
@@ -314,7 +314,7 @@ public:
         The destArray must contain enough elements to hold the entire list - no checks are
         made for this!
     */
-    void copyToArray (ObjectType** destArray) const NOEXCEPT
+    void copyToArray (ObjectType** destArray) const noexcept
     {
         jassert (destArray != nullptr);
 
@@ -323,7 +323,7 @@ public:
     }
 
     /** Swaps this pointer with another one */
-    void swapWith (LinkedListPointer& other) NOEXCEPT
+    void swapWith (LinkedListPointer& other) noexcept
     {
         std::swap (item, other.item);
     }
@@ -341,7 +341,7 @@ public:
     public:
         /** Creates an appender which will add items to the given list.
         */
-        Appender (LinkedListPointer& endOfListPointer) NOEXCEPT
+        Appender (LinkedListPointer& endOfListPointer) noexcept
             : endOfList (&endOfListPointer)
         {
             // This can only be used to add to the end of a list.
@@ -349,7 +349,7 @@ public:
         }
 
         /** Appends an item to the list. */
-        void append (ObjectType* const newItem) NOEXCEPT
+        void append (ObjectType* const newItem) noexcept
         {
             *endOfList = newItem;
             endOfList = &(newItem->nextListItem);

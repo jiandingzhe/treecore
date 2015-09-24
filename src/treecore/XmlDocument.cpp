@@ -70,25 +70,25 @@ XmlElement* XmlDocument::parse (const String& xmlData)
     return doc.getDocumentElement();
 }
 
-void XmlDocument::setInputSource (InputSource* const newSource) NOEXCEPT
+void XmlDocument::setInputSource (InputSource* const newSource) noexcept
 {
     inputSource = newSource;
 }
 
-void XmlDocument::setEmptyTextElementsIgnored (const bool shouldBeIgnored) NOEXCEPT
+void XmlDocument::setEmptyTextElementsIgnored (const bool shouldBeIgnored) noexcept
 {
     ignoreEmptyTextElements = shouldBeIgnored;
 }
 
 namespace XmlIdentifierChars
 {
-    static bool isIdentifierCharSlow (const juce_wchar c) NOEXCEPT
+    static bool isIdentifierCharSlow (const juce_wchar c) noexcept
     {
         return CharacterFunctions::isLetterOrDigit (c)
                  || c == '_' || c == '-' || c == ':' || c == '.';
     }
 
-    static bool isIdentifierChar (const juce_wchar c) NOEXCEPT
+    static bool isIdentifierChar (const juce_wchar c) noexcept
     {
         static const uint32 legalChars[] = { 0, 0x7ff6000, 0x87fffffe, 0x7fffffe, 0 };
 
@@ -155,7 +155,7 @@ XmlElement* XmlDocument::getDocumentElement (const bool onlyReadOuterDocumentEle
     return parseDocumentElement (originalText.getCharPointer(), onlyReadOuterDocumentElement);
 }
 
-const String& XmlDocument::getLastParseError() const NOEXCEPT
+const String& XmlDocument::getLastParseError() const noexcept
 {
     return lastError;
 }
@@ -179,7 +179,7 @@ String XmlDocument::getFileContents (const String& filename) const
     return String::empty;
 }
 
-juce_wchar XmlDocument::readNextChar() NOEXCEPT
+juce_wchar XmlDocument::readNextChar() noexcept
 {
     const juce_wchar c = input.getAndAdvance();
 

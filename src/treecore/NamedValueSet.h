@@ -47,7 +47,7 @@ class JUCE_API  NamedValueSet
 {
 public:
     /** Creates an empty set. */
-    NamedValueSet() NOEXCEPT;
+    NamedValueSet() noexcept;
 
     /** Creates a copy of another set. */
     NamedValueSet (const NamedValueSet&);
@@ -55,8 +55,8 @@ public:
     /** Replaces this set with a copy of another set. */
     NamedValueSet& operator= (const NamedValueSet&);
 
-    NamedValueSet (NamedValueSet&&) NOEXCEPT;
-    NamedValueSet& operator= (NamedValueSet&&) NOEXCEPT;
+    NamedValueSet (NamedValueSet&&) noexcept;
+    NamedValueSet& operator= (NamedValueSet&&) noexcept;
 
     /** Destructor. */
     ~NamedValueSet();
@@ -66,7 +66,7 @@ public:
 
     //==============================================================================
     /** Returns the total number of values that the set contains. */
-    int size() const NOEXCEPT;
+    int size() const noexcept;
 
     /** Returns the value of a named item.
         If the name isn't found, this will return a void variant.
@@ -103,7 +103,7 @@ public:
     /** Returns the name of the value at a given index.
         The index must be between 0 and size() - 1.
     */
-    Identifier getName (int index) const NOEXCEPT;
+    Identifier getName (int index) const noexcept;
 
     /** Returns a pointer to the var that holds a named value, or null if there is
         no value with this name.
@@ -111,20 +111,20 @@ public:
         Do not use this method unless you really need access to the internal var object
         for some reason - for normal reading and writing always prefer operator[]() and set().
     */
-    var* getVarPointer (const Identifier& name) const NOEXCEPT;
+    var* getVarPointer (const Identifier& name) const noexcept;
 
     /** Returns the value of the item at a given index.
         The index must be between 0 and size() - 1.
     */
-    const var& getValueAt (int index) const NOEXCEPT;
+    const var& getValueAt (int index) const noexcept;
 
     /** Returns the value of the item at a given index.
         The index must be between 0 and size() - 1, or this will return a nullptr
     */
-    var* getVarPointerAt (int index) const NOEXCEPT;
+    var* getVarPointerAt (int index) const noexcept;
 
     /** Returns the index of the given name, or -1 if it's not found. */
-    int indexOf (const Identifier& name) const NOEXCEPT;
+    int indexOf (const Identifier& name) const noexcept;
 
     /** Removes all values. */
     void clear();

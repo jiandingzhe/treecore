@@ -55,13 +55,13 @@ public:
             }
         }
 
-        inline KeyType get() const NOEXCEPT
+        inline KeyType get() const noexcept
         {
             return entry->key;
         }
 
     protected:
-        inline bool move_to_next_valid_entry() NOEXCEPT
+        inline bool move_to_next_valid_entry() noexcept
         {
             entry = entry->next;
             if (entry)
@@ -74,7 +74,7 @@ public:
             }
         }
 
-        inline bool move_to_next_valid_slot() NOEXCEPT
+        inline bool move_to_next_valid_slot() noexcept
         {
             while (1)
             {
@@ -125,12 +125,12 @@ public:
         m_size = 0;
     }
 
-    inline int size() const NOEXCEPT
+    inline int size() const noexcept
     {
         return m_size;
     }
 
-    bool contains(KeyType key) const NOEXCEPT
+    bool contains(KeyType key) const noexcept
     {
         const ScopedLockType lock(m_mutex);
 
@@ -144,7 +144,7 @@ public:
         return false;
     }
 
-    int getNumKeys() const NOEXCEPT
+    int getNumKeys() const noexcept
     {
         int n_key = 0;
 
@@ -248,12 +248,12 @@ public:
         m_slots.swapWith(slots_new);
     }
 
-    inline int getNumSlots() const NOEXCEPT
+    inline int getNumSlots() const noexcept
     {
         return m_slots.size();
     }
 
-    inline int getNumUsedSlots() const NOEXCEPT
+    inline int getNumUsedSlots() const noexcept
     {
         int n_used = 0;
         for (int i = 0; i < m_slots.size(); i++)

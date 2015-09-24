@@ -6,6 +6,7 @@ endif()
 enable_testing()
 
 foreach(test_name
+    t_atomic_func_st
     t_hash_multi_map
     t_hash_multi_map_move
     t_hash_set
@@ -17,6 +18,7 @@ foreach(test_name
     t_aligned_array
     t_sorted_set
     t_queue
+    t_lf_queue_st
 )
     add_executable(${test_name} ${test_name}.cpp)
     target_link_libraries(${test_name} testframework)

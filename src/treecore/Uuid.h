@@ -55,23 +55,23 @@ public:
     Uuid();
 
     /** Destructor. */
-    ~Uuid() NOEXCEPT;
+    ~Uuid() noexcept;
 
     /** Creates a copy of another UUID. */
-    Uuid (const Uuid&) NOEXCEPT;
+    Uuid (const Uuid&) noexcept;
 
     /** Copies another UUID. */
-    Uuid& operator= (const Uuid&) NOEXCEPT;
+    Uuid& operator= (const Uuid&) noexcept;
 
     //==============================================================================
     /** Returns true if the ID is zero. */
-    bool isNull() const NOEXCEPT;
+    bool isNull() const noexcept;
 
     /** Returns a null Uuid object. */
-    static Uuid null() NOEXCEPT;
+    static Uuid null() noexcept;
 
-    bool operator== (const Uuid&) const NOEXCEPT;
-    bool operator!= (const Uuid&) const NOEXCEPT;
+    bool operator== (const Uuid&) const noexcept;
+    bool operator!= (const Uuid&) const noexcept;
 
     //==============================================================================
     /** Returns a stringified version of this UUID.
@@ -105,15 +105,15 @@ public:
         This is an array of 16 bytes. To reconstruct a Uuid from its data, use
         the constructor or operator= method that takes an array of uint8s.
     */
-    const uint8* getRawData() const NOEXCEPT                { return uuid; }
+    const uint8* getRawData() const noexcept                { return uuid; }
 
     /** Creates a UUID from a 16-byte array.
         @see getRawData
     */
-    Uuid (const uint8* rawData) NOEXCEPT;
+    Uuid (const uint8* rawData) noexcept;
 
     /** Sets this UUID from 16-bytes of raw data. */
-    Uuid& operator= (const uint8* rawData) NOEXCEPT;
+    Uuid& operator= (const uint8* rawData) noexcept;
 
 
 private:

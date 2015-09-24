@@ -59,19 +59,19 @@ public:
             }
         }
 
-        KeyType getKey() const NOEXCEPT
+        KeyType getKey() const noexcept
         {
             return entry->key;
         }
 
-        ArrayRef<ValueType> getValues() NOEXCEPT
+        ArrayRef<ValueType> getValues() noexcept
         {
             return ArrayRef<ValueType>(entry->values);
         }
 
     protected:
 
-        inline bool move_to_next_valid_entry() NOEXCEPT
+        inline bool move_to_next_valid_entry() noexcept
         {
             entry = entry->next;
             if (entry)
@@ -84,7 +84,7 @@ public:
             }
         }
 
-        inline bool move_to_next_valid_slot() NOEXCEPT
+        inline bool move_to_next_valid_slot() noexcept
         {
             while (1)
             {
@@ -152,7 +152,7 @@ public:
      * @brief get the number of items in hash map
      * @return number of items
      */
-    inline int size() const NOEXCEPT
+    inline int size() const noexcept
     {
         return m_size;
     }
@@ -162,7 +162,7 @@ public:
      * @param key
      * @return true if has this key, otherwise false
      */
-    bool contains(KeyType key) const NOEXCEPT
+    bool contains(KeyType key) const noexcept
     {
         const ScopedLockType lock(m_mutex);
 
@@ -181,7 +181,7 @@ public:
      * @param key
      * @return number of items
      */
-    int count(KeyType key) const NOEXCEPT
+    int count(KeyType key) const noexcept
     {
         const ScopedLockType lock(m_mutex);
 
@@ -195,7 +195,7 @@ public:
         return 0;
     }
 
-    int getNumKeys() const NOEXCEPT
+    int getNumKeys() const noexcept
     {
         int n_key = 0;
 
@@ -336,12 +336,12 @@ public:
         m_slots.swapWith(slots_new);
     }
 
-    inline int getNumSlots() const NOEXCEPT
+    inline int getNumSlots() const noexcept
     {
         return m_slots.size();
     }
 
-    inline int getNumUsedSlots() const NOEXCEPT
+    inline int getNumUsedSlots() const noexcept
     {
         int n_used = 0;
         for (int i = 0; i < m_slots.size(); i++)

@@ -95,27 +95,27 @@ public:
         return *this;
     }
 
-    operator T*() const NOEXCEPT
+    operator T*() const noexcept
     {
         return ms_ptr;
     }
 
-    operator bool () const NOEXCEPT
+    operator bool () const noexcept
     {
         return ms_ptr != nullptr;
     }
 
-    T* get() const NOEXCEPT
+    T* get() const noexcept
     {
         return ms_ptr;
     }
 
-    T& operator * () const NOEXCEPT
+    T& operator * () const noexcept
     {
         return *ms_ptr;
     }
 
-    T* operator -> () const NOEXCEPT
+    T* operator -> () const noexcept
     {
         return ms_ptr;
     }

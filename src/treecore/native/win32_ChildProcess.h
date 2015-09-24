@@ -14,19 +14,19 @@ public:
 
     ~ActiveProcess();
 
-    bool isRunning() const NOEXCEPT
+    bool isRunning() const noexcept
     {
         return WaitForSingleObject (processInfo.hProcess, 0) != WAIT_OBJECT_0;
     }
 
-    int read (void* dest, int numNeeded) const NOEXCEPT;
+    int read (void* dest, int numNeeded) const noexcept;
 
-    bool killProcess() const NOEXCEPT
+    bool killProcess() const noexcept
     {
         return TerminateProcess (processInfo.hProcess, 0) != FALSE;
     }
 
-    uint32 getExitCode() const NOEXCEPT;
+    uint32 getExitCode() const noexcept;
 
     bool ok;
 

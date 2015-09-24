@@ -264,7 +264,7 @@ public:
 
 protected:
     //==============================================================================
-    InputStream() NOEXCEPT {}
+    InputStream() noexcept {}
 
 private:
     TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InputStream)

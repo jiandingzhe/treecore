@@ -50,34 +50,34 @@ enum VariantStreamMarkers
 class var::VariantType
 {
 public:
-    VariantType() NOEXCEPT {}
-    virtual ~VariantType() NOEXCEPT {}
+    VariantType() noexcept {}
+    virtual ~VariantType() noexcept {}
 
-    virtual int toInt (const ValueUnion&) const NOEXCEPT                        { return 0; }
-    virtual int64 toInt64 (const ValueUnion&) const NOEXCEPT                    { return 0; }
-    virtual double toDouble (const ValueUnion&) const NOEXCEPT                  { return 0; }
+    virtual int toInt (const ValueUnion&) const noexcept                        { return 0; }
+    virtual int64 toInt64 (const ValueUnion&) const noexcept                    { return 0; }
+    virtual double toDouble (const ValueUnion&) const noexcept                  { return 0; }
     virtual String toString (const ValueUnion&) const                           { return String::empty; }
-    virtual bool toBool (const ValueUnion&) const NOEXCEPT                      { return false; }
-    virtual RefCountObject* toObject (const ValueUnion&) const NOEXCEPT { return nullptr; }
-    virtual Array<var>* toArray (const ValueUnion&) const NOEXCEPT              { return nullptr; }
-    virtual MemoryBlock* toBinary (const ValueUnion&) const NOEXCEPT            { return nullptr; }
+    virtual bool toBool (const ValueUnion&) const noexcept                      { return false; }
+    virtual RefCountObject* toObject (const ValueUnion&) const noexcept { return nullptr; }
+    virtual Array<var>* toArray (const ValueUnion&) const noexcept              { return nullptr; }
+    virtual MemoryBlock* toBinary (const ValueUnion&) const noexcept            { return nullptr; }
     virtual var clone (const var& original) const                               { return original; }
 
-    virtual bool isVoid() const NOEXCEPT      { return false; }
-    virtual bool isUndefined() const NOEXCEPT { return false; }
-    virtual bool isInt() const NOEXCEPT       { return false; }
-    virtual bool isInt64() const NOEXCEPT     { return false; }
-    virtual bool isBool() const NOEXCEPT      { return false; }
-    virtual bool isDouble() const NOEXCEPT    { return false; }
-    virtual bool isString() const NOEXCEPT    { return false; }
-    virtual bool isObject() const NOEXCEPT    { return false; }
-    virtual bool isArray() const NOEXCEPT     { return false; }
-    virtual bool isBinary() const NOEXCEPT    { return false; }
-    virtual bool isMethod() const NOEXCEPT    { return false; }
+    virtual bool isVoid() const noexcept      { return false; }
+    virtual bool isUndefined() const noexcept { return false; }
+    virtual bool isInt() const noexcept       { return false; }
+    virtual bool isInt64() const noexcept     { return false; }
+    virtual bool isBool() const noexcept      { return false; }
+    virtual bool isDouble() const noexcept    { return false; }
+    virtual bool isString() const noexcept    { return false; }
+    virtual bool isObject() const noexcept    { return false; }
+    virtual bool isArray() const noexcept     { return false; }
+    virtual bool isBinary() const noexcept    { return false; }
+    virtual bool isMethod() const noexcept    { return false; }
 
-    virtual void cleanUp (ValueUnion&) const NOEXCEPT {}
+    virtual void cleanUp (ValueUnion&) const noexcept {}
     virtual void createCopy (ValueUnion& dest, const ValueUnion& source) const      { dest = source; }
-    virtual bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const NOEXCEPT = 0;
+    virtual bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const noexcept = 0;
     virtual void writeToStream (const ValueUnion& data, OutputStream& output) const = 0;
 };
 
@@ -85,11 +85,11 @@ public:
 class var::VariantType_Void  : public var::VariantType
 {
 public:
-    VariantType_Void() NOEXCEPT {}
+    VariantType_Void() noexcept {}
     static const VariantType_Void instance;
 
-    bool isVoid() const NOEXCEPT override   { return true; }
-    bool equals (const ValueUnion&, const ValueUnion&, const VariantType& otherType) const NOEXCEPT override { return otherType.isVoid() || otherType.isUndefined(); }
+    bool isVoid() const noexcept override   { return true; }
+    bool equals (const ValueUnion&, const ValueUnion&, const VariantType& otherType) const noexcept override { return otherType.isVoid() || otherType.isUndefined(); }
     void writeToStream (const ValueUnion&, OutputStream& output) const override   { output.writeCompressedInt (0); }
 };
 
@@ -97,12 +97,12 @@ public:
 class var::VariantType_Undefined  : public var::VariantType
 {
 public:
-    VariantType_Undefined() NOEXCEPT {}
+    VariantType_Undefined() noexcept {}
     static const VariantType_Undefined instance;
 
-    bool isUndefined() const NOEXCEPT override           { return true; }
+    bool isUndefined() const noexcept override           { return true; }
     String toString (const ValueUnion&) const override   { return "undefined"; }
-    bool equals (const ValueUnion&, const ValueUnion&, const VariantType& otherType) const NOEXCEPT override { return otherType.isVoid() || otherType.isUndefined(); }
+    bool equals (const ValueUnion&, const ValueUnion&, const VariantType& otherType) const noexcept override { return otherType.isVoid() || otherType.isUndefined(); }
 
     void writeToStream (const ValueUnion&, OutputStream& output) const override
     {
@@ -115,17 +115,17 @@ public:
 class var::VariantType_Int  : public var::VariantType
 {
 public:
-    VariantType_Int() NOEXCEPT {}
+    VariantType_Int() noexcept {}
     static const VariantType_Int instance;
 
-    int toInt (const ValueUnion& data) const NOEXCEPT override       { return data.intValue; };
-    int64 toInt64 (const ValueUnion& data) const NOEXCEPT override   { return (int64) data.intValue; };
-    double toDouble (const ValueUnion& data) const NOEXCEPT override { return (double) data.intValue; }
+    int toInt (const ValueUnion& data) const noexcept override       { return data.intValue; };
+    int64 toInt64 (const ValueUnion& data) const noexcept override   { return (int64) data.intValue; };
+    double toDouble (const ValueUnion& data) const noexcept override { return (double) data.intValue; }
     String toString (const ValueUnion& data) const override          { return String (data.intValue); }
-    bool toBool (const ValueUnion& data) const NOEXCEPT override     { return data.intValue != 0; }
-    bool isInt() const NOEXCEPT override                             { return true; }
+    bool toBool (const ValueUnion& data) const noexcept override     { return data.intValue != 0; }
+    bool isInt() const noexcept override                             { return true; }
 
-    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const NOEXCEPT override
+    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const noexcept override
     {
         if (otherType.isDouble() || otherType.isInt64() || otherType.isString())
             return otherType.equals (otherData, data, *this);
@@ -145,17 +145,17 @@ public:
 class var::VariantType_Int64  : public var::VariantType
 {
 public:
-    VariantType_Int64() NOEXCEPT {}
+    VariantType_Int64() noexcept {}
     static const VariantType_Int64 instance;
 
-    int toInt (const ValueUnion& data) const NOEXCEPT override       { return (int) data.int64Value; };
-    int64 toInt64 (const ValueUnion& data) const NOEXCEPT override   { return data.int64Value; };
-    double toDouble (const ValueUnion& data) const NOEXCEPT override { return (double) data.int64Value; }
+    int toInt (const ValueUnion& data) const noexcept override       { return (int) data.int64Value; };
+    int64 toInt64 (const ValueUnion& data) const noexcept override   { return data.int64Value; };
+    double toDouble (const ValueUnion& data) const noexcept override { return (double) data.int64Value; }
     String toString (const ValueUnion& data) const override          { return String (data.int64Value); }
-    bool toBool (const ValueUnion& data) const NOEXCEPT override     { return data.int64Value != 0; }
-    bool isInt64() const NOEXCEPT override                           { return true; }
+    bool toBool (const ValueUnion& data) const noexcept override     { return data.int64Value != 0; }
+    bool isInt64() const noexcept override                           { return true; }
 
-    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const NOEXCEPT override
+    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const noexcept override
     {
         if (otherType.isDouble() || otherType.isString())
             return otherType.equals (otherData, data, *this);
@@ -175,17 +175,17 @@ public:
 class var::VariantType_Double   : public var::VariantType
 {
 public:
-    VariantType_Double() NOEXCEPT {}
+    VariantType_Double() noexcept {}
     static const VariantType_Double instance;
 
-    int toInt (const ValueUnion& data) const NOEXCEPT override       { return (int) data.doubleValue; };
-    int64 toInt64 (const ValueUnion& data) const NOEXCEPT override   { return (int64) data.doubleValue; };
-    double toDouble (const ValueUnion& data) const NOEXCEPT override { return data.doubleValue; }
+    int toInt (const ValueUnion& data) const noexcept override       { return (int) data.doubleValue; };
+    int64 toInt64 (const ValueUnion& data) const noexcept override   { return (int64) data.doubleValue; };
+    double toDouble (const ValueUnion& data) const noexcept override { return data.doubleValue; }
     String toString (const ValueUnion& data) const override          { return String (data.doubleValue); }
-    bool toBool (const ValueUnion& data) const NOEXCEPT override     { return data.doubleValue != 0; }
-    bool isDouble() const NOEXCEPT override                          { return true; }
+    bool toBool (const ValueUnion& data) const noexcept override     { return data.doubleValue != 0; }
+    bool isDouble() const noexcept override                          { return true; }
 
-    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const NOEXCEPT override
+    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const noexcept override
     {
         return std::abs (otherType.toDouble (otherData) - data.doubleValue) < std::numeric_limits<double>::epsilon();
     }
@@ -202,17 +202,17 @@ public:
 class var::VariantType_Bool   : public var::VariantType
 {
 public:
-    VariantType_Bool() NOEXCEPT {}
+    VariantType_Bool() noexcept {}
     static const VariantType_Bool instance;
 
-    int toInt (const ValueUnion& data) const NOEXCEPT override       { return data.boolValue ? 1 : 0; };
-    int64 toInt64 (const ValueUnion& data) const NOEXCEPT override   { return data.boolValue ? 1 : 0; };
-    double toDouble (const ValueUnion& data) const NOEXCEPT override { return data.boolValue ? 1.0 : 0.0; }
+    int toInt (const ValueUnion& data) const noexcept override       { return data.boolValue ? 1 : 0; };
+    int64 toInt64 (const ValueUnion& data) const noexcept override   { return data.boolValue ? 1 : 0; };
+    double toDouble (const ValueUnion& data) const noexcept override { return data.boolValue ? 1.0 : 0.0; }
     String toString (const ValueUnion& data) const override          { return String::charToString (data.boolValue ? (juce_wchar) '1' : (juce_wchar) '0'); }
-    bool toBool (const ValueUnion& data) const NOEXCEPT override     { return data.boolValue; }
-    bool isBool() const NOEXCEPT override                            { return true; }
+    bool toBool (const ValueUnion& data) const noexcept override     { return data.boolValue; }
+    bool isBool() const noexcept override                            { return true; }
 
-    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const NOEXCEPT override
+    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const noexcept override
     {
         return otherType.toBool (otherData) == data.boolValue;
     }
@@ -228,22 +228,22 @@ public:
 class var::VariantType_String   : public var::VariantType
 {
 public:
-    VariantType_String() NOEXCEPT {}
+    VariantType_String() noexcept {}
     static const VariantType_String instance;
 
-    void cleanUp (ValueUnion& data) const NOEXCEPT override                       { getString (data)-> ~String(); }
+    void cleanUp (ValueUnion& data) const noexcept override                       { getString (data)-> ~String(); }
     void createCopy (ValueUnion& dest, const ValueUnion& source) const override   { new (dest.stringValue) String (*getString (source)); }
 
-    bool isString() const NOEXCEPT override                          { return true; }
-    int toInt (const ValueUnion& data) const NOEXCEPT override       { return getString (data)->getIntValue(); };
-    int64 toInt64 (const ValueUnion& data) const NOEXCEPT override   { return getString (data)->getLargeIntValue(); };
-    double toDouble (const ValueUnion& data) const NOEXCEPT override { return getString (data)->getDoubleValue(); }
+    bool isString() const noexcept override                          { return true; }
+    int toInt (const ValueUnion& data) const noexcept override       { return getString (data)->getIntValue(); };
+    int64 toInt64 (const ValueUnion& data) const noexcept override   { return getString (data)->getLargeIntValue(); };
+    double toDouble (const ValueUnion& data) const noexcept override { return getString (data)->getDoubleValue(); }
     String toString (const ValueUnion& data) const override          { return *getString (data); }
-    bool toBool (const ValueUnion& data) const NOEXCEPT override     { return getString (data)->getIntValue() != 0
+    bool toBool (const ValueUnion& data) const noexcept override     { return getString (data)->getIntValue() != 0
                                                                            || getString (data)->trim().equalsIgnoreCase ("true")
                                                                            || getString (data)->trim().equalsIgnoreCase ("yes"); }
 
-    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const NOEXCEPT override
+    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const noexcept override
     {
         return otherType.toString (otherData) == *getString (data);
     }
@@ -260,18 +260,18 @@ public:
     }
 
 private:
-    static inline const String* getString (const ValueUnion& data) NOEXCEPT { return reinterpret_cast <const String*> (data.stringValue); }
-    static inline String* getString (ValueUnion& data) NOEXCEPT             { return reinterpret_cast <String*> (data.stringValue); }
+    static inline const String* getString (const ValueUnion& data) noexcept { return reinterpret_cast <const String*> (data.stringValue); }
+    static inline String* getString (ValueUnion& data) noexcept             { return reinterpret_cast <String*> (data.stringValue); }
 };
 
 //==============================================================================
 class var::VariantType_Object   : public var::VariantType
 {
 public:
-    VariantType_Object() NOEXCEPT {}
+    VariantType_Object() noexcept {}
     static const VariantType_Object instance;
 
-    void cleanUp (ValueUnion& data) const NOEXCEPT override   { if (data.objectValue != nullptr) data.objectValue->unref(); }
+    void cleanUp (ValueUnion& data) const noexcept override   { if (data.objectValue != nullptr) data.objectValue->unref(); }
 
     void createCopy (ValueUnion& dest, const ValueUnion& source) const override
     {
@@ -281,11 +281,11 @@ public:
     }
 
     String toString (const ValueUnion& data) const override                            { return "Object 0x" + String::toHexString ((int) (pointer_sized_int) data.objectValue); }
-    bool toBool (const ValueUnion& data) const NOEXCEPT override                       { return data.objectValue != 0; }
-    RefCountObject* toObject (const ValueUnion& data) const NOEXCEPT override  { return data.objectValue; }
-    bool isObject() const NOEXCEPT override                                            { return true; }
+    bool toBool (const ValueUnion& data) const noexcept override                       { return data.objectValue != 0; }
+    RefCountObject* toObject (const ValueUnion& data) const noexcept override  { return data.objectValue; }
+    bool isObject() const noexcept override                                            { return true; }
 
-    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const NOEXCEPT override
+    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const noexcept override
     {
         return otherType.toObject (otherData) == data.objectValue;
     }
@@ -310,14 +310,14 @@ public:
 class var::VariantType_Array   : public var::VariantType_Object
 {
 public:
-    VariantType_Array() NOEXCEPT {}
+    VariantType_Array() noexcept {}
     static const VariantType_Array instance;
 
     String toString (const ValueUnion&) const override                           { return "[Array]"; }
-    RefCountObject* toObject (const ValueUnion&) const NOEXCEPT override { return nullptr; }
-    bool isArray() const NOEXCEPT override                                       { return true; }
+    RefCountObject* toObject (const ValueUnion&) const noexcept override { return nullptr; }
+    bool isArray() const noexcept override                                       { return true; }
 
-    Array<var>* toArray (const ValueUnion& data) const NOEXCEPT override
+    Array<var>* toArray (const ValueUnion& data) const noexcept override
     {
         if (RefCountedArray* a = dynamic_cast<RefCountedArray*> (data.objectValue))
             return &(a->array);
@@ -325,7 +325,7 @@ public:
         return nullptr;
     }
 
-    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const NOEXCEPT override
+    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const noexcept override
     {
         const Array<var>* const thisArray = toArray (data);
         const Array<var>* const otherArray = otherType.toArray (otherData);
@@ -372,18 +372,18 @@ public:
 class var::VariantType_Binary   : public var::VariantType
 {
 public:
-    VariantType_Binary() NOEXCEPT {}
+    VariantType_Binary() noexcept {}
 
     static const VariantType_Binary instance;
 
-    void cleanUp (ValueUnion& data) const NOEXCEPT override                      { delete data.binaryValue; }
+    void cleanUp (ValueUnion& data) const noexcept override                      { delete data.binaryValue; }
     void createCopy (ValueUnion& dest, const ValueUnion& source) const override  { dest.binaryValue = new MemoryBlock (*source.binaryValue); }
 
     String toString (const ValueUnion& data) const override                      { return data.binaryValue->toBase64Encoding(); }
-    bool isBinary() const NOEXCEPT override                                      { return true; }
-    MemoryBlock* toBinary (const ValueUnion& data) const NOEXCEPT override       { return data.binaryValue; }
+    bool isBinary() const noexcept override                                      { return true; }
+    MemoryBlock* toBinary (const ValueUnion& data) const noexcept override       { return data.binaryValue; }
 
-    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const NOEXCEPT override
+    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const noexcept override
     {
         const MemoryBlock* const otherBlock = otherType.toBinary (otherData);
         return otherBlock != nullptr && *otherBlock == *data.binaryValue;
@@ -401,14 +401,14 @@ public:
 class var::VariantType_Method   : public var::VariantType
 {
 public:
-    VariantType_Method() NOEXCEPT {}
+    VariantType_Method() noexcept {}
     static const VariantType_Method instance;
 
     String toString (const ValueUnion&) const override               { return "Method"; }
-    bool toBool (const ValueUnion& data) const NOEXCEPT override     { return data.methodValue != nullptr; }
-    bool isMethod() const NOEXCEPT override                          { return true; }
+    bool toBool (const ValueUnion& data) const noexcept override     { return data.methodValue != nullptr; }
+    bool isMethod() const noexcept override                          { return true; }
 
-    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const NOEXCEPT override
+    bool equals (const ValueUnion& data, const ValueUnion& otherData, const VariantType& otherType) const noexcept override
     {
         return otherType.isMethod() && otherData.methodValue == data.methodValue;
     }
@@ -435,9 +435,9 @@ const var::VariantType_Method       var::VariantType_Method::instance;
 
 
 //==============================================================================
-var::var() NOEXCEPT : type (&VariantType_Void::instance) {}
-var::var (const VariantType& t) NOEXCEPT  : type (&t) {}
-var::~var() NOEXCEPT  { type->cleanUp (value); }
+var::var() noexcept : type (&VariantType_Void::instance) {}
+var::var (const VariantType& t) noexcept  : type (&t) {}
+var::~var() noexcept  { type->cleanUp (value); }
 
 const var var::null;
 
@@ -447,11 +447,11 @@ var::var (const var& valueToCopy)  : type (valueToCopy.type)
     type->createCopy (value, valueToCopy.value);
 }
 
-var::var (const int v) NOEXCEPT       : type (&VariantType_Int::instance)    { value.intValue = v; }
-var::var (const int64 v) NOEXCEPT     : type (&VariantType_Int64::instance)  { value.int64Value = v; }
-var::var (const bool v) NOEXCEPT      : type (&VariantType_Bool::instance)   { value.boolValue = v; }
-var::var (const double v) NOEXCEPT    : type (&VariantType_Double::instance) { value.doubleValue = v; }
-var::var (NativeFunction m) NOEXCEPT  : type (&VariantType_Method::instance) { value.methodValue = m; }
+var::var (const int v) noexcept       : type (&VariantType_Int::instance)    { value.intValue = v; }
+var::var (const int64 v) noexcept     : type (&VariantType_Int64::instance)  { value.int64Value = v; }
+var::var (const bool v) noexcept      : type (&VariantType_Bool::instance)   { value.boolValue = v; }
+var::var (const double v) noexcept    : type (&VariantType_Double::instance) { value.doubleValue = v; }
+var::var (NativeFunction m) noexcept  : type (&VariantType_Method::instance) { value.methodValue = m; }
 var::var (const Array<var>& v)        : type (&VariantType_Array::instance)  { value.objectValue = new VariantType_Array::RefCountedArray(v); }
 var::var (const String& v)            : type (&VariantType_String::instance) { new (value.stringValue) String (v); }
 var::var (const char* const v)        : type (&VariantType_String::instance) { new (value.stringValue) String (v); }
@@ -467,35 +467,35 @@ var::var (RefCountObject* const object)  : type (&VariantType_Object::instance)
         object->ref();
 }
 
-var var::undefined() NOEXCEPT           { return var (VariantType_Undefined::instance); }
+var var::undefined() noexcept           { return var (VariantType_Undefined::instance); }
 
 //==============================================================================
-bool var::isVoid() const NOEXCEPT       { return type->isVoid(); }
-bool var::isUndefined() const NOEXCEPT  { return type->isUndefined(); }
-bool var::isInt() const NOEXCEPT        { return type->isInt(); }
-bool var::isInt64() const NOEXCEPT      { return type->isInt64(); }
-bool var::isBool() const NOEXCEPT       { return type->isBool(); }
-bool var::isDouble() const NOEXCEPT     { return type->isDouble(); }
-bool var::isString() const NOEXCEPT     { return type->isString(); }
-bool var::isObject() const NOEXCEPT     { return type->isObject(); }
-bool var::isArray() const NOEXCEPT      { return type->isArray(); }
-bool var::isBinaryData() const NOEXCEPT { return type->isBinary(); }
-bool var::isMethod() const NOEXCEPT     { return type->isMethod(); }
+bool var::isVoid() const noexcept       { return type->isVoid(); }
+bool var::isUndefined() const noexcept  { return type->isUndefined(); }
+bool var::isInt() const noexcept        { return type->isInt(); }
+bool var::isInt64() const noexcept      { return type->isInt64(); }
+bool var::isBool() const noexcept       { return type->isBool(); }
+bool var::isDouble() const noexcept     { return type->isDouble(); }
+bool var::isString() const noexcept     { return type->isString(); }
+bool var::isObject() const noexcept     { return type->isObject(); }
+bool var::isArray() const noexcept      { return type->isArray(); }
+bool var::isBinaryData() const noexcept { return type->isBinary(); }
+bool var::isMethod() const noexcept     { return type->isMethod(); }
 
-var::operator int() const NOEXCEPT                      { return type->toInt (value); }
-var::operator int64() const NOEXCEPT                    { return type->toInt64 (value); }
-var::operator bool() const NOEXCEPT                     { return type->toBool (value); }
-var::operator float() const NOEXCEPT                    { return (float) type->toDouble (value); }
-var::operator double() const NOEXCEPT                   { return type->toDouble (value); }
+var::operator int() const noexcept                      { return type->toInt (value); }
+var::operator int64() const noexcept                    { return type->toInt64 (value); }
+var::operator bool() const noexcept                     { return type->toBool (value); }
+var::operator float() const noexcept                    { return (float) type->toDouble (value); }
+var::operator double() const noexcept                   { return type->toDouble (value); }
 String var::toString() const                            { return type->toString (value); }
 var::operator String() const                            { return type->toString (value); }
-RefCountObject* var::getObject() const NOEXCEPT       { return type->toObject (value); }
-Array<var>* var::getArray() const NOEXCEPT              { return type->toArray (value); }
-MemoryBlock* var::getBinaryData() const NOEXCEPT        { return type->toBinary (value); }
-DynamicObject* var::getDynamicObject() const NOEXCEPT   { return dynamic_cast <DynamicObject*> (getObject()); }
+RefCountObject* var::getObject() const noexcept       { return type->toObject (value); }
+Array<var>* var::getArray() const noexcept              { return type->toArray (value); }
+MemoryBlock* var::getBinaryData() const noexcept        { return type->toBinary (value); }
+DynamicObject* var::getDynamicObject() const noexcept   { return dynamic_cast <DynamicObject*> (getObject()); }
 
 //==============================================================================
-void var::swapWith (var& other) NOEXCEPT
+void var::swapWith (var& other) noexcept
 {
     std::swap (type, other.type);
     std::swap (value, other.value);
@@ -513,14 +513,14 @@ var& var::operator= (const Array<var>& v)        { var v2 (v); swapWith (v2); re
 var& var::operator= (RefCountObject* v)        { var v2 (v); swapWith (v2); return *this; }
 var& var::operator= (NativeFunction v)           { var v2 (v); swapWith (v2); return *this; }
 
-var::var (var&& other) NOEXCEPT
+var::var (var&& other) noexcept
     : type (other.type),
       value (other.value)
 {
     other.type = &VariantType_Void::instance;
 }
 
-var& var::operator= (var&& other) NOEXCEPT
+var& var::operator= (var&& other) noexcept
 {
     swapWith (other);
     return *this;
@@ -550,30 +550,30 @@ var& var::operator= (String&& v)
 }
 
 //==============================================================================
-bool var::equals (const var& other) const NOEXCEPT
+bool var::equals (const var& other) const noexcept
 {
     return type->equals (value, other.value, *other.type);
 }
 
-bool var::equalsWithSameType (const var& other) const NOEXCEPT
+bool var::equalsWithSameType (const var& other) const noexcept
 {
     return type == other.type && equals (other);
 }
 
-bool var::hasSameTypeAs (const var& other) const NOEXCEPT
+bool var::hasSameTypeAs (const var& other) const noexcept
 {
     return type == other.type;
 }
 
-bool operator== (const var& v1, const var& v2) NOEXCEPT     { return v1.equals (v2); }
-bool operator!= (const var& v1, const var& v2) NOEXCEPT     { return ! v1.equals (v2); }
+bool operator== (const var& v1, const var& v2) noexcept     { return v1.equals (v2); }
+bool operator!= (const var& v1, const var& v2) noexcept     { return ! v1.equals (v2); }
 bool operator== (const var& v1, const String& v2)           { return v1.toString() == v2; }
 bool operator!= (const var& v1, const String& v2)           { return v1.toString() != v2; }
 bool operator== (const var& v1, const char* const v2)       { return v1.toString() == v2; }
 bool operator!= (const var& v1, const char* const v2)       { return v1.toString() != v2; }
 
 //==============================================================================
-var var::clone() const NOEXCEPT
+var var::clone() const noexcept
 {
     return type->clone (*this);
 }
@@ -778,7 +778,7 @@ var var::readFromStream (InputStream& input)
     return var();
 }
 
-var::NativeFunctionArgs::NativeFunctionArgs (const var& t, const var* args, int numArgs) NOEXCEPT
+var::NativeFunctionArgs::NativeFunctionArgs (const var& t, const var* args, int numArgs) noexcept
     : thisObject (t), arguments (args), numArguments (numArgs)
 {}
 

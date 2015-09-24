@@ -98,7 +98,7 @@ private:
     struct Clock
     {
 #if defined TREECORE_OS_MAC || defined TREECORE_OS_IOS
-        Clock (double millis) NOEXCEPT
+        Clock (double millis) noexcept
         {
             mach_timebase_info_data_t timebase;
             (void) mach_timebase_info (&timebase);
@@ -106,7 +106,7 @@ private:
             time = mach_absolute_time();
         }
 
-        void wait() NOEXCEPT
+        void wait() noexcept
         {
             time += delta;
             mach_wait_until (time);
@@ -115,11 +115,11 @@ private:
         uint64_t time, delta;
 
 #elif defined TREECORE_OS_ANDROID
-        Clock (double millis) NOEXCEPT  : delta ((uint64) (millis * 1000000))
+        Clock (double millis) noexcept  : delta ((uint64) (millis * 1000000))
         {
         }
 
-        void wait() NOEXCEPT
+        void wait() noexcept
         {
             struct timespec t;
             t.tv_sec  = (time_t) (delta / 1000000000);
@@ -129,14 +129,14 @@ private:
 
         uint64 delta;
 #else
-        Clock (double millis) NOEXCEPT  : delta ((uint64) (millis * 1000000))
+        Clock (double millis) noexcept  : delta ((uint64) (millis * 1000000))
         {
             struct timespec t;
             clock_gettime (CLOCK_MONOTONIC, &t);
             time = 1000000000 * (int64) t.tv_sec + t.tv_nsec;
         }
 
-        void wait() NOEXCEPT
+        void wait() noexcept
         {
             time += delta;
 

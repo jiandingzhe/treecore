@@ -94,12 +94,12 @@ public:
     /** Checks if the timer has been started.
         @returns true if the timer is running.
     */
-    bool isTimerRunning() const NOEXCEPT;
+    bool isTimerRunning() const noexcept;
 
     /** Returns the timer's interval.
         @returns the timer's interval in milliseconds if it's running, or 0 if it's not.
     */
-    int getTimerInterval() const NOEXCEPT;
+    int getTimerInterval() const noexcept;
 
 private:
     struct Pimpl;

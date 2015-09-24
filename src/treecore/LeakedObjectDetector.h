@@ -29,7 +29,7 @@
 #ifndef JUCE_LEAKEDOBJECTDETECTOR_H_INCLUDED
 #define JUCE_LEAKEDOBJECTDETECTOR_H_INCLUDED
 
-#include "treecore/Atomic.h"
+#include "treecore/AtomicFunc.h"
 #include "treecore/Logger.h"
 #include "treecore/StandardHeader.h"
 #include "treecore/String.h"
@@ -54,12 +54,12 @@ class LeakedObjectDetector
 {
 public:
     //==============================================================================
-    LeakedObjectDetector() NOEXCEPT
+    LeakedObjectDetector() noexcept
     {
         treecore::atomic_fetch_add(&getCounter().numObjects, 1);
     }
 
-    LeakedObjectDetector (const LeakedObjectDetector&) NOEXCEPT
+    LeakedObjectDetector (const LeakedObjectDetector&) noexcept
     {
         treecore::atomic_fetch_add(&getCounter().numObjects, 1);
     }
@@ -90,7 +90,7 @@ private:
     class LeakCounter
     {
     public:
-        LeakCounter() NOEXCEPT {}
+        LeakCounter() noexcept {}
 
         ~LeakCounter()
         {
@@ -118,7 +118,7 @@ private:
         return OwnerClass::getLeakedObjectClassName();
     }
 
-    static LeakCounter& getCounter() NOEXCEPT
+    static LeakCounter& getCounter() noexcept
     {
         static LeakCounter counter;
         return counter;
@@ -149,7 +149,7 @@ private:
   */
   #define JUCE_LEAK_DETECTOR(OwnerClass) \
         friend class treecore::LeakedObjectDetector<OwnerClass>; \
-        static const char* getLeakedObjectClassName() NOEXCEPT { return #OwnerClass; } \
+        static const char* getLeakedObjectClassName() noexcept { return #OwnerClass; } \
         treecore::LeakedObjectDetector<OwnerClass> JUCE_JOIN_MACRO (leakDetector, __LINE__);
  #else
   #define JUCE_LEAK_DETECTOR(OwnerClass)

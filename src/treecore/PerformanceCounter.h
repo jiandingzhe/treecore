@@ -78,7 +78,7 @@ public:
     /** Starts timing.
         @see stop
     */
-    void start() NOEXCEPT;
+    void start() noexcept;
 
     /** Stops timing and prints out the results.
 
@@ -100,12 +100,12 @@ public:
     /** Holds the current statistics. */
     struct Statistics
     {
-        Statistics() NOEXCEPT;
+        Statistics() noexcept;
 
-        void clear() NOEXCEPT;
+        void clear() noexcept;
         String toString() const;
 
-        void addResult (double elapsed) NOEXCEPT;
+        void addResult (double elapsed) noexcept;
 
         String name;
         double averageSeconds;

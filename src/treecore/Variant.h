@@ -66,7 +66,7 @@ public:
     */
     struct NativeFunctionArgs
     {
-        NativeFunctionArgs (const var& thisObject, const var* args, int numArgs) NOEXCEPT;
+        NativeFunctionArgs (const var& thisObject, const var* args, int numArgs) noexcept;
 
         const var& thisObject;
         const var* arguments;
@@ -80,25 +80,25 @@ public:
 
     //==============================================================================
     /** Creates a void variant. */
-    var() NOEXCEPT;
+    var() noexcept;
 
     /** Destructor. */
-    ~var() NOEXCEPT;
+    ~var() noexcept;
 
     /** A static var object that can be used where you need an empty variant object. */
     static const var null;
 
     var (const var& valueToCopy);
-    var (int value) NOEXCEPT;
-    var (int64 value) NOEXCEPT;
-    var (bool value) NOEXCEPT;
-    var (double value) NOEXCEPT;
+    var (int value) noexcept;
+    var (int64 value) noexcept;
+    var (bool value) noexcept;
+    var (double value) noexcept;
     var (const char* value);
     var (const wchar_t* value);
     var (const String& value);
     var (const Array<var>& value);
     var (RefCountObject* object);
-    var (NativeFunction method) NOEXCEPT;
+    var (NativeFunction method) noexcept;
     var (const void* binaryData, size_t dataSize);
     var (const MemoryBlock& binaryData);
 
@@ -114,24 +114,24 @@ public:
     var& operator= (RefCountObject* object);
     var& operator= (NativeFunction method);
 
-    var (var&& other) NOEXCEPT;
+    var (var&& other) noexcept;
     var (String&& value);
     var (MemoryBlock&& binaryData);
     var (Array<var>&& value);
-    var& operator= (var&& other) NOEXCEPT;
+    var& operator= (var&& other) noexcept;
     var& operator= (String&& value);
 
-    void swapWith (var& other) NOEXCEPT;
+    void swapWith (var& other) noexcept;
 
     /** Returns a var object that can be used where you need the javascript "undefined" value. */
-    static var undefined() NOEXCEPT;
+    static var undefined() noexcept;
 
     //==============================================================================
-    operator int() const NOEXCEPT;
-    operator int64() const NOEXCEPT;
-    operator bool() const NOEXCEPT;
-    operator float() const NOEXCEPT;
-    operator double() const NOEXCEPT;
+    operator int() const noexcept;
+    operator int64() const noexcept;
+    operator bool() const noexcept;
+    operator float() const noexcept;
+    operator double() const noexcept;
     operator String() const;
     String toString() const;
 
@@ -141,7 +141,7 @@ public:
         var objects that are the return-value of a function, and which may go out of scope before
         you use the array!
     */
-    Array<var>* getArray() const NOEXCEPT;
+    Array<var>* getArray() const noexcept;
 
     /** If this variant holds a memory block, this provides access to it.
         NOTE: Beware when you use this - the MemoryBlock pointer is only valid for the lifetime
@@ -149,45 +149,45 @@ public:
         var objects that are the return-value of a function, and which may go out of scope before
         you use the MemoryBlock!
     */
-    MemoryBlock* getBinaryData() const NOEXCEPT;
+    MemoryBlock* getBinaryData() const noexcept;
 
-    RefCountObject* getObject() const NOEXCEPT;
-    DynamicObject* getDynamicObject() const NOEXCEPT;
+    RefCountObject* getObject() const noexcept;
+    DynamicObject* getDynamicObject() const noexcept;
 
     //==============================================================================
-    bool isVoid() const NOEXCEPT;
-    bool isUndefined() const NOEXCEPT;
-    bool isInt() const NOEXCEPT;
-    bool isInt64() const NOEXCEPT;
-    bool isBool() const NOEXCEPT;
-    bool isDouble() const NOEXCEPT;
-    bool isString() const NOEXCEPT;
-    bool isObject() const NOEXCEPT;
-    bool isArray() const NOEXCEPT;
-    bool isBinaryData() const NOEXCEPT;
-    bool isMethod() const NOEXCEPT;
+    bool isVoid() const noexcept;
+    bool isUndefined() const noexcept;
+    bool isInt() const noexcept;
+    bool isInt64() const noexcept;
+    bool isBool() const noexcept;
+    bool isDouble() const noexcept;
+    bool isString() const noexcept;
+    bool isObject() const noexcept;
+    bool isArray() const noexcept;
+    bool isBinaryData() const noexcept;
+    bool isMethod() const noexcept;
 
     /** Returns true if this var has the same value as the one supplied.
         Note that this ignores the type, so a string var "123" and an integer var with the
         value 123 are considered to be equal.
         @see equalsWithSameType
     */
-    bool equals (const var& other) const NOEXCEPT;
+    bool equals (const var& other) const noexcept;
 
     /** Returns true if this var has the same value and type as the one supplied.
         This differs from equals() because e.g. "123" and 123 will be considered different.
         @see equals
     */
-    bool equalsWithSameType (const var& other) const NOEXCEPT;
+    bool equalsWithSameType (const var& other) const noexcept;
 
     /** Returns true if this var has the same type as the one supplied. */
-    bool hasSameTypeAs (const var& other) const NOEXCEPT;
+    bool hasSameTypeAs (const var& other) const noexcept;
 
     /** Returns a deep copy of this object.
         For simple types this just returns a copy, but if the object contains any arrays
         or DynamicObjects, they will be cloned (recursively).
     */
-    var clone() const NOEXCEPT;
+    var clone() const noexcept;
 
     //==============================================================================
     /** If the var is an array, this returns the number of elements.
@@ -323,13 +323,13 @@ private:
     ValueUnion value;
 
     Array<var>* convertToArray();
-    var (const VariantType&) NOEXCEPT;
+    var (const VariantType&) noexcept;
 };
 
 /** Compares the values of two var objects, using the var::equals() comparison. */
-bool operator== (const var& v1, const var& v2) NOEXCEPT;
+bool operator== (const var& v1, const var& v2) noexcept;
 /** Compares the values of two var objects, using the var::equals() comparison. */
-bool operator!= (const var& v1, const var& v2) NOEXCEPT;
+bool operator!= (const var& v1, const var& v2) noexcept;
 bool operator== (const var& v1, const String& v2);
 bool operator!= (const var& v1, const String& v2);
 bool operator== (const var& v1, const char* v2);

@@ -52,23 +52,23 @@ class ArrayAllocationBase  : public TypeOfCriticalSectionToUse
 public:
     //==============================================================================
     /** Creates an empty array. */
-    ArrayAllocationBase() NOEXCEPT
+    ArrayAllocationBase() noexcept
         : numAllocated (0)
     {
     }
 
     /** Destructor. */
-    ~ArrayAllocationBase() NOEXCEPT
+    ~ArrayAllocationBase() noexcept
     {
     }
 
-    ArrayAllocationBase (ArrayAllocationBase<ElementType, TypeOfCriticalSectionToUse>&& other) NOEXCEPT
+    ArrayAllocationBase (ArrayAllocationBase<ElementType, TypeOfCriticalSectionToUse>&& other) noexcept
         : elements (static_cast <HeapBlock <ElementType>&&> (other.elements)),
           numAllocated (other.numAllocated)
     {
     }
 
-    ArrayAllocationBase& operator= (ArrayAllocationBase<ElementType, TypeOfCriticalSectionToUse>&& other) NOEXCEPT
+    ArrayAllocationBase& operator= (ArrayAllocationBase<ElementType, TypeOfCriticalSectionToUse>&& other) noexcept
     {
         elements = static_cast <HeapBlock <ElementType>&&> (other.elements);
         numAllocated = other.numAllocated;
@@ -122,7 +122,7 @@ public:
     }
 
     /** Swap the contents of two objects. */
-    void swapWith (ArrayAllocationBase <ElementType, TypeOfCriticalSectionToUse>& other) NOEXCEPT
+    void swapWith (ArrayAllocationBase <ElementType, TypeOfCriticalSectionToUse>& other) noexcept
     {
         elements.swapWith (other.elements);
         std::swap (numAllocated, other.numAllocated);

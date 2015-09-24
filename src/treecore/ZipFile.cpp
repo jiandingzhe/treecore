@@ -282,12 +282,12 @@ ZipFile::OpenStreamCounter::~OpenStreamCounter()
 #endif
 
 //==============================================================================
-int ZipFile::getNumEntries() const NOEXCEPT
+int ZipFile::getNumEntries() const noexcept
 {
     return entries.size();
 }
 
-const ZipFile::ZipEntry* ZipFile::getEntry (const int index) const NOEXCEPT
+const ZipFile::ZipEntry* ZipFile::getEntry (const int index) const noexcept
 {
     if (ZipEntryHolder* const zei = entries [index])
         return &(zei->entry);
@@ -295,7 +295,7 @@ const ZipFile::ZipEntry* ZipFile::getEntry (const int index) const NOEXCEPT
     return nullptr;
 }
 
-int ZipFile::getIndexOfFileName (const String& fileName) const NOEXCEPT
+int ZipFile::getIndexOfFileName (const String& fileName) const noexcept
 {
     for (int i = 0; i < entries.size(); ++i)
         if (entries.getUnchecked (i)->entry.filename == fileName)
@@ -304,7 +304,7 @@ int ZipFile::getIndexOfFileName (const String& fileName) const NOEXCEPT
     return -1;
 }
 
-const ZipFile::ZipEntry* ZipFile::getEntry (const String& fileName) const NOEXCEPT
+const ZipFile::ZipEntry* ZipFile::getEntry (const String& fileName) const noexcept
 {
     return getEntry (getIndexOfFileName (fileName));
 }

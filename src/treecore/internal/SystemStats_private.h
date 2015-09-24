@@ -12,14 +12,14 @@ extern SystemStats::CrashHandlerFunction globalCrashHandler;
 
 struct CPUInformation
 {
-    CPUInformation() NOEXCEPT
+    CPUInformation() noexcept
         : numCpus (0), hasMMX (false), hasSSE (false),
           hasSSE2 (false), hasSSE3 (false), has3DNow (false)
     {
         initialise();
     }
 
-    void initialise() NOEXCEPT;
+    void initialise() noexcept;
 
     int numCpus;
     bool hasMMX, hasSSE, hasSSE2, hasSSE3, has3DNow;

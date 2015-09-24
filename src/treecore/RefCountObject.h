@@ -1,7 +1,7 @@
 #ifndef TREECORE_OBJECT_H
 #define TREECORE_OBJECT_H
 
-#include "treecore/Atomic.h"
+#include "treecore/AtomicFunc.h"
 #include "treecore/Common.h"
 #include "treecore/LeakedObjectDetector.h"
 
@@ -15,25 +15,25 @@ class JUCE_API RefCountObject
 {
     friend class ::TestFramework;
 public:
-    RefCountObject()                    { atomic_fetch_set(&ms_count, 0u); }
-    RefCountObject(const RefCountObject& other) { atomic_fetch_set(&ms_count, 0u); }
+    RefCountObject()                    { atomic_store(&ms_count, 0u); }
+    RefCountObject(const RefCountObject& other) { atomic_store(&ms_count, 0u); }
 
     virtual ~RefCountObject() {}
 
     RefCountObject& operator = (const RefCountObject& other) { return *this; }
 
-    void ref() const NOEXCEPT
+    void ref() const noexcept
     {
         atomic_fetch_add(&ms_count, 1u);
     }
 
-    void unref() const NOEXCEPT
+    void unref() const noexcept
     {
         if (atomic_fetch_sub(&ms_count, 1u) == 1)
             delete this;
     }
 
-    std::uint32_t get_ref_count() const NOEXCEPT
+    std::uint32_t get_ref_count() const noexcept
     {
         return atomic_load(&ms_count);
     }

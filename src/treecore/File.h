@@ -67,7 +67,7 @@ public:
 
         You can use its operator= method to point it at a proper file.
     */
-    File() NOEXCEPT  {}
+    File() noexcept  {}
 
     /** Creates a file from an absolute path.
 
@@ -85,7 +85,7 @@ public:
     File (const File&);
 
     /** Destructor. */
-    ~File() NOEXCEPT  {}
+    ~File() noexcept  {}
 
     /** Sets the file based on an absolute pathname.
 
@@ -102,8 +102,8 @@ public:
     /** Copies from another file object. */
     File& operator= (const File& otherFile);
 
-    File (File&&) NOEXCEPT;
-    File& operator= (File&&) NOEXCEPT;
+    File (File&&) noexcept;
+    File& operator= (File&&) noexcept;
 
     //==============================================================================
     /** This static constant is used for referring to an 'invalid' file. */
@@ -158,7 +158,7 @@ public:
 
         @see getFileName, getRelativePathFrom
     */
-    const String& getFullPathName() const NOEXCEPT          { return fullPath; }
+    const String& getFullPathName() const noexcept          { return fullPath; }
 
     /** Returns the last section of the pathname.
 
@@ -942,7 +942,7 @@ public:
 
         Best to avoid this unless you really know what you're doing.
     */
-    static File createFileWithoutCheckingPath (const String& absolutePath) NOEXCEPT;
+    static File createFileWithoutCheckingPath (const String& absolutePath) noexcept;
 
     /** Adds a separator character to the end of a path if it doesn't already have one. */
     static String addTrailingSeparator (const String& path);

@@ -39,7 +39,7 @@ FileFilter::~FileFilter()
 {
 }
 
-const String& FileFilter::getDescription() const NOEXCEPT
+const String& FileFilter::getDescription() const noexcept
 {
     return description;
 }

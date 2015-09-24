@@ -77,12 +77,12 @@ class ScopedPointer
 public:
     //==============================================================================
     /** Creates a ScopedPointer containing a null pointer. */
-    inline ScopedPointer() NOEXCEPT   : object (nullptr)
+    inline ScopedPointer() noexcept   : object (nullptr)
     {
     }
 
     /** Creates a ScopedPointer that owns the specified object. */
-    inline ScopedPointer (ObjectType* const objectToTakePossessionOf) NOEXCEPT
+    inline ScopedPointer (ObjectType* const objectToTakePossessionOf) noexcept
         : object (objectToTakePossessionOf)
     {
     }
@@ -93,7 +93,7 @@ public:
         the pointer from the other object to this one, and the other object is reset to
         be a null pointer.
     */
-    ScopedPointer (ScopedPointer& objectToTransferFrom) NOEXCEPT
+    ScopedPointer (ScopedPointer& objectToTransferFrom) noexcept
         : object (objectToTransferFrom.object)
     {
         objectToTransferFrom.object = nullptr;
@@ -149,13 +149,13 @@ public:
         return *this;
     }
 
-    ScopedPointer (ScopedPointer&& other) NOEXCEPT
+    ScopedPointer (ScopedPointer&& other) noexcept
         : object (other.object)
     {
         other.object = nullptr;
     }
 
-    ScopedPointer& operator= (ScopedPointer&& other) NOEXCEPT
+    ScopedPointer& operator= (ScopedPointer&& other) noexcept
     {
         object = other.object;
         other.object = nullptr;
@@ -164,28 +164,28 @@ public:
 
     //==============================================================================
     /** Returns the object that this ScopedPointer refers to. */
-    inline operator ObjectType*() const NOEXCEPT                                    { return object; }
+    inline operator ObjectType*() const noexcept                                    { return object; }
 
     /** Returns the object that this ScopedPointer refers to. */
-    inline ObjectType* get() const NOEXCEPT                                         { return object; }
+    inline ObjectType* get() const noexcept                                         { return object; }
 
     /** Returns the object that this ScopedPointer refers to. */
-    inline ObjectType& operator*() const NOEXCEPT                                   { return *object; }
+    inline ObjectType& operator*() const noexcept                                   { return *object; }
 
     /** Lets you access methods and properties of the object that this ScopedPointer refers to. */
-    inline ObjectType* operator->() const NOEXCEPT                                  { return object; }
+    inline ObjectType* operator->() const noexcept                                  { return object; }
 
     //==============================================================================
     /** Removes the current object from this ScopedPointer without deleting it.
         This will return the current object, and set the ScopedPointer to a null pointer.
     */
-    ObjectType* release() NOEXCEPT                                                  { ObjectType* const o = object; object = nullptr; return o; }
+    ObjectType* release() noexcept                                                  { ObjectType* const o = object; object = nullptr; return o; }
 
     //==============================================================================
     /** Swaps this object with that of another ScopedPointer.
         The two objects simply exchange their pointers.
     */
-    void swapWith (ScopedPointer <ObjectType>& other) NOEXCEPT
+    void swapWith (ScopedPointer <ObjectType>& other) noexcept
     {
         // Two ScopedPointers should never be able to refer to the same object - if
         // this happens, you must have done something dodgy!
@@ -204,7 +204,7 @@ private:
     ObjectType* object;
 
     // (Required as an alternative to the overloaded & operator).
-    const ScopedPointer* getAddress() const NOEXCEPT                                { return this; }
+    const ScopedPointer* getAddress() const noexcept                                { return this; }
 
   #if !defined TREECORE_COMPILER_MSVC // (MSVC can't deal with multiple copy constructors)
     /* The copy constructors are private to stop people accidentally copying a const ScopedPointer
@@ -232,7 +232,7 @@ private:
     This can be handy for checking whether this is a null pointer.
 */
 template <class ObjectType>
-bool operator== (const ScopedPointer<ObjectType>& pointer1, ObjectType* const pointer2) NOEXCEPT
+bool operator== (const ScopedPointer<ObjectType>& pointer1, ObjectType* const pointer2) noexcept
 {
     return static_cast <ObjectType*> (pointer1) == pointer2;
 }
@@ -241,7 +241,7 @@ bool operator== (const ScopedPointer<ObjectType>& pointer1, ObjectType* const po
     This can be handy for checking whether this is a null pointer.
 */
 template <class ObjectType>
-bool operator!= (const ScopedPointer<ObjectType>& pointer1, ObjectType* const pointer2) NOEXCEPT
+bool operator!= (const ScopedPointer<ObjectType>& pointer1, ObjectType* const pointer2) noexcept
 {
     return static_cast <ObjectType*> (pointer1) != pointer2;
 }

@@ -159,7 +159,7 @@
 
 namespace treecore {
 extern JUCE_API bool JUCE_CALLTYPE juce_isRunningUnderDebugger();
-extern JUCE_API void JUCE_CALLTYPE logAssertion (const char* file, int line) NOEXCEPT;
+extern JUCE_API void JUCE_CALLTYPE logAssertion (const char* file, int line) noexcept;
 }
 
 #endif   // JUCE_STANDARDHEADER_H_INCLUDED

@@ -62,12 +62,12 @@ public:
     /**
         Creates a ReadWriteLock object.
     */
-    ReadWriteLock() NOEXCEPT;
+    ReadWriteLock() noexcept;
 
     /** Destructor.
         If the object is deleted whilst locked, any subsequent behaviour is undefined.
     */
-    ~ReadWriteLock() NOEXCEPT;
+    ~ReadWriteLock() noexcept;
 
     //==============================================================================
     /** Locks this object for reading.
@@ -77,7 +77,7 @@ public:
 
         @see exitRead, ScopedReadLock
     */
-    void enterRead() const NOEXCEPT;
+    void enterRead() const noexcept;
 
     /** Tries to lock this object for reading.
 
@@ -87,7 +87,7 @@ public:
         @returns true if the lock is successfully gained.
         @see exitRead, ScopedReadLock
     */
-    bool tryEnterRead() const NOEXCEPT;
+    bool tryEnterRead() const noexcept;
 
     /** Releases the read-lock.
 
@@ -99,7 +99,7 @@ public:
 
         @see enterRead, ScopedReadLock
     */
-    void exitRead() const NOEXCEPT;
+    void exitRead() const noexcept;
 
     //==============================================================================
     /** Locks this object for writing.
@@ -109,7 +109,7 @@ public:
 
         @see exitWrite, ScopedWriteLock
     */
-    void enterWrite() const NOEXCEPT;
+    void enterWrite() const noexcept;
 
     /** Tries to lock this object for writing.
 
@@ -119,7 +119,7 @@ public:
         @returns true if the lock is successfully gained.
         @see enterWrite
     */
-    bool tryEnterWrite() const NOEXCEPT;
+    bool tryEnterWrite() const noexcept;
 
     /** Releases the write-lock.
 
@@ -131,7 +131,7 @@ public:
 
         @see enterWrite, ScopedWriteLock
     */
-    void exitWrite() const NOEXCEPT;
+    void exitWrite() const noexcept;
 
 
 private:
@@ -149,7 +149,7 @@ private:
 
     mutable Array <ThreadRecursionCount> readerThreads;
 
-    bool tryEnterWriteInternal (Thread::ThreadID) const NOEXCEPT;
+    bool tryEnterWriteInternal (Thread::ThreadID) const noexcept;
 
     TREECORE_DECLARE_NON_COPYABLE (ReadWriteLock)
 };

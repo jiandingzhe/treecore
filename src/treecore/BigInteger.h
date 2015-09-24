@@ -77,8 +77,8 @@ public:
     /** Creates a copy of another BigInteger. */
     BigInteger (const BigInteger&);
 
-    BigInteger (BigInteger&&) NOEXCEPT;
-    BigInteger& operator= (BigInteger&&) NOEXCEPT;
+    BigInteger (BigInteger&&) noexcept;
+    BigInteger& operator= (BigInteger&&) noexcept;
 
     /** Destructor. */
     ~BigInteger();
@@ -88,36 +88,36 @@ public:
     BigInteger& operator= (const BigInteger&);
 
     /** Swaps the internal contents of this with another object. */
-    void swapWith (BigInteger&) NOEXCEPT;
+    void swapWith (BigInteger&) noexcept;
 
     //==============================================================================
     /** Returns the value of a specified bit in the number.
         If the index is out-of-range, the result will be false.
     */
-    bool operator[] (int bit) const NOEXCEPT;
+    bool operator[] (int bit) const noexcept;
 
     /** Returns true if no bits are set. */
-    bool isZero() const NOEXCEPT;
+    bool isZero() const noexcept;
 
     /** Returns true if the value is 1. */
-    bool isOne() const NOEXCEPT;
+    bool isOne() const noexcept;
 
     /** Attempts to get the lowest 32 bits of the value as an integer.
         If the value is bigger than the integer limits, this will return only the lower bits.
     */
-    int toInteger() const NOEXCEPT;
+    int toInteger() const noexcept;
 
     /** Attempts to get the lowest 64 bits of the value as an integer.
         If the value is bigger than the integer limits, this will return only the lower bits.
     */
-    int64 toInt64() const NOEXCEPT;
+    int64 toInt64() const noexcept;
 
     //==============================================================================
     /** Resets the value to 0. */
     void clear();
 
     /** Clears a particular bit in the number. */
-    void clearBit (int bitNumber) NOEXCEPT;
+    void clearBit (int bitNumber) noexcept;
 
     /** Sets a specified bit to 1. */
     void setBit (int bitNumber);
@@ -150,7 +150,7 @@ public:
         Asking for more than 32 bits isn't allowed (obviously) - for that, use
         getBitRange().
     */
-    uint32 getBitRangeAsInt (int startBit, int numBits) const NOEXCEPT;
+    uint32 getBitRangeAsInt (int startBit, int numBits) const noexcept;
 
     /** Sets a range of bits to an integer value.
 
@@ -167,26 +167,26 @@ public:
     void shiftBits (int howManyBitsLeft, int startBit);
 
     /** Returns the total number of set bits in the value. */
-    int countNumberOfSetBits() const NOEXCEPT;
+    int countNumberOfSetBits() const noexcept;
 
     /** Looks for the index of the next set bit after a given starting point.
 
         This searches from startIndex (inclusive) upwards for the first set bit,
         and returns its index. If no set bits are found, it returns -1.
     */
-    int findNextSetBit (int startIndex) const NOEXCEPT;
+    int findNextSetBit (int startIndex) const noexcept;
 
     /** Looks for the index of the next clear bit after a given starting point.
 
         This searches from startIndex (inclusive) upwards for the first clear bit,
         and returns its index.
     */
-    int findNextClearBit (int startIndex) const NOEXCEPT;
+    int findNextClearBit (int startIndex) const noexcept;
 
     /** Returns the index of the highest set bit in the number.
         If the value is zero, this will return -1.
     */
-    int getHighestBit() const NOEXCEPT;
+    int getHighestBit() const noexcept;
 
     //==============================================================================
     // All the standard arithmetic ops...
@@ -218,12 +218,12 @@ public:
     BigInteger operator<< (int numBitsToShift) const;
     BigInteger operator>> (int numBitsToShift) const;
 
-    bool operator== (const BigInteger&) const NOEXCEPT;
-    bool operator!= (const BigInteger&) const NOEXCEPT;
-    bool operator<  (const BigInteger&) const NOEXCEPT;
-    bool operator<= (const BigInteger&) const NOEXCEPT;
-    bool operator>  (const BigInteger&) const NOEXCEPT;
-    bool operator>= (const BigInteger&) const NOEXCEPT;
+    bool operator== (const BigInteger&) const noexcept;
+    bool operator!= (const BigInteger&) const noexcept;
+    bool operator<  (const BigInteger&) const noexcept;
+    bool operator<= (const BigInteger&) const noexcept;
+    bool operator>  (const BigInteger&) const noexcept;
+    bool operator>= (const BigInteger&) const noexcept;
 
     //==============================================================================
     /** Does a signed comparison of two BigIntegers.
@@ -233,7 +233,7 @@ public:
             - < 0 if this number is smaller than the other
             - > 0 if this number is bigger than the other
     */
-    int compare (const BigInteger& other) const NOEXCEPT;
+    int compare (const BigInteger& other) const noexcept;
 
     /** Compares the magnitudes of two BigIntegers, ignoring their signs.
 
@@ -242,7 +242,7 @@ public:
             - < 0 if this number is smaller than the other
             - > 0 if this number is bigger than the other
     */
-    int compareAbsolute (const BigInteger& other) const NOEXCEPT;
+    int compareAbsolute (const BigInteger& other) const noexcept;
 
     /** Divides this value by another one and returns the remainder.
 
@@ -268,17 +268,17 @@ public:
     /** Returns true if the value is less than zero.
         @see setNegative, negate
     */
-    bool isNegative() const NOEXCEPT;
+    bool isNegative() const noexcept;
 
     /** Changes the sign of the number to be positive or negative.
         @see isNegative, negate
     */
-    void setNegative (bool shouldBeNegative) NOEXCEPT;
+    void setNegative (bool shouldBeNegative) noexcept;
 
     /** Inverts the sign of the number.
         @see isNegative, setNegative
     */
-    void negate() NOEXCEPT;
+    void negate() noexcept;
 
     //==============================================================================
     /** Converts the number to a string.

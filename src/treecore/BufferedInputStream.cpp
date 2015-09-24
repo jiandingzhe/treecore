@@ -32,7 +32,7 @@ namespace treecore {
 
 namespace
 {
-    int calcBufferStreamBufferSize (int requestedSize, InputStream* const source) NOEXCEPT
+    int calcBufferStreamBufferSize (int requestedSize, InputStream* const source) noexcept
     {
         // You need to supply a real stream when creating a BufferedInputStream
         jassert (source != nullptr);

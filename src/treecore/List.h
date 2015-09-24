@@ -23,7 +23,7 @@ public:
         ms_root.prev = &ms_root;
     }
 
-    bool append(T value) NOEXCEPT
+    bool append(T value) noexcept
     {
         Node* old_tail = ms_root.prev;
 
@@ -37,7 +37,7 @@ public:
         return true;
     }
 
-    bool prepend(T value) NOEXCEPT
+    bool prepend(T value) noexcept
     {
         Node* old_head = ms_root.next;
 
@@ -51,7 +51,7 @@ public:
         return true;
     }
 
-    bool pop() NOEXCEPT
+    bool pop() noexcept
     {
         if (is_empty())
         {
@@ -70,7 +70,7 @@ public:
         }
     }
 
-    bool shift() NOEXCEPT
+    bool shift() noexcept
     {
         if (is_empty())
         {
@@ -89,7 +89,7 @@ public:
         }
     }
 
-    bool is_empty() NOEXCEPT
+    bool is_empty() noexcept
     {
         return ms_root->prev == ms_root;
     }

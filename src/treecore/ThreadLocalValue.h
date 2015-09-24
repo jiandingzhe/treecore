@@ -29,7 +29,7 @@
 #ifndef JUCE_THREADLOCALVALUE_H_INCLUDED
 #define JUCE_THREADLOCALVALUE_H_INCLUDED
 
-#include "treecore/Atomic.h"
+#include "treecore/AtomicFunc.h"
 
 #include "treecore/SpinLock.h"
 #include "treecore/Thread.h"
@@ -66,7 +66,7 @@ class ThreadLocalValue
 {
 public:
     /** */
-    ThreadLocalValue() NOEXCEPT
+    ThreadLocalValue() noexcept
     {
     }
 
@@ -90,21 +90,21 @@ public:
         value object will be created - so if your value's class has a non-trivial
         constructor, be aware that this method could invoke it.
     */
-    Type& operator*() const NOEXCEPT                        { return get(); }
+    Type& operator*() const noexcept                        { return get(); }
 
     /** Returns a pointer to this thread's instance of the value.
         Note that the first time a thread tries to access the value, an instance of the
         value object will be created - so if your value's class has a non-trivial
         constructor, be aware that this method could invoke it.
     */
-    operator Type*() const NOEXCEPT                         { return &get(); }
+    operator Type*() const noexcept                         { return &get(); }
 
     /** Accesses a method or field of the value object.
         Note that the first time a thread tries to access the value, an instance of the
         value object will be created - so if your value's class has a non-trivial
         constructor, be aware that this method could invoke it.
     */
-    Type* operator->() const NOEXCEPT                       { return &get(); }
+    Type* operator->() const noexcept                       { return &get(); }
 
     /** Assigns a new value to the thread-local object. */
     ThreadLocalValue& operator= (const Type& newValue)      { get() = newValue; return *this; }
@@ -114,7 +114,7 @@ public:
         value object will be created - so if your value's class has a non-trivial
         constructor, be aware that this method could invoke it.
     */
-    Type& get() const NOEXCEPT
+    Type& get() const noexcept
     {
        #if JUCE_NO_COMPILER_THREAD_LOCAL
         const Thread::ThreadID threadId = Thread::getCurrentThreadId();
@@ -149,7 +149,7 @@ public:
         {
             atomic_store(&newObject->next, first);
         }
-        while (! atomic_cas(&first, newObject->next, newObject));
+        while (! atomic_compare_set(&first, newObject->next, newObject));
 
         return newObject->object;
        #elif defined TREECORE_OS_OSX

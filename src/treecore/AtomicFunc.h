@@ -1,5 +1,5 @@
-#ifndef TREECORE_ATOMIC_H
-#define TREECORE_ATOMIC_H
+#ifndef TREECORE_ATOMIC_FUNC_H
+#define TREECORE_ATOMIC_FUNC_H
 
 #ifdef __GNUC__
 #  include "treecore/Atomic/gcc.h"
@@ -9,4 +9,4 @@
 #  error "atomic support is not implemented"
 #endif
 
-#endif // TREECORE_ATOMIC_H
+#endif // TREECORE_ATOMIC_FUNC_H

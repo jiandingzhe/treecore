@@ -58,18 +58,18 @@ PerformanceCounter::~PerformanceCounter()
     printStatistics();
 }
 
-PerformanceCounter::Statistics::Statistics() NOEXCEPT
+PerformanceCounter::Statistics::Statistics() noexcept
     : averageSeconds(), maximumSeconds(), minimumSeconds(), totalSeconds(), numRuns()
 {
 }
 
-void PerformanceCounter::Statistics::clear() NOEXCEPT
+void PerformanceCounter::Statistics::clear() noexcept
 {
     averageSeconds = maximumSeconds = minimumSeconds = totalSeconds = 0;
     numRuns = 0;
 }
 
-void PerformanceCounter::Statistics::addResult (double elapsed) NOEXCEPT
+void PerformanceCounter::Statistics::addResult (double elapsed) noexcept
 {
     if (numRuns == 0)
     {
@@ -105,7 +105,7 @@ String PerformanceCounter::Statistics::toString() const
     return s.toString();
 }
 
-void PerformanceCounter::start() NOEXCEPT
+void PerformanceCounter::start() noexcept
 {
     startTime = Time::getHighResolutionTicks();
 }

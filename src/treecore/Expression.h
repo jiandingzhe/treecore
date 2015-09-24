@@ -74,8 +74,8 @@ public:
     /** Copies another expression. */
     Expression& operator= (const Expression&);
 
-    Expression (Expression&&) NOEXCEPT;
-    Expression& operator= (Expression&&) NOEXCEPT;
+    Expression (Expression&&) noexcept;
+    Expression& operator= (Expression&&) noexcept;
 
     /** Creates an expression by parsing a string.
         If there's a syntax error in the string, this will throw a ParseError exception.
@@ -198,8 +198,8 @@ public:
     struct Symbol
     {
         Symbol (const String& scopeUID, const String& symbolName);
-        bool operator== (const Symbol&) const NOEXCEPT;
-        bool operator!= (const Symbol&) const NOEXCEPT;
+        bool operator== (const Symbol&) const noexcept;
+        bool operator!= (const Symbol&) const noexcept;
 
         String scopeUID;    /**< The unique ID of the Scope that contains this symbol. */
         String symbolName;  /**< The name of the symbol. */
@@ -247,7 +247,7 @@ public:
     };
 
     /** Returns the type of this expression. */
-    Type getType() const NOEXCEPT;
+    Type getType() const noexcept;
 
     /** If this expression is a symbol, function or operator, this returns its identifier. */
     String getSymbolOrFunction() const;

@@ -36,17 +36,17 @@ namespace treecore {
  #pragma warning (disable: 4514 4996)
 #endif
 
-juce_wchar CharacterFunctions::toUpperCase (const juce_wchar character) NOEXCEPT
+juce_wchar CharacterFunctions::toUpperCase (const juce_wchar character) noexcept
 {
     return towupper ((wchar_t) character);
 }
 
-juce_wchar CharacterFunctions::toLowerCase (const juce_wchar character) NOEXCEPT
+juce_wchar CharacterFunctions::toLowerCase (const juce_wchar character) noexcept
 {
     return towlower ((wchar_t) character);
 }
 
-bool CharacterFunctions::isUpperCase (const juce_wchar character) NOEXCEPT
+bool CharacterFunctions::isUpperCase (const juce_wchar character) noexcept
 {
    #if defined TREECORE_OS_WINDOWS
     return iswupper ((wchar_t) character) != 0;
@@ -55,7 +55,7 @@ bool CharacterFunctions::isUpperCase (const juce_wchar character) NOEXCEPT
    #endif
 }
 
-bool CharacterFunctions::isLowerCase (const juce_wchar character) NOEXCEPT
+bool CharacterFunctions::isLowerCase (const juce_wchar character) noexcept
 {
    #if defined TREECORE_OS_WINDOWS
     return iswlower ((wchar_t) character) != 0;
@@ -69,50 +69,50 @@ bool CharacterFunctions::isLowerCase (const juce_wchar character) NOEXCEPT
 #endif
 
 //==============================================================================
-bool CharacterFunctions::isWhitespace (const char character) NOEXCEPT
+bool CharacterFunctions::isWhitespace (const char character) noexcept
 {
     return character == ' ' || (character <= 13 && character >= 9);
 }
 
-bool CharacterFunctions::isWhitespace (const juce_wchar character) NOEXCEPT
+bool CharacterFunctions::isWhitespace (const juce_wchar character) noexcept
 {
     return iswspace ((wchar_t) character) != 0;
 }
 
-bool CharacterFunctions::isDigit (const char character) NOEXCEPT
+bool CharacterFunctions::isDigit (const char character) noexcept
 {
     return (character >= '0' && character <= '9');
 }
 
-bool CharacterFunctions::isDigit (const juce_wchar character) NOEXCEPT
+bool CharacterFunctions::isDigit (const juce_wchar character) noexcept
 {
     return iswdigit ((wchar_t) character) != 0;
 }
 
-bool CharacterFunctions::isLetter (const char character) NOEXCEPT
+bool CharacterFunctions::isLetter (const char character) noexcept
 {
     return (character >= 'a' && character <= 'z')
         || (character >= 'A' && character <= 'Z');
 }
 
-bool CharacterFunctions::isLetter (const juce_wchar character) NOEXCEPT
+bool CharacterFunctions::isLetter (const juce_wchar character) noexcept
 {
     return iswalpha ((wchar_t) character) != 0;
 }
 
-bool CharacterFunctions::isLetterOrDigit (const char character) NOEXCEPT
+bool CharacterFunctions::isLetterOrDigit (const char character) noexcept
 {
     return (character >= 'a' && character <= 'z')
         || (character >= 'A' && character <= 'Z')
         || (character >= '0' && character <= '9');
 }
 
-bool CharacterFunctions::isLetterOrDigit (const juce_wchar character) NOEXCEPT
+bool CharacterFunctions::isLetterOrDigit (const juce_wchar character) noexcept
 {
     return iswalnum ((wchar_t) character) != 0;
 }
 
-int CharacterFunctions::getHexDigitValue (const juce_wchar digit) NOEXCEPT
+int CharacterFunctions::getHexDigitValue (const juce_wchar digit) noexcept
 {
     unsigned int d = (unsigned int) digit - '0';
     if (d < (unsigned int) 10)
@@ -129,7 +129,7 @@ int CharacterFunctions::getHexDigitValue (const juce_wchar digit) NOEXCEPT
     return -1;
 }
 
-double CharacterFunctions::mulexp10 (const double value, int exponent) NOEXCEPT
+double CharacterFunctions::mulexp10 (const double value, int exponent) noexcept
 {
     if (exponent == 0)
         return value;

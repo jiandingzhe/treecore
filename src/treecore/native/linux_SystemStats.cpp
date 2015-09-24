@@ -155,7 +155,7 @@ String SystemStats::getUserRegion()      { return getLocaleValue (_NL_IDENTIFICA
 String SystemStats::getDisplayLanguage() { return getUserLanguage() + "-" + getUserRegion(); }
 
 //==============================================================================
-void CPUInformation::initialise() NOEXCEPT
+void CPUInformation::initialise() noexcept
 {
     const String flags (LinuxStatsHelpers::getCpuInfo ("flags"));
     hasMMX   = flags.contains ("mmx");
@@ -168,7 +168,7 @@ void CPUInformation::initialise() NOEXCEPT
 }
 
 //==============================================================================
-uint32 juce_millisecondsSinceStartup() NOEXCEPT
+uint32 juce_millisecondsSinceStartup() noexcept
 {
     timespec t;
     clock_gettime (CLOCK_MONOTONIC, &t);
@@ -176,7 +176,7 @@ uint32 juce_millisecondsSinceStartup() NOEXCEPT
     return t.tv_sec * 1000 + t.tv_nsec / 1000000;
 }
 
-int64 Time::getHighResolutionTicks() NOEXCEPT
+int64 Time::getHighResolutionTicks() noexcept
 {
     timespec t;
     clock_gettime (CLOCK_MONOTONIC, &t);
@@ -184,12 +184,12 @@ int64 Time::getHighResolutionTicks() NOEXCEPT
     return (t.tv_sec * (int64) 1000000) + (t.tv_nsec / 1000);
 }
 
-int64 Time::getHighResolutionTicksPerSecond() NOEXCEPT
+int64 Time::getHighResolutionTicksPerSecond() noexcept
 {
     return 1000000;  // (microseconds)
 }
 
-double Time::getMillisecondCounterHiRes() NOEXCEPT
+double Time::getMillisecondCounterHiRes() noexcept
 {
     return getHighResolutionTicks() * 0.001;
 }

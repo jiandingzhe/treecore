@@ -29,7 +29,7 @@
 #ifndef JUCE_SPINLOCK_H_INCLUDED
 #define JUCE_SPINLOCK_H_INCLUDED
 
-#include "treecore/Atomic.h"
+#include "treecore/AtomicFunc.h"
 #include "treecore/ScopedLock.h"
 #include "treecore/StandardHeader.h"
 
@@ -51,8 +51,8 @@ namespace treecore {
 class JUCE_API  SpinLock
 {
 public:
-    inline SpinLock() NOEXCEPT {}
-    inline ~SpinLock() NOEXCEPT {}
+    inline SpinLock() noexcept {}
+    inline ~SpinLock() noexcept {}
 
     /** Acquires the lock.
         This will block until the lock has been successfully acquired by this thread.
@@ -63,16 +63,16 @@ public:
         It's strongly recommended that you never call this method directly - instead use the
         ScopedLockType class to manage the locking using an RAII pattern instead.
     */
-    void enter() const NOEXCEPT;
+    void enter() const noexcept;
 
     /** Attempts to acquire the lock, returning true if this was successful. */
-    inline bool tryEnter() const NOEXCEPT
+    inline bool tryEnter() const noexcept
     {
-        return atomic_cas(&lock, 0, 1);
+        return atomic_compare_set(&lock, 0, 1);
     }
 
     /** Releases the lock. */
-    inline void exit() const NOEXCEPT
+    inline void exit() const noexcept
     {
         jassert (treecore::atomic_load(&lock) == 1); // Agh! Releasing a lock that isn't currently held!
         lock = 0;

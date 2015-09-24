@@ -10,7 +10,7 @@ namespace treecore
 
 struct HighResolutionTimer::Pimpl
 {
-    Pimpl (HighResolutionTimer& t) NOEXCEPT;
+    Pimpl (HighResolutionTimer& t) noexcept;
 
     ~Pimpl();
 
