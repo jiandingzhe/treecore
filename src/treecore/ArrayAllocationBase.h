@@ -133,7 +133,7 @@ public:
     int numAllocated;
 
 private:
-    JUCE_DECLARE_NON_COPYABLE (ArrayAllocationBase)
+    TREECORE_DECLARE_NON_COPYABLE(ArrayAllocationBase)
 };
 
 }

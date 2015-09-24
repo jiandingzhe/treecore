@@ -144,7 +144,7 @@ private:
         friend struct ContainerDeletePolicy<Pimpl>;
         ScopedPointer<Pimpl> pimpl;
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NativeIterator)
+        TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NativeIterator)
     };
 
     friend struct ContainerDeletePolicy<NativeIterator::Pimpl>;
@@ -162,7 +162,7 @@ private:
     static StringArray parseWildcards (const String& pattern);
     static bool fileMatches (const StringArray& wildCards, const String& filename);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DirectoryIterator)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DirectoryIterator)
 };
 
 }

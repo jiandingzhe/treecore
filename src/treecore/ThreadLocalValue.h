@@ -193,14 +193,14 @@ private:
         ObjectHolder* next;
         Type object;
 
-        JUCE_DECLARE_NON_COPYABLE (ObjectHolder)
+        TREECORE_DECLARE_NON_COPYABLE (ObjectHolder)
     };
 
     mutable ObjectHolder* first;
     SpinLock lock;
    #endif
 
-    JUCE_DECLARE_NON_COPYABLE (ThreadLocalValue)
+    TREECORE_DECLARE_NON_COPYABLE (ThreadLocalValue)
 };
 
 }

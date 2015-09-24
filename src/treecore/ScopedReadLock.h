@@ -88,7 +88,7 @@ private:
     //==============================================================================
     const ReadWriteLock& lock_;
 
-    JUCE_DECLARE_NON_COPYABLE (ScopedReadLock)
+    TREECORE_DECLARE_NON_COPYABLE (ScopedReadLock)
 };
 
 }

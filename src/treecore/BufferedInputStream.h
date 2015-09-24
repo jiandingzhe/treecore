@@ -91,7 +91,7 @@ private:
     HeapBlock <char> buffer;
     void ensureBuffered();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BufferedInputStream)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BufferedInputStream)
 };
 
 }

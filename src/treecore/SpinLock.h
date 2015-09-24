@@ -89,7 +89,7 @@ private:
     //==============================================================================
     mutable int lock;
 
-    JUCE_DECLARE_NON_COPYABLE (SpinLock)
+    TREECORE_DECLARE_NON_COPYABLE (SpinLock)
 };
 
 }

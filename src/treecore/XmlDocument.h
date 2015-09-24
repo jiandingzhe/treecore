@@ -184,7 +184,7 @@ private:
     String expandExternalEntity (const String&);
     String getParameterEntity (const String&);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (XmlDocument);
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (XmlDocument);
 };
 
 }

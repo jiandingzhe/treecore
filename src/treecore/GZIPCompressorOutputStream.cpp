@@ -121,10 +121,10 @@ private:
         return false;
     }
 
-    JUCE_DECLARE_NON_COPYABLE (GZIPCompressorHelper)
+    TREECORE_DECLARE_NON_COPYABLE (GZIPCompressorHelper)
 };
 
-//==============================================================================
+//===========TREECORE_DECLARE_NON_COPYABLE==========================================
 GZIPCompressorOutputStream::GZIPCompressorOutputStream (OutputStream* const out,
                                                         const int compressionLevel,
                                                         const bool deleteDestStream,

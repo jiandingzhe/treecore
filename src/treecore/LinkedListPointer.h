@@ -358,14 +358,14 @@ public:
     private:
         LinkedListPointer* endOfList;
 
-        JUCE_DECLARE_NON_COPYABLE (Appender)
+        TREECORE_DECLARE_NON_COPYABLE (Appender)
     };
 
 private:
     //==============================================================================
     ObjectType* item;
 
-    JUCE_DECLARE_NON_COPYABLE (LinkedListPointer)
+    TREECORE_DECLARE_NON_COPYABLE (LinkedListPointer)
 };
 
 }

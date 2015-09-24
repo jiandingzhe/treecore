@@ -116,7 +116,7 @@ private:
     mutable bool triggered, manualReset;
    #endif
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaitableEvent)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaitableEvent)
 };
 
 }

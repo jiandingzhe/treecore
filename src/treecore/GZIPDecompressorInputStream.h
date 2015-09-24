@@ -96,7 +96,7 @@ private:
     friend struct ContainerDeletePolicy<GZIPDecompressHelper>;
     ScopedPointer<GZIPDecompressHelper> helper;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GZIPDecompressorInputStream)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GZIPDecompressorInputStream)
 };
 
 }

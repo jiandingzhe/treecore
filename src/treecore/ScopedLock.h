@@ -85,11 +85,9 @@ private:
     //==============================================================================
     const LockType& lock_;
 
-    JUCE_DECLARE_NON_COPYABLE (GenericScopedLock)
+    TREECORE_DECLARE_NON_COPYABLE(GenericScopedLock);
 };
 
-
-//==============================================================================
 /**
     Automatically unlocks and re-locks a mutex object.
 
@@ -158,7 +156,7 @@ private:
     //==============================================================================
     const LockType& lock_;
 
-    JUCE_DECLARE_NON_COPYABLE (GenericScopedUnlock)
+    TREECORE_DECLARE_NON_COPYABLE(GenericScopedUnlock)
 };
 
 
@@ -233,7 +231,7 @@ private:
     const LockType& lock_;
     const bool lockWasSuccessful;
 
-    JUCE_DECLARE_NON_COPYABLE (GenericScopedTryLock)
+    TREECORE_DECLARE_NON_COPYABLE(GenericScopedTryLock)
 };
 
 }

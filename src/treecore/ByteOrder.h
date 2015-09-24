@@ -109,11 +109,11 @@ public:
 private:
     ByteOrder() = delete;
 
-    JUCE_DECLARE_NON_COPYABLE (ByteOrder)
+    TREECORE_DECLARE_NON_COPYABLE (ByteOrder)
 };
 
 
-//==============================================================================
+//===================TREECORE_DECLARE_NON_COPYABLE==================================
 #if JUCE_USE_INTRINSICS && ! defined TREECORE_COMPILER_ICC
  #pragma intrinsic (_byteswap_ulong)
 #endif

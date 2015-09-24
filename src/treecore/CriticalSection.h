@@ -125,11 +125,11 @@ private:
     mutable pthread_mutex_t lock;
 #endif
 
-    JUCE_DECLARE_NON_COPYABLE (CriticalSection)
+    TREECORE_DECLARE_NON_COPYABLE (CriticalSection)
 };
 
 
-//==============================================================================
+//=======================TREECORE_DECLARE_NON_COPYABLE==============================
 /**
     A class that can be used in place of a real CriticalSection object, but which
     doesn't perform any locking.
@@ -160,7 +160,7 @@ public:
     typedef ScopedLockType ScopedUnlockType;
 
 private:
-    JUCE_DECLARE_NON_COPYABLE (DummyCriticalSection)
+    TREECORE_DECLARE_NON_COPYABLE(DummyCriticalSection)
 };
 
 //==============================================================================

@@ -102,7 +102,7 @@ private:
 
     bool openInternal (const String& pipeName, const bool createPipe);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NamedPipe)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NamedPipe)
 };
 
 }

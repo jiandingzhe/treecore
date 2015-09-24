@@ -267,7 +267,7 @@ protected:
     InputStream() NOEXCEPT {}
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InputStream)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InputStream)
 };
 
 }

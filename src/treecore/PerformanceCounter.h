@@ -124,7 +124,7 @@ private:
     int64 runsPerPrint, startTime;
     File outputFile;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PerformanceCounter);
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PerformanceCounter);
 };
 
 }

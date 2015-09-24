@@ -75,7 +75,7 @@ private:
 
     static String findHeaderItem (const StringArray& lines, const String& itemName);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WebInputStream)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WebInputStream)
 };
 
 }

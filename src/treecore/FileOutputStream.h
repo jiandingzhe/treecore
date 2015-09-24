@@ -114,7 +114,7 @@ private:
     int64 setPositionInternal (int64);
     ssize_t writeInternal (const void*, size_t);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FileOutputStream)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FileOutputStream)
 };
 
 }

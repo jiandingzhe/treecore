@@ -166,7 +166,7 @@ private:
     //==============================================================================
     const File temporaryFile, targetFile;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TemporaryFile)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TemporaryFile)
 };
 
 }

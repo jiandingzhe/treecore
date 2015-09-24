@@ -63,7 +63,7 @@ private:
     const File file;
     bool useFileTimeInHashGeneration;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FileInputSource)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FileInputSource)
 };
 
 }

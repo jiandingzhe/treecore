@@ -174,7 +174,7 @@ private:
 #endif
     }
 
-    JUCE_DECLARE_NON_COPYABLE (Pimpl)
+    TREECORE_DECLARE_NON_COPYABLE (Pimpl)
 };
 
 }

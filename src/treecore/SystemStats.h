@@ -192,7 +192,7 @@ private:
     //==============================================================================
     SystemStats();
 
-    JUCE_DECLARE_NON_COPYABLE (SystemStats)
+    TREECORE_DECLARE_NON_COPYABLE (SystemStats)
 };
 
 }

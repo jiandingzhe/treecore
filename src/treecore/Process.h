@@ -153,7 +153,7 @@ public:
 
 private:
     Process();
-    JUCE_DECLARE_NON_COPYABLE (Process)
+    TREECORE_DECLARE_NON_COPYABLE (Process)
 };
 
 }

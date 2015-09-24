@@ -151,7 +151,7 @@ private:
 
     bool tryEnterWriteInternal (Thread::ThreadID) const NOEXCEPT;
 
-    JUCE_DECLARE_NON_COPYABLE (ReadWriteLock)
+    TREECORE_DECLARE_NON_COPYABLE (ReadWriteLock)
 };
 
 }

@@ -119,7 +119,7 @@ public:
         other.m_size = 0;
     }
 
-    JUCE_DECLARE_NON_COPYABLE(HashMultiMap);
+    TREECORE_DECLARE_NON_COPYABLE(HashMultiMap);
 
     ~HashMultiMap()
     {

@@ -181,7 +181,7 @@ private:
         select (handle + 1, &rset, nullptr, 0, &timeout);
     }
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Pimpl)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Pimpl)
 };
 
 void NamedPipe::close()

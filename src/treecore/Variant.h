@@ -72,7 +72,7 @@ public:
         const var* arguments;
         int numArguments;
 
-        JUCE_DECLARE_NON_COPYABLE (NativeFunctionArgs)
+        TREECORE_DECLARE_NON_COPYABLE (NativeFunctionArgs)
     };
 
     typedef var (*NativeFunction) (const NativeFunctionArgs&);

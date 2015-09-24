@@ -230,7 +230,7 @@ private:
     InputStream* inputStream;
     ScopedPointer<InputStream> streamToDelete;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ZipInputStream)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ZipInputStream)
 };
 
 
@@ -571,7 +571,7 @@ private:
         target.writeShort (0); // extra field length
     }
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Item)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Item)
 };
 
 //=============================================================================

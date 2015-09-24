@@ -894,7 +894,7 @@ private:
             ContainerDeletePolicy<ObjectClass>::destroy (data.elements [--numUsed]);
     }
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OwnedArray)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OwnedArray)
 };
 
 }

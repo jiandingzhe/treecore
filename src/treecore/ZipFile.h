@@ -234,7 +234,7 @@ public:
         friend struct ContainerDeletePolicy<Item>;
         OwnedArray<Item> items;
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Builder)
+        TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Builder)
     };
 
 private:
@@ -264,7 +264,7 @@ private:
 
     void init();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ZipFile)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ZipFile)
 };
 
 }

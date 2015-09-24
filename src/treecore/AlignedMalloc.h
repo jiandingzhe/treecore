@@ -6,6 +6,10 @@
 #include <new>
 #include <malloc.h>
 
+#ifdef TREECORE_COMPILER_GCC
+#   define alignof(x) __alignof__(x)
+#endif
+
 namespace treecore
 {
 
