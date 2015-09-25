@@ -81,7 +81,7 @@ template<typename T>
 T atomic_fetch_and(T* store, T value) noexcept
 {
     PRI_T re = __atomic_fetch_and(TO_PRIP(store), TO_PRI(value), __ATOMIC_SEQ_CST);
-    return TO_ORIG(__atomic_fetch_and(TO_PRIP(store), TO_PRI(value), __ATOMIC_SEQ_CST));
+    return TO_ORIG(re);
 }
 
 template<typename T>

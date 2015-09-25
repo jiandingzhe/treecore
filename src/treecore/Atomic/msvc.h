@@ -28,13 +28,13 @@ struct _msvc_atomic_impl_<T, 4>
 
     static T load(T* store) noexcept
     {
-        value_type re = _InterlockedExchangeAdd(TO_PRIP(store), 0);
+        value_type re = _InterlockedExchangeAdd( TO_PRIP(store), 0 );
         return TO_ORIG(re);
     }
 
     static void store(T* store, T value) noexcept
     {
-        _InterlockedExchange(TO_PRIP(store), TO_PRI(value));
+        _InterlockedExchange( TO_PRIP(store), TO_PRI(value) );
     }
 
     static T fetch_set(T* store, T value) noexcept
@@ -75,45 +75,35 @@ struct _msvc_atomic_impl_<T, 4>
         return TO_ORIG(re);
     }
 
-    static T fetch_nand(T* store, T value) noexcept
-    {
-        abort();
-    }
-
     // get modified value
     static T add_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_add(TO_PRIP(store), TO_PRI(value));
+        value_type old = fetch_add( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(old + TO_PRI(value));
     }
 
     static T sub_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_sub(TO_PRIP(store), TO_PRI(value);
+        value_type old = fetch_sub( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(old - TO_PRI(value));
     }
 
     static T or_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_or(TO_PRIP(store), TO_PRI(value);
+        value_type old = fetch_or( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(old | TO_PRI(value));
     }
 
     static T and_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_and(TO_PRIP(store), TO_PRI(value);
+        value_type old = fetch_and( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(old & TO_PRI(value));
     }
 
     static T xor_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_xor(TO_PRIP(store), TO_PRI(value);
+        value_type old = fetch_xor( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(old ^ TO_PRI(value));
-    }
-
-    static T nand_fetch(T* store, T value) noexcept
-    {
-        abort();
     }
 
     // compare - exchange
@@ -132,91 +122,81 @@ struct _msvc_atomic_impl_<T, 8>
 
     static T load(T* store) noexcept
     {
-        value_type re = _InterlockedExchangeAdd64(TO_PRIP(store), 0);
+        value_type re = _InterlockedExchangeAdd64( TO_PRIP(store), 0 );
         return TO_ORIG(re);
     }
 
     static void store(T* store, T value) noexcept
     {
-        _InterlockedExchange64(TO_PRIP(store), TO_PRI(value));
+        _InterlockedExchange64( TO_PRIP(store), TO_PRI(value) );
     }
 
     static T fetch_set(T* store, T value) noexcept
     {
-        value_type re = _InterlockedExchange64(TO_PRIP(store), TO_PRI(value));
+        value_type re = _InterlockedExchange64( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(re);
     }
 
     // get value before modify
     static T fetch_add(T* store, T value) noexcept
     {
-        value_type re = _InterlockedExchangeAdd64(TO_PRIP(store), TO_PRI(value));
+        value_type re = _InterlockedExchangeAdd64( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(re);
     }
 
     static T fetch_sub(T* store, T value) noexcept
     {
-        value_type re = _InterlockedExchangeAdd64(TO_PRIP(store), -TO_PRI(value));
+        value_type re = _InterlockedExchangeAdd64( TO_PRIP(store), -TO_PRI(value) );
         return TO_ORIG(re);
     }
 
     static T fetch_or(T* store, T value) noexcept
     {
-        value_type re = _InterlockedOr64(TO_PRIP(store), TO_PRI(value));
+        value_type re = _InterlockedOr64( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(re);
     }
 
     static T fetch_and(T* store, T value) noexcept
     {
-        value_type re = _InterlockedAnd64(TO_PRIP(store), TO_PRI(value));
+        value_type re = _InterlockedAnd64( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(re);
     }
 
     static T fetch_xor(T* store, T value) noexcept
     {
-        value_type re = _InterlockedXor64(TO_PRIP(store), TO_PRI(value));
+        value_type re = _InterlockedXor64( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(re);
-    }
-
-    static T fetch_nand(T* store, T value) noexcept
-    {
-        abort();
     }
 
     // get modified value
     static T add_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_add(TO_PRIP(store), TO_PRI(value));
+        value_type old = fetch_add( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(old + TO_PRI(value));
     }
 
     static T sub_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_sub(TO_PRIP(store), TO_PRI(value));
+        value_type old = fetch_sub( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(old - TO_PRI(value));
     }
 
     static T or_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_or(TO_PRIP(store), TO_PRI(value));
+        value_type old = fetch_or( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(old | TO_PRI(value));
     }
 
     static T and_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_and(TO_PRIP(store), TO_PRI(value));
+        value_type old = fetch_and( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(old & TO_PRI(value));
     }
 
     static T xor_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_xor(TO_PRIP(store), TO_PRI(value));
+        value_type old = fetch_xor( TO_PRIP(store), TO_PRI(value) );
         return TO_ORIG(old ^ TO_PRI(value));
-    }
-
-    static T nand_fetch(T* store, T value) noexcept
-    {
-        abort();
     }
 
     // compare - exchange
@@ -319,12 +299,6 @@ template<typename T>
 inline T atomic_xor_fetch(T* store, T value) noexcept
 {
     return _impl_::_msvc_atomic_impl_<T, sizeof(T)>::xor_fetch(store, value);
-}
-
-template<typename T>
-inline T atomic_nand_fetch(T* store, T value) noexcept
-{
-    return _impl_::_msvc_atomic_impl_<T, sizeof(T)>::nand_fetch(store_value);
 }
 
 // cas
