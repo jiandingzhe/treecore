@@ -30,6 +30,7 @@
 #define JUCE_NAMEDVALUESET_H_INCLUDED
 
 #include "treecore/Array.h"
+#include "treecore/Variant.h"
 
 namespace treecore {
 
@@ -140,7 +141,35 @@ public:
 
 private:
     //==============================================================================
-    struct NamedValue;
+    struct NamedValue
+    {
+        NamedValue() noexcept{}
+            NamedValue(Identifier n, const var& v) : name(n), value(v) {}
+        NamedValue(const NamedValue& other) : name(other.name), value(other.value) {}
+
+        NamedValue(NamedValue&& other) noexcept
+            : name(static_cast<Identifier&&> (other.name)),
+            value(static_cast<var&&> (other.value))
+        {
+        }
+
+        NamedValue(Identifier n, var&& v) : name(n), value(static_cast<var&&> (v))
+        {
+        }
+
+        NamedValue& operator= (NamedValue&& other) noexcept
+        {
+            name = static_cast<Identifier&&> (other.name);
+            value = static_cast<var&&> (other.value);
+            return *this;
+        }
+
+        bool operator== (const NamedValue& other) const noexcept{ return name == other.name && value == other.value; }
+        bool operator!= (const NamedValue& other) const noexcept{ return !operator== (other); }
+
+        Identifier name;
+        var value;
+    };
     Array<NamedValue> values;
 };
 

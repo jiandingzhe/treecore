@@ -273,9 +273,9 @@ template <> struct JuceStaticAssert <true> { static void dummy() {} };
 #endif
 
 //
-#if defined TREECORE_COMPILER_MSVC
-#   define restrict __restrict
-#endif
+//#if defined TREECORE_COMPILER_MSVC
+//#   define restrict __restrict
+//#endif
 
 #if defined TREECORE_COMPILER_GCC
 #   define likely(arg) __builtin_expect(!!(arg),1)

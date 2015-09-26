@@ -90,6 +90,7 @@ public:
 
     void* operator new (std::size_t size, void* ptr) noexcept
     {
+        std::abort();
     }
 
     void operator delete (void* ptr) noexcept
@@ -104,6 +105,7 @@ public:
 
     void operator delete (void* ptr, void* ptr2) noexcept
     {
+        std::abort();
     }
 };
 

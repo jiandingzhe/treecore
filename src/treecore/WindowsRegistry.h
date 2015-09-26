@@ -140,7 +140,7 @@ public:
 
 private:
     WindowsRegistry() = delete;
-    JUCE_DECLARE_NON_COPYABLE (WindowsRegistry)
+    TREECORE_DECLARE_NON_COPYABLE (WindowsRegistry)
 };
 
 }

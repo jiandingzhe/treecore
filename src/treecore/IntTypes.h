@@ -4,6 +4,7 @@
 #include "treecore/Common.h"
 
 #include <cstdint>
+#include <cstdlib>
 
 namespace treecore {
 

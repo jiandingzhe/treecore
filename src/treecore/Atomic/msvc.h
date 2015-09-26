@@ -13,9 +13,9 @@ namespace _impl_
 {
 
 
-#define TO_PRI(arg)  TO_PRI(arg)
+#define TO_PRI(arg)  reinterpret_cast<value_type&>(arg)
 #define TO_PRIP(arg) store_type(arg)
-#define TO_ORIG(arg) TO_ORIG(arg)
+#define TO_ORIG(arg) reinterpret_cast<T&>(arg)
 
 template<typename T, int SZ>
 struct _msvc_atomic_impl_ {};
@@ -78,39 +78,52 @@ struct _msvc_atomic_impl_<T, 4>
     // get modified value
     static T add_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_add( TO_PRIP(store), TO_PRI(value) );
-        return TO_ORIG(old + TO_PRI(value));
+        value_type tmp = _InterlockedExchangeAdd(TO_PRIP(store), TO_PRI(value));
+        tmp += TO_PRI(value);
+        return TO_ORIG(tmp);
     }
 
     static T sub_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_sub( TO_PRIP(store), TO_PRI(value) );
-        return TO_ORIG(old - TO_PRI(value));
+        value_type tmp = _InterlockedExchangeAdd(TO_PRIP(store), -TO_PRI(value));
+        tmp -= TO_PRI(value);
+        return TO_ORIG(tmp);
     }
 
     static T or_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_or( TO_PRIP(store), TO_PRI(value) );
-        return TO_ORIG(old | TO_PRI(value));
+        value_type tmp = _InterlockedOr(TO_PRIP(store), TO_PRI(value));
+        tmp |= TO_PRI(value);
+        return TO_ORIG(tmp);
     }
 
     static T and_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_and( TO_PRIP(store), TO_PRI(value) );
-        return TO_ORIG(old & TO_PRI(value));
+        value_type tmp = _InterlockedAnd(TO_PRIP(store), TO_PRI(value));
+        tmp &= TO_PRI(value);
+        return TO_ORIG(tmp);
     }
 
     static T xor_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_xor( TO_PRIP(store), TO_PRI(value) );
-        return TO_ORIG(old ^ TO_PRI(value));
+        value_type tmp = _InterlockedXor(TO_PRIP(store), TO_PRI(value));
+        tmp ^= TO_PRI(value);
+        return TO_ORIG(tmp);
     }
 
-    // compare - exchange
-    static T cae(T* store, T expect, T value) noexcept
+    // CAS
+    static bool cas(T* store, T expect, T value) noexcept
     {
-        value_type re = _InterlockedCompareExchange( TO_PRIP(store), TO_PRI(value), TO_PRI(expect) );
-        return TO_ORIG(re);
+        value_type old = _InterlockedCompareExchange(TO_PRIP(store), TO_PRI(value), TO_PRI(expect));
+        return old == TO_PRI(expect);
+    }
+
+    static bool cae(T* store, T* expect, T value) noexcept
+    {
+        value_type old = _InterlockedCompareExchange(TO_PRIP(store), TO_PRI(value), TO_PRI(*expect));
+        bool re = (old == TO_PRI(*expect));
+        *expect = TO_ORIG(old);
+        return re;
     }
 };
 
@@ -171,39 +184,52 @@ struct _msvc_atomic_impl_<T, 8>
     // get modified value
     static T add_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_add( TO_PRIP(store), TO_PRI(value) );
-        return TO_ORIG(old + TO_PRI(value));
+        value_type tmp = _InterlockedExchangeAdd64( TO_PRIP(store), TO_PRI(value) );
+        tmp += TO_PRI(value);
+        return TO_ORIG(tmp);
     }
 
     static T sub_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_sub( TO_PRIP(store), TO_PRI(value) );
-        return TO_ORIG(old - TO_PRI(value));
+        value_type tmp = _InterlockedExchangeAdd64(TO_PRIP(store), -TO_PRI(value));
+        tmp -= TO_PRI(value);
+        return TO_ORIG(tmp);
     }
 
     static T or_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_or( TO_PRIP(store), TO_PRI(value) );
-        return TO_ORIG(old | TO_PRI(value));
+        value_type tmp = _InterlockedOr64(TO_PRIP(store), TO_PRI(value));
+        tmp |= TO_PRI(value);
+        return TO_ORIG(tmp);
     }
 
     static T and_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_and( TO_PRIP(store), TO_PRI(value) );
-        return TO_ORIG(old & TO_PRI(value));
+        value_type tmp = _InterlockedAnd64(TO_PRIP(store), TO_PRI(value));
+        tmp &= TO_PRI(value);
+        return TO_ORIG(tmp);
     }
 
-    static T xor_fetch(T* store, T value) noexcept
+    virtual T xor_fetch(T* store, T value) noexcept
     {
-        value_type old = fetch_xor( TO_PRIP(store), TO_PRI(value) );
-        return TO_ORIG(old ^ TO_PRI(value));
+        value_type tmp = _InterlockedXor64(TO_PRIP(store), TO_PRI(value));
+        tmp ^= TO_PRI(value);
+        return TO_ORIG(tmp);
     }
 
-    // compare - exchange
-    static T cae(T* store, T expect, T value) noexcept
+    // CAS
+    static bool cas(T* store, T expect, T value) noexcept
     {
-        value_type re = _InterlockedCompareExchange64( TO_PRIP(store), TO_PRI(value), TO_PRI(expect) );
-        return TO_ORIG(re);
+        value_type old = _InterlockedCompareExchange64(TO_PRIP(store), TO_PRI(value), TO_PRI(expect));
+        return old == TO_PRI(expect);
+    }
+
+    static bool cae(T* store, T* expect, T value) noexcept
+    {
+        value_type old = _InterlockedCompareExchange64( TO_PRIP(store), TO_PRI(value), TO_PRI(*expect) );
+        bool re = (old == TO_PRI(*expect));
+        *expect = TO_ORIG(old);
+        return re;
     }
 };
 
@@ -226,9 +252,8 @@ void atomic_store(T* store, T value) noexcept
     _impl_::_msvc_atomic_impl_<T, sizeof(T)>::store(store, value);
 }
 
-
 template<typename T>
-inline T atomic_fetch_set(T* store, T value) noexcept
+T atomic_exchange(T* store, T value) noexcept
 {
     return _impl_::_msvc_atomic_impl_<T, sizeof(T)>::fetch_set(store, value);
 }
@@ -274,7 +299,7 @@ inline T atomic_fetch_nand(T* store, T value) noexcept
 template<typename T>
 inline T atomic_add_fetch(T* store, T value) noexcept
 {
-    return _impl_::_msvc_atomic_impl_<T, sizeof(T)>::add_fetch(store_value);
+    return _impl_::_msvc_atomic_impl_<T, sizeof(T)>::add_fetch(store, value);
 }
 
 template<typename T>
@@ -305,17 +330,13 @@ inline T atomic_xor_fetch(T* store, T value) noexcept
 template<typename T>
 inline bool atomic_compare_exchange(T* store, T* expect, T value) noexcept
 {
-    T old = _impl_::_msvc_atomic_impl_<T, sizeof(T)>::cae(store, *expect, value);
-    bool re = (*expect == old);
-    *expect = old;
-    return re;
+    return _impl_::_msvc_atomic_impl_<T, sizeof(T)>::cae(store, expect, value);
 }
 
 template<typename T>
 inline bool atomic_compare_set(T* store, T expect, T value) noexcept
 {
-    T old = _impl_::_msvc_atomic_impl_<T, sizeof(T)>::cae(store, expect, value);
-    return old == expect;
+    return _impl_::_msvc_atomic_impl_<T, sizeof(T)>::cas(store, expect, value);
 }
 
 } // namespace treecore

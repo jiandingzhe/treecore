@@ -26,7 +26,7 @@ private:
 
     static void __stdcall callbackFunction (UINT, UINT, DWORD_PTR userInfo, DWORD_PTR, DWORD_PTR);
 
-    JUCE_DECLARE_NON_COPYABLE (Pimpl)
+    TREECORE_DECLARE_NON_COPYABLE (Pimpl)
 };
 
 } // namespace treecore
