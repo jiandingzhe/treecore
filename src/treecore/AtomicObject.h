@@ -3,12 +3,16 @@
 
 #include "treecore/AtomicFunc.h"
 
+class TestFramework;
+
 namespace treecore
 {
 
 template<typename T>
 class AtomicObject
 {
+    friend class ::TestFramework;
+
 public:
     AtomicObject()
     {

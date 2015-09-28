@@ -7,6 +7,7 @@ enable_testing()
 
 foreach(test_name
     t_atomic_func_st
+    t_atomic_obj_st
     t_hash_multi_map
     t_hash_multi_map_move
     t_hash_set
