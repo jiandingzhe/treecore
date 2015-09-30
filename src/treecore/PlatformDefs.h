@@ -48,15 +48,6 @@
 #endif
 
 //==============================================================================
-// Debugging and assertion macros
-
-#if JUCE_LOG_ASSERTIONS || JUCE_DEBUG
- #define juce_LogCurrentAssertion    treecore::logAssertion (__FILE__, __LINE__);
-#else
- #define juce_LogCurrentAssertion
-#endif
-
-//==============================================================================
 #if defined TREECORE_OS_IOS || defined TREECORE_OS_LINUX || defined TREECORE_OS_ANDROID || defined TREECORE_CPU_PPC
   /** This will try to break into the debugger if the app is currently being debugged.
       If called by an app that's not being debugged, the behaiour isn't defined - it may crash or not, depending
@@ -88,6 +79,12 @@
 
 #ifndef JUCE_ANALYZER_NORETURN
  #define JUCE_ANALYZER_NORETURN
+#endif
+
+#if JUCE_LOG_ASSERTIONS || JUCE_DEBUG
+ #define juce_LogCurrentAssertion    treecore::logAssertion (__FILE__, __LINE__);
+#else
+ #define juce_LogCurrentAssertion
 #endif
 
 //==============================================================================

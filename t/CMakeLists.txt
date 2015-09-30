@@ -17,6 +17,7 @@ foreach(test_name
     t_var
     t_aligned_malloc
     t_aligned_array
+    t_obj_pool
     t_sorted_set
     t_queue
     t_lf_queue_st

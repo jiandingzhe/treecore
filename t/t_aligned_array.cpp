@@ -6,18 +6,23 @@
 #include <treecore/SIMD.h>
 
 using treecore::Array;
-using treecore::AlignedMalloc;
 using treecore::SIMDType;
 using treecore::pointer_sized_int;
 
-struct Foo: AlignedMalloc<32>
+TREECORE_ALN_BEGIN(32) struct Foo
 {
-    SIMDType<16> a;
-    SIMDType<16> b;
-};
+    float a;
+    treecore::int32 b;
+    float c;
+    TREECORE_ALIGNED_ALLOCATOR(Foo)
+} TREECORE_ALN_END(32);
+
 
 void TestFramework::content()
 {
+    IS(alignof(Foo), 32);
+    IS(sizeof(Foo), 32);
+
     {
         Array<Foo, 32> array1;
         for (int i = 0; i < 100; i++)
