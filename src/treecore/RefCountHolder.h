@@ -1,13 +1,14 @@
 #ifndef TREEFACE_OJBECT_HOLDER_H
 #define TREEFACE_OJBECT_HOLDER_H
 
-#include "treecore/Common.h"
+#include "treecore/AtomicObject.h"
 #include "treecore/PlatformDefs.h"
 
 class TestFramework;
 
 namespace treecore {
 
+// FIXME thread ABA safety?
 /**
  *
  */
@@ -42,9 +43,10 @@ public:
 
     RefCountHolder(const RefCountHolder& other)
     {
-        if (other.ms_ptr)
-            smart_ref(other.ms_ptr);
-        ms_ptr = other.ms_ptr;
+        T* tmp = other.ms_ptr;
+        if (tmp)
+            smart_ref(tmp);
+        ms_ptr = tmp;
     }
 
     RefCountHolder(RefCountHolder&& other): ms_ptr(other.ms_ptr)

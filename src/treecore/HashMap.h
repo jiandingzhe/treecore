@@ -32,7 +32,9 @@
 #include "treecore/Array.h"
 #include "treecore/HashFunctions.h"
 #include "treecore/LeakedObjectDetector.h"
+#include "treecore/ObjectPool.h"
 #include "treecore/RefCountObject.h"
+#include "treecore/RefCountSingleton.h"
 #include "treecore/ScopedPointer.h"
 
 namespace treecore {
@@ -88,6 +90,22 @@ class HashMap: public RefCountObject
 private:
     typedef PARAMETER_TYPE (KeyType)   KeyTypeParameter;
     typedef PARAMETER_TYPE (ValueType) ValueTypeParameter;
+    class HashEntry
+    {
+    public:
+        HashEntry (KeyTypeParameter k, ValueTypeParameter val, HashEntry* const next)
+            : key (k), value (val), nextEntry (next)
+        {}
+
+        const KeyType key;
+        ValueType value;
+        HashEntry* nextEntry;
+
+        TREECORE_DECLARE_NON_COPYABLE (HashEntry)
+    };
+
+    // FIXME singleton is not released
+    typedef RefCountSingleton<ObjectPool<HashEntry, !CriticalSectionIsDummy<TypeOfCriticalSectionToUse>::value> > EntryPoolType;
 
 public:
     //==============================================================================
@@ -125,12 +143,13 @@ public:
 
         for (int i = hashSlots.size(); --i >= 0;)
         {
-            HashEntry* h = hashSlots.getUnchecked(i);
+            HashEntry* entry = hashSlots.getUnchecked(i);
 
-            while (h != nullptr)
+            while (entry != nullptr)
             {
-                const ScopedPointer<HashEntry> deleter (h);
-                h = h->nextEntry;
+                HashEntry* next_entry = entry->nextEntry;
+                EntryPoolType::getInstance()->recycle(entry);
+                entry = next_entry;
             }
 
             hashSlots.set (i, nullptr);
@@ -174,7 +193,7 @@ public:
                 return entry->value;
 
         // create a new one
-        HashEntry* entry = new HashEntry(key, ValueType(), old_first);
+        HashEntry* entry = EntryPoolType::getInstance()->generate(key, ValueType(), old_first);
         hashSlots.set(hash_value, entry);
 
         return entry->value;
@@ -229,7 +248,8 @@ public:
             }
         }
 
-        hashSlots.set (hashIndex, new HashEntry (newKey, newValue, firstEntry));
+        HashEntry* entry = EntryPoolType::getInstance()->generate(newKey, newValue, firstEntry);
+        hashSlots.set(hashIndex, entry);
         ++totalNumItems;
 
         if (totalNumItems > (getNumSlots() * 3) / 2)
@@ -248,15 +268,14 @@ public:
         {
             if (entry->key == keyToRemove)
             {
-                const ScopedPointer<HashEntry> deleter (entry);
-
-                entry = entry->nextEntry;
+                HashEntry* next_entry = entry->nextEntry;
 
                 if (previous != nullptr)
-                    previous->nextEntry = entry;
+                    previous->nextEntry = next_entry;
                 else
-                    hashSlots.set (hashIndex, entry);
+                    hashSlots.set(hashIndex, next_entry);
 
+                EntryPoolType::getInstance()->recycle(entry);
                 --totalNumItems;
             }
             else
@@ -281,15 +300,14 @@ public:
             {
                 if (entry->value == valueToRemove)
                 {
-                    const ScopedPointer<HashEntry> deleter (entry);
-
-                    entry = entry->nextEntry;
+                    HashEntry* next_entry = entry->nextEntry;
 
                     if (previous != nullptr)
-                        previous->nextEntry = entry;
+                        previous->nextEntry = next_entry;
                     else
-                        hashSlots.set (i, entry);
+                        hashSlots.set (i, next_entry);
 
+                    EntryPoolType::getInstance()->recycle(entry);
                     --totalNumItems;
                 }
                 else
@@ -346,22 +364,6 @@ public:
 
     /** Returns the type of scoped lock to use for locking this array */
     typedef typename TypeOfCriticalSectionToUse::ScopedLockType ScopedLockType;
-
-private:
-    //==============================================================================
-    class HashEntry
-    {
-    public:
-        HashEntry (KeyTypeParameter k, ValueTypeParameter val, HashEntry* const next)
-            : key (k), value (val), nextEntry (next)
-        {}
-
-        const KeyType key;
-        ValueType value;
-        HashEntry* nextEntry;
-
-        TREECORE_DECLARE_NON_COPYABLE (HashEntry)
-    };
 
 public:
     //==============================================================================
@@ -460,6 +462,6 @@ private:
     TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HashMap)
 };
 
-}
+} // namespace treecore
 
 #endif   // JUCE_HASHMAP_H_INCLUDED

@@ -4,6 +4,10 @@
 #include "treecore/Array.h"
 #include "treecore/ArrayRef.h"
 #include "treecore/HashFunctions.h"
+#include "treecore/ObjectPool.h"
+#include "treecore/RefCountObject.h"
+#include "treecore/RefCountSingleton.h"
+#include "treecore/CriticalSection.h"
 
 namespace treecore {
 
@@ -26,6 +30,9 @@ protected:
         Array<ValueType> values;
         Entry* next;
     };
+
+    // FIXME singleton is not released
+    typedef RefCountSingleton<ObjectPool<Entry, !CriticalSectionIsDummy<MutexType>::value > > EntryPoolType;
 
 public:
     typedef typename MutexType::ScopedLockType ScopedLockType;
@@ -137,7 +144,7 @@ public:
             while (curr_bucket != nullptr)
             {
                 Entry* next_bucket = curr_bucket->next;
-                delete curr_bucket;
+                EntryPoolType::getInstance()->recycle(curr_bucket);
                 curr_bucket = next_bucket;
             }
 
@@ -236,7 +243,7 @@ public:
         }
 
         // create a new entry for this key
-        Entry* new_entry = new Entry(key, first_entry);
+        Entry* new_entry = EntryPoolType::getInstance()->generate(key, first_entry);
         m_slots.setUnchecked(hash_result, new_entry);
         new_entry->values.add(value);
         m_size++;
@@ -300,7 +307,7 @@ public:
                     prev->next = next;
                 }
 
-                delete entry;
+                EntryPoolType::getInstance()->recycle(entry);
                 return n_remove;
             }
             else

@@ -268,6 +268,18 @@ typedef CriticalSection::ScopedUnlockType  ScopedUnlock;
 */
 typedef CriticalSection::ScopedTryLockType  ScopedTryLock;
 
+template<typename T>
+struct CriticalSectionIsDummy
+{
+    static const bool value = false;
+};
+
+template<>
+struct CriticalSectionIsDummy<DummyCriticalSection>
+{
+    static const bool value = true;
+};
+
 }
 
 #endif   // JUCE_CRITICALSECTION_H_INCLUDED

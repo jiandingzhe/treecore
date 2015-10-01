@@ -15,8 +15,6 @@ struct Foo: public treecore::RefCountObject
     bool* flag = nullptr;
 };
 
-TREECORE_IMPLEMENT_REF_COUNT_SINGLETON(Foo);
-
 void TestFramework::content()
 {
     Foo* obj = treecore::RefCountSingleton<Foo>::getInstance();

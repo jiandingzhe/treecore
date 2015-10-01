@@ -2,8 +2,9 @@
 #define TREECORE_REF_COUNT_SINGLETON_H
 
 #include "treecore/AtomicObject.h"
-#include "treecore/Thread.h"
 #include "treecore/IntTypes.h"
+#include "treecore/RefCountHolder.h"
+#include "treecore/Thread.h"
 
 class TestFramework;
 
@@ -15,10 +16,11 @@ class RefCountSingleton
 {
     friend class ::TestFramework;
 
+public:
     static T* getInstance()
     {
         // early out
-        T* tmp = atomic_load(&m_instance);
+        T* tmp = m_instance.get();
         if (tmp)
             return tmp;
 
@@ -26,28 +28,30 @@ class RefCountSingleton
         while(m_building.compare_set(0, 1))
             Thread::yield();
 
-        if (!m_instance)
+        tmp = m_instance.get();
+        if (!tmp)
         {
             tmp = new T();
             smart_ref(tmp); // unqualified call to smart_ref
-            atomic_store(&m_instance, tmp);
+            m_instance = tmp;
         }
 
         while (m_building.compare_set(1, 0))
             Thread::yield();
 
-        return m_instance;
+        return tmp;
     }
 
     static int32 releaseInstance()
     {
         // early out if it is already empty
-        T* tmp = atomic_load(&m_instance);
+        T* tmp = m_instance.get();
         if (!tmp)
             return -1;
 
         // do release
-        // FIXME is it possible that:
+
+        // FIXME thread ABA safety?
         // thread1     thread2
         //             get ptr
         // --refcnt
@@ -56,7 +60,7 @@ class RefCountSingleton
         while (m_building.compare_set(0, 1))
             Thread::yield();
 
-        atomic_store(&m_instance, nullptr);
+        m_instance = nullptr;
         int32 cnt = smart_unref(tmp);
 
         while (m_building.compare_set(1, 0))
@@ -67,14 +71,15 @@ class RefCountSingleton
 
 private:
     static AtomicObject<int> m_building;
-    static T* m_instance;
+    static RefCountHolder<T> m_instance;
 };
 
-#define TREECORE_IMPLEMENT_REF_COUNT_SINGLETON(_type_) \
-    template<>\
-    treecore::AtomicObject<int> treecore::RefCountSingleton<_type_>::m_building(0);\
-    template<>\
-    _type_* treecore::RefCountSingleton<_type_>::m_instance = nullptr;
+template<typename T>
+TREECORE_SELECT_ANY AtomicObject<int> RefCountSingleton<T>::m_building(0);
+
+template<typename T>
+TREECORE_SELECT_ANY RefCountHolder<T> RefCountSingleton<T>::m_instance(nullptr);
+
 
 } // namespace treecore
 

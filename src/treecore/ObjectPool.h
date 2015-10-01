@@ -7,6 +7,7 @@
 #include "treecore/LFQueue.h"
 #include "treecore/MPL.h"
 #include "treecore/Queue.h"
+#include "treecore/RefCountObject.h"
 
 class TestFramework;
 
@@ -18,7 +19,7 @@ namespace treecore
  *
  */
 template<typename T, bool MULTI_THREAD = true, int BLOCK_SIZE = 4096>
-class ObjectPool
+class ObjectPool: public RefCountObject
 {
     friend class ::TestFramework;
 
@@ -134,34 +135,6 @@ private:
     ValueQueueType m_objects;
     TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ObjectPool);
 };
-
-
-//template<typename T , bool MULTI_THREAD = true , int allocNum = 4 * 1024>
-//class CreateFromPool : public SharedSingleton< ObjectPool<T , MULTI_THREAD , allocNum> >::EarlyUser
-//{
-//private:
-//    typedef SharedSingleton< ObjectPool<T , MULTI_THREAD , allocNum> > CreatePool;
-//public:
-//    static forcedinline void CreateSome(int blkNum=1)
-//    {
-//        CreatePool::getInstance().CreateSome(blkNum);
-//    }
-//    static forcedinline T* alloc()
-//    {
-//        return CreatePool::getInstance().Pop();
-//    };
-//    template<typename... InitType>
-//    static forcedinline T* alloc( InitType&... initTypes )
-//    {
-//        return CreatePool::getInstance().Pop( initTypes... );
-//    };
-//    static forcedinline void free( T* ptr )
-//    {
-//        return CreatePool::getInstance().Push(ptr);
-//    };
-//protected:
-//    TRIVIAL_CLASS(CreateFromPool);
-//};
 
 } // namespace treecore
 
