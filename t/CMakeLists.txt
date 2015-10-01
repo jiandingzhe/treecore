@@ -1,6 +1,6 @@
 add_library(testframework STATIC TestFramework.cpp)
 if(NOT MSVC)
-    target_compile_options(testframework PRIVATE -std=c++11)
+    target_compile_options(testframework PUBLIC -std=c++11)
 endif()
 
 enable_testing()
@@ -18,6 +18,7 @@ foreach(test_name
     t_aligned_malloc
     t_aligned_array
     t_obj_pool
+    t_ref_count_singleton_st
     t_sorted_set
     t_queue
     t_lf_queue_st

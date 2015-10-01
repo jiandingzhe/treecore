@@ -3,6 +3,7 @@
 
 #include "treecore/Common.h"
 #include "treecore/PlatformDefs.h"
+#include <cstddef>
 
 namespace treecore {
 
@@ -12,6 +13,9 @@ T atomic_load(T* store) noexcept;
 
 template<typename T>
 void atomic_store(T* store, T value) noexcept;
+
+template<typename T>
+void atomic_store(T* store, std::nullptr_t value) noexcept;
 
 template<typename T>
 T atomic_exchange(T* store, T value) noexcept;

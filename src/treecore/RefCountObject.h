@@ -1,54 +1,98 @@
 #ifndef TREECORE_OBJECT_H
 #define TREECORE_OBJECT_H
 
-#include "treecore/AtomicFunc.h"
+#include "treecore/AtomicObject.h"
 #include "treecore/Common.h"
+#include "treecore/IntTypes.h"
 #include "treecore/LeakedObjectDetector.h"
-
-#include <cstdint>
 
 class TestFramework;
 
 namespace treecore {
 
+/**
+ * @brief base class of reference-counted objects
+ *
+ * Contains a 32-bit reference counter, and will destruct itself when reference
+ * count drops to zero. The counter is atomic operated so that thread safety is
+ * ensured.
+ *
+ * The reference count is initially zero after construction, so you should
+ * increase it immediately if you want to hold its ownership.
+ *
+ * The header file already provides smart_ref() and smart_unref functions, so
+ * that RefCountObject can be directly used by RefCountHolder, which
+ * automatically handles reference count at construction and destruction.
+ */
 class JUCE_API RefCountObject
 {
     friend class ::TestFramework;
 public:
-    RefCountObject()                    { atomic_store(&ms_count, 0u); }
-    RefCountObject(const RefCountObject& other) { atomic_store(&ms_count, 0u); }
+    /**
+     * @brief reference count will be initially zero
+     */
+    RefCountObject()
+    {
+        ms_count.store(0);
+    }
+
+    /**
+     * @brief reference count will be initially zero
+     * @param other
+     */
+    RefCountObject(const RefCountObject& other)
+    {
+        ms_count.store(0);
+    }
 
     virtual ~RefCountObject() {}
 
-    RefCountObject& operator = (const RefCountObject& other) { return *this; }
+    RefCountObject& operator = (const RefCountObject& other) noexcept
+    {
+        return *this;
+    }
 
+    /**
+     * @brief increase reference count by one
+     */
     void ref() const noexcept
     {
-        atomic_fetch_add(&ms_count, 1u);
+        ms_count++;
     }
 
-    void unref() const noexcept
+    /**
+     * @brief Decrease reference count by one. If it is dropped to zero, the
+     *        object is automatically destructed.
+     * @return reference count value which is already decreased
+     */
+    int32 unref() const noexcept
     {
-        if (atomic_fetch_sub(&ms_count, 1u) == 1)
+        int32 count = --ms_count;
+        if (count == 0)
             delete this;
+        return count;
     }
 
-    std::uint32_t get_ref_count() const noexcept
+    /**
+     * @brief get current reference count
+     * @return count value
+     */
+    int32 get_ref_count() const noexcept
     {
-        return atomic_load(&ms_count);
+        return ms_count.load();
     }
 
 private:
-    mutable std::uint32_t ms_count;
+    mutable AtomicObject<int32> ms_count;
 
     JUCE_LEAK_DETECTOR(RefCountObject);
 }; // class Object
 
-inline void smart_ref(const RefCountObject* obj)
+inline void smart_ref(const RefCountObject* obj) noexcept
 { obj->ref(); }
 
-inline void smart_unref(const RefCountObject* obj)
-{ obj->unref(); }
+inline int32 smart_unref(const RefCountObject* obj) noexcept
+{ return obj->unref(); }
 
 }
 

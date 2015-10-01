@@ -8,6 +8,9 @@ class TestFramework;
 
 namespace treecore {
 
+/**
+ *
+ */
 template<typename T>
 class RefCountHolder
 {
@@ -37,10 +40,11 @@ class RefCountHolder
 public:
     RefCountHolder() {}
 
-    RefCountHolder(const RefCountHolder& other): ms_ptr(other.ms_ptr)
+    RefCountHolder(const RefCountHolder& other)
     {
-        if (ms_ptr)
-            smart_ref(ms_ptr);
+        if (other.ms_ptr)
+            smart_ref(other.ms_ptr);
+        ms_ptr = other.ms_ptr;
     }
 
     RefCountHolder(RefCountHolder&& other): ms_ptr(other.ms_ptr)
@@ -48,10 +52,11 @@ public:
         other.ms_ptr = nullptr;
     }
 
-    RefCountHolder(T* other): ms_ptr(other)
+    RefCountHolder(T* other)
     {
-        if (ms_ptr)
-            smart_ref(ms_ptr);
+        if (other)
+            smart_ref(other);
+        ms_ptr = other;
     }
 
     ~RefCountHolder()
@@ -87,10 +92,9 @@ public:
         if (ms_ptr)
             smart_unref(ms_ptr);
 
+        if(other)
+            smart_ref(other);
         ms_ptr = other;
-
-        if(ms_ptr)
-            smart_ref(ms_ptr);
 
         return *this;
     }
