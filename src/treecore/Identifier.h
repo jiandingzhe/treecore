@@ -32,6 +32,8 @@
 #include "treecore/String.h"
 #include "treecore/StringRef.h"
 
+class TestFramework;
+
 namespace treecore {
 
 //==============================================================================
@@ -46,6 +48,8 @@ namespace treecore {
 */
 class JUCE_API  Identifier
 {
+    friend class ::TestFramework;
+
 public:
     /** Creates a null identifier. */
     Identifier() noexcept;
@@ -103,6 +107,15 @@ public:
 
     /** Returns this identifier as a string. */
     String toString() const noexcept
+    {
+        return m_name;
+    }
+
+    /**
+     * @brief return raw string pointer of this Identifier
+     * @return char pointer
+     */
+    const char* getPtr() const noexcept
     {
         return m_name;
     }
