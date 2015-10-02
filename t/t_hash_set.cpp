@@ -28,12 +28,28 @@ void TestFramework::content()
     OK(set.contains(2));
     OK(set.contains(10));
 
-    OK(set.insert(17));
-    IS(set.size(), 4);
-    OK(set.contains(1));
-    OK(set.contains(2));
-    OK(set.contains(10));
-    OK(set.contains(17));
+    {
+        HashSet<int>::Iterator it(set);
+        OK(!set.insertAndGet(10, it));
+        IS(it.get(), 10);
+        IS(set.size(), 3);
+        OK(set.contains(1));
+        OK(set.contains(2));
+        OK(set.contains(10));
+    }
+
+    {
+        HashSet<int>::Iterator it(set);
+        OK(set.insertAndGet(17, it));
+        IS(it.get(), 17);
+        IS(set.size(), 4);
+        OK(set.contains(1));
+        OK(set.contains(2));
+        OK(set.contains(10));
+        OK(set.contains(17));
+    }
+
+
 
     OK("iterate through items");
 

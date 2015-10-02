@@ -43,7 +43,7 @@ Identifier& Identifier::operator= (const Identifier other) noexcept
 }
 
 Identifier::Identifier (const String& nm)
-    : name (StringPool::getGlobalPool().getPooledString (nm))
+    : name (StringPool::getInstance()->getPooledString (nm))
 {
     /* An Identifier string must be suitable for use as a script variable or XML
        attribute, so it can only contain this limited set of characters.. */
@@ -51,7 +51,7 @@ Identifier::Identifier (const String& nm)
 }
 
 Identifier::Identifier (const char* nm)
-    : name (StringPool::getGlobalPool().getPooledString (nm))
+    : name (StringPool::getInstance()->getPooledString (nm))
 {
     /* An Identifier string must be suitable for use as a script variable or XML
        attribute, so it can only contain this limited set of characters.. */
@@ -59,7 +59,7 @@ Identifier::Identifier (const char* nm)
 }
 
 Identifier::Identifier (String::CharPointerType start, String::CharPointerType end)
-    : name (StringPool::getGlobalPool().getPooledString (start, end))
+    : name (StringPool::getInstance()->getPooledString (start, end))
 {
     /* An Identifier string must be suitable for use as a script variable or XML
        attribute, so it can only contain this limited set of characters.. */

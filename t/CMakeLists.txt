@@ -20,6 +20,7 @@ foreach(test_name
     t_obj_pool
     t_ref_count_singleton_st
     t_sorted_set
+    t_string_pool
     t_queue
     t_lf_queue_st
 )

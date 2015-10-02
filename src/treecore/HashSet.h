@@ -33,6 +33,8 @@ public:
 
     class Iterator
     {
+        friend class HashSet;
+
     public:
         Iterator(const HashSet& target): target(target)
         {
@@ -60,7 +62,12 @@ public:
             }
         }
 
-        inline KeyType get() const noexcept
+        inline bool hasValue() const noexcept
+        {
+            return entry != nullptr;
+        }
+
+        inline const KeyType& get() const noexcept
         {
             return entry->key;
         }
@@ -85,7 +92,10 @@ public:
             {
                 i_slot++;
                 if (i_slot >= target.m_slots.size())
+                {
+                    entry = nullptr;
                     return false;
+                }
 
                 entry = target.m_slots.getUnchecked(i_slot);
                 if (entry)
@@ -149,6 +159,22 @@ public:
         return false;
     }
 
+    bool search(const KeyType& key, Iterator& result) noexcept
+    {
+        const ScopedLockType lock(m_mutex);
+        int hash_result = generateHashFor(key);
+        for (const Entry* entry = m_slots.getUnchecked(hash_result); entry != nullptr; entry = entry->next)
+        {
+            if (entry->key == key)
+            {
+                result.entry = entry;
+                result.i_slot = hash_result;
+            }
+        }
+
+        return false;
+    }
+
     int getNumKeys() const noexcept
     {
         int n_key = 0;
@@ -164,6 +190,49 @@ public:
         }
 
         return n_key;
+    }
+
+    /**
+     * @brief Insert a value into hash set, and get iterator to the newly added
+     *        value or the already existing one.
+     *
+     * @param key the value to be inserted
+     * @param result will point to newly added value or already existing value
+     * @return true if key is inserted, false if already exists
+     */
+    bool insertAndGet(const KeyType& key, Iterator& result)
+    {
+        const ScopedLockType lock(m_mutex);
+
+        int hash_result = generateHashFor(key);
+        Entry* const first_entry = m_slots.getUnchecked(hash_result);
+
+        // find if already exists
+        for (Entry* entry = first_entry; entry != nullptr; entry = entry->next)
+        {
+            if (entry->key == key)
+            {
+                result.i_slot = hash_result;
+                result.entry = entry;
+                return false;
+            }
+        }
+
+        // create a new entry for this key
+        Entry* new_entry = EntryPoolType::getInstance()->generate(key, first_entry);
+        m_slots.setUnchecked(hash_result, new_entry);
+        m_size++;
+
+        // rehash when needed
+        if (float(m_size) / float(m_slots.size()) > 1.5)
+        {
+            remapTable(m_slots.size() * 2);
+            hash_result = generateHashFor(key);
+        }
+
+        result.i_slot = hash_result;
+        result.entry = new_entry;
+        return true;
     }
 
     bool insert(KeyType key)

@@ -71,19 +71,19 @@ static void sanityCheckTagName (const String& tag)
 }
 
 XmlElement::XmlElement (const String& tag)
-    : tagName (StringPool::getGlobalPool().getPooledString (tag))
+    : tagName (StringPool::getInstance()->getPooledString (tag))
 {
     sanityCheckTagName (tagName);
 }
 
 XmlElement::XmlElement (const char* tag)
-    : tagName (StringPool::getGlobalPool().getPooledString (tag))
+    : tagName (StringPool::getInstance()->getPooledString (tag))
 {
     sanityCheckTagName (tagName);
 }
 
 XmlElement::XmlElement (StringRef tag)
-    : tagName (StringPool::getGlobalPool().getPooledString (tag))
+    : tagName (StringPool::getInstance()->getPooledString (tag))
 {
     sanityCheckTagName (tagName);
 }
@@ -95,7 +95,7 @@ XmlElement::XmlElement (const Identifier& tag)
 }
 
 XmlElement::XmlElement (String::CharPointerType tagNameStart, String::CharPointerType tagNameEnd)
-    : tagName (StringPool::getGlobalPool().getPooledString (tagNameStart, tagNameEnd))
+    : tagName (StringPool::getInstance()->getPooledString (tagNameStart, tagNameEnd))
 {
     sanityCheckTagName (tagName);
 }
