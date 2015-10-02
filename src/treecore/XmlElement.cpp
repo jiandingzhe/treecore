@@ -30,6 +30,7 @@
 #include "treecore/MemoryOutputStream.h"
 #include "treecore/NewLine.h"
 #include "treecore/OutputStream.h"
+#include "treecore/String.h"
 #include "treecore/StringPool.h"
 #include "treecore/StringRef.h"
 #include "treecore/TemporaryFile.h"
@@ -282,7 +283,7 @@ void XmlElement::writeElementAsText (OutputStream& outputStream,
 
                 const int64 startPos = outputStream.getPosition();
                 outputStream.writeByte (' ');
-                outputStream << att->name;
+                outputStream << StringRef(att->name.getCharPointer());
                 outputStream.write ("=\"", 2);
                 escapeIllegalXmlChars (outputStream, att->value, true);
                 outputStream.writeByte ('"');

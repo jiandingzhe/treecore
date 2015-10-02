@@ -34,16 +34,19 @@ namespace treecore {
 Identifier::Identifier() noexcept {}
 Identifier::~Identifier() noexcept {}
 
-Identifier::Identifier (const Identifier& other) noexcept  : name (other.name) {}
+Identifier::Identifier (const Identifier& other) noexcept
+    : m_name(other.m_name)
+{
+}
 
 Identifier& Identifier::operator= (const Identifier other) noexcept
 {
-    name = other.name;
+    m_name = other.m_name;
     return *this;
 }
 
 Identifier::Identifier (const String& nm)
-    : name (StringPool::getInstance()->getPooledString (nm))
+    : m_name(StringPool::getInstance()->getPooledString(nm))
 {
     /* An Identifier string must be suitable for use as a script variable or XML
        attribute, so it can only contain this limited set of characters.. */
@@ -51,7 +54,7 @@ Identifier::Identifier (const String& nm)
 }
 
 Identifier::Identifier (const char* nm)
-    : name (StringPool::getInstance()->getPooledString (nm))
+    : m_name(StringPool::getInstance()->getPooledString(nm))
 {
     /* An Identifier string must be suitable for use as a script variable or XML
        attribute, so it can only contain this limited set of characters.. */
@@ -59,7 +62,7 @@ Identifier::Identifier (const char* nm)
 }
 
 Identifier::Identifier (String::CharPointerType start, String::CharPointerType end)
-    : name (StringPool::getInstance()->getPooledString (start, end))
+    : m_name(StringPool::getInstance()->getPooledString(start, end))
 {
     /* An Identifier string must be suitable for use as a script variable or XML
        attribute, so it can only contain this limited set of characters.. */
@@ -68,10 +71,5 @@ Identifier::Identifier (String::CharPointerType start, String::CharPointerType e
 
 Identifier Identifier::null;
 
-bool Identifier::isValidIdentifier (const String& possibleIdentifier) noexcept
-{
-    return possibleIdentifier.isNotEmpty()
-            && possibleIdentifier.containsOnly ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-:#@$%");
-}
 
 }
