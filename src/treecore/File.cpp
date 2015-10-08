@@ -232,7 +232,7 @@ bool File::setReadOnly (const bool shouldBeReadOnly,
         findChildFiles (subFiles, File::findFilesAndDirectories, false);
 
         for (int i = subFiles.size(); --i >= 0;)
-            worked = subFiles.getReference(i).setReadOnly (shouldBeReadOnly, true) && worked;
+            worked = subFiles[i].setReadOnly (shouldBeReadOnly, true) && worked;
     }
 
     return setFileReadOnlyInternal (shouldBeReadOnly) && worked;
@@ -248,7 +248,7 @@ bool File::deleteRecursively() const
         findChildFiles (subFiles, File::findFilesAndDirectories, false);
 
         for (int i = subFiles.size(); --i >= 0;)
-            worked = subFiles.getReference(i).deleteRecursively() && worked;
+            worked = subFiles[i].deleteRecursively() && worked;
     }
 
     return deleteFile() && worked;
@@ -285,14 +285,14 @@ bool File::copyDirectoryTo (const File& newDirectory) const
         findChildFiles (subFiles, File::findFiles, false);
 
         for (int i = 0; i < subFiles.size(); ++i)
-            if (! subFiles.getReference(i).copyFileTo (newDirectory.getChildFile (subFiles.getReference(i).getFileName())))
+            if (! subFiles[i].copyFileTo (newDirectory.getChildFile (subFiles[i].getFileName())))
                 return false;
 
         subFiles.clear();
         findChildFiles (subFiles, File::findDirectories, false);
 
         for (int i = 0; i < subFiles.size(); ++i)
-            if (! subFiles.getReference(i).copyDirectoryTo (newDirectory.getChildFile (subFiles.getReference(i).getFileName())))
+            if (! subFiles[i].copyDirectoryTo (newDirectory.getChildFile (subFiles[i].getFileName())))
                 return false;
 
         return true;

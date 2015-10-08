@@ -59,7 +59,7 @@ bool ReadWriteLock::tryEnterRead() const noexcept
 
     for (int i = 0; i < readerThreads.size(); ++i)
     {
-        ThreadRecursionCount& trc = readerThreads.getReference(i);
+        ThreadRecursionCount& trc = readerThreads[i];
 
         if (trc.threadID == threadId)
         {
@@ -86,7 +86,7 @@ void ReadWriteLock::exitRead() const noexcept
 
     for (int i = 0; i < readerThreads.size(); ++i)
     {
-        ThreadRecursionCount& trc = readerThreads.getReference(i);
+        ThreadRecursionCount& trc = readerThreads[i];
 
         if (trc.threadID == threadId)
         {
@@ -129,7 +129,7 @@ bool ReadWriteLock::tryEnterWriteInternal (Thread::ThreadID threadId) const noex
 {
     if (readerThreads.size() + numWriters == 0
          || threadId == writerThreadId
-         || (readerThreads.size() == 1 && readerThreads.getReference(0).threadID == threadId))
+         || (readerThreads.size() == 1 && readerThreads[0].threadID == threadId))
     {
         writerThreadId = threadId;
         ++numWriters;

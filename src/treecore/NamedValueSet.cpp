@@ -53,7 +53,7 @@ NamedValueSet& NamedValueSet::operator= (const NamedValueSet& other)
 }
 
 NamedValueSet::NamedValueSet (NamedValueSet&& other) noexcept
-    : values (static_cast <Array<NamedValue>&&> (other.values))
+    : values(static_cast<MapType&&>(other.values))
 {
 }
 
@@ -80,7 +80,7 @@ bool NamedValueSet::operator== (const NamedValueSet& other) const
 
 bool NamedValueSet::operator!= (const NamedValueSet& other) const
 {
-    return ! operator== (other);
+    return values != other.values;
 }
 
 int NamedValueSet::size() const noexcept
@@ -106,104 +106,55 @@ var NamedValueSet::getWithDefault (const Identifier& name, const var& defaultRet
 
 var* NamedValueSet::getVarPointer (const Identifier& name) const noexcept
 {
-    for (NamedValue* e = values.end(), *i = values.begin(); i != e; ++i)
-        if (i->name == name)
-            return &(i->value);
-
+    MapType::ConstIterator i(values);
+    if (values.select(name, i))
+    {
+        return const_cast<var*>(&i.value());
+    }
     return nullptr;
 }
 
 bool NamedValueSet::set (Identifier name, var&& newValue)
 {
-    if (var* const v = getVarPointer (name))
+    MapType::Iterator i(values);
+    if (!values.insertOrSelect(name, newValue, i))
     {
-        if (v->equalsWithSameType (newValue))
+        if (i.value().equalsWithSameType(newValue))
             return false;
 
-        *v = static_cast<var&&> (newValue);
-        return true;
+        i.value() = newValue;
     }
 
-    values.add (NamedValue (name, static_cast<var&&> (newValue)));
     return true;
 }
 
 bool NamedValueSet::set (Identifier name, const var& newValue)
 {
-    if (var* const v = getVarPointer (name))
+    MapType::Iterator i(values);
+    if (!values.insertOrSelect(name, newValue, i))
     {
-        if (v->equalsWithSameType (newValue))
+        if (i.value().equalsWithSameType(newValue))
             return false;
 
-        *v = newValue;
-        return true;
+        i.value() = newValue;
     }
 
-    values.add (NamedValue (name, newValue));
     return true;
 }
 
 bool NamedValueSet::contains (const Identifier& name) const
 {
-    return getVarPointer (name) != nullptr;
-}
-
-int NamedValueSet::indexOf (const Identifier& name) const noexcept
-{
-    const int numValues = values.size();
-
-    for (int i = 0; i < numValues; ++i)
-        if (values.getReference(i).name == name)
-            return i;
-
-    return -1;
+    return values.contains(name);
 }
 
 bool NamedValueSet::remove (const Identifier& name)
 {
-    const int numValues = values.size();
-
-    for (int i = 0; i < numValues; ++i)
-    {
-        if (values.getReference(i).name == name)
-        {
-            values.remove (i);
-            return true;
-        }
-    }
-
-    return false;
-}
-
-Identifier NamedValueSet::getName (const int index) const noexcept
-{
-    if (isPositiveAndBelow (index, values.size()))
-        return values.getReference (index).name;
-
-    jassertfalse;
-    return Identifier();
-}
-
-const var& NamedValueSet::getValueAt (const int index) const noexcept
-{
-    if (isPositiveAndBelow (index, values.size()))
-        return values.getReference (index).value;
-
-    jassertfalse;
-    return var::null;
-}
-
-var* NamedValueSet::getVarPointerAt (int index) const noexcept
-{
-    if (isPositiveAndBelow (index, values.size()))
-        return &(values.getReference (index).value);
-
-    return nullptr;
+    return values.remove(name);
 }
 
 void NamedValueSet::setFromXmlAttributes (const XmlElement& xml)
 {
-    values.clearQuick();
+    values.clear();
 
     for (const XmlElement::XmlAttributeNode* att = xml.attributes; att != nullptr; att = att->nextListItem)
     {
@@ -211,34 +162,35 @@ void NamedValueSet::setFromXmlAttributes (const XmlElement& xml)
         {
             MemoryBlock mb;
 
-            if (mb.fromBase64Encoding (att->value))
-            {
-                values.add (NamedValue (att->name.toString().substring (7), var (mb)));
-                continue;
-            }
+            if (mb.fromBase64Encoding(att->value))
+                values[att->name.toString().substring (7)] = var(mb);
         }
-
-        values.add (NamedValue (att->name, var (att->value)));
+        else
+        {
+            values[att->name] = var(att->value);
+        }
     }
 }
 
 void NamedValueSet::copyToXmlAttributes (XmlElement& xml) const
 {
-    for (NamedValue* e = values.end(), *i = values.begin(); i != e; ++i)
+    MapType::ConstIterator i(values);
+
+    while (i.next())
     {
-        if (const MemoryBlock* mb = i->value.getBinaryData())
+        if (const MemoryBlock* mb = i.value().getBinaryData())
         {
-            xml.setAttribute ("base64:" + i->name.toString(), mb->toBase64Encoding());
+            xml.setAttribute ("base64:" + i.key().toString(), mb->toBase64Encoding());
         }
         else
         {
             // These types can't be stored as XML!
-            jassert (! i->value.isObject());
-            jassert (! i->value.isMethod());
-            jassert (! i->value.isArray());
+            jassert (! i.value().isObject());
+            jassert (! i.value().isMethod());
+            jassert (! i.value().isArray());
 
-            xml.setAttribute (i->name.toString(),
-                              i->value.toString());
+            xml.setAttribute (i.key().toString(),
+                              i.value().toString());
         }
     }
 }

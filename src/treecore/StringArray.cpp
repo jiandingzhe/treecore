@@ -101,49 +101,6 @@ bool StringArray::operator!= (const StringArray& other) const noexcept
     return ! operator== (other);
 }
 
-void StringArray::swapWith (StringArray& other) noexcept
-{
-    strings.swapWith (other.strings);
-}
-
-void StringArray::clear()
-{
-    strings.clear();
-}
-
-void StringArray::clearQuick()
-{
-    strings.clearQuick();
-}
-
-const String& StringArray::operator[] (const int index) const noexcept
-{
-    if (isPositiveAndBelow (index, strings.size()))
-        return strings.getReference (index);
-
-    return String::empty;
-}
-
-String& StringArray::getReference (const int index) noexcept
-{
-    return strings.getReference (index);
-}
-
-void StringArray::add (const String& newString)
-{
-    strings.add (newString);
-}
-
-void StringArray::add (String&& stringToAdd)
-{
-    strings.add (static_cast<String&&> (stringToAdd));
-}
-
-void StringArray::insert (const int index, const String& newString)
-{
-    strings.insert (index, newString);
-}
-
 void StringArray::addIfNotAlreadyThere (const String& newString, const bool ignoreCase)
 {
     if (! contains (newString, ignoreCase))
@@ -162,20 +119,11 @@ void StringArray::addArray (const StringArray& otherArray, int startIndex, int n
         numElementsToAdd = otherArray.size() - startIndex;
 
     while (--numElementsToAdd >= 0)
-        strings.add (otherArray.strings.getReference (startIndex++));
+        strings.add (otherArray.strings[startIndex++]);
 }
 
-void StringArray::set (const int index, const String& newString)
-{
-    strings.set (index, newString);
-}
 
-bool StringArray::contains (StringRef stringToLookFor, const bool ignoreCase) const
-{
-    return indexOf (stringToLookFor, ignoreCase) >= 0;
-}
-
-int StringArray::indexOf (StringRef stringToLookFor, const bool ignoreCase, int i) const
+int StringArray::indexOf (StringRef stringToLookFor, const bool ignoreCase, int i) const noexcept
 {
     if (i < 0)
         i = 0;
@@ -185,49 +133,34 @@ int StringArray::indexOf (StringRef stringToLookFor, const bool ignoreCase, int 
     if (ignoreCase)
     {
         for (; i < numElements; ++i)
-            if (strings.getReference(i).equalsIgnoreCase (stringToLookFor))
+            if (strings[i].equalsIgnoreCase (stringToLookFor))
                 return i;
     }
     else
     {
         for (; i < numElements; ++i)
-            if (stringToLookFor == strings.getReference (i))
+            if (stringToLookFor == strings[i])
                 return i;
     }
 
     return -1;
 }
 
-void StringArray::move (const int currentIndex, const int newIndex) noexcept
-{
-    strings.move (currentIndex, newIndex);
-}
-
-//==============================================================================
-void StringArray::remove (const int index)
-{
-    strings.remove (index);
-}
 
 void StringArray::removeString (StringRef stringToRemove, const bool ignoreCase)
 {
     if (ignoreCase)
     {
         for (int i = size(); --i >= 0;)
-            if (strings.getReference(i).equalsIgnoreCase (stringToRemove))
+            if (strings[i].equalsIgnoreCase (stringToRemove))
                 strings.remove (i);
     }
     else
     {
         for (int i = size(); --i >= 0;)
-            if (stringToRemove == strings.getReference (i))
+            if (stringToRemove == strings[i])
                 strings.remove (i);
     }
-}
-
-void StringArray::removeRange (int startIndex, int numberToRemove)
-{
-    strings.removeRange (startIndex, numberToRemove);
 }
 
 //==============================================================================
@@ -236,13 +169,13 @@ void StringArray::removeEmptyStrings (const bool removeWhitespaceStrings)
     if (removeWhitespaceStrings)
     {
         for (int i = size(); --i >= 0;)
-            if (! strings.getReference(i).containsNonWhitespaceChars())
+            if (! strings[i].containsNonWhitespaceChars())
                 strings.remove (i);
     }
     else
     {
         for (int i = size(); --i >= 0;)
-            if (strings.getReference(i).isEmpty())
+            if (strings[i].isEmpty())
                 strings.remove (i);
     }
 }
@@ -251,7 +184,7 @@ void StringArray::trim()
 {
     for (int i = size(); --i >= 0;)
     {
-        String& s = strings.getReference(i);
+        String& s = strings[i];
         s = s.trim();
     }
 }
@@ -305,13 +238,13 @@ String StringArray::joinIntoString (StringRef separator, int start, int numberTo
         return String();
 
     if (start == last - 1)
-        return strings.getReference (start);
+        return strings[start];
 
     const size_t separatorBytes = separator.text.sizeInBytes() - sizeof (String::CharPointerType::CharType);
     size_t bytesNeeded = separatorBytes * (size_t) (last - start - 1);
 
     for (int i = start; i < last; ++i)
-        bytesNeeded += strings.getReference(i).getCharPointer().sizeInBytes() - sizeof (String::CharPointerType::CharType);
+        bytesNeeded += strings[i].getCharPointer().sizeInBytes() - sizeof (String::CharPointerType::CharType);
 
     String result;
     result.preallocateBytes (bytesNeeded);
@@ -320,7 +253,7 @@ String StringArray::joinIntoString (StringRef separator, int start, int numberTo
 
     while (start < last)
     {
-        const String& s = strings.getReference (start);
+        const String& s = strings[start];
 
         if (! s.isEmpty())
             dest.writeAll (s.getCharPointer());
@@ -332,11 +265,6 @@ String StringArray::joinIntoString (StringRef separator, int start, int numberTo
     dest.writeNull();
 
     return result;
-}
-
-int StringArray::addTokens (StringRef text, const bool preserveQuotedStrings)
-{
-    return addTokens (text, " \n\r\t", preserveQuotedStrings ? "\"" : "");
 }
 
 int StringArray::addTokens (StringRef text, StringRef breakCharacters, StringRef quoteCharacters)
@@ -420,7 +348,7 @@ void StringArray::removeDuplicates (const bool ignoreCase)
 {
     for (int i = 0; i < size() - 1; ++i)
     {
-        const String s (strings.getReference(i));
+        const String s (strings[i]);
 
         for (int nextIndex = i + 1;;)
         {
@@ -449,7 +377,7 @@ void StringArray::appendNumbersToDuplicates (const bool ignoreCase,
 
     for (int i = 0; i < size() - 1; ++i)
     {
-        String& s = strings.getReference(i);
+        String& s = strings[i];
 
         int nextIndex = indexOf (s, ignoreCase, i + 1);
 
@@ -466,21 +394,11 @@ void StringArray::appendNumbersToDuplicates (const bool ignoreCase,
 
             while (nextIndex >= 0)
             {
-                set (nextIndex, (*this)[nextIndex] + String (preNumberString) + String (++number) + String (postNumberString));
+                strings[nextIndex] = (*this)[nextIndex] + String (preNumberString) + String (++number) + String (postNumberString);
                 nextIndex = indexOf (original, ignoreCase, nextIndex + 1);
             }
         }
     }
-}
-
-void StringArray::ensureStorageAllocated (int minNumElements)
-{
-    strings.ensureStorageAllocated (minNumElements);
-}
-
-void StringArray::minimiseStorageOverheads()
-{
-    strings.minimiseStorageOverheads();
 }
 
 }

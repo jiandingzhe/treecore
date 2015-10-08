@@ -12,10 +12,10 @@
 
 #if defined _MSC_VER
 #   define TREECORE_COMPILER_MSVC
-#elif defined __GNUC__
-#   define TREECORE_COMPILER_GCC
 #elif defined __clang__
 #   define TREECORE_COMPILER_CLANG
+#elif defined __GNUC__
+#   define TREECORE_COMPILER_GCC
 #elif defined DOXYGEN
 #   define TREECORE_COMPILER_DOXYGEN
 #else // TODO intel icc

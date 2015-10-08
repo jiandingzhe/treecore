@@ -6,64 +6,94 @@ using namespace treecore;
 
 void TestFramework::content()
 {
-    HashMultiMap<int, int> map;
+    typedef HashMultiMap<int, int> MapType;
+    MapType map;
     OK("map created");
     IS(map.size(), 0);
 
-    map.insert(1, 10);
+    map.store(1, 10);
     OK("map insert value");
     IS(map.size(), 1);
-    IS(map.getNumKeys(), 1);
+    IS(map.numKeys(), 1);
     OK(map.contains(1));
+    OK(map.contains(1, 10));
+    OK(map.containsValue(10));
     IS(map.count(1), 1);
 
-    map.insert(1, 2);
+    map.store(1, 2);
     OK("map insert value");
     IS(map.size(), 2);
-    IS(map.getNumKeys(), 1);
+    IS(map.numKeys(), 1);
     OK(map.contains(1));
+    OK(map.contains(1, 10));
+    OK(map.contains(1, 2));
+    OK(map.containsValue(10));
+    OK(map.containsValue(2));
     IS(map.count(1), 2);
 
-    map.insert(4, 3);
+    map.store(4, 3);
     OK("map insert value using another key");
     IS(map.size(), 3);
-    IS(map.getNumKeys(), 2);
+    IS(map.numKeys(), 2);
     OK(map.contains(1));
     OK(map.contains(4));
+    OK(map.contains(1, 10));
+    OK(map.contains(1, 2));
+    OK(map.contains(4, 3));
+    OK(map.containsValue(10));
+    OK(map.containsValue(2));
+    OK(map.containsValue(3));
     IS(map.count(1), 2);
     IS(map.count(4), 1);
 
-    map.insert(700, 1);
+    map.store(700, 1);
     OK("map insert values using yet another key");
     IS(map.size(), 4);
-    IS(map.getNumKeys(), 3);
+    IS(map.numKeys(), 3);
     OK(map.contains(1));
     OK(map.contains(4));
     OK(map.contains(700));
+    OK(map.contains(1, 10));
+    OK(map.contains(1, 2));
+    OK(map.contains(4, 3));
+    OK(map.contains(700, 1));
+    OK(map.containsValue(10));
+    OK(map.containsValue(2));
+    OK(map.containsValue(3));
+    OK(map.containsValue(1));
     IS(map.count(1), 2);
     IS(map.count(4), 1);
     IS(map.count(700), 1);
 
     {
-        ArrayRef<int> values = map[1];
-        OK("fetch values by key 1");
-        IS(values.size(), 2);
-        IS(values[0], 10);
-        IS(values[1], 2);
-    }
+        MapType::Iterator i(map);
+        OK(map.select(1, i));
+        OK(i.hasContent());
+        IS(i.key(), 1);
+        IS(i.values().size(), 2);
+        OK(i.values().contains(2));
+        OK(i.values().contains(10));
 
-    {
-        ArrayRef<int> values = map[4];
-        OK("fetch values by key 4");
-        IS(values.size(), 1);
-        IS(values[0], 3);
-    }
+        bool got_2 = false;
+        bool got_10 = false;
 
-    {
-        ArrayRef<int> values = map[700];
-        OK("fetch values by key 700");
-        IS(values.size(), 1);
-        IS(values[0], 1);
+        if (i.value() == 2)
+            got_2 = true;
+        else if (i.value() == 10)
+            got_10 = true;
+        else
+            abort();
+
+        OK(i.next());
+        if (i.value() == 2)
+            got_2 = true;
+        else if (i.value() == 10)
+            got_10 = true;
+        else
+            abort();
+
+        OK(got_2);
+        OK(got_10);
     }
 
     //
@@ -74,39 +104,48 @@ void TestFramework::content()
         bool got_1_2 = false;
         bool got_4_3 = false;
         bool got_700_1 = false;
-        int n_got = 0;
+        int n_passed = 0;
 
-        HashMultiMap<int,int>::Iterator it(map);
+        MapType::Iterator it(map);
         OK("iterate");
 
         while (it.next())
         {
-            int key = it.getKey();
-            ArrayRef<int> values = it.getValues();
-
-            if (key == 1)
-                IS(values.size(), 2);
-            else if (key == 4)
-                IS(values.size(), 1);
-            else if (key == 700)
-                IS(values.size(), 1);
-
-            for (int i_value = 0; i_value < values.size(); i_value++)
+            n_passed++;
+            if (it.key() == 1)
             {
-                int value = values[i_value];
-                n_got++;
-                if (key == 1 && value == 10)
-                    got_1_10 = true;
-                else if (key == 1 && value == 2)
-                    got_1_2 = true;
-                else if (key == 4 && value == 3)
+                OK(it.hasContent());
+                IS(it.values().size(), 2);
+
+                switch (it.value())
+                {
+                case 2:
+                    got_1_2 = true; break;
+                case 10:
+                    got_1_10 = true; break;
+                default:
+                    abort();
+                }
+            }
+            else if (it.key() == 4)
+            {
+                OK(it.hasContent());
+                IS(it.values().size(), 1);
+
+                if (it.value() == 3)
                     got_4_3 = true;
-                else if (key == 700 && value == 1)
+                else
+                    abort();
+            }
+            else if (it.key() == 700)
+            {
+                OK(it.hasContent());
+                IS(it.values().size(), 1);
+
+                if (it.value() == 700)
                     got_700_1 = true;
                 else
-                {
-                    fprintf(stderr, "got unexpected: key %d value %d\n", key, value);
-                }
+                    abort();
             }
         }
 
@@ -114,45 +153,89 @@ void TestFramework::content()
         OK(got_1_2);
         OK(got_4_3);
         OK(got_700_1);
-        IS(n_got, 4);
+        IS(n_passed, 4);
+    }
+
+    {
+        bool got_1_10 = false;
+        bool got_1_2 = false;
+        bool got_4_3 = false;
+        bool got_700_1 = false;
+        int n_passed = 0;
+
+        MapType::Iterator it(map);
+        OK("iterate");
+
+        while (it.nextKey())
+        {
+            n_passed++;
+            if (it.key() == 1)
+            {
+                OK(it.hasContent());
+                IS(it.values().size(), 2);
+
+                for (int i = 0; i < it.values().size(); i++)
+                {
+                    switch (it.values()[i])
+                    {
+                    case 2:
+                        got_1_2 = true; break;
+                    case 10:
+                        got_1_10 = true; break;
+                    default:
+                        abort();
+                    }
+                }
+            }
+            else if (it.key() == 4)
+            {
+                OK(it.hasContent());
+                IS(it.values().size(), 1);
+
+                if (it.value() == 3)
+                    got_4_3 = true;
+                else
+                    abort();
+            }
+            else if (it.key() == 700)
+            {
+                OK(it.hasContent());
+                IS(it.values().size(), 1);
+
+                if (it.value() == 700)
+                    got_700_1 = true;
+                else
+                    abort();
+            }
+        }
+
+        OK(got_1_10);
+        OK(got_1_2);
+        OK(got_4_3);
+        OK(got_700_1);
+        IS(n_passed, 3);
     }
 
     //
     // remap
     //
     map.remapTable(2);
-    OK("change number of slots");
-    IS(map.getNumSlots(), 2);
     IS(map.size(), 4);
-    IS(map.getNumKeys(), 3);
+    IS(map.numKeys(), 3);
     OK(map.contains(1));
     OK(map.contains(4));
     OK(map.contains(700));
+    OK(map.contains(1, 10));
+    OK(map.contains(1, 2));
+    OK(map.contains(4, 3));
+    OK(map.contains(700, 1));
+    OK(map.containsValue(10));
+    OK(map.containsValue(2));
+    OK(map.containsValue(3));
+    OK(map.containsValue(1));
     IS(map.count(1), 2);
     IS(map.count(4), 1);
     IS(map.count(700), 1);
-
-    {
-        ArrayRef<int> values = map[1];
-        OK("fetch values by key 1 after remap");
-        IS(values.size(), 2);
-        IS(values[0], 10);
-        IS(values[1], 2);
-    }
-
-    {
-        ArrayRef<int> values = map[4];
-        OK("fetch values by key 4 after remap");
-        IS(values.size(), 1);
-        IS(values[0], 3);
-    }
-
-    {
-        ArrayRef<int> values = map[700];
-        OK("fetch values by key 700 after remap");
-        IS(values.size(), 1);
-        IS(values[0], 1);
-    }
 
     //
     // iterate after rehash
@@ -162,39 +245,48 @@ void TestFramework::content()
         bool got_1_2 = false;
         bool got_4_3 = false;
         bool got_700_1 = false;
-        int n_got = 0;
+        int n_passed = 0;
 
-        HashMultiMap<int,int>::Iterator it(map);
-        OK("iterate after rehash");
+        MapType::Iterator it(map);
+        OK("iterate");
 
         while (it.next())
         {
-            int key = it.getKey();
-            ArrayRef<int> values = it.getValues();
-
-            if (key == 1)
-                IS(values.size(), 2);
-            else if (key == 4)
-                IS(values.size(), 1);
-            else if (key == 700)
-                IS(values.size(), 1);
-
-            for (int i_value = 0; i_value < values.size(); i_value++)
+            n_passed++;
+            if (it.key() == 1)
             {
-                int value = values[i_value];
-                n_got++;
-                if (key == 1 && value == 10)
-                    got_1_10 = true;
-                else if (key == 1 && value == 2)
-                    got_1_2 = true;
-                else if (key == 4 && value == 3)
+                OK(it.hasContent());
+                IS(it.values().size(), 2);
+
+                switch (it.value())
+                {
+                case 2:
+                    got_1_2 = true; break;
+                case 10:
+                    got_1_10 = true; break;
+                default:
+                    abort();
+                }
+            }
+            else if (it.key() == 4)
+            {
+                OK(it.hasContent());
+                IS(it.values().size(), 1);
+
+                if (it.value() == 3)
                     got_4_3 = true;
-                else if (key == 700 && value == 1)
+                else
+                    abort();
+            }
+            else if (it.key() == 700)
+            {
+                OK(it.hasContent());
+                IS(it.values().size(), 1);
+
+                if (it.value() == 700)
                     got_700_1 = true;
                 else
-                {
-                    fprintf(stderr, "got unexpected: key %d value %d\n", key, value);
-                }
+                    abort();
             }
         }
 
@@ -202,14 +294,14 @@ void TestFramework::content()
         OK(got_1_2);
         OK(got_4_3);
         OK(got_700_1);
-        IS(n_got, 4);
+        IS(n_passed, 4);
     }
 
     // tests for delete and clear
     OK("remove items");
     IS(map.remove(1), 2);
     IS(map.size(), 2);
-    IS(map.getNumKeys(), 2);
+    IS(map.numKeys(), 2);
     OK(!map.contains(1));
     OK(map.contains(4));
     OK(map.contains(700));
@@ -217,34 +309,41 @@ void TestFramework::content()
     {
         bool got_4_3 = false;
         bool got_700_1 = false;
-        int n_got = 0;
+        int n_passed = 0;
 
-        HashMultiMap<int,int>::Iterator it(map);
-        OK("iterate after remove");
+        MapType::Iterator it(map);
+        OK("iterate");
 
         while (it.next())
         {
-            int key = it.getKey();
-            ArrayRef<int> values = it.getValues();
-
-            for (int i = 0; i < values.size(); i++)
+            n_passed++;
+            if (it.key() == 4)
             {
-                int value = values[i];
-                n_got++;
-                if (key == 4 && value == 3)
+                OK(it.hasContent());
+                IS(it.values().size(), 1);
+
+                if (it.value() == 3)
                     got_4_3 = true;
-                else if (key == 700 && value == 1)
+                else
+                    abort();
+            }
+            else if (it.key() == 700)
+            {
+                OK(it.hasContent());
+                IS(it.values().size(), 1);
+
+                if (it.value() == 700)
                     got_700_1 = true;
                 else
-                {
-                    fprintf(stderr, "got unexpected: key %d value %d\n", key, value);
-                }
+                    abort();
             }
+            else
+                abort();
         }
 
         OK(got_4_3);
         OK(got_700_1);
-        IS(n_got, 2);
+        IS(n_passed, 2);
     }
 
     //
@@ -253,7 +352,8 @@ void TestFramework::content()
     map.clear();
     OK("clear");
     IS(map.size(), 0);
-    IS(map.getNumKeys(), 0);
+    IS(map.numKeys(), 0);
+    IS(map.numUsedBuckets(), 0);
     OK(!map.contains(1));
     OK(!map.contains(4));
     OK(!map.contains(700));

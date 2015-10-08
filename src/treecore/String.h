@@ -59,7 +59,7 @@ class StringRef;
     and efficient, and there are methods to do just about any operation you'll ever
     dream of.
 
-    @see StringArray, StringPairArray
+    @see StringArray
 */
 class JUCE_API  String
 {

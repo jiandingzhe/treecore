@@ -88,7 +88,7 @@ public:
         Type total (0);
 
         for (int i = 0; i < values.size(); i += 2)
-            total += values.getUnchecked (i + 1) - values.getUnchecked (i);
+            total += values[i + 1] - values[i];
 
         return total;
     }
@@ -102,8 +102,8 @@ public:
     {
         for (int i = 0; i < values.size(); i += 2)
         {
-            const Type start (values.getUnchecked (i));
-            const Type len (values.getUnchecked (i + 1) - start);
+            const Type start(values[i]);
+            const Type len  (values[i + 1] - start);
 
             if (index < len)
                 return start + index;
@@ -118,7 +118,7 @@ public:
     bool contains (const Type valueToLookFor) const
     {
         for (int i = 0; i < values.size(); ++i)
-            if (valueToLookFor < values.getUnchecked(i))
+            if (valueToLookFor < values[i])
                 return (i & 1) != 0;
 
         return false;
@@ -141,8 +141,8 @@ public:
     const Range<Type> getRange (const int rangeIndex) const
     {
         if (isPositiveAndBelow (rangeIndex, getNumRanges()))
-            return Range<Type> (values.getUnchecked (rangeIndex << 1),
-                                values.getUnchecked ((rangeIndex << 1) + 1));
+            return Range<Type> (values[rangeIndex << 1],
+                    values[(rangeIndex << 1) + 1]);
 
         return Range<Type>();
     }
@@ -155,8 +155,8 @@ public:
         if (values.size() > 0)
         {
             jassert ((values.size() & 1) == 0);
-            return Range<Type> (values.getUnchecked (0),
-                                values.getUnchecked (values.size() - 1));
+            return Range<Type> (values[0],
+                    values[values.size() - 1]);
         }
 
         return Range<Type>();
@@ -188,9 +188,9 @@ public:
         jassert (rangeToRemove.getLength() >= 0);
 
         if (rangeToRemove.getLength() > 0
-             && values.size() > 0
-             && rangeToRemove.getStart() < values.getUnchecked (values.size() - 1)
-             && values.getUnchecked(0) < rangeToRemove.getEnd())
+                && values.size() > 0
+                && rangeToRemove.getStart() < values[values.size() - 1]
+                && values[0] < rangeToRemove.getEnd())
         {
             const bool onAtStart = contains (rangeToRemove.getStart() - 1);
             const Type lastValue (jmin (rangeToRemove.getEnd(), values.getLast()));
@@ -198,9 +198,9 @@ public:
 
             for (int i = values.size(); --i >= 0;)
             {
-                if (values.getUnchecked(i) <= lastValue)
+                if (values[i] <= lastValue)
                 {
-                    while (values.getUnchecked(i) >= rangeToRemove.getStart())
+                    while (values[i] >= rangeToRemove.getStart())
                     {
                         values.remove (i);
 
@@ -241,10 +241,10 @@ public:
         {
             for (int i = getNumRanges(); --i >= 0;)
             {
-                if (values.getUnchecked ((i << 1) + 1) <= range.getStart())
+                if (values[(i << 1) + 1] <= range.getStart())
                     return false;
 
-                if (values.getUnchecked (i << 1) < range.getEnd())
+                if (values[i << 1] < range.getEnd())
                     return true;
             }
         }
@@ -259,11 +259,11 @@ public:
         {
             for (int i = getNumRanges(); --i >= 0;)
             {
-                if (values.getUnchecked ((i << 1) + 1) <= range.getStart())
+                if (values[(i << 1) + 1] <= range.getStart())
                     return false;
 
-                if (values.getUnchecked (i << 1) <= range.getStart()
-                     && range.getEnd() <= values.getUnchecked ((i << 1) + 1))
+                if (values[i << 1] <= range.getStart()
+                        && range.getEnd() <= values[(i << 1) + 1])
                     return true;
             }
         }
@@ -292,7 +292,7 @@ private:
         jassert ((values.size() & 1) == 0);
 
         for (int i = values.size(); --i > 0;)
-            if (values.getUnchecked(i) == values.getUnchecked (i - 1))
+            if (values[i] == values[i - 1])
                 values.removeRange (--i, 2);
     }
 };

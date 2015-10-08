@@ -87,7 +87,8 @@ function(treecore_set_compiler_options target_name)
         target_compile_options(${target_name} PUBLIC "/wd4819")
 
     elseif(TREECORE_CMAKE_COMPILER STREQUAL "_GCC" OR (TREECORE_CMAKE_COMPILER STREQUAL "_ICC" AND (TREECORE_OS STREQUAL "LINUX" OR TREECORE_OS STREQUAL "OSX")) OR TREECORE_CMAKE_COMPILER STREQUAL "_CLANG")
-        target_compile_options(${target_name} PUBLIC -std=c++11 -fPIC -msse3)
+        target_compile_options(${target_name} PUBLIC -fPIC -msse3)
+        target_compile_options(${target_name} INTERFACE -std=c++11)
 
         if(TREEFACE_CPU STREQUAL "X86")
                 target_compile_options(${target_name} PRIVATE -msse3 -mstackrealign)

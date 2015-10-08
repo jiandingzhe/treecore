@@ -8,6 +8,7 @@
 #include "treecore/MPL.h"
 #include "treecore/Queue.h"
 #include "treecore/RefCountObject.h"
+#include "treecore/RefCountSingleton.h"
 
 class TestFramework;
 
@@ -19,7 +20,7 @@ namespace treecore
  *
  */
 template<typename T, bool MULTI_THREAD = true, int BLOCK_SIZE = 4096>
-class ObjectPool: public RefCountObject
+class ObjectPool: public RefCountObject, public RefCountSingleton<ObjectPool<T, MULTI_THREAD, BLOCK_SIZE> >
 {
     friend class ::TestFramework;
 

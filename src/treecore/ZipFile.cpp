@@ -298,7 +298,7 @@ const ZipFile::ZipEntry* ZipFile::getEntry (const int index) const noexcept
 int ZipFile::getIndexOfFileName (const String& fileName) const noexcept
 {
     for (int i = 0; i < entries.size(); ++i)
-        if (entries.getUnchecked (i)->entry.filename == fileName)
+        if (entries[i]->entry.filename == fileName)
             return i;
 
     return -1;
@@ -332,7 +332,7 @@ InputStream* ZipFile::createStreamForEntry (const int index)
 InputStream* ZipFile::createStreamForEntry (const ZipEntry& entry)
 {
     for (int i = 0; i < entries.size(); ++i)
-        if (&entries.getUnchecked (i)->entry == &entry)
+        if (&(entries[i]->entry) == &entry)
             return createStreamForEntry (i);
 
     return nullptr;
@@ -412,7 +412,7 @@ Result ZipFile::uncompressEntry (const int index,
                                  const File& targetDirectory,
                                  bool shouldOverwriteFiles)
 {
-    const ZipEntryHolder* zei = entries.getUnchecked (index);
+    const ZipEntryHolder* zei = entries[index];
 
    #ifdef TREECORE_OS_WINDOWS
     const String entryPath (zei->entry.filename);
@@ -601,14 +601,14 @@ bool ZipFile::Builder::writeToStream (OutputStream& target, double* const progre
         if (progress != nullptr)
             *progress = (i + 0.5) / items.size();
 
-        if (! items.getUnchecked (i)->writeData (target, fileStart))
+        if (! items[i]->writeData(target, fileStart))
             return false;
     }
 
     const int64 directoryStart = target.getPosition();
 
     for (int i = 0; i < items.size(); ++i)
-        if (! items.getUnchecked (i)->writeDirectoryEntry (target))
+        if (! items[i]->writeDirectoryEntry(target))
             return false;
 
     const int64 directoryEnd = target.getPosition();

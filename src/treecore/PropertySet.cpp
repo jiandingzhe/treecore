@@ -72,91 +72,106 @@ void PropertySet::clear()
     }
 }
 
-String PropertySet::getValue (StringRef keyName, const String& defaultValue) const noexcept
+const String& PropertySet::getValue (const String& keyName, const String& defaultValue) const noexcept
 {
-    const ScopedLock sl (lock);
+    const ScopedLock sl(lock);
 
-    const int index = properties.getAllKeys().indexOf (keyName, ignoreCaseOfKeys);
-
-    if (index >= 0)
-        return properties.getAllValues() [index];
-
-    return fallbackProperties != nullptr ? fallbackProperties->getValue (keyName, defaultValue)
-                                         : defaultValue;
+    MapType::ConstIterator i_key(properties);
+    if (properties.select(keyName, i_key))
+    {
+        return i_key.value();
+    }
+    else
+    {
+        return fallbackProperties
+                ? fallbackProperties->getValue(keyName, defaultValue)
+                : defaultValue;
+    }
 }
 
-int PropertySet::getIntValue (StringRef keyName, const int defaultValue) const noexcept
+int PropertySet::getIntValue (const String& keyName, const int defaultValue) const noexcept
 {
-    const ScopedLock sl (lock);
-    const int index = properties.getAllKeys().indexOf (keyName, ignoreCaseOfKeys);
-
-    if (index >= 0)
-        return properties.getAllValues() [index].getIntValue();
-
-    return fallbackProperties != nullptr ? fallbackProperties->getIntValue (keyName, defaultValue)
-                                         : defaultValue;
+    const ScopedLock sl(lock);
+    MapType::ConstIterator i_key(properties);
+    if (properties.select(keyName, i_key))
+    {
+        return i_key.value().getIntValue();
+    }
+    else
+    {
+        return fallbackProperties
+                ? fallbackProperties->getIntValue(keyName, defaultValue)
+                : defaultValue;
+    }
 }
 
-double PropertySet::getDoubleValue (StringRef keyName, const double defaultValue) const noexcept
+double PropertySet::getDoubleValue (const String& keyName, const double defaultValue) const noexcept
 {
-    const ScopedLock sl (lock);
-    const int index = properties.getAllKeys().indexOf (keyName, ignoreCaseOfKeys);
-
-    if (index >= 0)
-        return properties.getAllValues()[index].getDoubleValue();
-
-    return fallbackProperties != nullptr ? fallbackProperties->getDoubleValue (keyName, defaultValue)
-                                         : defaultValue;
+    const ScopedLock sl(lock);
+    MapType::ConstIterator i_key(properties);
+    if (properties.select(keyName, i_key))
+    {
+        return i_key.value().getDoubleValue();
+    }
+    else
+    {
+        return fallbackProperties
+                ? fallbackProperties->getIntValue(keyName, defaultValue)
+                : defaultValue;
+    }
 }
 
-bool PropertySet::getBoolValue (StringRef keyName, const bool defaultValue) const noexcept
+bool PropertySet::getBoolValue (const String& keyName, const bool defaultValue) const noexcept
 {
-    const ScopedLock sl (lock);
-    const int index = properties.getAllKeys().indexOf (keyName, ignoreCaseOfKeys);
-
-    if (index >= 0)
-        return properties.getAllValues() [index].getIntValue() != 0;
-
-    return fallbackProperties != nullptr ? fallbackProperties->getBoolValue (keyName, defaultValue)
-                                         : defaultValue;
+    const ScopedLock sl(lock);
+    MapType::ConstIterator i_key(properties);
+    if (properties.select(keyName, i_key))
+    {
+        return i_key.value().getIntValue();
+    }
+    else
+    {
+        return fallbackProperties
+                ? fallbackProperties->getIntValue(keyName, defaultValue)
+                : defaultValue;
+    }
 }
 
-XmlElement* PropertySet::getXmlValue (StringRef keyName) const
+XmlElement* PropertySet::getXmlValue (const String& keyName) const
 {
     return XmlDocument::parse (getValue (keyName));
 }
 
 void PropertySet::setValue (const String& keyName, const var& v)
 {
-    jassert (keyName.isNotEmpty()); // shouldn't use an empty key name!
-
     if (keyName.isNotEmpty())
     {
-        const String value (v.toString());
         const ScopedLock sl (lock);
+        String v_str(v.toString());
 
-        const int index = properties.getAllKeys().indexOf (keyName, ignoreCaseOfKeys);
+        MapType::Iterator i(properties);
+        bool inserted = properties.insertOrSelect(keyName, v_str, i);
 
-        if (index < 0 || properties.getAllValues() [index] != value)
+        bool modified = false;
+        if (!inserted && i.value() != v_str)
         {
-            properties.set (keyName, value);
-            propertyChanged();
+            modified = true;
+            i.value() = v_str;
         }
+
+        if (inserted || modified)
+            propertyChanged();
     }
 }
 
-void PropertySet::removeValue (StringRef keyName)
+void PropertySet::removeValue (const String& keyName)
 {
     if (keyName.isNotEmpty())
     {
         const ScopedLock sl (lock);
-        const int index = properties.getAllKeys().indexOf (keyName, ignoreCaseOfKeys);
 
-        if (index >= 0)
-        {
-            properties.remove (keyName);
+        if (properties.remove(keyName))
             propertyChanged();
-        }
     }
 }
 
@@ -166,19 +181,21 @@ void PropertySet::setValue (const String& keyName, const XmlElement* const xml)
                                       : var (xml->createDocument ("", true)));
 }
 
-bool PropertySet::containsKey (StringRef keyName) const noexcept
+bool PropertySet::containsKey (const String& keyName) const noexcept
 {
     const ScopedLock sl (lock);
-    return properties.getAllKeys().contains (keyName, ignoreCaseOfKeys);
+    return properties.contains(keyName);
 }
 
 void PropertySet::addAllPropertiesFrom (const PropertySet& source)
 {
     const ScopedLock sl (source.getLock());
 
-    for (int i = 0; i < source.properties.size(); ++i)
-        setValue (source.properties.getAllKeys() [i],
-                  source.properties.getAllValues() [i]);
+    MapType::ConstIterator i_source(source.properties);
+    while (i_source.next())
+    {
+        setValue(i_source.key(), i_source.value());
+    }
 }
 
 void PropertySet::setFallbackPropertySet (PropertySet* fallbackProperties_) noexcept
@@ -192,11 +209,12 @@ XmlElement* PropertySet::createXml (const String& nodeName) const
     const ScopedLock sl (lock);
     XmlElement* const xml = new XmlElement (nodeName);
 
-    for (int i = 0; i < properties.getAllKeys().size(); ++i)
+    MapType::ConstIterator i(properties);
+    while (i.next())
     {
         XmlElement* const e = xml->createNewChildElement ("VALUE");
-        e->setAttribute ("name", properties.getAllKeys()[i]);
-        e->setAttribute ("val", properties.getAllValues()[i]);
+        e->setAttribute ("name", i.key());
+        e->setAttribute ("val", i.value());
     }
 
     return xml;
@@ -210,7 +228,7 @@ void PropertySet::restoreFromXml (const XmlElement& xml)
     forEachXmlChildElementWithTagName (xml, e, "VALUE")
     {
         if (e->hasAttribute ("name")
-             && e->hasAttribute ("val"))
+                && e->hasAttribute ("val"))
         {
             properties.set (e->getStringAttribute ("name"),
                             e->getStringAttribute ("val"));

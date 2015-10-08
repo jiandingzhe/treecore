@@ -321,7 +321,7 @@ inline static int highestBitInInt (uint32 n) noexcept
 {
     jassert (n != 0); // (the built-in functions may not work for n = 0)
 
-  #if defined TREECORE_COMPILER_GCC
+  #if defined TREECORE_COMPILER_GCC || defined TREECORE_COMPILER_CLANG || (defined TREECORE_COMPILER_ICC && defined TREECORE_OS_LINUX)
     return 31 - __builtin_clz (n);
   #elif JUCE_USE_INTRINSICS
     unsigned long highest;

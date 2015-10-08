@@ -250,7 +250,7 @@ struct Expression::Helpers
         Type getType() const noexcept   { return functionType; }
         Term* clone() const             { return new Function (functionName, parameters); }
         int getNumInputs() const        { return parameters.size(); }
-        Term* getInput (int i) const    { return parameters.getReference(i).term.get(); }
+        Term* getInput (int i) const    { return parameters[i].term.get(); }
         String getName() const          { return functionName; }
 
         Term* resolve (const Scope& scope, int recursionDepth)
@@ -262,7 +262,7 @@ struct Expression::Helpers
             {
                 HeapBlock<double> params ((size_t) numParams);
                 for (int i = 0; i < numParams; ++i)
-                    params[i] = parameters.getReference(i).term->resolve (scope, recursionDepth + 1)->toDouble();
+                    params[i] = parameters[i].term->resolve (scope, recursionDepth + 1)->toDouble();
 
                 result = scope.evaluateFunction (functionName, params, numParams);
             }
@@ -277,7 +277,7 @@ struct Expression::Helpers
         int getInputIndexFor (const Term* possibleInput) const
         {
             for (int i = 0; i < parameters.size(); ++i)
-                if (parameters.getReference(i).term == possibleInput)
+                if (parameters[i].term == possibleInput)
                     return i;
 
             return -1;
@@ -292,7 +292,7 @@ struct Expression::Helpers
 
             for (int i = 0; i < parameters.size(); ++i)
             {
-                s << parameters.getReference(i).term->toString();
+                s << parameters[i].term->toString();
 
                 if (i < parameters.size() - 1)
                     s << ", ";

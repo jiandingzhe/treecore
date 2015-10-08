@@ -2,6 +2,7 @@
 #define TREECORE_NATIVE_LINUX_PRIVATE_H
 
 #include "treecore/InputStream.h"
+#include "treecore/HashMap.h"
 #include "treecore/StringRef.h"
 #include "treecore/URL.h"
 
@@ -12,7 +13,7 @@ class WebInputStream  : public InputStream
 public:
     WebInputStream (const String& address_, bool isPost_, const MemoryBlock& postData_,
                     URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext,
-                    const String& headers_, int timeOutMs_, StringPairArray* responseHeaders);
+                    const String& headers_, int timeOutMs_, HashMap<String>* responseHeaders);
 
     ~WebInputStream();
 

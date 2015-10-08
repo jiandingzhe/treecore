@@ -30,8 +30,8 @@ void TestFramework::content()
 
     {
         HashSet<int>::Iterator it(set);
-        OK(!set.insertAndGet(10, it));
-        IS(it.get(), 10);
+        OK(!set.insertOrSelect(10, it));
+        IS(it.content(), 10);
         IS(set.size(), 3);
         OK(set.contains(1));
         OK(set.contains(2));
@@ -40,8 +40,8 @@ void TestFramework::content()
 
     {
         HashSet<int>::Iterator it(set);
-        OK(set.insertAndGet(17, it));
-        IS(it.get(), 17);
+        OK(set.insertOrSelect(17, it));
+        IS(it.content(), 17);
         IS(set.size(), 4);
         OK(set.contains(1));
         OK(set.contains(2));
@@ -63,7 +63,7 @@ void TestFramework::content()
 
         while (it.next())
         {
-            switch (it.get())
+            switch (it.content())
             {
             case 1:
                 got_1 = true; n_got++; break;
@@ -74,7 +74,7 @@ void TestFramework::content()
             case 17:
                 got_17 = true; n_got++; break;
             default:
-                fprintf(stderr, "iterator got invalid value %d\n", it.get());
+                fprintf(stderr, "iterator got invalid value %d\n", it.content());
             }
         }
 
@@ -87,7 +87,7 @@ void TestFramework::content()
 
     set.remapTable(2);
     OK("rehash");
-    IS(set.getNumSlots(), 2);
+    IS(set.numBuckets(), 2);
     IS(set.size(), 4);
     OK(set.contains(1));
     OK(set.contains(2));
@@ -106,7 +106,7 @@ void TestFramework::content()
 
         while (it.next())
         {
-            switch (it.get())
+            switch (it.content())
             {
             case 1:
                 got_1 = true; n_got++; break;
@@ -117,7 +117,7 @@ void TestFramework::content()
             case 17:
                 got_17 = true; n_got++; break;
             default:
-                fprintf(stderr, "iterator got invalid value %d\n", it.get());
+                fprintf(stderr, "iterator got invalid value %d\n", it.content());
             }
         }
 
@@ -161,14 +161,14 @@ void TestFramework::content()
 
         while (it.next())
         {
-            switch (it.get())
+            switch (it.content())
             {
             case 1:
                 got_1 = true; n_got++; break;
             case 10:
                 got_10 = true; n_got++; break;
             default:
-                fprintf(stderr, "iterator got invalid value %d\n", it.get());
+                fprintf(stderr, "iterator got invalid value %d\n", it.content());
             }
         }
 

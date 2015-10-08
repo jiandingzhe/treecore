@@ -37,8 +37,8 @@ static const uint32 garbageCollectionInterval = 30000;
 static inline const char* _add_or_get_it_(HashSet<String>& pool, const String& input)
 {
     HashSet<String>::Iterator it(pool);
-    pool.insertAndGet(input, it);
-    return it.get().getCharPointer().getAddress();
+    pool.insertOrSelect(input, it);
+    return it.content().getCharPointer().getAddress();
 }
 
 StringPool::StringPool() noexcept {}

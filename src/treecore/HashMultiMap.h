@@ -3,11 +3,14 @@
 
 #include "treecore/Array.h"
 #include "treecore/ArrayRef.h"
-#include "treecore/HashFunctions.h"
+#include "treecore/impl/HashImpl.h"
 #include "treecore/ObjectPool.h"
 #include "treecore/RefCountObject.h"
 #include "treecore/RefCountSingleton.h"
-#include "treecore/CriticalSection.h"
+#include "treecore/DummyCriticalSection.h"
+
+#define LOCK_THIS_OBJECT const ScopedLockType _lock_this_(m_mutex)
+#define LOCK_PEER_OBJECT const ScopedLockType _lock_peer_(peer.m_mutex)
 
 namespace treecore {
 
@@ -21,147 +24,152 @@ template<typename KeyType,
          typename MutexType = DummyCriticalSection>
 class HashMultiMap: public RefCountObject
 {
-protected:
-    struct Entry
+    struct MultiItem
     {
-        Entry(KeyType key, Entry* next): key(key), next(next) {}
-
         KeyType key;
         Array<ValueType> values;
-        Entry* next;
+
+        bool operator == (const MultiItem& other) const
+        {
+            return key == other.key && values == other.values;
+        }
+
+        bool operator != (const MultiItem& other) const
+        {
+            return key != other.key || values != other.values;
+        }
     };
 
-    // FIXME singleton is not released
-    typedef RefCountSingleton<ObjectPool<Entry, !CriticalSectionIsDummy<MutexType>::value > > EntryPoolType;
+    typedef impl::HashTableBase<KeyType, MultiItem, HashFunctionType, CriticalSectionIsDummy<MutexType>::value> TableImplType;
+    typedef typename TableImplType::HashEntry EntryType;
 
 public:
     typedef typename MutexType::ScopedLockType ScopedLockType;
 
     class Iterator
     {
+        friend class HashMultiMap;
+        typedef typename TableImplType::template IteratorBase<TableImplType&, EntryType*> ItImplType;
+
     public:
-        Iterator(const HashMultiMap& target): target(target)
+        Iterator(HashMultiMap& target): m_impl(target.m_impl)
         {
         }
 
         bool next()
         {
-            // move from initial state
-            if (i_slot == -1)
-            {
-                return move_to_next_valid_slot();
-            }
-            else
-            {
-                // move from previous position
-                if (entry)
-                {
-                    return move_to_next_valid_entry();
-                }
-                // we have arrived tail
-                else
-                {
-                    return false;
-                }
-            }
+            // initial state
+            if (m_impl.i_bucket == -1)
+                return m_impl.move_to_next_valid_slot();
+
+            // we have arrived very tail
+            if (!m_impl.entry)
+                return false;
+
+            return move_to_next_valid_item();
         }
 
-        KeyType getKey() const noexcept
+        bool nextKey()
         {
-            return entry->key;
+            m_i_value = 0;
+            // initial state
+            if (m_impl.i_bucket == -1)
+                return m_impl.move_to_next_valid_slot();
+
+            // we have arrived very tail
+            if (!m_impl.entry)
+                return false;
+
+            return m_impl.move_to_next_valid_entry();
         }
 
-        ArrayRef<ValueType> getValues() noexcept
+        bool hasContent() const noexcept
         {
-            return ArrayRef<ValueType>(entry->values);
+            return m_impl.entry;
+        }
+
+        KeyType& key() noexcept
+        {
+            jassert(m_impl.entry != nullptr);
+            return m_impl.entry->item.key;
+        }
+
+        ValueType& value() noexcept
+        {
+            jassert(m_impl.entry != nullptr);
+            return m_impl.entry->item.values[m_i_value];
+        }
+
+        Array<ValueType>& values() noexcept
+        {
+            jassert(m_impl.entry != nullptr);
+            return m_impl.entry->item.values;
+        }
+
+        int numValuesForCurrentKey() const noexcept
+        {
+            jassert(m_impl.entry != nullptr);
+            return m_impl.entry->item.values.size();
         }
 
     protected:
-
-        inline bool move_to_next_valid_entry() noexcept
+        bool move_to_next_valid_item()
         {
-            entry = entry->next;
-            if (entry)
+            m_i_value++;
+
+            // arrived to tail of current entry, move to next entry
+            if (m_i_value >= m_impl.entry->item.values.size())
             {
-                return true;
+                m_i_value = 0;
+                return m_impl.move_to_next_valid_entry();
             }
-            else
-            {
-                return move_to_next_valid_slot();
-            }
+
+            return true;
         }
 
-        inline bool move_to_next_valid_slot() noexcept
-        {
-            while (1)
-            {
-                i_slot++;
-                if (i_slot >= target.m_slots.size())
-                    return false;
+        int m_i_value = 0;
+        ItImplType m_impl;
 
-                entry = target.m_slots.getUnchecked(i_slot);
-                if (entry)
-                {
-                    return true;
-                }
-            }
-        }
-
-        const HashMultiMap& target;
-        int i_slot = -1;
-        typename HashMultiMap::Entry* entry = nullptr;
     };
 
-    HashMultiMap(int n_init_slots = 101, HashFunctionType hash_func = HashFunctionType())
-        : m_hash_func(hash_func)
+    HashMultiMap(int initBuckets = 101, HashFunctionType hashFunc = HashFunctionType())
+        : m_impl(initBuckets, hashFunc)
     {
-        m_slots.insertMultiple(0, nullptr, n_init_slots);
+    }
+
+    HashMultiMap(const HashMultiMap& other)
+        : m_impl(other.m_impl)
+        , m_num_values(other.m_num_values)
+    {
     }
 
     HashMultiMap(HashMultiMap&& other)
-        : m_hash_func(other.m_hash_func)
-        , m_size(other.m_size)
-        , m_slots(std::move(other.m_slots))
+        : m_impl(std::move(other.m_impl))
+        , m_num_values(other.m_num_values)
     {
-        other.m_size = 0;
+        other.m_num_values = 0;
     }
 
-    TREECORE_DECLARE_NON_COPYABLE(HashMultiMap);
-
-    ~HashMultiMap()
+    virtual ~HashMultiMap()
     {
-        clear();
     }
 
-    void clear()
+    void clear() noexcept
     {
-        const ScopedLockType lock(m_mutex);
-
-        for (int i = m_slots.size() - 1; i >= 0; i--)
-        {
-            Entry* curr_bucket = m_slots.getUnchecked(i);
-
-            while (curr_bucket != nullptr)
-            {
-                Entry* next_bucket = curr_bucket->next;
-                EntryPoolType::getInstance()->recycle(curr_bucket);
-                curr_bucket = next_bucket;
-            }
-
-            m_slots.setUnchecked(i, nullptr);
-        }
-
-        m_size = 0;
+        LOCK_THIS_OBJECT;
+        m_impl.clear();
+        m_num_values = 0;
     }
 
 
     /**
      * @brief get the number of items in hash map
      * @return number of items
+     * @see getNumKeys()
      */
     inline int size() const noexcept
     {
-        return m_size;
+        return m_num_values;
     }
 
     /**
@@ -169,15 +177,50 @@ public:
      * @param key
      * @return true if has this key, otherwise false
      */
-    bool contains(KeyType key) const noexcept
+    bool contains(const KeyType& key) const noexcept
     {
-        const ScopedLockType lock(m_mutex);
+        LOCK_THIS_OBJECT;
+        int i_bucket = m_impl.bucket_index(key);
+        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+        return entry;
+    }
 
-        int hash_result = generateHashFor(key);
-        for (const Entry* entry = m_slots.getUnchecked(hash_result); entry != nullptr; entry = entry->next)
+    bool contains(const KeyType& key, const ValueType& value) const noexcept
+    {
+        LOCK_THIS_OBJECT;
+
+        int hash_result = m_impl.bucket_index(key);
+        EntryType* entry = m_impl.search_entry_at(hash_result, key);
+
+        if (entry)
         {
-            if (entry->key == key)
-                return true;
+            return entry->item.values.contains(value);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+     * @brief whether the value exists in it
+     *
+     * This operation would traverse the whole table and is slow.
+     *
+     * @param value value to be searched
+     * @return true if
+     */
+    bool containsValue(const ValueType& value) const noexcept
+    {
+        LOCK_THIS_OBJECT;
+
+        for (int i = 0; i < m_impl.buckets.size(); i++)
+        {
+            for (const EntryType* entry = m_impl.buckets[i]; entry != nullptr; entry = entry->next_entry)
+            {
+                if (entry->item.values.contains(value))
+                    return true;
+            }
         }
 
         return false;
@@ -188,192 +231,178 @@ public:
      * @param key
      * @return number of items
      */
-    int count(KeyType key) const noexcept
+    int count(const KeyType& key) const noexcept
     {
-        const ScopedLockType lock(m_mutex);
+        LOCK_THIS_OBJECT;
 
-        int hash_result = generateHashFor(key);
-        for (const Entry* entry = m_slots.getUnchecked(hash_result); entry != nullptr; entry = entry->next)
-        {
-            if (entry->key == key)
-                return entry->values.size();
-        }
+        int hash_result = m_impl.bucket_index(key);
+        EntryType* entry = m_impl.search_entry_at(hash_result, key);
 
-        return 0;
-    }
-
-    int getNumKeys() const noexcept
-    {
-        int n_key = 0;
-
-        for (int i_slot = 0; i_slot < m_slots.size(); i_slot++)
-        {
-            Entry* first_entry = m_slots.getUnchecked(i_slot);
-            if (first_entry == nullptr)
-                continue;
-
-            for (Entry* entry = first_entry; entry != nullptr; entry = entry->next)
-                n_key++;
-        }
-
-        return n_key;
+        if (entry)
+            return entry->item.values.size();
+        else
+            return 0;
     }
 
     /**
-     * @brief insert a value into hash map
+     * @brief Search table by key, and make iterator point to the item stored
+     *        by this key.
+     *
+     * @param key     key to search for
+     * @param result  This iterator will be modified to point to search result.
+     *                If not found, it will not be modified.
+     *
+     * @return true if got key, false if not
+     */
+    bool select(const KeyType& key, Iterator& result) noexcept
+    {
+        LOCK_THIS_OBJECT;
+        int hash_result = m_impl.bucket_index(key);
+        EntryType* entry = m_impl.search_entry_at(hash_result, key);
+
+        if (entry)
+        {
+            result.m_i_value = 0;
+            result.m_impl.entry = entry;
+            result.m_impl.i_bucket = hash_result;
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @brief get the number of different keys in this table
+     * @return number of keys
+     * @see size()
+     */
+    int numKeys() const noexcept
+    {
+        return m_impl.num_entries;
+    }
+
+    /**
+     * @brief store a value into table using specified key
      * @param key
      * @param value
      */
-    void insert(KeyType key, ValueType value)
+    void store(const KeyType& key, const ValueType& value) noexcept
     {
-        const ScopedLockType lock(m_mutex);
+        LOCK_THIS_OBJECT;
+        int i_bucket = m_impl.bucket_index(key);
 
-        int hash_result = generateHashFor(key);
-        Entry* const first_entry = m_slots.getUnchecked(hash_result);
+        // try to get existing entry
+        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
 
-        // try to append to existing entry
-        for (Entry* entry = first_entry; entry != nullptr; entry = entry->next)
+        if (entry)
         {
-            if (entry->key == key)
+            entry->item.values.add(value);
+        }
+        else
+        {
+            // create new entry
+            entry = m_impl.create_entry_at(i_bucket, MultiItem{key});
+
+            if (m_impl.high_fill_rate())
+                m_impl.expand_buckets();
+        }
+
+        m_num_values++;
+    }
+
+    /**
+     * @brief Store a value using specified key, and make iterator point to it.
+     *
+     * @param key
+     * @param value
+     * @param result  iterator will be set to point to the newly inserted item
+     */
+    void store(const KeyType& key, const ValueType& value, Iterator& result)
+    {
+        LOCK_THIS_OBJECT;
+        int i_bucket = m_impl.bucket_index(key);
+
+        // try to get existing entry
+        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+
+        if (entry)
+        {
+            entry->item.values.add(value);
+        }
+        else
+        {
+            // create new entry
+            entry = m_impl.create_entry_at(i_bucket, MultiItem{key});
+
+            if (m_impl.high_fill_rate())
             {
-                entry->values.add(value);
-                m_size++;
-                return;
+                m_impl.expand_buckets();
+                i_bucket = m_impl.bucket_index(key);
             }
         }
 
-        // create a new entry for this key
-        Entry* new_entry = EntryPoolType::getInstance()->generate(key, first_entry);
-        m_slots.setUnchecked(hash_result, new_entry);
-        new_entry->values.add(value);
-        m_size++;
+        m_num_values++;
 
-        // resize slots if too many things filled
-        if (float(m_size) / float(m_slots.size()) > 1.5)
-        {
-            remapTable(m_slots.size() * 2);
-        }
+        result.m_impl.entry = entry;
+        result.m_impl.i_bucket = i_bucket;
+        result.m_i_value = entry->item.values.size() - 1;
     }
 
     /**
-     * @brief get values by specified key
-     * @param key
-     * @return a list of values that can be read
-     */
-    const ArrayRef<ValueType> operator [] (KeyType key)
-    {
-        const ScopedLockType lock(m_mutex);
-
-        int hash_result = generateHashFor(key);
-        Entry* const first_entry = m_slots.getUnchecked(hash_result);
-
-        // try to find existing key
-        for (Entry* entry = first_entry; entry != nullptr; entry = entry->next)
-        {
-            if (entry->key == key)
-                return ArrayRef<ValueType>(entry->values);
-        }
-
-        return ArrayRef<ValueType>();
-    }
-
-    /**
-     * @brief remove all items of this key
+     * @brief remove all items stored by this key
+     *
      * @param key: the key to be removed
+     *
      * @return number of items removed
      */
-    int remove(KeyType key)
+    int remove(KeyType key) noexcept
     {
-        const ScopedLockType lock(m_mutex);
+        LOCK_THIS_OBJECT;
 
-        int hash_result = generateHashFor(key);
-        Entry* entry = m_slots.getUnchecked(hash_result);
-        Entry* prev = nullptr;
+        const int i_bucket = m_impl.bucket_index(key);
+        EntryType* entry = nullptr;
+        EntryType* prev  = nullptr;
+        m_impl.search_entry_and_prev_at(i_bucket, key, prev, entry);
 
-        while (entry != nullptr)
+        if (entry)
         {
-            if (entry->key == key)
-            {
-                int n_remove = entry->values.size();
-                m_size -= n_remove;
-
-                Entry* next = entry->next;
-                if (prev == nullptr)
-                {
-                    m_slots.setUnchecked(hash_result, next);
-                }
-                else
-                {
-                    prev->next = next;
-                }
-
-                EntryPoolType::getInstance()->recycle(entry);
-                return n_remove;
-            }
-            else
-            {
-                prev = entry;
-                entry = entry->next;
-            }
+            int num_remove = entry->item.values.size();
+            m_impl.remove_entry(i_bucket, prev, entry);
+            m_num_values -= num_remove;
+            return num_remove;
         }
-
-        return 0;
+        else
+        {
+            return 0;
+        }
     }
 
-    void remapTable(int new_slot_size)
+    void remapTable(int numBuckets) noexcept
     {
-        Array<Entry*> slots_new;
-        slots_new.insertMultiple(0, nullptr, new_slot_size);
-
-        for (int i_slot_old = 0; i_slot_old < m_slots.size(); i_slot_old++)
-        {
-            Entry* entry = m_slots.getUnchecked(i_slot_old);
-            Entry* next_entry = nullptr;
-            while (entry != nullptr)
-            {
-                next_entry = entry->next;
-                int hash = m_hash_func.generateHash(entry->key, new_slot_size);
-
-                entry->next = slots_new.getUnchecked(hash);
-                slots_new.setUnchecked(hash, entry);
-                entry = next_entry;
-            }
-        }
-
-        m_slots.swapWith(slots_new);
+        LOCK_THIS_OBJECT;
+        m_impl.rehash(numBuckets);
     }
 
-    inline int getNumSlots() const noexcept
+    inline int numBuckets() const noexcept
     {
-        return m_slots.size();
+        return m_impl.buckets.size();
     }
 
-    inline int getNumUsedSlots() const noexcept
+    inline int numUsedBuckets() const noexcept
     {
-        int n_used = 0;
-        for (int i = 0; i < m_slots.size(); i++)
-        {
-            if (m_slots.getUnchecked(i) != nullptr)
-                n_used++;
-        }
-        return n_used;
+        return m_impl.num_used_buckets();
     }
 
 protected:
 
-    inline int generateHashFor (KeyType key) const
-    {
-        const int hash = m_hash_func.generateHash (key, m_slots.size());
-        jassert (isPositiveAndBelow (hash, getNumSlots())); // your hash function is generating out-of-range numbers!
-        return hash;
-    }
-
-    HashFunctionType m_hash_func;
-    Array<Entry*>    m_slots;
-    int              m_size = 0;
-    MutexType        m_mutex;
+    int            m_num_values = 0;
+    TableImplType  m_impl;
+    MutexType      m_mutex;
 };
 
 }
+
+#undef LOCK_THIS_OBJECT
+#undef LOCK_PEER_OBJECT
 
 #endif // TREECORE_HASH_MULTI_MAP_H

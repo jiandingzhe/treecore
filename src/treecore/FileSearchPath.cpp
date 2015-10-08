@@ -65,7 +65,7 @@ void FileSearchPath::init (const String& path)
     directories.removeEmptyStrings();
 
     for (int i = directories.size(); --i >= 0;)
-        directories.set (i, directories[i].unquoted());
+        directories[i] = directories[i].unquoted();
 }
 
 int FileSearchPath::getNumPaths() const
@@ -83,7 +83,7 @@ String FileSearchPath::toString() const
     StringArray directories2 (directories);
     for (int i = directories2.size(); --i >= 0;)
         if (directories2[i].containsChar (';'))
-            directories2.set (i, directories2[i].quoted());
+            directories2[i] = directories2[i].quoted();
 
     return directories2.joinIntoString (";");
 }

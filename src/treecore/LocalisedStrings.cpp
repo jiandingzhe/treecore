@@ -67,21 +67,21 @@ LocalisedStrings::~LocalisedStrings()
     delete fallback;
 }
 
-//==============================================================================
-String LocalisedStrings::translate (const String& text) const
-{
-    if (fallback != nullptr && ! translations.containsKey (text))
-        return fallback->translate (text);
-
-    return translations.getValue (text, text);
-}
-
 String LocalisedStrings::translate (const String& text, const String& resultIfNotFound) const
 {
-    if (fallback != nullptr && ! translations.containsKey (text))
-        return fallback->translate (text, resultIfNotFound);
-
-    return translations.getValue (text, resultIfNotFound);
+    MapType::ConstIterator it(translations);
+    if (translations.select(text, it))
+    {
+        return it.value();
+    }
+    else if (fallback != nullptr)
+    {
+        return fallback->translate (text);
+    }
+    else
+    {
+        return resultIfNotFound;
+    }
 }
 
 namespace
@@ -137,8 +137,6 @@ namespace
 
 void LocalisedStrings::loadFromText (const String& fileContents, bool ignoreCase)
 {
-    translations.setIgnoresCase (ignoreCase);
-
     StringArray lines;
     lines.addLines (fileContents);
 
@@ -160,7 +158,7 @@ void LocalisedStrings::loadFromText (const String& fileContents, bool ignoreCase
                 const String newText (unescapeString (line.substring (openingQuote + 1, closeQuote)));
 
                 if (newText.isNotEmpty())
-                    translations.set (originalText, newText);
+                    translations.set(originalText, newText);
             }
         }
         else if (line.startsWithIgnoreCase ("language:"))
@@ -174,8 +172,6 @@ void LocalisedStrings::loadFromText (const String& fileContents, bool ignoreCase
             countryCodes.removeEmptyStrings();
         }
     }
-
-    translations.minimiseStorageOverheads();
 }
 
 void LocalisedStrings::addStrings (const LocalisedStrings& other)
@@ -183,7 +179,11 @@ void LocalisedStrings::addStrings (const LocalisedStrings& other)
     jassert (languageName == other.languageName);
     jassert (countryCodes == other.countryCodes);
 
-    translations.addArray (other.translations);
+    MapType::ConstIterator i_other(other.translations);
+    while (i_other.next())
+    {
+        translations[i_other.key()] = i_other.value();
+    }
 }
 
 void LocalisedStrings::setFallback (LocalisedStrings* f)

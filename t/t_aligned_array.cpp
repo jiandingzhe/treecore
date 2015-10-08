@@ -30,7 +30,7 @@ void TestFramework::content()
             array1.add(Foo());
         }
 
-        pointer_sized_int init_addr_1 = pointer_sized_int(&array1.getReference(0));
+        pointer_sized_int init_addr_1 = pointer_sized_int(&array1[0]);
         IS(init_addr_1 % 32, 0);
     }
 
@@ -42,7 +42,7 @@ void TestFramework::content()
             array2.add(tmp);
         }
 
-        pointer_sized_int init_addr_2 = pointer_sized_int(&array2.getReference(0));
+        pointer_sized_int init_addr_2 = pointer_sized_int(&array2[0]);
         IS(init_addr_2 % 32, 0);
     }
 }

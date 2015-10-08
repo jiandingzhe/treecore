@@ -32,6 +32,7 @@
 #include "treecore/ArrayAllocationBase.h"
 #include "treecore/ContainerDeletePolicy.h"
 #include "treecore/CriticalSection.h"
+#include "treecore/RefCountObject.h"
 #include "treecore/ScopedPointer.h"
 
 //==============================================================================
@@ -58,9 +59,12 @@ namespace treecore {
 template <class ObjectClass,
           class TypeOfCriticalSectionToUse = DummyCriticalSection>
 
-class OwnedArray
+class OwnedArray: public RefCountObject
 {
 public:
+    typedef ObjectClass ValueType;
+    typedef ObjectClass* PointerType;
+
     //==============================================================================
     /** Creates an empty array. */
     OwnedArray() noexcept
@@ -130,35 +134,23 @@ public:
         return numUsed;
     }
 
-    /** Returns a pointer to the object at this index in the array.
-
-        If the index is out-of-range, this will return a null pointer, (and
-        it could be null anyway, because it's ok for the array to hold null
-        pointers as well as objects).
-
-        @see getUnchecked
+    /**
+     * @brief Returns a pointer to the object at this index in the array, without
+     *        checking whether the index is in-range.
     */
-    inline ObjectClass* operator[] (const int index) const noexcept
+    inline PointerType& operator[] (const int index) noexcept
     {
         const ScopedLockType lock (getLock());
-        if (isPositiveAndBelow (index, numUsed))
-        {
-            jassert (data.elements != nullptr);
-            return data.elements [index];
-        }
-
-        return nullptr;
+        jassert(isPositiveAndBelow(index, numUsed));
+        jassert(data.elements != nullptr);
+        return data.elements [index];
     }
 
-    /** Returns a pointer to the object at this index in the array, without checking whether the index is in-range.
-
-        This is a faster and less safe version of operator[] which doesn't check the index passed in, so
-        it can be used when you're sure the index is always going to be legal.
-    */
-    inline ObjectClass* getUnchecked (const int index) const noexcept
+    inline PointerType const& operator[] (const int index) const noexcept
     {
         const ScopedLockType lock (getLock());
-        jassert (isPositiveAndBelow (index, numUsed) && data.elements != nullptr);
+        jassert(isPositiveAndBelow (index, numUsed));
+        jassert(data.elements != nullptr);
         return data.elements [index];
     }
 
@@ -167,17 +159,20 @@ public:
         This will return a null pointer if the array's empty.
         @see getLast
     */
-    inline ObjectClass* getFirst() const noexcept
+    inline PointerType& getFirst() noexcept
     {
         const ScopedLockType lock (getLock());
+        jassert(data.elements != nullptr);
+        jassert(numUsed > 0);
+        return data.elements[0];
+    }
 
-        if (numUsed > 0)
-        {
-            jassert (data.elements != nullptr);
-            return data.elements [0];
-        }
-
-        return nullptr;
+    inline PointerType const& getFirst() const noexcept
+    {
+        const ScopedLockType lock (getLock());
+        jassert(data.elements != nullptr);
+        jassert(numUsed > 0);
+        return data.elements[0];
     }
 
     /** Returns a pointer to the last object in the array.
@@ -185,24 +180,28 @@ public:
         This will return a null pointer if the array's empty.
         @see getFirst
     */
-    inline ObjectClass* getLast() const noexcept
+    inline PointerType& getLast() noexcept
     {
         const ScopedLockType lock (getLock());
-
-        if (numUsed > 0)
-        {
-            jassert (data.elements != nullptr);
-            return data.elements [numUsed - 1];
-        }
-
-        return nullptr;
+        jassert(data.elements != nullptr);
+        jassert(numUsed > 0);
+        return data.elements[numUsed-1];
     }
+
+    inline PointerType const& getLast() const noexcept
+    {
+        const ScopedLockType lock (getLock());
+        jassert(data.elements != nullptr);
+        jassert(numUsed > 0);
+        return data.elements[numUsed-1];
+    }
+
 
     /** Returns a pointer to the actual array data.
         This pointer will only be valid until the next time a non-const method
         is called on the array.
     */
-    inline ObjectClass** getRawDataPointer() noexcept
+    inline PointerType* getRawDataPointer() noexcept
     {
         return data.elements;
     }
@@ -211,7 +210,12 @@ public:
     /** Returns a pointer to the first element in the array.
         This method is provided for compatibility with standard C++ iteration mechanisms.
     */
-    inline ObjectClass** begin() const noexcept
+    inline PointerType* begin() noexcept
+    {
+        return data.elements;
+    }
+
+    inline PointerType const* begin() const noexcept
     {
         return data.elements;
     }
@@ -219,13 +223,15 @@ public:
     /** Returns a pointer to the element which follows the last element in the array.
         This method is provided for compatibility with standard C++ iteration mechanisms.
     */
-    inline ObjectClass** end() const noexcept
+    inline PointerType* end() noexcept
     {
-       #if JUCE_DEBUG
-        if (data.elements == nullptr || numUsed <= 0) // (to keep static analysers happy)
-            return data.elements;
-       #endif
+        jassert(data.elements != nullptr);
+        return data.elements + numUsed;
+    }
 
+    inline PointerType const* end() const noexcept
+    {
+        jassert(data.elements != nullptr);
         return data.elements + numUsed;
     }
 
@@ -235,7 +241,7 @@ public:
         @param objectToLookFor    the object to look for
         @returns                  the index at which the object was found, or -1 if it's not found
     */
-    int indexOf (const ObjectClass* objectToLookFor) const noexcept
+    int indexOf(const ObjectClass* objectToLookFor) const noexcept
     {
         const ScopedLockType lock (getLock());
         ObjectClass* const* e = data.elements.getData();
@@ -469,7 +475,7 @@ public:
 
         while (--numElementsToAdd >= 0)
         {
-            data.elements [numUsed] = arrayToAddFrom.getUnchecked (startIndex++);
+            data.elements [numUsed] = arrayToAddFrom[startIndex++];
             ++numUsed;
         }
     }
@@ -509,7 +515,7 @@ public:
         jassert (numElementsToAdd <= 0 || data.elements != nullptr);
 
         while (--numElementsToAdd >= 0)
-            data.elements [numUsed++] = createCopyIfNotNull (arrayToAddFrom.getUnchecked (startIndex++));
+            data.elements [numUsed++] = createCopyIfNotNull(arrayToAddFrom[startIndex++]);
     }
 
     /** Inserts a new object into the array assuming that the array is sorted.

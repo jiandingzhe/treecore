@@ -141,60 +141,45 @@ public:
         return data.size();
     }
 
-    /** Returns one of the elements in the set.
-
-        If the index passed in is beyond the range of valid elements, this
-        will return zero.
-
-        If you're certain that the index will always be a valid element, you
-        can call getUnchecked() instead, which is faster.
-
-        @param index    the index of the element being requested (0 is the first element in the set)
-        @see getUnchecked, getFirst, getLast
+    /**
+     * @brief returns a direct reference to one of the elements in the set
+     *
+     * The index passed in is not checked for boundary.
+     *
+     * @param index    the index of the element being requested (0 is the first element in the array)
     */
-    inline ElementType operator[] (const int index) const noexcept
+    inline ElementType& operator[] (const int index) noexcept
     {
-        return data [index];
+        return data[index];
     }
 
-    /** Returns one of the elements in the set, without checking the index passed in.
-        Unlike the operator[] method, this will try to return an element without
-        checking that the index is within the bounds of the set, so should only
-        be used when you're confident that it will always be a valid index.
-
-        @param index    the index of the element being requested (0 is the first element in the set)
-        @see operator[], getFirst, getLast
-    */
-    inline ElementType getUnchecked (const int index) const noexcept
+    inline ElementType const & operator[] (const int index) const noexcept
     {
-        return data.getUnchecked (index);
-    }
-
-    /** Returns a direct reference to one of the elements in the set, without checking the index passed in.
-
-        This is like getUnchecked, but returns a direct reference to the element, so that
-        you can alter it directly. Obviously this can be dangerous, so only use it when
-        absolutely necessary.
-
-        @param index    the index of the element being requested (0 is the first element in the array)
-    */
-    inline ElementType& getReference (const int index) const noexcept
-    {
-        return data.getReference (index);
+        return data[index];
     }
 
     /** Returns the first element in the set, or 0 if the set is empty.
-        @see operator[], getUnchecked, getLast
+        @see operator[], getLast
     */
-    inline ElementType getFirst() const noexcept
+    inline ElementType& getFirst() noexcept
+    {
+        return data.getFirst();
+    }
+
+    inline ElementType const& getFirst() const noexcept
     {
         return data.getFirst();
     }
 
     /** Returns the last element in the set, or 0 if the set is empty.
-        @see operator[], getUnchecked, getFirst
+        @see operator[], getFirst
     */
-    inline ElementType getLast() const noexcept
+    inline ElementType& getLast() noexcept
+    {
+        return data.getLast();
+    }
+
+    inline ElementType const& getLast() const noexcept
     {
         return data.getLast();
     }
@@ -203,7 +188,12 @@ public:
     /** Returns a pointer to the first element in the set.
         This method is provided for compatibility with standard C++ iteration mechanisms.
     */
-    inline ElementType* begin() const noexcept
+    inline ElementType* begin() noexcept
+    {
+        return data.begin();
+    }
+
+    inline ElementType const * begin() const noexcept
     {
         return data.begin();
     }
@@ -211,7 +201,12 @@ public:
     /** Returns a pointer to the element which follows the last element in the set.
         This method is provided for compatibility with standard C++ iteration mechanisms.
     */
-    inline ElementType* end() const noexcept
+    inline ElementType* end() noexcept
+    {
+        return data.end();
+    }
+
+    inline ElementType const * end() const noexcept
     {
         return data.end();
     }
@@ -237,7 +232,7 @@ public:
             if (s >= e)
                 return -1;
 
-            if (elementToLookFor == data.getReference (s))
+            if (elementToLookFor == data[s])
                 return s;
 
             const int halfway = (s + e) / 2;
@@ -245,7 +240,7 @@ public:
             if (halfway == s)
                 return -1;
 
-            if (elementToLookFor < data.getReference (halfway))
+            if (elementToLookFor < data[halfway])
                 e = halfway;
             else
                 s = halfway;
@@ -283,7 +278,7 @@ public:
 
         while (s < e)
         {
-            ElementType& elem = data.getReference (s);
+            ElementType& elem = data[s];
             if (newElement == elem)
             {
                 elem = newElement; // force an update in case operator== permits differences.
@@ -291,7 +286,7 @@ public:
             }
 
             const int halfway = (s + e) / 2;
-            const bool isBeforeHalfway = (newElement < data.getReference (halfway));
+            const bool isBeforeHalfway = (newElement < data[halfway]);
 
             if (halfway == s)
             {
@@ -358,7 +353,7 @@ public:
                     numElementsToAdd = setToAddFrom.size() - startIndex;
 
                 if (numElementsToAdd > 0)
-                    addArray (&setToAddFrom.data.getReference (startIndex), numElementsToAdd);
+                    addArray (&setToAddFrom.data[startIndex], numElementsToAdd);
             }
         }
     }
@@ -409,7 +404,7 @@ public:
         else if (otherSet.size() > 0)
         {
             for (int i = data.size(); --i >= 0;)
-                if (otherSet.contains (data.getReference (i)))
+                if (otherSet.contains (data[i]))
                     remove (i);
         }
     }
@@ -436,7 +431,7 @@ public:
             else
             {
                 for (int i = data.size(); --i >= 0;)
-                    if (! otherSet.contains (data.getReference (i)))
+                    if (! otherSet.contains (data[i]))
                         remove (i);
             }
         }

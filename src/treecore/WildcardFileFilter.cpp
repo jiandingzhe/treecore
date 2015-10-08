@@ -67,7 +67,7 @@ void WildcardFileFilter::parse (const String& pattern, StringArray& result)
     // would actually ignore files with no extension.
     for (int i = result.size(); --i >= 0;)
         if (result[i] == "*.*")
-            result.set (i, "*");
+            result[i] = "*";
 }
 
 bool WildcardFileFilter::match (const File& file, const StringArray& wildcards)

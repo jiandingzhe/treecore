@@ -374,7 +374,7 @@ Result JSONParser::parseArray (String::CharPointerType& t, var& result)
 
         t = oldT;
         destArray->add (var());
-        Result r (parseAny (t, destArray->getReference (destArray->size() - 1)));
+        Result r (parseAny (t, destArray->operator[](destArray->size() - 1)));
 
         if (r.failed())
             return r;
@@ -508,7 +508,7 @@ void JSONFormatter::writeArray (OutputStream& out, const Array<var>& array,
             if (! allOnOneLine)
                 writeSpaces (out, indentLevel + indentSize);
 
-            write (out, array.getReference(i), indentLevel + indentSize, allOnOneLine);
+            write (out, array[i], indentLevel + indentSize, allOnOneLine);
 
             if (i < array.size() - 1)
             {

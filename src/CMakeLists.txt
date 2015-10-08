@@ -23,6 +23,7 @@ set_source_files_properties(${zlib_src_files}
 file(GLOB treecore_common_src_files
     "treecore/*.h"
     "treecore/*.cpp"
+    "treecore/impl/*.h"
     "treecore/Atomic/template.h"
     "treecore/SIMD/template.h"
 )
@@ -62,6 +63,13 @@ endif()
 # compiler-specific
 if(TREECORE_CMAKE_COMPILER STREQUAL "_GCC" OR TREECORE_CMAKE_COMPILER STREQUAL "_CLANG" OR (TREECORE_CMAKE_COMPILER STREQUAL "_ICC" AND (TREECORE_OS STREQUAL "LINUX" OR TREECORE_OS STREQUAL "OSX")))
     list(APPEND treecore_platform_src_files "treecore/Atomic/gcc.h")
+    set_property(
+        SOURCE
+            ${treecore_common_src_files}
+            ${treecore_platform_src_files}
+        APPEND PROPERTY
+            COMPILE_FLAGS -std=c++11
+    )
 elseif(TREECORE_CMAKE_COMPILER STREQUAL "_MSVC" OR (TREECORE_CMAKE_COMPILER STREQUAL "_ICC" AND TREECORE_OS STREQUAL "WINDOWS"))
     list(APPEND treecore_platform_src_files "treecore/Atomic/msvc.h")
 else()

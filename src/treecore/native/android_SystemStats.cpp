@@ -30,6 +30,7 @@
 #include "treecore/String.h"
 #include "treecore/SystemStats.h"
 #include "treecore/internal/SystemStats_private.h"
+#include "treecore/native/android_JNIHelpers.h"
 
 namespace treecore
 {
@@ -67,14 +68,14 @@ void JNIClassBase::initialiseAllClasses (JNIEnv* env)
 {
     const Array<JNIClassBase*>& classes = getClasses();
     for (int i = classes.size(); --i >= 0;)
-        classes.getUnchecked(i)->initialise (env);
+        classes[i]->initialise (env);
 }
 
 void JNIClassBase::releaseAllClasses (JNIEnv* env)
 {
     const Array<JNIClassBase*>& classes = getClasses();
     for (int i = classes.size(); --i >= 0;)
-        classes.getUnchecked(i)->release (env);
+        classes[i]->release (env);
 }
 
 jmethodID JNIClassBase::resolveMethod (JNIEnv* env, const char* methodName, const char* params)

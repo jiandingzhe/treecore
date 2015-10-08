@@ -29,17 +29,18 @@
 #ifndef JUCE_HASHMAP_H_INCLUDED
 #define JUCE_HASHMAP_H_INCLUDED
 
-#include "treecore/Array.h"
-#include "treecore/HashFunctions.h"
+#include "treecore/impl/HashImpl.h"
+#include "treecore/DummyCriticalSection.h"
 #include "treecore/LeakedObjectDetector.h"
-#include "treecore/ObjectPool.h"
-#include "treecore/RefCountObject.h"
-#include "treecore/RefCountSingleton.h"
-#include "treecore/ScopedPointer.h"
+
+#include <unordered_map>
+
+#define LOCK_HASH_MAP const ScopedLockType _lock_(m_mutex)
+
+class TestFramework;
 
 namespace treecore {
 
-//==============================================================================
 /**
     Holds a set of mappings between some key/value pairs.
 
@@ -84,286 +85,30 @@ namespace treecore {
 template <typename KeyType,
           typename ValueType,
           class HashFunctionType = DefaultHashFunctions,
-          class TypeOfCriticalSectionToUse = DummyCriticalSection>
+          class MutexType = DummyCriticalSection>
 class HashMap: public RefCountObject
 {
-private:
-    typedef PARAMETER_TYPE (KeyType)   KeyTypeParameter;
-    typedef PARAMETER_TYPE (ValueType) ValueTypeParameter;
-    class HashEntry
+    struct HashMapItem
     {
-    public:
-        HashEntry (KeyTypeParameter k, ValueTypeParameter val, HashEntry* const next)
-            : key (k), value (val), nextEntry (next)
-        {}
-
         const KeyType key;
         ValueType value;
-        HashEntry* nextEntry;
 
-        TREECORE_DECLARE_NON_COPYABLE (HashEntry)
+        bool operator == (const HashMapItem& other) const
+        {
+            return key == other.key && value == other.value;
+        }
+
+        bool operator != (const HashMapItem& other) const
+        {
+            return key != other.key || value != other.value;
+        }
     };
 
-    // FIXME singleton is not released
-    typedef RefCountSingleton<ObjectPool<HashEntry, !CriticalSectionIsDummy<TypeOfCriticalSectionToUse>::value> > EntryPoolType;
+    typedef impl::HashTableBase<KeyType, HashMapItem, HashFunctionType, CriticalSectionIsDummy<MutexType>::value> TableImplType;
+    typedef typename TableImplType::HashEntry EntryType;
 
-public:
-    //==============================================================================
-    /** Creates an empty hash-map.
+    friend class ::TestFramework;
 
-        @param numberOfSlots Specifies the number of hash entries the map will use. This will be
-                            the "upperLimit" parameter that is passed to your generateHash()
-                            function. The number of hash slots will grow automatically if necessary,
-                            or it can be remapped manually using remapTable().
-        @param hashFunction An instance of HashFunctionType, which will be copied and
-                            stored to use with the HashMap. This parameter can be omitted
-                            if HashFunctionType has a default constructor.
-    */
-    explicit HashMap (int numberOfSlots = defaultHashTableSize,
-                      HashFunctionType hashFunction = HashFunctionType())
-       : hashFunctionToUse (hashFunction), totalNumItems (0)
-    {
-        hashSlots.insertMultiple (0, nullptr, numberOfSlots);
-    }
-
-    /** Destructor. */
-    ~HashMap()
-    {
-        clear();
-    }
-
-    //==============================================================================
-    /** Removes all values from the map.
-        Note that this will clear the content, but won't affect the number of slots (see
-        remapTable and getNumSlots).
-    */
-    void clear()
-    {
-        const ScopedLockType sl (getLock());
-
-        for (int i = hashSlots.size(); --i >= 0;)
-        {
-            HashEntry* entry = hashSlots.getUnchecked(i);
-
-            while (entry != nullptr)
-            {
-                HashEntry* next_entry = entry->nextEntry;
-                EntryPoolType::getInstance()->recycle(entry);
-                entry = next_entry;
-            }
-
-            hashSlots.set (i, nullptr);
-        }
-
-        totalNumItems = 0;
-    }
-
-    //==============================================================================
-    /** Returns the current number of items in the map. */
-    inline int size() const noexcept
-    {
-        return totalNumItems;
-    }
-
-    /** Returns the value corresponding to a given key.
-        If the map doesn't contain the key, a default instance of the value type is returned.
-        @param keyToLookFor    the key of the item being requested
-    */
-    inline ValueType operator[] (KeyTypeParameter keyToLookFor) const
-    {
-        const ScopedLockType sl (getLock());
-
-        for (const HashEntry* entry = hashSlots.getUnchecked (generateHashFor (keyToLookFor)); entry != nullptr; entry = entry->nextEntry)
-            if (entry->key == keyToLookFor)
-                return entry->value;
-
-        return ValueType();
-    }
-
-    inline ValueType& getReference(KeyTypeParameter key)
-    {
-        const ScopedLockType sl(getLock());
-
-        int hash_value = generateHashFor(key);
-
-        // find existing one
-        HashEntry* old_first = hashSlots.getUnchecked(hash_value);
-        for (HashEntry* entry = old_first; entry != nullptr; entry = entry->nextEntry)
-            if (entry->key == key)
-                return entry->value;
-
-        // create a new one
-        HashEntry* entry = EntryPoolType::getInstance()->generate(key, ValueType(), old_first);
-        hashSlots.set(hash_value, entry);
-
-        return entry->value;
-    }
-
-    //==============================================================================
-    /** Returns true if the map contains an item with the specied key. */
-    bool contains (KeyTypeParameter keyToLookFor) const
-    {
-        const ScopedLockType sl (getLock());
-
-        for (const HashEntry* entry = hashSlots.getUnchecked (generateHashFor (keyToLookFor)); entry != nullptr; entry = entry->nextEntry)
-        {
-            if (entry->key == keyToLookFor)
-                return true;
-        }
-
-        return false;
-    }
-
-    /** Returns true if the hash contains at least one occurrence of a given value. */
-    bool containsValue (ValueTypeParameter valueToLookFor) const
-    {
-        const ScopedLockType sl (getLock());
-
-        for (int i = getNumSlots(); --i >= 0;)
-            for (const HashEntry* entry = hashSlots.getUnchecked(i); entry != nullptr; entry = entry->nextEntry)
-                if (entry->value == valueToLookFor)
-                    return true;
-
-        return false;
-    }
-
-    //==============================================================================
-    /** Adds or replaces an element in the hash-map.
-        If there's already an item with the given key, this will replace its value. Otherwise, a new item
-        will be added to the map.
-    */
-    void set (KeyTypeParameter newKey, ValueTypeParameter newValue)
-    {
-        const ScopedLockType sl (getLock());
-        const int hashIndex = generateHashFor (newKey);
-
-        HashEntry* const firstEntry = hashSlots.getUnchecked (hashIndex);
-
-        for (HashEntry* entry = firstEntry; entry != nullptr; entry = entry->nextEntry)
-        {
-            if (entry->key == newKey)
-            {
-                entry->value = newValue;
-                return;
-            }
-        }
-
-        HashEntry* entry = EntryPoolType::getInstance()->generate(newKey, newValue, firstEntry);
-        hashSlots.set(hashIndex, entry);
-        ++totalNumItems;
-
-        if (totalNumItems > (getNumSlots() * 3) / 2)
-            remapTable (getNumSlots() * 2);
-    }
-
-    /** Removes an item with the given key. */
-    void remove (KeyTypeParameter keyToRemove)
-    {
-        const ScopedLockType sl (getLock());
-        const int hashIndex = generateHashFor (keyToRemove);
-        HashEntry* entry = hashSlots.getUnchecked (hashIndex);
-        HashEntry* previous = nullptr;
-
-        while (entry != nullptr)
-        {
-            if (entry->key == keyToRemove)
-            {
-                HashEntry* next_entry = entry->nextEntry;
-
-                if (previous != nullptr)
-                    previous->nextEntry = next_entry;
-                else
-                    hashSlots.set(hashIndex, next_entry);
-
-                EntryPoolType::getInstance()->recycle(entry);
-                --totalNumItems;
-            }
-            else
-            {
-                previous = entry;
-                entry = entry->nextEntry;
-            }
-        }
-    }
-
-    /** Removes all items with the given value. */
-    void removeValue (ValueTypeParameter valueToRemove)
-    {
-        const ScopedLockType sl (getLock());
-
-        for (int i = getNumSlots(); --i >= 0;)
-        {
-            HashEntry* entry = hashSlots.getUnchecked(i);
-            HashEntry* previous = nullptr;
-
-            while (entry != nullptr)
-            {
-                if (entry->value == valueToRemove)
-                {
-                    HashEntry* next_entry = entry->nextEntry;
-
-                    if (previous != nullptr)
-                        previous->nextEntry = next_entry;
-                    else
-                        hashSlots.set (i, next_entry);
-
-                    EntryPoolType::getInstance()->recycle(entry);
-                    --totalNumItems;
-                }
-                else
-                {
-                    previous = entry;
-                    entry = entry->nextEntry;
-                }
-            }
-        }
-    }
-
-    /** Remaps the hash-map to use a different number of slots for its hash function.
-        Each slot corresponds to a single hash-code, and each one can contain multiple items.
-        @see getNumSlots()
-    */
-    void remapTable (int newNumberOfSlots)
-    {
-        HashMap newTable (newNumberOfSlots);
-
-        for (int i = getNumSlots(); --i >= 0;)
-            for (const HashEntry* entry = hashSlots.getUnchecked(i); entry != nullptr; entry = entry->nextEntry)
-                newTable.set (entry->key, entry->value);
-
-        swapWith (newTable);
-    }
-
-    /** Returns the number of slots which are available for hashing.
-        Each slot corresponds to a single hash-code, and each one can contain multiple items.
-        @see getNumSlots()
-    */
-    inline int getNumSlots() const noexcept
-    {
-        return hashSlots.size();
-    }
-
-    //==============================================================================
-    /** Efficiently swaps the contents of two hash-maps. */
-    template <class OtherHashMapType>
-    void swapWith (OtherHashMapType& otherHashMap) noexcept
-    {
-        const ScopedLockType lock1 (getLock());
-        const typename OtherHashMapType::ScopedLockType lock2 (otherHashMap.getLock());
-
-        hashSlots.swapWith (otherHashMap.hashSlots);
-        std::swap (totalNumItems, otherHashMap.totalNumItems);
-    }
-
-    //==============================================================================
-    /** Returns the CriticalSection that locks this structure.
-        To lock, you can call getLock().enter() and getLock().exit(), or preferably use
-        an object of ScopedLockType as an RAII lock for it.
-    */
-    inline const TypeOfCriticalSectionToUse& getLock() const noexcept      { return lock; }
-
-    /** Returns the type of scoped lock to use for locking this array */
-    typedef typename TypeOfCriticalSectionToUse::ScopedLockType ScopedLockType;
 
 public:
     //==============================================================================
@@ -391,77 +136,482 @@ public:
     */
     class Iterator
     {
+        friend class HashMap;
+        typedef typename TableImplType::template IteratorBase<TableImplType&, EntryType*> ItImplType;
+
     public:
         //==============================================================================
-        Iterator (const HashMap& hashMapToIterate)
-            : hashMap (hashMapToIterate), entry (nullptr), index (0)
-        {}
+        Iterator (HashMap& target)
+            : m_impl(target.m_impl)
+        {
+        }
 
         /** Moves to the next item, if one is available.
             When this returns true, you can get the item's key and value using getKey() and
             getValue(). If it returns false, the iteration has finished and you should stop.
         */
-        bool next()
+        bool next() noexcept
         {
-            if (entry != nullptr)
-                entry = entry->nextEntry;
-
-            while (entry == nullptr)
-            {
-                if (index >= hashMap.getNumSlots())
-                    return false;
-
-                entry = hashMap.hashSlots.getUnchecked (index++);
-            }
-
-            return true;
+            return m_impl.next();
         }
 
-        /** Returns the current item's key.
-            This should only be called when a call to next() has just returned true.
-        */
-        KeyType getKey() const
+        /**
+         * @brief whether the iterator has accessable content
+         * @return true if the content of this iterator can be accessed
+         */
+        bool hasContent() const noexcept
         {
-            return entry != nullptr ? entry->key : KeyType();
+            return m_impl.entry;
         }
 
-        /** Returns the current item's value.
-            This should only be called when a call to next() has just returned true.
-        */
-        ValueType getValue() const
+        /**
+         * @brief get current item's key.
+         *
+         * This should only be called when a call to next() has just returned true.
+         */
+        const KeyType& key() const
         {
-            return entry != nullptr ? entry->value : ValueType();
+            jassert(m_impl.entry != nullptr);
+            return m_impl.entry->item.key;
+        }
+
+        /**
+         * @brief get current item's value.
+         * 
+         * This should only be called when a call to next() has just returned true.
+         */
+        ValueType& value()
+        {
+            jassert(m_impl.entry != nullptr);
+            return m_impl.entry->item.value;
         }
 
     private:
-        //==============================================================================
-        const HashMap& hashMap;
-        HashEntry* entry;
-        int index;
+        ItImplType m_impl;
 
-        TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Iterator)
+        TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Iterator)
+    };
+    
+    class ConstIterator
+    {
+        friend class HashMap;
+        typedef typename TableImplType::template IteratorBase<const TableImplType&, EntryType*> ItImplType;
+
+    public:
+        //==============================================================================
+        ConstIterator(const HashMap& target)
+            : m_impl(target.m_impl)
+        {
+        }
+
+        /** Moves to the next item, if one is available.
+            When this returns true, you can get the item's key and value using getKey() and
+            getValue(). If it returns false, the iteration has finished and you should stop.
+        */
+        bool next() noexcept
+        {
+            return m_impl.next();
+        }
+
+        /**
+         * @brief whether the iterator has accessable content
+         * @return true if the content of this iterator can be accessed
+         */
+        bool hasContent() const noexcept
+        {
+            return m_impl.entry;
+        }
+
+        /**
+         * @brief get current item's key.
+         *
+         * This should only be called when a call to next() has just returned true.
+         */
+        const KeyType& key() const noexcept
+        {
+            return m_impl.entry->item.key;
+        }
+
+        /**
+         * @brief get current item's value.
+         *
+         * This should only be called when a call to next() has just returned true.
+         */
+        const ValueType& value() const noexcept
+        {
+            return m_impl.entry->item.value;
+        }
+
+    private:
+        ItImplType m_impl;
+
+        TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConstIterator)
     };
 
-private:
+    /** Returns the type of scoped lock to use for locking this array */
+    typedef typename MutexType::ScopedLockType ScopedLockType;
+
+public:
     //==============================================================================
+    /** Creates an empty hash-map.
+
+        @param numberOfSlots Specifies the number of hash entries the map will use. This will be
+                            the "upperLimit" parameter that is passed to your generateHash()
+                            function. The number of hash slots will grow automatically if necessary,
+                            or it can be remapped manually using remapTable().
+        @param hashFunction An instance of HashFunctionType, which will be copied and
+                            stored to use with the HashMap. This parameter can be omitted
+                            if HashFunctionType has a default constructor.
+    */
+    explicit HashMap (int numberOfSlots = defaultHashTableSize,
+                      HashFunctionType hashFunction = HashFunctionType())
+       : m_impl(numberOfSlots, hashFunction)
+    {
+    }
+
+    /**
+     * @brief create HashMap by copying another table's contents
+     */
+    HashMap(const HashMap& other)
+        : m_impl(other.m_impl)
+        , m_mutex()
+    {
+    }
+
+    HashMap(HashMap&& other)
+        : m_impl(std::move(other.m_impl))
+    {
+    }
+
+    /**
+     * @brief destructor
+     * @see HashTableBase::~HashTableBase()
+     */
+    virtual ~HashMap()
+    {
+    }
+
+    HashMap& operator= (const HashMap& other)
+    {
+        LOCK_HASH_MAP;
+        const ScopedLockType sl_other(other.m_mutex);
+
+        m_impl.clone_slots_from(other.m_impl);
+        return *this;
+    }
+
+    bool operator== (const HashMap& other) const noexcept
+    {
+        LOCK_HASH_MAP;
+        const ScopedLockType sl_other(other.m_mutex);
+        return m_impl == other.m_impl;
+    }
+
+    bool operator!= (const HashMap& other) const noexcept
+    {
+        LOCK_HASH_MAP;
+        const ScopedLockType sl_other(other.m_mutex);
+        return !(m_impl == other.m_impl);
+    }
+
+    //==============================================================================
+    /**
+     * @brief removes all values from the map
+     *
+     * Note that this will clear the content, but won't affect the number of slots (see
+     * remapTable and getNumSlots).
+     */
+    void clear()
+    {
+        LOCK_HASH_MAP;
+        m_impl.clear();
+    }
+
+    //==============================================================================
+    /** Returns the current number of items in the map. */
+    inline int size() const noexcept
+    {
+        return m_impl.num_entries;
+    }
+
+    /**
+     * @brief returns the element corresponding to a given key
+     *
+     * If the map doesn't contain the key, a new item will be created.
+     *
+     * @param keyToLookFor the key of the item being requested
+     *
+     * @return reference to value stored by this key
+     */
+    inline ValueType& operator[] (const KeyType& key) noexcept
+    {
+        LOCK_HASH_MAP;
+        int i_bucket = m_impl.bucket_index(key);
+
+        // search existing entry
+        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+
+        // create new entry
+        if (!entry)
+        {
+            entry = m_impl.create_entry_at(i_bucket, HashMapItem{key, ValueType{}});
+
+            if (m_impl.high_fill_rate())
+                m_impl.expand_buckets();
+        }
+
+        return entry->item.value;
+    }
+
+    //==============================================================================
+    /**
+     * Returns true if the map contains an item with the specied key.
+     */
+    bool contains(const KeyType& key) const noexcept
+    {
+        LOCK_HASH_MAP;
+        int i_bucket = m_impl.bucket_index(key);
+        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+        return entry;
+    }
+
+    /**
+     * @brief get item by key
+     *
+     * @param key     key to search for
+     * @param result  This iterator will be modified to point to search result.
+     *                If not found, it will not be modified.
+     *
+     * @return true if got key, false if not
+     */
+    bool select(const KeyType& key, Iterator& result) noexcept
+    {
+        LOCK_HASH_MAP;
+        int i_bucket = m_impl.bucket_index(key);
+        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+
+        if (entry)
+        {
+            result.m_impl.i_bucket = i_bucket;
+            result.m_impl.entry    = entry;
+        }
+
+        return entry;
+    }
+
+    bool select(const KeyType& key, ConstIterator& result) const noexcept
+    {
+        LOCK_HASH_MAP;
+        int i_bucket = m_impl.bucket_index(key);
+        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+
+        if (entry)
+        {
+            result.m_impl.i_bucket = i_bucket;
+            result.m_impl.entry    = entry;
+        }
+
+        return entry;
+    }
+
+    /**
+     * @brief Store value if the key does not exist in table, and make iterator
+     *        point to it.
+     *
+     * @param key     key to be stored
+     * @param value   value to be stored
+     * @param result  Iterator will be set to point to the newly inserted item,
+     *                or the existing item that has the same key.
+     *
+     * @return True if insertion is actually performed, false if key already
+     *         exists in table.
+     */
+    bool insertOrSelect(const KeyType& key, const ValueType& value, Iterator& result) noexcept
+    {
+        LOCK_HASH_MAP;
+
+        // search for existing entry
+        int i_bucket = m_impl.bucket_index(key);
+        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+
+        if (entry)
+        {
+            result.m_impl.i_bucket = i_bucket;
+            result.m_impl.entry = entry;
+            return false;
+        }
+
+        // create new one
+        entry = m_impl.create_entry_at(i_bucket, HashMapItem{key, value});
+
+        if (m_impl.high_fill_rate())
+        {
+            m_impl.expand_buckets();
+            i_bucket  = m_impl.bucket_index(key);
+        }
+
+        result.m_impl.i_bucket = i_bucket;
+        result.m_impl.entry = entry;
+        return true;
+    }
+
+    /**
+     * @brief returns true if the hash contains at least one occurrence of a
+     *        given value.
+     */
+    bool containsValue(const ValueType& value) const
+    {
+        LOCK_HASH_MAP;
+
+        for (int i = 0; i < m_impl.buckets; i++)
+        {
+            for (const EntryType* entry = m_impl.buckets[i]; entry != nullptr; entry = entry->next_entry)
+            {
+                if (entry->item.value == value)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    //==============================================================================
+    /**
+     * @brief adds or replaces an element in the hash-map
+     *
+     * If there's already an item with the given key, this will replace its
+     * value. Otherwise, a new item will be added to the map.
+     */
+    void set(const KeyType& key, const ValueType& value) noexcept
+    {
+        LOCK_HASH_MAP;
+        int i_bucket = m_impl.bucket_index(key);
+
+        // try to get existing entry
+        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+
+        if (entry)
+        {
+            entry->item.value = value;
+        }
+        else
+        {
+            // create new entry
+            entry = m_impl.create_entry_at(i_bucket, HashMapItem{key, value});
+
+            if (m_impl.high_fill_rate())
+                m_impl.expand_buckets();
+        }
+
+    }
+
+    /**
+     * @brief removes an item with the given key
+     * @param key key to remove
+     * @return true if removed, false if no this key
+     */
+    bool remove(const KeyType& key) noexcept
+    {
+        LOCK_HASH_MAP;
+        const int i_bucket = m_impl.bucket_index(key);
+        return m_impl.remove_entry_at(i_bucket, key);
+    }
+
+    /**
+     * @brief removes all items with the given value
+     * @return number of items removed
+     */
+    int removeValue (const ValueType& value) noexcept
+    {
+        LOCK_HASH_MAP;
+        int n_removed = 0;
+
+        for (int i_bucket = 0; i_bucket < m_impl.buckets.size(); i_bucket++)
+        {
+            EntryType* entry = m_impl.buckets[i_bucket];
+            EntryType* prev_entry = nullptr;
+
+            while (entry != nullptr)
+            {
+                if (entry->value == value)
+                {
+                    remove_entry_at(i_bucket, prev_entry, entry);
+                    entry = prev_entry->next_entry;
+                    n_removed++;
+                }
+                else
+                {
+                    prev_entry = entry;
+                    entry = entry->next_entry;
+                }
+            }
+        }
+
+        return n_removed;
+    }
+
+    /** Remaps the hash-map to use a different number of slots for its hash function.
+        Each slot corresponds to a single hash-code, and each one can contain multiple items.
+        @see getNumSlots()
+    */
+    void remapTable (int numBuckets)
+    {
+        LOCK_HASH_MAP;
+        m_impl.rehash(numBuckets);
+    }
+
+    /**
+     * @brief get the number of buckets which are available for hashing
+     *
+     * Each bucket corresponds to a single hash code, and can contain multiple
+     * items.
+     *
+     * @return number of buckets
+     * @see size()
+     */
+    inline int getNumBuckets() const noexcept
+    {
+        return m_impl.buckets.size();
+    }
+
+    inline int getNumUsedBuckets() const noexcept
+    {
+        LOCK_HASH_MAP;
+        return m_impl.num_used_buckets();
+    }
+
+    //==============================================================================
+    /** Efficiently swaps the contents of two hash-maps. */
+    template <class OtherHashMapType>
+    void swapWith (OtherHashMapType& otherHashMap) noexcept
+    {
+        LOCK_HASH_MAP;
+        const typename OtherHashMapType::ScopedLockType lock2 (otherHashMap.m_mutex);
+        m_impl.swapWith(otherHashMap.m_impl);
+    }
+
+    //==============================================================================
+    /** Returns the CriticalSection that locks this structure.
+        To lock, you can call getLock().enter() and getLock().exit(), or preferably use
+        an object of ScopedLockType as an RAII lock for it.
+    */
+    inline const MutexType& getLock() const noexcept
+    {
+        return m_mutex;
+    }
+
+private:
     enum { defaultHashTableSize = 101 };
     friend class Iterator;
 
-    HashFunctionType hashFunctionToUse;
-    Array<HashEntry*> hashSlots;
-    int totalNumItems;
-    TypeOfCriticalSectionToUse lock;
+    TableImplType m_impl;
+    MutexType m_mutex;
 
-    int generateHashFor (KeyTypeParameter key) const
-    {
-        const int hash = hashFunctionToUse.generateHash (key, getNumSlots());
-        jassert (isPositiveAndBelow (hash, getNumSlots())); // your hash function is generating out-of-range numbers!
-        return hash;
-    }
-
-    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HashMap)
+    JUCE_LEAK_DETECTOR (HashMap)
 };
 
 } // namespace treecore
+
+#undef LOCK_HASH_MAP
 
 #endif   // JUCE_HASHMAP_H_INCLUDED

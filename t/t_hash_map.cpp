@@ -9,12 +9,12 @@ void TestFramework::content()
 {
     HashMap<String, String> map;
     map.set("a", "b");
+    OK(map.contains("a"));
     IS(map["a"], "b");
-    IS(map.getReference("a"), "b");
 
-    map.getReference("a") = "c";
+    map["a"] = "c";
     IS(map["a"], "c");
 
-    IS(map.getReference("d"), "");
+    IS(map["d"], "");
     OK(map.contains("d"));
 }

@@ -1,11 +1,14 @@
 #ifndef TREECORE_HASH_SET_H
 #define TREECORE_HASH_SET_H
 
-#include "treecore/Array.h"
-#include "treecore/HashFunctions.h"
-#include "treecore/ObjectPool.h"
+#include "treecore/impl/HashImpl.h"
+#include "treecore/DummyCriticalSection.h"
 #include "treecore/RefCountObject.h"
-#include "treecore/RefCountSingleton.h"
+
+#define LOCK_THIS_OBJECT const ScopedLockType _lock_this_(m_mutex)
+#define LOCK_PEER_OBJECT const ScopedLockType _lock_peer_(peer.m_mutex)
+
+class TestFramework;
 
 namespace treecore {
 
@@ -15,18 +18,25 @@ template<typename KeyType,
 class HashSet: public RefCountObject
 {
 protected:
-    struct Entry
+    struct HashSetItem
     {
-        Entry(KeyType key, Entry* next): key(key), next(next)
+        const KeyType key;
+
+        bool operator == (const HashSetItem& other) const
         {
+            return key == other.key;
         }
 
-        KeyType key;
-        Entry* next;
+        bool operator != (const HashSetItem& other) const
+        {
+            return key != other.key;
+        }
     };
 
-    // FIXME singleton is not released
-    typedef RefCountSingleton<ObjectPool<Entry, !CriticalSectionIsDummy<MutexType>::value> > EntryPoolType;
+    typedef impl::HashTableBase<KeyType, HashSetItem, HashFunctionType, CriticalSectionIsDummy<MutexType>::value> TableImplType;
+    typedef typename TableImplType::HashEntry EntryType;
+
+    friend class ::TestFramework;
 
 public:
     typedef typename MutexType::ScopedLockType ScopedLockType;
@@ -34,324 +44,267 @@ public:
     class Iterator
     {
         friend class HashSet;
+        typedef typename TableImplType::template IteratorBase<TableImplType&, EntryType*> ItImplType;
 
     public:
-        Iterator(const HashSet& target): target(target)
+        Iterator(HashSet& target): m_impl(target.m_impl)
         {
         }
 
+        /**
+         * @brief move iterator to next value
+         * @return false if next value exceeds table end
+         */
         bool next()
         {
-            // move from initial state
-            if (i_slot == -1)
-            {
-                return move_to_next_valid_slot();
-            }
-            else
-            {
-                // move from previous position
-                if (entry)
-                {
-                    return move_to_next_valid_entry();
-                }
-                // we have arrived tail
-                else
-                {
-                    return false;
-                }
-            }
+            return m_impl.next();
         }
 
-        inline bool hasValue() const noexcept
+        inline bool hasContent() const noexcept
         {
-            return entry != nullptr;
+            return m_impl.entry;
         }
 
-        inline const KeyType& get() const noexcept
+        inline const KeyType& content() const noexcept
         {
-            return entry->key;
+            jassert(m_impl.entry != nullptr)
+            return m_impl.entry->item.key;
         }
 
     protected:
-        inline bool move_to_next_valid_entry() noexcept
-        {
-            entry = entry->next;
-            if (entry)
-            {
-                return true;
-            }
-            else
-            {
-                return move_to_next_valid_slot();
-            }
-        }
-
-        inline bool move_to_next_valid_slot() noexcept
-        {
-            while (1)
-            {
-                i_slot++;
-                if (i_slot >= target.m_slots.size())
-                {
-                    entry = nullptr;
-                    return false;
-                }
-
-                entry = target.m_slots.getUnchecked(i_slot);
-                if (entry)
-                    return true;
-            }
-        }
-
-        const HashSet& target;
-        int i_slot = -1;
-        const typename HashSet::Entry* entry = nullptr;
+        ItImplType m_impl;
     };
 
-    HashSet(int n_initial_slots = 101, HashFunctionType hash_func = HashFunctionType())
-        : m_hash_func(hash_func)
+    class ConstIterator
     {
-        m_slots.insertMultiple(0, nullptr, n_initial_slots);
+        friend class HashSet;
+        typedef typename TableImplType::template IteratorBase<const TableImplType&, EntryType*> ItImplType;
+
+    public:
+        ConstIterator(const HashSet& target): m_impl(target.m_impl)
+        {
+        }
+
+        /**
+         * @brief move iterator to next value
+         * @return false if next value exceeds table end
+         */
+        bool next()
+        {
+            return m_impl.next();
+        }
+
+        inline bool hasContent() const noexcept
+        {
+            return m_impl.entry;
+        }
+
+        inline const KeyType& content() const noexcept
+        {
+            jassert(m_impl.entry != nullptr)
+            return m_impl.entry->item.key;
+        }
+
+    protected:
+        ItImplType m_impl;
+    };
+
+    HashSet(int numInitSlots = 101, HashFunctionType hashFunc = HashFunctionType())
+        : m_impl(numInitSlots, hashFunc)
+    {
+    }
+
+    /**
+     * @brief create HashSet by copying other's contents
+     */
+    HashSet(const HashSet& other)
+        : m_impl(other.m_impl)
+    {
+    }
+
+    HashSet(HashSet&& other)
+        : m_impl(std::move(other.m_impl))
+    {
     }
 
     ~HashSet()
     {
-        clear();
+    }
+
+    HashSet& operator= (const HashSet& peer)
+    {
+        LOCK_THIS_OBJECT;
+        LOCK_PEER_OBJECT;
+        m_impl.clone_slots_from(peer.m_impl);
+        return *this;
+    }
+
+    bool operator== (const HashSet& peer) const noexcept
+    {
+        LOCK_THIS_OBJECT;
+        LOCK_PEER_OBJECT;
+        return m_impl == peer.m_impl;
+    }
+
+    bool operator!= (const HashSet& peer) const noexcept
+    {
+        LOCK_THIS_OBJECT;
+        LOCK_PEER_OBJECT;
+        return !(m_impl == peer.m_impl);
     }
 
     void clear()
     {
-        const ScopedLockType lock(m_mutex);
-
-        for (int i = m_slots.size()-1 ; i >= 0; i--)
-        {
-            Entry* curr_bucket = m_slots.getUnchecked(i);
-
-            while (curr_bucket != nullptr)
-            {
-                Entry* next_bucket = curr_bucket->next;
-                EntryPoolType::getInstance()->recycle(curr_bucket);
-                curr_bucket = next_bucket;
-            }
-
-            m_slots.setUnchecked(i, nullptr);
-        }
-
-        m_size = 0;
+        LOCK_THIS_OBJECT;
+        m_impl.clear();
     }
 
     inline int size() const noexcept
     {
-        return m_size;
+        return m_impl.num_entries;
     }
 
-    bool contains(KeyType key) const noexcept
+    bool contains(const KeyType& key) const noexcept
     {
-        const ScopedLockType lock(m_mutex);
-
-        int hash_result = generateHashFor(key);
-        for (const Entry* entry = m_slots.getUnchecked(hash_result); entry != nullptr; entry = entry->next)
-        {
-            if (entry->key == key)
-                return true;
-        }
-
-        return false;
+        LOCK_THIS_OBJECT;
+        int i_bucket = m_impl.bucket_index(key);
+        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+        return entry;
     }
 
-    bool search(const KeyType& key, Iterator& result) noexcept
+    bool insert(const KeyType& content) noexcept
     {
-        const ScopedLockType lock(m_mutex);
-        int hash_result = generateHashFor(key);
-        for (const Entry* entry = m_slots.getUnchecked(hash_result); entry != nullptr; entry = entry->next)
+        LOCK_THIS_OBJECT;
+        int i_bucket = m_impl.bucket_index(content);
+        EntryType* entry = m_impl.search_entry_at(i_bucket, content);
+
+        if (entry)
         {
-            if (entry->key == key)
-            {
-                result.entry = entry;
-                result.i_slot = hash_result;
-            }
+            return false;
         }
-
-        return false;
-    }
-
-    int getNumKeys() const noexcept
-    {
-        int n_key = 0;
-
-        for (int i_slot = 0; i_slot < m_slots.size(); i_slot++)
+        else
         {
-            Entry* first_entry = m_slots.getUnchecked(i_slot);
-            if (first_entry == nullptr)
-                continue;
+            entry = m_impl.create_entry_at(i_bucket, HashSetItem{content});
 
-            for (Entry* entry = first_entry; entry != nullptr; entry = entry->next)
-                n_key++;
+            if (m_impl.high_fill_rate())
+                m_impl.expand_buckets();
+            return true;
         }
-
-        return n_key;
     }
 
     /**
-     * @brief Insert a value into hash set, and get iterator to the newly added
-     *        value or the already existing one.
+     * @brief get item by key
      *
-     * @param key the value to be inserted
-     * @param result will point to newly added value or already existing value
-     * @return true if key is inserted, false if already exists
+     * @param key     key to search for
+     * @param result  This iterator will be modified to point to search result.
+     *                If not found, it will not be modified.
+     *
+     * @return true if got key, false if not
      */
-    bool insertAndGet(const KeyType& key, Iterator& result)
+    bool select(const KeyType& content, Iterator& result) noexcept
     {
-        const ScopedLockType lock(m_mutex);
+        LOCK_THIS_OBJECT;
+        int i_bucket = m_impl.bucket_index(content);
+        EntryType* entry = m_impl.search_entry_at(i_bucket, content);
 
-        int hash_result = generateHashFor(key);
-        Entry* const first_entry = m_slots.getUnchecked(hash_result);
-
-        // find if already exists
-        for (Entry* entry = first_entry; entry != nullptr; entry = entry->next)
+        if (entry)
         {
-            if (entry->key == key)
-            {
-                result.i_slot = hash_result;
-                result.entry = entry;
-                return false;
-            }
+            result.m_impl.i_bucket = i_bucket;
+            result.m_impl.entry    = entry;
         }
 
-        // create a new entry for this key
-        Entry* new_entry = EntryPoolType::getInstance()->generate(key, first_entry);
-        m_slots.setUnchecked(hash_result, new_entry);
-        m_size++;
+        return entry;
+    }
 
-        // rehash when needed
-        if (float(m_size) / float(m_slots.size()) > 1.5)
+    bool select(const KeyType& key, ConstIterator& result) const noexcept
+    {
+        LOCK_THIS_OBJECT;
+        int i_bucket = m_impl.bucket_index(key);
+        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+
+        if (entry)
         {
-            remapTable(m_slots.size() * 2);
-            hash_result = generateHashFor(key);
+            result.m_impl.i_bucket = i_bucket;
+            result.m_impl.entry    = entry;
         }
 
-        result.i_slot = hash_result;
-        result.entry = new_entry;
+        return entry;
+    }
+
+    /**
+     * @brief Store value if the key does not exist in table, and make iterator
+     *        point to it.
+     *
+     * @param key     key to be stored
+     * @param value   value to be stored
+     * @param result  Iterator will be set to point to the newly inserted item,
+     *                or the existing item that has the same key.
+     *
+     * @return True if insertion is actually performed, false if key already
+     *         exists in table.
+     */
+    bool insertOrSelect(const KeyType& key, Iterator& result) noexcept
+    {
+        LOCK_THIS_OBJECT;
+
+        // search for existing entry
+        int i_bucket = m_impl.bucket_index(key);
+        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+
+        if (entry)
+        {
+            result.m_impl.i_bucket = i_bucket;
+            result.m_impl.entry = entry;
+            return false;
+        }
+
+        // create new one
+        entry = m_impl.create_entry_at(i_bucket, HashSetItem{key});
+
+        if (m_impl.high_fill_rate())
+        {
+            m_impl.expand_buckets();
+            i_bucket  = m_impl.bucket_index(key);
+        }
+
+        result.m_impl.i_bucket = i_bucket;
+        result.m_impl.entry = entry;
         return true;
     }
 
-    bool insert(KeyType key)
+    bool remove(const KeyType& key) noexcept
     {
-        const ScopedLockType lock(m_mutex);
-
-        int hash_result = generateHashFor(key);
-        Entry* const first_entry = m_slots.getUnchecked(hash_result);
-
-        // find duplications
-        for (Entry* entry = first_entry; entry != nullptr; entry = entry->next)
-        {
-            if (entry->key == key)
-                return false;
-        }
-
-        // create a new entry for this key
-        Entry* new_entry = EntryPoolType::getInstance()->generate(key, first_entry);
-        m_slots.setUnchecked(hash_result, new_entry);
-        m_size++;
-
-        // resize slots if too many things filled
-        if (float(m_size) / float(m_slots.size()) > 1.5)
-        {
-            remapTable(m_slots.size() * 2);
-        }
-
-        return true;
+        LOCK_THIS_OBJECT;
+        const int i_bucket = m_impl.bucket_index(key);
+        return m_impl.remove_entry_at(i_bucket, key);
     }
 
-    bool remove(KeyType key)
+    void remapTable(int numBuckets)
     {
-        const ScopedLockType lock(m_mutex);
-
-        int hash_result = generateHashFor(key);
-        Entry* entry = m_slots.getUnchecked(hash_result);
-        Entry* prev = nullptr;
-
-        while (entry != nullptr)
-        {
-            if (entry->key == key)
-            {
-                Entry* next = entry->next;
-                if (prev == nullptr)
-                {
-                    m_slots.setUnchecked(hash_result, next);
-                }
-                else
-                {
-                    prev->next = next;
-                }
-
-                EntryPoolType::getInstance()->recycle(entry);
-                m_size--;
-                return true;
-            }
-            else
-            {
-                prev = entry;
-                entry = entry->next;
-            }
-        }
-
-        return false;
+        LOCK_THIS_OBJECT;
+        m_impl.rehash(numBuckets);
     }
 
-    void remapTable(int new_slot_size)
+    int numBuckets() const noexcept
     {
-        Array<Entry*> slots_new;
-        slots_new.insertMultiple(0, nullptr, new_slot_size);
-
-        for (int i_slot_old = 0; i_slot_old < m_slots.size(); i_slot_old++)
-        {
-            Entry* entry = m_slots.getUnchecked(i_slot_old);
-            Entry* next_entry = nullptr;
-            while (entry != nullptr)
-            {
-                next_entry = entry->next;
-                int hash = m_hash_func.generateHash(entry->key, new_slot_size);
-
-                entry->next = slots_new.getUnchecked(hash);
-                slots_new.setUnchecked(hash, entry);
-                entry = next_entry;
-            }
-        }
-
-        m_slots.swapWith(slots_new);
+        return m_impl.buckets.size();
     }
 
-    inline int getNumSlots() const noexcept
+    int numUsedBuckets() const noexcept
     {
-        return m_slots.size();
-    }
-
-    inline int getNumUsedSlots() const noexcept
-    {
-        int n_used = 0;
-        for (int i = 0; i < m_slots.size(); i++)
-        {
-            if (m_slots.getUnchecked(i) != nullptr)
-                n_used++;
-        }
-        return n_used;
+        LOCK_THIS_OBJECT;
+        return m_impl.num_used_buckets();
     }
 
 protected:
-    int generateHashFor (KeyType key) const
-    {
-        const int hash = m_hash_func.generateHash (key, getNumSlots());
-        jassert (isPositiveAndBelow (hash, getNumSlots())); // your hash function is generating out-of-range numbers!
-        return hash;
-    }
 
-    HashFunctionType m_hash_func;
-    Array<Entry*>    m_slots;
-    int              m_size = 0;
-    MutexType        m_mutex;
+    MutexType     m_mutex;
+    TableImplType m_impl;
 }; // class HashSet
 
 }
+
+#undef LOCK_THIS_OBJECT
+#undef LOCK_PEER_OBJECT
 
 #endif // TREECORE_HASH_SET_H

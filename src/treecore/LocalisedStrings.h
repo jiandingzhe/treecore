@@ -29,9 +29,9 @@
 #ifndef JUCE_LOCALISEDSTRINGS_H_INCLUDED
 #define JUCE_LOCALISEDSTRINGS_H_INCLUDED
 
+#include "treecore/HashMap.h"
 #include "treecore/String.h"
 #include "treecore/StringArray.h"
-#include "treecore/StringPairArray.h"
 
 namespace treecore {
 
@@ -83,6 +83,8 @@ template<typename T> struct ContainerDeletePolicy;
 */
 class JUCE_API  LocalisedStrings
 {
+    typedef HashMap<String, String> MapType;
+
 public:
     //==============================================================================
     /** Creates a set of translations from the text of a translation file.
@@ -147,16 +149,11 @@ public:
     */
     static String translateWithCurrentMappings (const char* text);
 
-    //==============================================================================
-    /** Attempts to look up a string and return its localised version.
-        If the string isn't found in the list, the original string will be returned.
-    */
-    String translate (const String& text) const;
 
     /** Attempts to look up a string and return its localised version.
         If the string isn't found in the list, the resultIfNotFound string will be returned.
     */
-    String translate (const String& text, const String& resultIfNotFound) const;
+    String translate (const String& text, const String& resultIfNotFound = String::empty) const;
 
     /** Returns the name of the language specified in the translation file.
 
@@ -179,7 +176,7 @@ public:
     const StringArray& getCountryCodes() const            { return countryCodes; }
 
     /** Provides access to the actual list of mappings. */
-    const StringPairArray& getMappings() const            { return translations; }
+    const HashMap<String, String>& getMappings() const            { return translations; }
 
     //==============================================================================
     /** Adds and merges another set of translations into this set.
@@ -202,7 +199,7 @@ private:
     //==============================================================================
     String languageName;
     StringArray countryCodes;
-    StringPairArray translations;
+    MapType translations;
     LocalisedStrings* fallback = nullptr;
     friend struct ContainerDeletePolicy<LocalisedStrings>;
 

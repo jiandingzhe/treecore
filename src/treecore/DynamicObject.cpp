@@ -92,9 +92,11 @@ void DynamicObject::clear()
 
 void DynamicObject::cloneAllProperties()
 {
-    for (int i = properties.size(); --i >= 0;)
-        if (var* v = properties.getVarPointerAt (i))
-            *v = v->clone();
+    NamedValueSet::MapType& data = properties.getValues();
+    NamedValueSet::MapType::Iterator i(data);
+
+    while (i.next())
+        i.value() = i.value().clone();
 }
 
 DynamicObject::Ptr DynamicObject::clone()
@@ -111,18 +113,22 @@ void DynamicObject::writeAsJSON (OutputStream& out, const int indentLevel, const
         out << newLine;
 
     const int numValues = properties.size();
+    int count = 0;
+    NamedValueSet::MapType& data = properties.getValues();
+    NamedValueSet::MapType::Iterator i(data);
 
-    for (int i = 0; i < numValues; ++i)
+    while (i.next())
     {
+        count++;
         if (! allOnOneLine)
             JSONFormatter::writeSpaces (out, indentLevel + JSONFormatter::indentSize);
 
         out << '"';
-        JSONFormatter::writeString (out, properties.getName (i));
+        JSONFormatter::writeString (out, i.key());
         out << "\": ";
-        JSONFormatter::write (out, properties.getValueAt (i), indentLevel + JSONFormatter::indentSize, allOnOneLine);
+        JSONFormatter::write (out, i.value(), indentLevel + JSONFormatter::indentSize, allOnOneLine);
 
-        if (i < numValues - 1)
+        if (count < numValues)
         {
             if (allOnOneLine)
                 out << ", ";

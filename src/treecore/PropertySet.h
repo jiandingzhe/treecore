@@ -29,10 +29,12 @@
 #ifndef JUCE_PROPERTYSET_H_INCLUDED
 #define JUCE_PROPERTYSET_H_INCLUDED
 
-#include "treecore/StringPairArray.h"
+#include "treecore/HashMap.h"
+#include "treecore/String.h"
 
 //==============================================================================
-namespace treecore {
+namespace treecore
+{
 
 class XmlElement;
 class var;
@@ -40,7 +42,7 @@ class var;
 /**
     A set of named property values, which can be strings, integers, floating point, etc.
 
-    Effectively, this just wraps a StringPairArray in an interface that makes it easier
+    Effectively, this just wraps a String HashMap in an interface that makes it easier
     to load and save types other than strings.
 
     See the PropertiesFile class for a subclass of this, which automatically broadcasts change
@@ -48,6 +50,8 @@ class var;
 */
 class JUCE_API  PropertySet
 {
+    typedef HashMap<String, String> MapType;
+
 public:
     //==============================================================================
     /** Creates an empty PropertySet.
@@ -75,7 +79,7 @@ public:
         @param keyName              the name of the property to retrieve
         @param defaultReturnValue   a value to return if the named property doesn't actually exist
     */
-    String getValue (StringRef keyName, const String& defaultReturnValue = String()) const noexcept;
+    const String& getValue (const String& keyName, const String& defaultReturnValue = String::empty) const noexcept;
 
     /** Returns one of the properties as an integer.
 
@@ -86,7 +90,7 @@ public:
         @param keyName              the name of the property to retrieve
         @param defaultReturnValue   a value to return if the named property doesn't actually exist
     */
-    int getIntValue (StringRef keyName, int defaultReturnValue = 0) const noexcept;
+    int getIntValue (const String& keyName, int defaultReturnValue = 0) const noexcept;
 
     /** Returns one of the properties as an double.
 
@@ -97,7 +101,7 @@ public:
         @param keyName              the name of the property to retrieve
         @param defaultReturnValue   a value to return if the named property doesn't actually exist
     */
-    double getDoubleValue (StringRef keyName, double defaultReturnValue = 0.0) const noexcept;
+    double getDoubleValue (const String& keyName, double defaultReturnValue = 0.0) const noexcept;
 
     /** Returns one of the properties as an boolean.
 
@@ -111,7 +115,7 @@ public:
         @param keyName              the name of the property to retrieve
         @param defaultReturnValue   a value to return if the named property doesn't actually exist
     */
-    bool getBoolValue (StringRef keyName, bool defaultReturnValue = false) const noexcept;
+    bool getBoolValue (const String& keyName, bool defaultReturnValue = false) const noexcept;
 
     /** Returns one of the properties as an XML element.
 
@@ -124,7 +128,7 @@ public:
 
         @param keyName              the name of the property to retrieve
     */
-    XmlElement* getXmlValue (StringRef keyName) const;
+    XmlElement* getXmlValue (const String& keyName) const;
 
     //==============================================================================
     /** Sets a named property.
@@ -152,17 +156,17 @@ public:
     /** Deletes a property.
         @param keyName      the name of the property to delete. (This mustn't be an empty string)
     */
-    void removeValue (StringRef keyName);
+    void removeValue (const String& keyName);
 
     /** Returns true if the properies include the given key. */
-    bool containsKey (StringRef keyName) const noexcept;
+    bool containsKey (const String& keyName) const noexcept;
 
     /** Removes all values. */
     void clear();
 
     //==============================================================================
     /** Returns the keys/value pair array containing all the properties. */
-    StringPairArray& getAllProperties() noexcept                        { return properties; }
+    HashMap<String, String>& getAllProperties() noexcept                        { return properties; }
 
     /** Returns the lock used when reading or writing to this set */
     const CriticalSection& getLock() const noexcept                     { return lock; }
@@ -205,7 +209,7 @@ protected:
     virtual void propertyChanged();
 
 private:
-    StringPairArray properties;
+    MapType properties;
     PropertySet* fallbackProperties;
     CriticalSection lock;
     bool ignoreCaseOfKeys;
@@ -213,6 +217,6 @@ private:
     JUCE_LEAK_DETECTOR (PropertySet)
 };
 
-}
+} // namespace treecore
 
 #endif   // JUCE_PROPERTYSET_H_INCLUDED

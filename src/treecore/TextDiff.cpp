@@ -171,7 +171,7 @@ TextDiff::TextDiff (const String& original, const String& target)
 String TextDiff::appliedTo (String text) const
 {
     for (int i = 0; i < changes.size(); ++i)
-        text = changes.getReference(i).appliedTo (text);
+        text = changes[i].appliedTo (text);
 
     return text;
 }

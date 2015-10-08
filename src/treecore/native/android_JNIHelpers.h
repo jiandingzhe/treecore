@@ -37,6 +37,10 @@
 extern JNIEnv* getEnv() noexcept;
 
 //==============================================================================
+
+namespace treecore
+{
+
 class GlobalRef
 {
 public:
@@ -424,5 +428,7 @@ DECLARE_JNI_CLASS (Matrix, "android/graphics/Matrix");
 
 DECLARE_JNI_CLASS (RectClass, "android/graphics/Rect");
 #undef JNI_CLASS_MEMBERS
+
+} // namespace treecore
 
 #endif   // JUCE_ANDROID_JNIHELPERS_H_INCLUDED

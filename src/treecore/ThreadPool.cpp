@@ -117,16 +117,16 @@ void ThreadPool::createThreads (int numThreads)
         threads.add (new ThreadPoolThread (*this));
 
     for (int i = threads.size(); --i >= 0;)
-        threads.getUnchecked(i)->startThread();
+        threads[i]->startThread();
 }
 
 void ThreadPool::stopThreads()
 {
     for (int i = threads.size(); --i >= 0;)
-        threads.getUnchecked(i)->signalThreadShouldExit();
+        threads[i]->signalThreadShouldExit();
 
     for (int i = threads.size(); --i >= 0;)
-        threads.getUnchecked(i)->stopThread (500);
+        threads[i]->stopThread (500);
 }
 
 void ThreadPool::addJob (ThreadPoolJob* const job, const bool deleteJobWhenFinished)
@@ -147,7 +147,7 @@ void ThreadPool::addJob (ThreadPoolJob* const job, const bool deleteJobWhenFinis
         }
 
         for (int i = threads.size(); --i >= 0;)
-            threads.getUnchecked(i)->notify();
+            threads[i]->notify();
     }
 }
 
@@ -236,7 +236,7 @@ bool ThreadPool::removeAllJobs (const bool interruptRunningJobs, const int timeO
 
             for (int i = jobs.size(); --i >= 0;)
             {
-                ThreadPoolJob* const job = jobs.getUnchecked(i);
+                ThreadPoolJob* const job = jobs[i];
 
                 if (selectedJobsToRemove == nullptr || selectedJobsToRemove->isJobSuitable (job))
                 {
@@ -263,7 +263,7 @@ bool ThreadPool::removeAllJobs (const bool interruptRunningJobs, const int timeO
     {
         for (int i = jobsToWaitFor.size(); --i >= 0;)
         {
-            ThreadPoolJob* const job = jobsToWaitFor.getUnchecked (i);
+            ThreadPoolJob* const job = jobsToWaitFor[i];
 
             if (! isJobRunning (job))
                 jobsToWaitFor.remove (i);
@@ -288,7 +288,7 @@ StringArray ThreadPool::getNamesOfAllJobs (const bool onlyReturnActiveJobs) cons
 
     for (int i = 0; i < jobs.size(); ++i)
     {
-        const ThreadPoolJob* const job = jobs.getUnchecked(i);
+        const ThreadPoolJob* const job = jobs[i];
         if (job->isActive || ! onlyReturnActiveJobs)
             s.add (job->getJobName());
     }
@@ -301,7 +301,7 @@ bool ThreadPool::setThreadPriorities (const int newPriority)
     bool ok = true;
 
     for (int i = threads.size(); --i >= 0;)
-        if (! threads.getUnchecked(i)->setPriority (newPriority))
+        if (! threads[i]->setPriority (newPriority))
             ok = false;
 
     return ok;

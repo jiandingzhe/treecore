@@ -29,7 +29,7 @@
 #ifndef JUCE_NAMEDVALUESET_H_INCLUDED
 #define JUCE_NAMEDVALUESET_H_INCLUDED
 
-#include "treecore/Array.h"
+#include "treecore/HashMap.h"
 #include "treecore/Variant.h"
 
 namespace treecore {
@@ -47,6 +47,8 @@ class var;
 class JUCE_API  NamedValueSet
 {
 public:
+    typedef HashMap<Identifier, var> MapType;
+
     /** Creates an empty set. */
     NamedValueSet() noexcept;
 
@@ -101,11 +103,6 @@ public:
     */
     bool remove (const Identifier& name);
 
-    /** Returns the name of the value at a given index.
-        The index must be between 0 and size() - 1.
-    */
-    Identifier getName (int index) const noexcept;
-
     /** Returns a pointer to the var that holds a named value, or null if there is
         no value with this name.
 
@@ -113,19 +110,6 @@ public:
         for some reason - for normal reading and writing always prefer operator[]() and set().
     */
     var* getVarPointer (const Identifier& name) const noexcept;
-
-    /** Returns the value of the item at a given index.
-        The index must be between 0 and size() - 1.
-    */
-    const var& getValueAt (int index) const noexcept;
-
-    /** Returns the value of the item at a given index.
-        The index must be between 0 and size() - 1, or this will return a nullptr
-    */
-    var* getVarPointerAt (int index) const noexcept;
-
-    /** Returns the index of the given name, or -1 if it's not found. */
-    int indexOf (const Identifier& name) const noexcept;
 
     /** Removes all values. */
     void clear();
@@ -139,38 +123,22 @@ public:
     */
     void copyToXmlAttributes (XmlElement& xml) const;
 
-private:
-    //==============================================================================
-    struct NamedValue
+    /**
+     * @brief get value storage
+     * @return a hash map stores all values
+     */
+    MapType& getValues() noexcept
     {
-        NamedValue() noexcept{}
-            NamedValue(Identifier n, const var& v) : name(n), value(v) {}
-        NamedValue(const NamedValue& other) : name(other.name), value(other.value) {}
+        return values;
+    }
 
-        NamedValue(NamedValue&& other) noexcept
-            : name(static_cast<Identifier&&> (other.name)),
-            value(static_cast<var&&> (other.value))
-        {
-        }
+    const MapType& getValues() const noexcept
+    {
+        return values;
+    }
 
-        NamedValue(Identifier n, var&& v) : name(n), value(static_cast<var&&> (v))
-        {
-        }
-
-        NamedValue& operator= (NamedValue&& other) noexcept
-        {
-            name = static_cast<Identifier&&> (other.name);
-            value = static_cast<var&&> (other.value);
-            return *this;
-        }
-
-        bool operator== (const NamedValue& other) const noexcept{ return name == other.name && value == other.value; }
-        bool operator!= (const NamedValue& other) const noexcept{ return !operator== (other); }
-
-        Identifier name;
-        var value;
-    };
-    Array<NamedValue> values;
+private:
+    MapType values;
 };
 
 }

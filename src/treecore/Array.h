@@ -30,11 +30,13 @@
 #define JUCE_ARRAY_H_INCLUDED
 
 #include "treecore/ArrayAllocationBase.h"
-#include "treecore/CriticalSection.h"
+#include "treecore/DummyCriticalSection.h"
 #include "treecore/ElementComparator.h"
 #include "treecore/MathsFunctions.h"
 #include "treecore/RefCountObject.h"
 #include "treecore/StandardHeader.h"
+
+class TestFramework;
 
 //==============================================================================
 namespace treecore {
@@ -68,14 +70,12 @@ template <typename ElementType,
           int minimumAllocatedSize = 0>
 class Array: public RefCountObject
 {
-private:
-    typedef PARAMETER_TYPE (ElementType) ParameterType;
-
+    friend class ::TestFramework;
 public:
     //==============================================================================
     /** Creates an empty array. */
     Array() noexcept
-       : numUsed (0)
+        : numUsed (0)
     {
     }
 
@@ -105,7 +105,7 @@ public:
     */
     template <typename TypeToCreateFrom>
     explicit Array (const TypeToCreateFrom* values)
-       : numUsed (0)
+        : numUsed (0)
     {
         while (*values != TypeToCreateFrom())
             add (*values++);
@@ -118,7 +118,7 @@ public:
     */
     template <typename TypeToCreateFrom>
     Array (const TypeToCreateFrom* values, int numValues)
-       : numUsed (numValues)
+        : numUsed (numValues)
     {
         data.setAllocatedSize (numValues);
 
@@ -223,144 +223,140 @@ public:
         return numUsed;
     }
 
-    /** Returns one of the elements in the array.
-        If the index passed in is beyond the range of valid elements, this
-        will return a default value.
-
-        If you're certain that the index will always be a valid element, you
-        can call getUnchecked() instead, which is faster.
-
-        @param index    the index of the element being requested (0 is the first element in the array)
-        @see getUnchecked, getFirst, getLast
+    /**
+     * @brief returns one of the elements in the array
+     *
+     * If the index passed in is beyond the range of valid elements, this will
+     * be an undefined behavior.
+     *
+     * @param index the index of the element being requested (0 is the first
+     *        element in the array)
+     * @see getFirst, getLast
     */
-    ElementType operator[] (const int index) const
+    ElementType& operator[] (const int index) noexcept
     {
         const ScopedLockType lock (getLock());
-
-        if (isPositiveAndBelow (index, numUsed))
-        {
-            jassert (data.elements != nullptr);
-            return data.elements [index];
-        }
-
-        return ElementType();
-    }
-
-    /** Returns one of the elements in the array, without checking the index passed in.
-
-        Unlike the operator[] method, this will try to return an element without
-        checking that the index is within the bounds of the array, so should only
-        be used when you're confident that it will always be a valid index.
-
-        @param index    the index of the element being requested (0 is the first element in the array)
-        @see operator[], getFirst, getLast
-    */
-    inline ElementType getUnchecked (const int index) const
-    {
-        const ScopedLockType lock (getLock());
-        jassert (isPositiveAndBelow (index, numUsed) && data.elements != nullptr);
+        jassert(isPositiveAndBelow (index, numUsed));
+        jassert (data.elements != nullptr);
         return data.elements [index];
     }
 
-    /** Returns a direct reference to one of the elements in the array, without checking the index passed in.
-
-        This is like getUnchecked, but returns a direct reference to the element, so that
-        you can alter it directly. Obviously this can be dangerous, so only use it when
-        absolutely necessary.
-
-        @param index    the index of the element being requested (0 is the first element in the array)
-        @see operator[], getFirst, getLast
-    */
-    inline ElementType& getReference (const int index) const noexcept
+    const ElementType& operator[] (const int index) const noexcept
     {
         const ScopedLockType lock (getLock());
-        jassert (isPositiveAndBelow (index, numUsed) && data.elements != nullptr);
+        jassert(isPositiveAndBelow (index, numUsed));
+        jassert (data.elements != nullptr);
         return data.elements [index];
     }
 
-    /** Returns the first element in the array, or a default value if the array is empty.
-
-        @see operator[], getUnchecked, getLast
-    */
-    inline ElementType getFirst() const
+    /**
+     * @brief Returns the first element in the array
+     *
+     * Undefined behavior if the array is empty.
+     *
+     * @see operator[], getLast
+     */
+    inline ElementType& getFirst() noexcept
     {
         const ScopedLockType lock (getLock());
-
-        if (numUsed > 0)
-        {
-            jassert (data.elements != nullptr);
-            return data.elements[0];
-        }
-
-        return ElementType();
+        jassert(numUsed > 0);
+        jassert (data.elements != nullptr);
+        return data.elements[0];
     }
 
-    /** Returns the last element in the array, or a default value if the array is empty.
-
-        @see operator[], getUnchecked, getFirst
-    */
-    inline ElementType getLast() const
+    inline const ElementType& getFirst() const noexcept
     {
         const ScopedLockType lock (getLock());
-
-        if (numUsed > 0)
-        {
-            jassert (data.elements != nullptr);
-            return data.elements[numUsed - 1];
-        }
-
-        return ElementType();
+        jassert(numUsed > 0);
+        jassert (data.elements != nullptr);
+        return data.elements[0];
     }
 
-    /** Returns a pointer to the actual array data.
-        This pointer will only be valid until the next time a non-const method
-        is called on the array.
-    */
+    /**
+     * @brief Returns the last element in the array
+     *
+     * Undefined behavior if the array is empty.
+     *
+     * @see operator[], getFirst
+     */
+    inline ElementType& getLast() noexcept
+    {
+        const ScopedLockType lock (getLock());
+        jassert(numUsed > 0);
+        jassert(data.elements != nullptr);
+        return data.elements[numUsed - 1];
+    }
+
+    inline const ElementType& getLast() const noexcept
+    {
+        const ScopedLockType lock (getLock());
+        jassert(numUsed > 0);
+        jassert(data.elements != nullptr);
+        return data.elements[numUsed - 1];
+    }
+
+    /** @brief returns a pointer to the actual array data
+     *
+     * This pointer will only be valid until the next time a non-const method
+     * is called on the array.
+     */
     inline ElementType* getRawDataPointer() noexcept
     {
         return data.elements;
     }
 
-    /**
-     * Returns a const pointer to the actual array data.
-     */
     inline const ElementType* getRawDataConstPointer() const noexcept
     {
         return data.elements;
     }
 
     //==============================================================================
-    /** Returns a pointer to the first element in the array.
-        This method is provided for compatibility with standard C++ iteration mechanisms.
-    */
-    inline ElementType* begin() const noexcept
+    /**
+     * @brief returns a pointer to the first element in the array
+     *
+     * This method is provided for compatibility with standard C++ iteration mechanisms.
+     */
+    inline ElementType* begin() noexcept
     {
         return data.elements;
     }
 
-    /** Returns a pointer to the element which follows the last element in the array.
-        This method is provided for compatibility with standard C++ iteration mechanisms.
-    */
-    inline ElementType* end() const noexcept
+    inline const ElementType* begin() const noexcept
     {
-       #if JUCE_DEBUG
-        if (data.elements == nullptr || numUsed <= 0) // (to keep static analysers happy)
-            return data.elements;
-       #endif
+        return data.elements;
+    }
 
+    /**
+     * @brief returns a pointer to the element one after the last element in the
+     *        array
+     *
+     * This method is provided for compatibility with standard C++ iteration
+     * mechanisms.
+     */
+    inline ElementType* end() noexcept
+    {
+        jassert(data.elements != nullptr);
+        return data.elements + numUsed;
+    }
+
+    inline const ElementType* end() const noexcept
+    {
+        jassert(data.elements != nullptr);
         return data.elements + numUsed;
     }
 
     //==============================================================================
-    /** Finds the index of the first element which matches the value passed in.
-
-        This will search the array for the given object, and return the index
-        of its first occurrence. If the object isn't found, the method will return -1.
-
-        @param elementToLookFor   the value or object to look for
-        @returns                  the index of the object, or -1 if it's not found
-    */
-    int indexOf (ParameterType elementToLookFor) const
+    /**
+     * @brief finds the index of the first element which matches the value
+     *        passed in
+     *
+     * This will search the array for the given object, and return the index
+     * of its first occurrence. If the object isn't found, the method will return -1.
+     *
+     * @param elementToLookFor   the value or object to look for
+     * @returns the index of the object, or -1 if it's not found
+     */
+    int indexOf (const ElementType& elementToLookFor) const noexcept
     {
         const ScopedLockType lock (getLock());
         const ElementType* e = data.elements.getData();
@@ -378,7 +374,7 @@ public:
         @param elementToLookFor     the value or object to look for
         @returns                    true if the item is found
     */
-    bool contains (ParameterType elementToLookFor) const
+    bool contains (const ElementType& elementToLookFor) const noexcept
     {
         const ScopedLockType lock (getLock());
         const ElementType* e = data.elements.getData();
@@ -428,7 +424,7 @@ public:
         @param newElement         the new object to add to the array
         @see add, addSorted, addUsingDefaultSort, set
     */
-    void insert (int indexToInsertAt, ParameterType newElement)
+    void insert (int indexToInsertAt, const ElementType& newElement)
     {
         const ScopedLockType lock (getLock());
         data.ensureAllocatedSize (numUsed + 1);
@@ -463,7 +459,7 @@ public:
         @param numberOfTimesToInsertIt  how many copies of the value to insert
         @see insert, add, addSorted, set
     */
-    void insertMultiple (int indexToInsertAt, ParameterType newElement,
+    void insertMultiple (int indexToInsertAt, const ElementType& newElement,
                          int numberOfTimesToInsertIt)
     {
         if (numberOfTimesToInsertIt > 0)
@@ -538,7 +534,7 @@ public:
 
         @param newElement   the new object to add to the array
     */
-    void addIfNotAlreadyThere (ParameterType newElement)
+    void addIfNotAlreadyThere (const ElementType& newElement)
     {
         const ScopedLockType lock (getLock());
 
@@ -553,9 +549,9 @@ public:
 
         @param indexToChange    the index whose value you want to change
         @param newValue         the new value to set for this index.
-        @see add, insert
+        @see add, insert, operator[]
     */
-    void set (const int indexToChange, ParameterType newValue)
+    void setOrAppend(const int indexToChange, const ElementType& newValue)
     {
         jassert (indexToChange >= 0);
         const ScopedLockType lock (getLock());
@@ -570,22 +566,6 @@ public:
             data.ensureAllocatedSize (numUsed + 1);
             new (data.elements + numUsed++) ElementType (newValue);
         }
-    }
-
-    /** Replaces an element with a new value without doing any bounds-checking.
-
-        This just sets a value directly in the array's internal storage, so you'd
-        better make sure it's in range!
-
-        @param indexToChange    the index whose value you want to change
-        @param newValue         the new value to set for this index.
-        @see set, getUnchecked
-    */
-    void setUnchecked (const int indexToChange, ParameterType newValue)
-    {
-        const ScopedLockType lock (getLock());
-        jassert (isPositiveAndBelow (indexToChange, numUsed));
-        data.elements [indexToChange] = newValue;
     }
 
     /** Adds elements from an array to the end of this array.
@@ -671,7 +651,7 @@ public:
                 numElementsToAdd = arrayToAddFrom.size() - startIndex;
 
             while (--numElementsToAdd >= 0)
-                add (arrayToAddFrom.getUnchecked (startIndex++));
+                add (arrayToAddFrom[startIndex++]);
         }
     }
 
@@ -706,7 +686,7 @@ public:
         @see addUsingDefaultSort, add, sort
     */
     template <class ElementComparator>
-    int addSorted (ElementComparator& comparator, ParameterType newElement)
+    int addSorted (ElementComparator& comparator, const ElementType& newElement)
     {
         const ScopedLockType lock (getLock());
         const int index = findInsertIndexInSortedArray (comparator, data.elements.getData(), newElement, 0, numUsed);
@@ -723,7 +703,7 @@ public:
         @param newElement   the new element to insert to the array
         @see addSorted, sort
     */
-    void addUsingDefaultSort (ParameterType newElement)
+    void addUsingDefaultSort (const ElementType& newElement)
     {
         DefaultElementComparator <ElementType> comparator;
         addSorted (comparator, newElement);
@@ -745,7 +725,7 @@ public:
     int indexOfSorted (ElementComparator& comparator, TargetValueType elementToLookFor) const
     {
         (void) comparator;  // if you pass in an object with a static compareElements() method, this
-                            // avoids getting warning messages about the parameter being unused
+        // avoids getting warning messages about the parameter being unused
 
         const ScopedLockType lock (getLock());
 
@@ -802,7 +782,7 @@ public:
         @param valueToRemove   the object to try to remove
         @see remove, removeRange
     */
-    void removeFirstMatchingValue (ParameterType valueToRemove)
+    void removeFirstMatchingValue (const ElementType& valueToRemove)
     {
         const ScopedLockType lock (getLock());
         ElementType* const e = data.elements;
@@ -825,7 +805,7 @@ public:
         @param valueToRemove   the object to try to remove
         @see remove, removeRange
     */
-    void removeAllInstancesOf (ParameterType valueToRemove)
+    void removeAllInstancesOf (const ElementType& valueToRemove)
     {
         const ScopedLockType lock (getLock());
 
@@ -956,7 +936,7 @@ public:
         const ScopedLockType lock (getLock());
 
         if (isPositiveAndBelow (index1, numUsed)
-             && isPositiveAndBelow (index2, numUsed))
+                && isPositiveAndBelow (index2, numUsed))
         {
             std::swap (data.elements [index1],
                        data.elements [index2]);
@@ -1067,7 +1047,7 @@ public:
     {
         const ScopedLockType lock (getLock());
         (void) comparator;  // if you pass in an object with a static compareElements() method, this
-                            // avoids getting warning messages about the parameter being unused
+        // avoids getting warning messages about the parameter being unused
         sortArray (comparator, data.elements.getData(), 0, size() - 1, retainOrderOfEquivalentItems);
     }
 
@@ -1083,15 +1063,15 @@ public:
 
 
     //==============================================================================
-   #ifndef DOXYGEN
+#ifndef DOXYGEN
     // Note that the swapWithArray method has been replaced by a more flexible templated version,
     // and renamed "swapWith" to be more consistent with the names used in other classes.
     JUCE_DEPRECATED_WITH_BODY (void swapWithArray (Array& other) noexcept, { swapWith (other); })
-   #endif
+#endif
 
-private:
-    //==============================================================================
-    ArrayAllocationBase <ElementType, TypeOfCriticalSectionToUse, align_size> data;
+    private:
+        //==============================================================================
+        ArrayAllocationBase <ElementType, TypeOfCriticalSectionToUse, align_size> data;
     int numUsed;
 
     void removeInternal (const int indexToRemove)

@@ -32,6 +32,7 @@
 #include "treecore/Array.h"
 #include "treecore/LeakedObjectDetector.h"
 #include "treecore/String.h"
+#include "treecore/StringRef.h"
 
 namespace treecore {
 
@@ -39,7 +40,7 @@ namespace treecore {
 /**
     A special array for holding a list of strings.
 
-    @see String, StringPairArray
+    @see Array String
 */
 class JUCE_API  StringArray
 {
@@ -98,7 +99,11 @@ public:
     StringArray& operator= (StringArray&&) noexcept;
 
     /** Swaps the contents of this and another StringArray. */
-    void swapWith (StringArray&) noexcept;
+    void swapWith (StringArray& other) noexcept
+    {
+        strings.swapWith (other.strings);
+    }
+
 
     //==============================================================================
     /** Compares two arrays.
@@ -117,30 +122,49 @@ public:
     /** Returns the number of strings in the array */
     inline int size() const noexcept                                    { return strings.size(); };
 
-    /** Returns one of the strings from the array.
+    /**
+     * @brief returns one of the strings from the array.
 
-        If the index is out-of-range, an empty string is returned.
+        It is undefined behavior if the index is out-of-range.
 
         Obviously the reference returned shouldn't be stored for later use, as the
         string it refers to may disappear when the array changes.
     */
-    const String& operator[] (int index) const noexcept;
+    String& operator[] (int index) noexcept
+    {
+        return strings[index];
+    }
 
-    /** Returns a reference to one of the strings in the array.
-        This lets you modify a string in-place in the array, but you must be sure that
-        the index is in-range.
-    */
-    String& getReference (int index) noexcept;
+    const String& operator[] (int index) const noexcept
+    {
+        return strings[index];
+    }
 
     /** Returns a pointer to the first String in the array.
         This method is provided for compatibility with standard C++ iteration mechanisms.
     */
-    inline String* begin() const noexcept       { return strings.begin(); }
+    inline String* begin() noexcept
+    {
+        return strings.begin();
+    }
+
+    inline const String* begin() const noexcept
+    {
+        return strings.begin();
+    }
 
     /** Returns a pointer to the String which follows the last element in the array.
         This method is provided for compatibility with standard C++ iteration mechanisms.
     */
-    inline String* end() const noexcept         { return strings.end(); }
+    inline String* end() noexcept
+    {
+        return strings.end();
+    }
+
+    inline const String* end() const noexcept
+    {
+        return strings.end();
+    }
 
     /** Searches for a string in the array.
 
@@ -149,7 +173,10 @@ public:
         @returns    true if the string is found inside the array
     */
     bool contains (StringRef stringToLookFor,
-                   bool ignoreCase = false) const;
+                   bool ignoreCase = false) const noexcept
+    {
+        return indexOf (stringToLookFor, ignoreCase) >= 0;
+    }
 
     /** Searches for a string in the array.
 
@@ -161,16 +188,20 @@ public:
         @returns                the index of the first occurrence of the string in this array,
                                 or -1 if it isn't found.
     */
-    int indexOf (StringRef stringToLookFor,
-                 bool ignoreCase = false,
-                 int startIndex = 0) const;
+    int indexOf (StringRef stringToLookFor, bool ignoreCase = false, int startIndex = 0) const noexcept;
 
     //==============================================================================
     /** Appends a string at the end of the array. */
-    void add (const String& stringToAdd);
+    void add (const String& stringToAdd)
+    {
+        strings.add(stringToAdd);
+    }
 
     /** Appends a string at the end of the array. */
-    void add (String&& stringToAdd);
+    void add (String&& stringToAdd)
+    {
+        strings.add(stringToAdd);
+    }
 
     /** Inserts a string into the array.
 
@@ -179,19 +210,15 @@ public:
         If the index is less than zero or greater than the size of the array,
         the new string will be added to the end of the array.
     */
-    void insert (int index, const String& stringToAdd);
+    void insert (int index, const String& stringToAdd)
+    {
+        strings.insert (index, stringToAdd);
+    }
 
     /** Adds a string to the array as long as it's not already in there.
         The search can optionally be case-insensitive.
     */
     void addIfNotAlreadyThere (const String& stringToAdd, bool ignoreCase = false);
-
-    /** Replaces one of the strings in the array with another one.
-
-        If the index is higher than the array's size, the new string will be
-        added to the end of the array; if it's less than zero nothing happens.
-    */
-    void set (int index, const String& newString);
 
     /** Appends some strings from another array to the end of this one.
 
@@ -211,7 +238,10 @@ public:
         @returns    the number of tokens added
         @see fromTokens
     */
-    int addTokens (StringRef stringToTokenise, bool preserveQuotedStrings);
+    int addTokens (StringRef text, bool preserveQuotedStrings)
+    {
+        return addTokens (text, " \n\r\t", preserveQuotedStrings ? "\"" : "");
+    }
 
     /** Breaks up a string into tokens and adds them to this array.
 
@@ -275,17 +305,26 @@ public:
 
     //==============================================================================
     /** Removes all elements from the array. */
-    void clear();
+    void clear()
+    {
+        strings.clear();
+    }
 
     /** Removes all elements from the array without freeing the array's allocated storage.
         @see clear
     */
-    void clearQuick();
+    void clearQuick()
+    {
+        strings.clearQuick();
+    }
 
     /** Removes a string from the array.
         If the index is out-of-range, no action will be taken.
     */
-    void remove (int index);
+    void remove (int index)
+    {
+        strings.remove (index);
+    }
 
     /** Finds a string in the array and removes it.
         This will remove the first occurrence of the given string from the array. The
@@ -305,7 +344,10 @@ public:
         @param startIndex       the index of the first element to remove
         @param numberToRemove   how many elements should be removed
     */
-    void removeRange (int startIndex, int numberToRemove);
+    void removeRange (int startIndex, int numberToRemove)
+    {
+        strings.removeRange (startIndex, numberToRemove);
+    }
 
     /** Removes any duplicated elements from the array.
 
@@ -336,7 +378,10 @@ public:
                                 is less than zero, the value will be moved to the end
                                 of the array
     */
-    void move (int currentIndex, int newIndex) noexcept;
+    void move (int currentIndex, int newIndex) noexcept
+    {
+        strings.move (currentIndex, newIndex);
+    }
 
     /** Deletes any whitespace characters from the starts and ends of all the strings. */
     void trim();
@@ -397,7 +442,10 @@ public:
         the array won't have to keep dynamically resizing itself as the elements
         are added, and it'll therefore be more efficient.
     */
-    void ensureStorageAllocated (int minNumElements);
+    void ensureStorageAllocated (int minNumElements)
+    {
+        strings.ensureStorageAllocated (minNumElements);
+    }
 
     /** Reduces the amount of storage being used by the array.
 
@@ -405,7 +453,10 @@ public:
         removing elements, they may have quite a lot of unused space allocated.
         This method will reduce the amount of allocated storage to a minimum.
     */
-    void minimiseStorageOverheads();
+    void minimiseStorageOverheads()
+    {
+        strings.minimiseStorageOverheads();
+    }
 
     /** This is the array holding the actual strings. This is public to allow direct access
         to array methods that may not already be provided by the StringArray class.

@@ -27,6 +27,7 @@
 */
 
 #include "treecore/ByteOrder.h"
+#include "treecore/CriticalSection.h"
 #include "treecore/FileInputStream.h"
 #include "treecore/InputStream.h"
 #include "treecore/MemoryBlock.h"

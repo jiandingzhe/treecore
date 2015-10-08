@@ -338,7 +338,7 @@ public:
 
         if (const Array<var>* array = toArray (original.value))
             for (int i = 0; i < array->size(); ++i)
-                arrayCopy.add (array->getReference(i).clone());
+                arrayCopy.add (array->operator[](i).clone());
 
         return var (arrayCopy);
     }
@@ -352,7 +352,7 @@ public:
             buffer.writeCompressedInt (numItems);
 
             for (int i = 0; i < numItems; ++i)
-                array->getReference(i).writeToStream (buffer);
+                array->operator[](i).writeToStream (buffer);
 
             output.writeCompressedInt (1 + (int) buffer.getDataSize());
             output.writeByte (varMarker_Array);
@@ -664,18 +664,18 @@ const var& var::operator[] (int arrayIndex) const
     // must be in-range!
     jassert (array != nullptr && isPositiveAndBelow (arrayIndex, array->size()));
 
-    return array->getReference (arrayIndex);
+    return array->operator[](arrayIndex);
 }
 
 var& var::operator[] (int arrayIndex)
 {
-    const Array<var>* const array = getArray();
+    Array<var>* const array = getArray();
 
     // When using this method, the var must actually be an array, and the index
     // must be in-range!
     jassert (array != nullptr && isPositiveAndBelow (arrayIndex, array->size()));
 
-    return array->getReference (arrayIndex);
+    return array->operator[](arrayIndex);
 }
 
 Array<var>* var::convertToArray()
