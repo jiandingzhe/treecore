@@ -363,7 +363,6 @@ public:
         return entry->item.value;
     }
 
-    //==============================================================================
     /**
      * Returns true if the map contains an item with the specied key.
      */
@@ -463,7 +462,7 @@ public:
     {
         LOCK_HASH_MAP;
 
-        for (int i = 0; i < m_impl.buckets; i++)
+        for (int i = 0; i < m_impl.buckets.size(); i++)
         {
             for (const EntryType* entry = m_impl.buckets[i]; entry != nullptr; entry = entry->next_entry)
             {
@@ -569,12 +568,12 @@ public:
      * @return number of buckets
      * @see size()
      */
-    inline int getNumBuckets() const noexcept
+    inline int numBuckets() const noexcept
     {
         return m_impl.buckets.size();
     }
 
-    inline int getNumUsedBuckets() const noexcept
+    inline int numUsedBuckets() const noexcept
     {
         LOCK_HASH_MAP;
         return m_impl.num_used_buckets();

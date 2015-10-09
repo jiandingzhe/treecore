@@ -73,7 +73,7 @@ struct HashTableBase
         {
             if (i_bucket == -1)
             {
-                move_to_next_valid_entry();
+                return move_to_next_valid_slot();
             }
             else
             {
