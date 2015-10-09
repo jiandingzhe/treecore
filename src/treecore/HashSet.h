@@ -44,44 +44,10 @@ public:
     class Iterator
     {
         friend class HashSet;
-        typedef typename TableImplType::template IteratorBase<TableImplType&, EntryType*> ItImplType;
+        typedef typename TableImplType::template IteratorBase<const TableImplType&, const EntryType*> ItImplType;
 
     public:
-        Iterator(HashSet& target): m_impl(target.m_impl)
-        {
-        }
-
-        /**
-         * @brief move iterator to next value
-         * @return false if next value exceeds table end
-         */
-        bool next()
-        {
-            return m_impl.next();
-        }
-
-        inline bool hasContent() const noexcept
-        {
-            return m_impl.entry;
-        }
-
-        inline const KeyType& content() const noexcept
-        {
-            jassert(m_impl.entry != nullptr)
-            return m_impl.entry->item.key;
-        }
-
-    protected:
-        ItImplType m_impl;
-    };
-
-    class ConstIterator
-    {
-        friend class HashSet;
-        typedef typename TableImplType::template IteratorBase<const TableImplType&, EntryType*> ItImplType;
-
-    public:
-        ConstIterator(const HashSet& target): m_impl(target.m_impl)
+        Iterator(const HashSet& target): m_impl(target.m_impl)
         {
         }
 
@@ -206,21 +172,6 @@ public:
         LOCK_THIS_OBJECT;
         int i_bucket = m_impl.bucket_index(content);
         EntryType* entry = m_impl.search_entry_at(i_bucket, content);
-
-        if (entry)
-        {
-            result.m_impl.i_bucket = i_bucket;
-            result.m_impl.entry    = entry;
-        }
-
-        return entry;
-    }
-
-    bool select(const KeyType& key, ConstIterator& result) const noexcept
-    {
-        LOCK_THIS_OBJECT;
-        int i_bucket = m_impl.bucket_index(key);
-        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
 
         if (entry)
         {

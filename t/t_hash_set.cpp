@@ -28,9 +28,13 @@ void TestFramework::content()
     OK(set.contains(2));
     OK(set.contains(10));
 
+
+    // test for iterators
     {
         HashSet<int>::Iterator it(set);
+        OK(!it.hasContent());
         OK(!set.insertOrSelect(10, it));
+        OK(it.hasContent());
         IS(it.content(), 10);
         IS(set.size(), 3);
         OK(set.contains(1));
@@ -40,7 +44,9 @@ void TestFramework::content()
 
     {
         HashSet<int>::Iterator it(set);
+        OK(!it.hasContent());
         OK(set.insertOrSelect(17, it));
+        OK(it.hasContent());
         IS(it.content(), 17);
         IS(set.size(), 4);
         OK(set.contains(1));
@@ -49,7 +55,21 @@ void TestFramework::content()
         OK(set.contains(17));
     }
 
+    {
+        HashSet<int>::Iterator it(set);
+        OK(!it.hasContent());
 
+        OK(!set.select(12345, it));
+        OK(!it.hasContent());
+
+        OK(set.select(2, it));
+        OK(it.hasContent());
+        IS(it.content(), 2);
+
+        OK(!set.select(6789, it));
+        OK(it.hasContent());
+        IS(it.content(), 2);
+    }
 
     OK("iterate through items");
 
@@ -63,6 +83,7 @@ void TestFramework::content()
 
         while (it.next())
         {
+            OK(it.hasContent());
             switch (it.content())
             {
             case 1:
@@ -75,6 +96,7 @@ void TestFramework::content()
                 got_17 = true; n_got++; break;
             default:
                 fprintf(stderr, "iterator got invalid value %d\n", it.content());
+                abort();
             }
         }
 
