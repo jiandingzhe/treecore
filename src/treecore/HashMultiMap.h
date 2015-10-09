@@ -291,22 +291,19 @@ public:
         LOCK_THIS_OBJECT;
         int i_bucket = m_impl.bucket_index(key);
 
-        // try to get existing entry
+        // try to get existing entry, or create new entry
         EntryType* entry = m_impl.search_entry_at(i_bucket, key);
 
-        if (entry)
+        if (!entry)
         {
-            entry->item.values.add(value);
-        }
-        else
-        {
-            // create new entry
             entry = m_impl.create_entry_at(i_bucket, MultiItem{key});
 
             if (m_impl.high_fill_rate())
                 m_impl.expand_buckets();
         }
 
+        // store value
+        entry->item.values.add(value);
         m_num_values++;
     }
 
@@ -322,16 +319,11 @@ public:
         LOCK_THIS_OBJECT;
         int i_bucket = m_impl.bucket_index(key);
 
-        // try to get existing entry
+        // try to get existing entry or create new entry
         EntryType* entry = m_impl.search_entry_at(i_bucket, key);
 
         if (entry)
         {
-            entry->item.values.add(value);
-        }
-        else
-        {
-            // create new entry
             entry = m_impl.create_entry_at(i_bucket, MultiItem{key});
 
             if (m_impl.high_fill_rate())
@@ -341,8 +333,11 @@ public:
             }
         }
 
+        // store value
+        entry->item.values.add(value);
         m_num_values++;
 
+        // fill result iterator
         result.m_impl.entry = entry;
         result.m_impl.i_bucket = i_bucket;
         result.m_i_value = entry->item.values.size() - 1;

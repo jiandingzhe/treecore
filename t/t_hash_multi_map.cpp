@@ -142,7 +142,7 @@ void TestFramework::content()
                 OK(it.hasContent());
                 IS(it.values().size(), 1);
 
-                if (it.value() == 700)
+                if (it.value() == 1)
                     got_700_1 = true;
                 else
                     abort();
@@ -202,7 +202,7 @@ void TestFramework::content()
                 OK(it.hasContent());
                 IS(it.values().size(), 1);
 
-                if (it.value() == 700)
+                if (it.value() == 1)
                     got_700_1 = true;
                 else
                     abort();
@@ -283,7 +283,7 @@ void TestFramework::content()
                 OK(it.hasContent());
                 IS(it.values().size(), 1);
 
-                if (it.value() == 700)
+                if (it.value() == 1)
                     got_700_1 = true;
                 else
                     abort();
@@ -332,7 +332,7 @@ void TestFramework::content()
                 OK(it.hasContent());
                 IS(it.values().size(), 1);
 
-                if (it.value() == 700)
+                if (it.value() == 1)
                     got_700_1 = true;
                 else
                     abort();
