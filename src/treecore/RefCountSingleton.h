@@ -17,22 +17,31 @@ class RefCountSingleton
     friend class ::TestFramework;
 
 public:
+    /**
+     * @brief get object global instance or build it
+     * @return a pointer object
+     */
     static T* getInstance()
     {
+        T* tmp = nullptr;
+
         // early out
-        T* tmp = m_instance.get();
-        if (tmp)
-            return tmp;
+        if (!m_building)
+        {
+            tmp = m_instance.load();
+            if (tmp)
+                return tmp;
+        }
 
         // do build
         while(m_building.compare_set(0, 1))
             Thread::yield();
 
-        tmp = m_instance.get();
+        tmp = m_instance.load();
         if (!tmp)
         {
             tmp = new T();
-            smart_ref(tmp); // unqualified call to smart_ref
+            smart_ref(tmp);
             m_instance = tmp;
         }
 
@@ -42,10 +51,14 @@ public:
         return tmp;
     }
 
+    /**
+     * @brief release global hold of the instance
+     * @return remaining reference count after unhold
+     */
     static int32 releaseInstance()
     {
         // early out if it is already empty
-        T* tmp = m_instance.get();
+        T* tmp = m_instance.load();
         if (!tmp)
             return -1;
 
@@ -60,25 +73,30 @@ public:
         while (m_building.compare_set(0, 1))
             Thread::yield();
 
-        m_instance = nullptr;
-        int32 cnt = smart_unref(tmp);
+        tmp = m_instance.load();
+        int cnt_before_release = -1;
+        if (tmp)
+        {
+            cnt_before_release = smart_unref(tmp);
+            m_instance = nullptr;
+        }
 
         while (m_building.compare_set(1, 0))
             Thread::yield();
 
-        return cnt;
+        return cnt_before_release;
     }
 
 private:
     static AtomicObject<int> m_building;
-    static RefCountHolder<T> m_instance;
+    static AtomicObject<T*> m_instance;
 };
 
 template<typename T>
-TREECORE_SELECT_ANY AtomicObject<int> RefCountSingleton<T>::m_building(0);
+TREECORE_SELECT_ANY AtomicObject<int> RefCountSingleton<T>::m_building;
 
 template<typename T>
-TREECORE_SELECT_ANY RefCountHolder<T> RefCountSingleton<T>::m_instance(nullptr);
+TREECORE_SELECT_ANY AtomicObject<T*> RefCountSingleton<T>::m_instance(nullptr);
 
 
 } // namespace treecore

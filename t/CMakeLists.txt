@@ -5,6 +5,8 @@ endif()
 
 enable_testing()
 
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/zip_input.zip DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 foreach(test_name
     t_aligned_array
     t_aligned_malloc

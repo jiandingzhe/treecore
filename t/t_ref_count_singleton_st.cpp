@@ -23,7 +23,11 @@ void TestFramework::content()
 
     bool flag = true;
     obj->flag = &flag;
-    treecore::RefCountSingleton<Foo>::releaseInstance();
+    IS(treecore::RefCountSingleton<Foo>::releaseInstance(), 0);
     OK(!flag);
+
+    flag = true;
+    IS(treecore::RefCountSingleton<Foo>::releaseInstance(), -1);
+    OK(flag);
 }
 
