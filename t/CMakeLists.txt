@@ -25,6 +25,7 @@ foreach(test_name
     t_sorted_set
     t_string_pool
     t_var
+    t_weak_ptr
     t_zip_file
 )
     add_executable(${test_name} ${test_name}.cpp)
