@@ -40,91 +40,93 @@
 
 /** This macro defines the C calling convention used as the standard for Juce calls. */
 #if defined TREECORE_COMPILER_MSVC
- #define JUCE_CALLTYPE   __stdcall
- #define JUCE_CDECL      __cdecl
+#  define JUCE_CALLTYPE   __stdcall
+#  define JUCE_CDECL      __cdecl
 #else
- #define JUCE_CALLTYPE
- #define JUCE_CDECL
+#  define JUCE_CALLTYPE
+#  define JUCE_CDECL
 #endif
 
 //==============================================================================
 #if defined TREECORE_OS_IOS || defined TREECORE_OS_LINUX || defined TREECORE_OS_ANDROID || defined TREECORE_CPU_PPC
-  /** This will try to break into the debugger if the app is currently being debugged.
+/** This will try to break into the debugger if the app is currently being debugged.
       If called by an app that's not being debugged, the behaiour isn't defined - it may crash or not, depending
       on the platform.
       @see jassert()
   */
-  #define juce_breakDebugger        { ::kill (0, SIGTRAP); }
+#  define juce_breakDebugger        { ::kill (0, SIGTRAP); }
 #elif JUCE_USE_INTRINSICS
-  #ifndef TREECORE_COMPILER_ICC
-    #pragma intrinsic (__debugbreak)
-  #endif
-  #define juce_breakDebugger        { __debugbreak(); }
+#  ifndef TREECORE_COMPILER_ICC
+#    pragma intrinsic (__debugbreak)
+#  endif
+#  define juce_breakDebugger        { __debugbreak(); }
 #elif defined TREECORE_COMPILER_GCC || defined TREECORE_OS_OSX
-  #if JUCE_NO_INLINE_ASM
-   #define juce_breakDebugger       { }
-  #else
-   #define juce_breakDebugger       { asm ("int $3"); }
-  #endif
+#  if JUCE_NO_INLINE_ASM
+#    define juce_breakDebugger       { }
+#  else
+#    define juce_breakDebugger       { asm ("int $3"); }
+#  endif
 #else
-  #define juce_breakDebugger        { __asm int 3 }
+#  define juce_breakDebugger        { __asm int 3 }
 #endif
 
 #if defined TREECORE_COMPILER_CLANG && defined (__has_feature) && ! defined (JUCE_ANALYZER_NORETURN)
- #if __has_feature (attribute_analyzer_noreturn)
-  inline void __attribute__((analyzer_noreturn)) juce_assert_noreturn() {}
-  #define JUCE_ANALYZER_NORETURN juce_assert_noreturn();
- #endif
+#  if __has_feature (attribute_analyzer_noreturn)
+inline void __attribute__((analyzer_noreturn)) juce_assert_noreturn() {}
+#    define JUCE_ANALYZER_NORETURN juce_assert_noreturn();
+#  endif
 #endif
 
 #ifndef JUCE_ANALYZER_NORETURN
- #define JUCE_ANALYZER_NORETURN
+#  define JUCE_ANALYZER_NORETURN
 #endif
 
 #if JUCE_LOG_ASSERTIONS || JUCE_DEBUG
- #define juce_LogCurrentAssertion    treecore::logAssertion (__FILE__, __LINE__);
+#  define juce_LogCurrentAssertion    treecore::logAssertion (__FILE__, __LINE__);
 #else
- #define juce_LogCurrentAssertion
+#  define juce_LogCurrentAssertion
 #endif
 
 //==============================================================================
 #if JUCE_DEBUG || DOXYGEN
-  /** Writes a string to the standard error stream.
+/** Writes a string to the standard error stream.
       This is only compiled in a debug build.
       @see Logger::outputDebugString
   */
-  #define DBG(dbgtext)              { treecore::String tempDbgBuf; tempDbgBuf << dbgtext; treecore::Logger::outputDebugString (tempDbgBuf); }
+#  define DBG(dbgtext)              { treecore::String tempDbgBuf; tempDbgBuf << dbgtext; treecore::Logger::outputDebugString (tempDbgBuf); }
 
-  //==============================================================================
-  /** This will always cause an assertion failure.
+//==============================================================================
+/** This will always cause an assertion failure.
       It is only compiled in a debug build, (unless JUCE_LOG_ASSERTIONS is enabled for your build).
       @see jassert
   */
-  #define jassertfalse              { juce_LogCurrentAssertion; if (treecore::juce_isRunningUnderDebugger()) juce_breakDebugger; JUCE_ANALYZER_NORETURN }
+#  define jassertfalse              { juce_LogCurrentAssertion; if (treecore::juce_isRunningUnderDebugger()) juce_breakDebugger; JUCE_ANALYZER_NORETURN }
 
-  //==============================================================================
-  /** Platform-independent assertion macro.
+//==============================================================================
+/** Platform-independent assertion macro.
 
       This macro gets turned into a no-op when you're building with debugging turned off, so be
       careful that the expression you pass to it doesn't perform any actions that are vital for the
       correct behaviour of your program!
       @see jassertfalse
   */
-  #define jassert(expression)       { if (! (expression)) jassertfalse; }
+#  define jassert(expression)       { if (! (expression)) jassertfalse; }
+
+#  define DBGCODE(...) __VA_ARGS__
 
 #else
-  //==============================================================================
-  // If debugging is disabled, these dummy debug and assertion macros are used..
+//==============================================================================
+// If debugging is disabled, these dummy debug and assertion macros are used..
 
-  #define DBG(dbgtext)
-  #define jassertfalse              { juce_LogCurrentAssertion }
+#  define DBG(dbgtext)
+#  define jassertfalse              { juce_LogCurrentAssertion }
 
-  #if JUCE_LOG_ASSERTIONS
-   #define jassert(expression)      { if (! (expression)) jassertfalse; }
-  #else
-   #define jassert(a)               {}
-  #endif
-
+#  if JUCE_LOG_ASSERTIONS
+#    define jassert(expression)      { if (! (expression)) jassertfalse; }
+#  else
+#    define jassert(a)               {}
+#  endif
+#  define DBGCODE(...)
 #endif
 
 //==============================================================================
@@ -189,15 +191,15 @@ template <> struct JuceStaticAssert <true> { static void dummy() {} };
     allocate the object on the heap, forcing it to only be used as a stack or member variable.
 */
 #define JUCE_PREVENT_HEAP_ALLOCATION \
-   private: \
+    private: \
     static void* operator new (size_t) = delete; \
     static void operator delete (void*) = delete;
 
 
 //==============================================================================
 #if ! DOXYGEN
- #define JUCE_JOIN_MACRO_HELPER(a, b) a ## b
- #define JUCE_STRINGIFY_MACRO_HELPER(a) #a
+#  define JUCE_JOIN_MACRO_HELPER(a, b) a ## b
+#  define JUCE_STRINGIFY_MACRO_HELPER(a) #a
 #endif
 
 /** A good old-fashioned C macro concatenation helper.
@@ -214,59 +216,58 @@ template <> struct JuceStaticAssert <true> { static void dummy() {} };
 //==============================================================================
 #if JUCE_CATCH_UNHANDLED_EXCEPTIONS
 
-  #define JUCE_TRY try
+#  define JUCE_TRY try
+#  define JUCE_CATCH_ALL            catch (...) {}
+#  define JUCE_CATCH_ALL_ASSERT     catch (...) { jassertfalse; }
 
-  #define JUCE_CATCH_ALL            catch (...) {}
-  #define JUCE_CATCH_ALL_ASSERT     catch (...) { jassertfalse; }
-
-  #if ! JUCE_MODULE_AVAILABLE_juce_gui_basics
-    #define JUCE_CATCH_EXCEPTION    JUCE_CATCH_ALL
-  #else
-    /** Used in try-catch blocks, this macro will send exceptions to the JUCEApplicationBase
+#  if ! JUCE_MODULE_AVAILABLE_juce_gui_basics
+#    define JUCE_CATCH_EXCEPTION    JUCE_CATCH_ALL
+#  else
+/** Used in try-catch blocks, this macro will send exceptions to the JUCEApplicationBase
         object so they can be logged by the application if it wants to.
     */
-    #define JUCE_CATCH_EXCEPTION \
-      catch (const std::exception& e)  \
-      { \
-          treecore::JUCEApplicationBase::sendUnhandledException (&e, __FILE__, __LINE__); \
-      } \
-      catch (...) \
-      { \
-          treecore::JUCEApplicationBase::sendUnhandledException (nullptr, __FILE__, __LINE__); \
-      }
-  #endif
+#    define JUCE_CATCH_EXCEPTION \
+    catch (const std::exception& e)  \
+{ \
+    treecore::JUCEApplicationBase::sendUnhandledException (&e, __FILE__, __LINE__); \
+    } \
+    catch (...) \
+{ \
+    treecore::JUCEApplicationBase::sendUnhandledException (nullptr, __FILE__, __LINE__); \
+    }
+#  endif
 
 #else
 
-  #define JUCE_TRY
-  #define JUCE_CATCH_EXCEPTION
-  #define JUCE_CATCH_ALL
-  #define JUCE_CATCH_ALL_ASSERT
+#  define JUCE_TRY
+#  define JUCE_CATCH_EXCEPTION
+#  define JUCE_CATCH_ALL
+#  define JUCE_CATCH_ALL_ASSERT
 
 #endif
 
 //==============================================================================
 #if JUCE_DEBUG || DOXYGEN
-  /** A platform-independent way of forcing an inline function.
+/** A platform-independent way of forcing an inline function.
       Use the syntax: @code
       forcedinline void myfunction (int x)
       @endcode
   */
-  #define forcedinline  inline
+#  define forcedinline  inline
 #else
-  #if defined TREECORE_COMPILER_MSVC
-   #define forcedinline       __forceinline
-  #else
-   #define forcedinline       inline __attribute__((always_inline))
-  #endif
+#  if defined TREECORE_COMPILER_MSVC
+#    define forcedinline       __forceinline
+#  else
+#    define forcedinline       inline __attribute__((always_inline))
+#  endif
 #endif
 
 #if defined TREECORE_COMPILER_MSVC || DOXYGEN
-  /** This can be placed before a stack or member variable declaration to tell the compiler
+/** This can be placed before a stack or member variable declaration to tell the compiler
       to align it to the specified number of bytes. */
-  #define JUCE_ALIGN(bytes)   __declspec (align (bytes))
+#  define JUCE_ALIGN(bytes)   __declspec (align (bytes))
 #else
-  #define JUCE_ALIGN(bytes)   __attribute__ ((aligned (bytes)))
+#  define JUCE_ALIGN(bytes)   __attribute__ ((aligned (bytes)))
 #endif
 
 //
@@ -290,83 +291,86 @@ template <> struct JuceStaticAssert <true> { static void dummy() {} };
 //==============================================================================
 // Cross-compiler deprecation macros..
 #ifdef DOXYGEN
- /** This macro can be used to wrap a function which has been deprecated. */
- #define JUCE_DEPRECATED(functionDef)
- #define JUCE_DEPRECATED_WITH_BODY(functionDef, body)
+/** This macro can be used to wrap a function which has been deprecated. */
+#  define JUCE_DEPRECATED(functionDef)
+#  define JUCE_DEPRECATED_WITH_BODY(functionDef, body)
 #elif defined TREECORE_COMPILER_MSVC && ! JUCE_NO_DEPRECATION_WARNINGS
- #define JUCE_DEPRECATED(functionDef)                   __declspec(deprecated) functionDef
- #define JUCE_DEPRECATED_WITH_BODY(functionDef, body)   __declspec(deprecated) functionDef body
+#  define JUCE_DEPRECATED(functionDef)                   __declspec(deprecated) functionDef
+#  define JUCE_DEPRECATED_WITH_BODY(functionDef, body)   __declspec(deprecated) functionDef body
 #elif defined TREECORE_COMPILER_GCC && ! JUCE_NO_DEPRECATION_WARNINGS
- #define JUCE_DEPRECATED(functionDef)                   functionDef __attribute__ ((deprecated))
- #define JUCE_DEPRECATED_WITH_BODY(functionDef, body)   functionDef __attribute__ ((deprecated)) body
+#  define JUCE_DEPRECATED(functionDef)                   functionDef __attribute__ ((deprecated))
+#  define JUCE_DEPRECATED_WITH_BODY(functionDef, body)   functionDef __attribute__ ((deprecated)) body
 #else
- #define JUCE_DEPRECATED(functionDef)                   functionDef
- #define JUCE_DEPRECATED_WITH_BODY(functionDef, body)   functionDef body
+#  define JUCE_DEPRECATED(functionDef)                   functionDef
+#  define JUCE_DEPRECATED_WITH_BODY(functionDef, body)   functionDef body
 #endif
 
 //==============================================================================
 #if defined TREECORE_OS_ANDROID && ! DOXYGEN
- #define JUCE_MODAL_LOOPS_PERMITTED 0
+#define JUCE_MODAL_LOOPS_PERMITTED 0
 #elif ! defined (JUCE_MODAL_LOOPS_PERMITTED)
- /** Some operating environments don't provide a modal loop mechanism, so this flag can be
+/** Some operating environments don't provide a modal loop mechanism, so this flag can be
      used to disable any functions that try to run a modal loop. */
- #define JUCE_MODAL_LOOPS_PERMITTED 1
+#define JUCE_MODAL_LOOPS_PERMITTED 1
 #endif
 
 //==============================================================================
 #if defined TREECORE_COMPILER_GCC
- #define JUCE_PACKED __attribute__((packed))
+#  define JUCE_PACKED __attribute__((packed))
 #elif ! DOXYGEN
- #define JUCE_PACKED
+#  define JUCE_PACKED
 #endif
 
 //==============================================================================
 // Here, we'll check for C++11 compiler support, and if it's not available, define
 // a few workarounds, so that we can still use some of the newer language features.
 #if (__cplusplus >= 201103L || defined (__GXX_EXPERIMENTAL_CXX0X__)) && (__GNUC__ * 100 + __GNUC_MINOR__) >= 405
- #define JUCE_COMPILER_SUPPORTS_noexcept 1
+#  define JUCE_COMPILER_SUPPORTS_noexcept 1
 
- #if (__GNUC__ * 100 + __GNUC_MINOR__) >= 407 && ! defined (JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL)
-  #define JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL 1
- #endif
+#  if (__GNUC__ * 100 + __GNUC_MINOR__) >= 407 && ! defined (JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL)
+#    define JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL 1
+#  endif
+
 #endif
 
 #if defined TREECORE_COMPILER_CLANG && defined (__has_feature)
- #if __has_feature (cxx_noexcept)
-  #define JUCE_COMPILER_SUPPORTS_noexcept 1
- #endif
 
- #ifndef JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL
-  #define JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL 1
- #endif
+#  if __has_feature (cxx_noexcept)
+#    define JUCE_COMPILER_SUPPORTS_noexcept 1
+#  endif
 
- #ifndef JUCE_COMPILER_SUPPORTS_ARC
-  #define JUCE_COMPILER_SUPPORTS_ARC 1
- #endif
+#  ifndef JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL
+#    define JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL 1
+#  endif
+
+#  ifndef JUCE_COMPILER_SUPPORTS_ARC
+#    define JUCE_COMPILER_SUPPORTS_ARC 1
+#  endif
+
 #endif
 
 #if defined (_MSC_VER) && _MSC_VER >= 1700
- #define JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL 1
+#  define JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL 1
 #endif
 
 //==============================================================================
 // Declare some fake versions of nullptr and noexcept, for older compilers:
 #if ! (DOXYGEN || JUCE_COMPILER_SUPPORTS_noexcept)
- #define noexcept throw()
- #if defined (_MSC_VER) && _MSC_VER > 1600
-  #define _ALLOW_KEYWORD_MACROS 1 // (to stop VC2012 complaining)
- #endif
+#  define noexcept throw()
+#  if defined (_MSC_VER) && _MSC_VER > 1600
+#    define _ALLOW_KEYWORD_MACROS 1 // (to stop VC2012 complaining)
+#  endif
 #endif
 
 #if ! (DOXYGEN || JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL)
- #undef  override
- #define override
+#  undef  override
+#  define override
 #endif
 
 #if defined TREECORE_COMPILER_MSVC || (defined TREECORE_OS_WINDOWS && TREECORE_COMPILER_ICC)
-#define TREECORE_SELECT_ANY __declspec(selectany)
+#  define TREECORE_SELECT_ANY __declspec(selectany)
 #else
-#define TREECORE_SELECT_ANY __attribute__((selectany))
+#  define TREECORE_SELECT_ANY __attribute__((selectany))
 #endif
 
 #endif   // JUCE_PLATFORMDEFS_H_INCLUDED
