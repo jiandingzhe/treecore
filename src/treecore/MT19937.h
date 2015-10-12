@@ -57,34 +57,141 @@
 
 #include "treecore/Common.h"
 #include "treecore/RefCountObject.h"
-#include "cstddef"
+#include "treecore/IntTypes.h"
 
 class TestFramework;
 
 namespace treecore {
 
+class BigInteger;
+
 #define NN 312
 
+/**
+ * @brief pseudo random number generator using 64 bit MT19937
+ */
 class MT19937: public RefCountObject
 {
     friend class ::TestFramework;
 
 public:
+    /**
+     * @brief create PRNG and seed it automatically
+     *
+     * @see set_seed()
+     */
     MT19937();
-    MT19937(uint64_t seed);
-    MT19937(uint64_t* seed_array, size_t len);
 
-    void set_seed(uint64_t seed);
-    void set_seed_array(uint64_t* seed_array, size_t len);
+    /**
+     * @brief create PRNG using specified seed
+     *
+     * @param seed
+     *
+     * @see set_seed(uint64 seed)
+     */
+    MT19937(uint64 seed);
 
+    /**
+     * @brief create PRNG using an array of seeds
+     *
+     * @param seed_array  point to an array of seed values
+     * @param len         number of seed values
+     *
+     * @see set_seed(uint64* seed_array, size_t len)
+     */
+    MT19937(uint64* seed_array, size_t len);
+
+    /**
+     * @brief set PRNG state automatically
+     *
+     * The seed will be get using system random device, or current date and
+     * milliseconds, depends on whether current system has random device.
+     */
+    void set_seed();
+
+    /**
+     * @brief set PRNG state using one seed value
+     *
+     * @param seed
+     */
+    void set_seed(uint64 seed);
+
+    /**
+     * @brief set PRNG state using an array of seeds
+     *
+     * @param seed_array  point to an array of seed values
+     * @param len         number of seed values
+     */
+    void set_seed_array(uint64* seed_array, size_t len);
+
+    /**
+     * @brief get random boolean value
+     * @return random bool value
+     */
     bool next_bool();
-    uint64_t next_uint64();
-    uint64_t next_uint64_in_range(uint64_t upper);
-    int64_t next_int63();
+
+    /**
+     * @brief get 64-bit integer random value
+     * @return random integer value
+     */
+    uint64 next_uint64();
+
+    /**
+     * @brief get integer random value within range
+     * @param upper  the result will be smaller than this limit
+     * @return random integer value
+     */
+    uint64 next_uint64_in_range(uint64 upper);
+
+    /**
+     * @brief get 63-bit integer random value
+     *
+     * The sign bit will be always zero, thus you get a positive 64-bit integer.
+     *
+     * @return random positive integer value
+     */
+    int64 next_int63();
+
+    /**
+     * @brief get random value in range [0, 1]
+     * @return random float value
+     */
     double next_double_yy();
+
+    /**
+     * @brief get random value in range [0, 1)
+     * @return random float value
+     */
     double next_double_yn();
+
+    /**
+     * @brief get random value in range (0, 1)
+     * @return random float value
+     */
     double next_double_nn();
 
+    /**
+     * @brief get a series of random contents
+     *
+     * @param buffer  result will be written here
+     * @param size    number of bytes to fill
+     */
+    void fill_bits_randomly(uint8* buffer, size_t size);
+
+    /**
+     * @brief get a series of random contents
+     *
+     * Note that this function fill content in bits, not in bytes!
+     *
+     * @param buffer     result will be written here
+     * @param start_bit  fill from this position
+     * @param num_bits   number of bits to fill
+     */
+    void fill_bits_randomly(BigInteger& buffer, int start_bit, int num_bits);
+
+    /**
+     * @brief a global PRNG instance that can be used directly
+     */
     static MT19937 easy;
 
 protected:

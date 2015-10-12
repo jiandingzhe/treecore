@@ -53,9 +53,11 @@
    email: m-mat @ math.sci.hiroshima-u.ac.jp (remove spaces)
 */
 
-#include "treecore/File.h"
 #include "treecore/MT19937.h"
+
+#include "treecore/BigInteger.h"
 #include "treecore/Config.h"
+#include "treecore/File.h"
 #include "treecore/Time.h"
 
 #include <stdio.h>
@@ -79,21 +81,21 @@ namespace treecore {
 
 MT19937 MT19937::easy;
 
-uint64_t _get_seed_from_time_()
+uint64 _get_seed_from_time_()
 {
     return Time::getCurrentTime().toMilliseconds();
 }
 
-uint64_t _get_seed_from_pid_()
+uint64 _get_seed_from_pid_()
 {
 #ifdef TREECORE_OS_WINDOWS
-    uint32_t pid = uint32_t(_getpid());
-    uint32_t ppid = uint32_t(_getpid());
+    uint32 pid = uint32(_getpid());
+    uint32 ppid = uint32(_getpid());
 #else
-    uint32_t pid = uint32_t(getpid());
-    uint32_t ppid = uint32_t(getppid());
+    uint32 pid = uint32(getpid());
+    uint32 ppid = uint32(getppid());
 #endif
-    uint64_t result = pid;
+    uint64 result = pid;
     result <<= 32;
     result += ppid;
     return result;
@@ -104,7 +106,7 @@ uint64_t _get_seed_from_pid_()
 #define DEV_RAND "/dev/random"
 #define DEV_URAND "/dev/urandom"
 
-void _get_seed_from_device_(const char* device_file, uint64_t* seeds, size_t len)
+void _get_seed_from_device_(const char* device_file, uint64* seeds, size_t len)
 {
     FILE* fh = fopen(device_file, "rb");
     if (!fh)
@@ -115,7 +117,7 @@ void _get_seed_from_device_(const char* device_file, uint64_t* seeds, size_t len
     }
 
 
-    if (fread(seeds, sizeof(uint64_t), len, fh) != len)
+    if (fread(seeds, sizeof(uint64), len, fh) != len)
     {
         fprintf(stderr, "ERROR: MT19937 failed to read random device %s\n", device_file);
         abort();
@@ -124,7 +126,7 @@ void _get_seed_from_device_(const char* device_file, uint64_t* seeds, size_t len
 #endif
 
 #if defined(_MSC_VER) && _MSC_VER >= 1400
-void _get_seed_from_rand_s_(uint64_t* seeds, size_t len)
+void _get_seed_from_rand_s_(uint64* seeds, size_t len)
 {
     for (size_t i = 0; i < len; i++)
     {
@@ -137,55 +139,60 @@ void _get_seed_from_rand_s_(uint64_t* seeds, size_t len)
 
 MT19937::MT19937()
 {
+    set_seed();
+}
+
+MT19937::MT19937(uint64 seed)
+{
+    set_seed(seed);
+}
+
+MT19937::MT19937(uint64 *seed_array, size_t len)
+{
+    set_seed_array(seed_array, len);
+}
+
+void MT19937::set_seed()
+{
 #if defined TREECORE_OS_LINUX || defined TREECORE_OS_OSX || defined TREECORE_OS_ANDROID
     File path_dev_urand(DEV_URAND);
 
     if (path_dev_urand.existsAsFile())
     {
-        uint64_t seeds[4];
+        uint64 seeds[4];
         _get_seed_from_device_(DEV_URAND, seeds, 4);
         set_seed_array(seeds, 4);
     }
     else
     {
-        uint64_t seeds[2];
+        uint64 seeds[2];
         seeds[0] = _get_seed_from_time_();
         seeds[1] = _get_seed_from_pid_();
         set_seed_array(seeds, 2);
     }
 #elif defined(_MSC_VER) && _MSC_VER >= 1400
-    uint64_t seeds[4];
+    uint64 seeds[4];
     _get_seed_from_rand_s_(seeds, 4);
     set_seed_array(seeds, 4);
 #else
-    uint64_t seeds[2];
+    uint64 seeds[2];
     seeds[0] = _get_seed_from_time_();
     seeds[1] = _get_seed_from_pid_();
     set_seed_array(seeds, 2);
 #endif
 }
 
-MT19937::MT19937(uint64_t seed)
-{
-    set_seed(seed);
-}
-
-MT19937::MT19937(uint64_t *seed_array, size_t len)
-{
-    set_seed_array(seed_array, len);
-}
-
-void MT19937::set_seed(uint64_t seed)
+void MT19937::set_seed(uint64 seed)
 {
     mt[0] = seed;
     for (mti=1; mti<NN; mti++)
         mt[mti] =  (6364136223846793005ull * (mt[mti-1] ^ (mt[mti-1] >> 62)) + mti);
 }
 
-void MT19937::set_seed_array(uint64_t *seed_array, size_t len)
+void MT19937::set_seed_array(uint64 *seed_array, size_t len)
 {
     unsigned int i, j;
-    uint64_t k;
+    uint64 k;
     set_seed(19650218ull);
     i=1; j=0;
     k = (NN > len ? NN : len);
@@ -211,11 +218,11 @@ bool MT19937::next_bool()
     return next_uint64() > 0x7fffffffffffffffuLL;
 }
 
-uint64_t MT19937::next_uint64()
+uint64 MT19937::next_uint64()
 {
     int i;
-    uint64_t x;
-    static uint64_t mag01[2]={0ull, MATRIX_A};
+    uint64 x;
+    static uint64 mag01[2]={0ull, MATRIX_A};
 
     if (mti >= NN) { /* generate NN words at one time */
 
@@ -248,14 +255,14 @@ uint64_t MT19937::next_uint64()
     return x;
 }
 
-uint64_t MT19937::next_uint64_in_range(uint64_t upper)
+uint64 MT19937::next_uint64_in_range(uint64 upper)
 {
-    uint64_t max64 = std::numeric_limits<uint64_t>::max();
-    uint64_t raw_upper = max64 - max64 % upper;
+    uint64 max64 = std::numeric_limits<uint64>::max();
+    uint64 raw_upper = max64 - max64 % upper;
 
     for (;;)
     {
-        uint64_t re = next_uint64();
+        uint64 re = next_uint64();
         if (re < raw_upper)
         {
             return re % upper;
@@ -263,9 +270,9 @@ uint64_t MT19937::next_uint64_in_range(uint64_t upper)
     }
 }
 
-int64_t MT19937::next_int63()
+int64 MT19937::next_int63()
 {
-    return (int64_t)(next_uint64() >> 1);
+    return (int64)(next_uint64() >> 1);
 }
 
 double MT19937::next_double_yy()
@@ -283,4 +290,42 @@ double MT19937::next_double_nn()
     return ((next_uint64() >> 12) + 0.5) * (1.0/4503599627370496.0);
 }
 
+void MT19937::fill_bits_randomly(uint8* buffer, size_t size)
+{
+    size_t tail_bytes = size % 8;
+    size_t head_bytes = size - tail_bytes;
+
+    for (size_t i = 0; i < head_bytes; i += 8)
+    {
+        uint64 value = next_uint64();
+        *((uint64*)(buffer + i)) = value;
+    }
+
+    uint64 value = next_uint64();
+    memcpy(buffer + head_bytes, &value, tail_bytes);
 }
+
+void MT19937::fill_bits_randomly(BigInteger& buffer, int start_bit, int num_bits)
+{
+    // ensure memory allocation
+    buffer.setBit(start_bit + num_bits - 1, true);
+
+    while ((start_bit & 31) != 0 && num_bits > 0)
+    {
+        buffer.setBit(start_bit++, next_bool());
+        --num_bits;
+    }
+
+    while (num_bits >= 32)
+    {
+        buffer.setBitRangeAsInt(start_bit, 32, uint32(next_uint64()));
+        start_bit += 32;
+        num_bits -= 32;
+    }
+
+    while (--num_bits >= 0)
+        buffer.setBit(start_bit + num_bits, next_bool());
+}
+
+} // namespace treecore
+
