@@ -30,6 +30,7 @@
 #define JUCE_SCOPEDVALUESETTER_H_INCLUDED
 
 #include "treecore/Common.h"
+#include "treecore/PlatformDefs.h"
 
 namespace treecore {
 
@@ -96,7 +97,7 @@ private:
     ValueType& value;
     const ValueType originalValue;
 
-    JUCE_DECLARE_NON_COPYABLE (ScopedValueSetter)
+    TREECORE_DECLARE_NON_COPYABLE (ScopedValueSetter)
 };
 
 }
