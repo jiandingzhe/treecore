@@ -201,7 +201,7 @@ void NamedPipe::close()
 
 bool NamedPipe::openInternal (const String& pipeName, const bool createPipe)
 {
-   #if JUCE_IOS
+   #if defined TREECORE_OS_IOS
     pimpl = new Pimpl (File::getSpecialLocation (File::tempDirectory)
                          .getChildFile (File::createLegalFileName (pipeName)).getFullPathName(), createPipe);
    #else

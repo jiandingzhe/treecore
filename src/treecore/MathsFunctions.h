@@ -315,7 +315,7 @@ inline int roundToInt (const FloatType value) noexcept
     union { int asInt[2]; double asDouble; } n;
     n.asDouble = ((double) value) + 6755399441055744.0;
 
-   #if JUCE_BIG_ENDIAN
+   #if defined TREECORE_ENDIAN_BIG
     return n.asInt [1];
    #else
     return n.asInt [0];
