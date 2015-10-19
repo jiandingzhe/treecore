@@ -474,7 +474,23 @@ public:
         return false;
     }
 
-    //==============================================================================
+    ValueType& getOrDefault(const KeyType& key, ValueType& defaultValue) noexcept
+    {
+        return const_cast<ValueType&>(((const HashMap*)this)->getOrDefault(key, defaultValue));
+    }
+
+    const ValueType& getOrDefault(const KeyType& key, const ValueType& defaultValue) const noexcept
+    {
+        LOCK_HASH_MAP;
+        int i_bucket = m_impl.bucket_index(key);
+        const EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+
+        if (entry)
+            return entry->item.value;
+        else
+            return defaultValue;
+    }
+
     /**
      * @brief adds or replaces an element in the hash-map
      *
