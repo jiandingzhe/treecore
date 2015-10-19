@@ -186,11 +186,8 @@ static int findInsertIndexInSortedArray (ElementComparator& comparator,
 template <class ElementType>
 class DefaultElementComparator
 {
-private:
-    typedef PARAMETER_TYPE (ElementType) ParameterType;
-
 public:
-    static int compareElements (ParameterType first, ParameterType second)
+    static int compareElements (const ElementType& first, const ElementType& second)
     {
         return (first < second) ? -1 : ((second < first) ? 1 : 0);
     }

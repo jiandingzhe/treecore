@@ -42,12 +42,12 @@ namespace treecore {
 
 
 #ifndef DOXYGEN
- /** A macro for creating 64-bit literals.
+/** A macro for creating 64-bit literals.
      Historically, this was needed to support portability with MSVC6, and is kept here
      so that old code will still compile, but nowadays every compiler will support the
      LL and ULL suffixes, so you should use those in preference to this macro.
  */
- #define literal64bit(longLiteral)     (longLiteral##LL)
+#define literal64bit(longLiteral)     (longLiteral##LL)
 #endif
 
 //==============================================================================
@@ -240,11 +240,11 @@ inline int numElementsInArray (Type (&array)[N])
 template <typename Type>
 inline Type juce_hypot (Type a, Type b) noexcept
 {
-   #if defined TREECORE_COMPILER_MSVC
+#if defined TREECORE_COMPILER_MSVC
     return static_cast <Type> (_hypot (a, b));
-   #else
+#else
     return static_cast <Type> (hypot (a, b));
-   #endif
+#endif
 }
 
 /** 64-bit abs function. */
@@ -254,9 +254,9 @@ inline int64 abs64 (const int64 n) noexcept
 }
 
 #if defined TREECORE_COMPILER_MSVC && ! defined (DOXYGEN)  // The MSVC libraries omit these functions for some reason...
- template<typename Type> Type asinh (Type x) noexcept  { return std::log (x + std::sqrt (x * x + (Type) 1)); }
- template<typename Type> Type acosh (Type x) noexcept  { return std::log (x + std::sqrt (x * x - (Type) 1)); }
- template<typename Type> Type atanh (Type x) noexcept  { return (std::log (x + (Type) 1) - std::log (((Type) 1) - x)) / (Type) 2; }
+template<typename Type> Type asinh (Type x) noexcept  { return std::log (x + std::sqrt (x * x + (Type) 1)); }
+template<typename Type> Type acosh (Type x) noexcept  { return std::log (x + std::sqrt (x * x - (Type) 1)); }
+template<typename Type> Type atanh (Type x) noexcept  { return (std::log (x + (Type) 1) - std::log (((Type) 1) - x)) / (Type) 2; }
 #endif
 
 //==============================================================================
@@ -278,21 +278,21 @@ const float   float_Pi   = 3.14159265358979323846f;
 template <typename FloatingPointType>
 inline bool juce_isfinite (FloatingPointType value)
 {
-   #if defined TREECORE_OS_WINDOWS
+#if defined TREECORE_OS_WINDOWS
     return _finite (value);
-   #elif defined TREECORE_OS_ANDROID
+#elif defined TREECORE_OS_ANDROID
     return isfinite (value);
-   #else
+#else
     return std::isfinite (value);
-   #endif
+#endif
 }
 
 //==============================================================================
 #if defined TREECORE_COMPILER_MSVC
- #pragma optimize ("t", off)
- #ifndef __INTEL_COMPILER
-  #pragma float_control (precise, on, push)
- #endif
+#pragma optimize ("t", off)
+#ifndef __INTEL_COMPILER
+#pragma float_control (precise, on, push)
+#endif
 #endif
 
 /** Fast floating-point-to-integer conversion.
@@ -308,18 +308,18 @@ inline bool juce_isfinite (FloatingPointType value)
 template <typename FloatType>
 inline int roundToInt (const FloatType value) noexcept
 {
-  #ifdef TREECORE_COMPILER_ICC
-   #pragma float_control (precise, on, push)
-  #endif
+#ifdef TREECORE_COMPILER_ICC
+#pragma float_control (precise, on, push)
+#endif
 
     union { int asInt[2]; double asDouble; } n;
     n.asDouble = ((double) value) + 6755399441055744.0;
 
-   #if defined TREECORE_ENDIAN_BIG
+#if defined TREECORE_ENDIAN_BIG
     return n.asInt [1];
-   #else
+#else
     return n.asInt [0];
-   #endif
+#endif
 }
 
 inline int roundToInt (int value) noexcept
@@ -328,10 +328,10 @@ inline int roundToInt (int value) noexcept
 }
 
 #if defined TREECORE_COMPILER_MSVC
- #ifndef TREECORE_COMPILER_ICC
-  #pragma float_control (pop)
- #endif
- #pragma optimize ("", on)  // resets optimisations to the project defaults
+#ifndef TREECORE_COMPILER_ICC
+#pragma float_control (pop)
+#endif
+#pragma optimize ("", on)  // resets optimisations to the project defaults
 #endif
 
 /** Fast floating-point-to-integer conversion.
@@ -341,9 +341,9 @@ inline int roundToInt (int value) noexcept
 */
 inline int roundToIntAccurate (const double value) noexcept
 {
-   #ifdef TREECORE_COMPILER_ICC
-    #pragma float_control (pop)
-   #endif
+#ifdef TREECORE_COMPILER_ICC
+#pragma float_control (pop)
+#endif
 
     return roundToInt (value + 1.5e-8);
 }
@@ -385,7 +385,7 @@ inline int roundFloatToInt (const float value) noexcept
 template <typename IntegerType>
 bool isPowerOfTwo (IntegerType value)
 {
-   return (value & (value - 1)) == 0;
+    return (value & (value - 1)) == 0;
 }
 
 /** Returns the smallest power-of-two which is equal to or greater than the given integer.
@@ -438,13 +438,13 @@ NumericType square (NumericType n) noexcept
 
 //==============================================================================
 #if (defined TREECORE_CPU_X86 && TREECORE_SIZE_PTR == 4) || defined (DOXYGEN)
- /** This macro can be applied to a float variable to check whether it contains a denormalised
+/** This macro can be applied to a float variable to check whether it contains a denormalised
      value, and to normalise it if necessary.
      On CPUs that aren't vulnerable to denormalisation problems, this will have no effect.
  */
- #define JUCE_UNDENORMALISE(x)   x += 1.0f; x -= 1.0f;
+#define JUCE_UNDENORMALISE(x)   x += 1.0f; x -= 1.0f;
 #else
- #define JUCE_UNDENORMALISE(x)
+#define JUCE_UNDENORMALISE(x)
 #endif
 
 //==============================================================================
@@ -452,53 +452,12 @@ NumericType square (NumericType n) noexcept
 */
 namespace TypeHelpers
 {
-   #if JUCE_VC8_OR_EARLIER
-    #define PARAMETER_TYPE(type) const type&
-   #else
-    /** The ParameterType struct is used to find the best type to use when passing some kind
-        of object as a parameter.
 
-        Of course, this is only likely to be useful in certain esoteric template situations.
-
-        Because "typename TypeHelpers::ParameterType<SomeClass>::type" is a bit of a mouthful, there's
-        a PARAMETER_TYPE(SomeClass) macro that you can use to get the same effect.
-
-        E.g. "myFunction (PARAMETER_TYPE (int), PARAMETER_TYPE (MyObject))"
-        would evaluate to "myfunction (int, const MyObject&)", keeping any primitive types as
-        pass-by-value, but passing objects as a const reference, to avoid copying.
-    */
-    template <typename Type> struct ParameterType                   { typedef const Type& type; };
-
-   #if ! DOXYGEN
-    template <typename Type> struct ParameterType <Type&>           { typedef Type& type; };
-    template <typename Type> struct ParameterType <Type*>           { typedef Type* type; };
-    template <>              struct ParameterType <char>            { typedef char type; };
-    template <>              struct ParameterType <unsigned char>   { typedef unsigned char type; };
-    template <>              struct ParameterType <short>           { typedef short type; };
-    template <>              struct ParameterType <unsigned short>  { typedef unsigned short type; };
-    template <>              struct ParameterType <int>             { typedef int type; };
-    template <>              struct ParameterType <unsigned int>    { typedef unsigned int type; };
-    template <>              struct ParameterType <long>            { typedef long type; };
-    template <>              struct ParameterType <unsigned long>   { typedef unsigned long type; };
-//    template <>              struct ParameterType <int64>           { typedef int64 type; };
-//    template <>              struct ParameterType <uint64>          { typedef uint64 type; };
-    template <>              struct ParameterType <bool>            { typedef bool type; };
-    template <>              struct ParameterType <float>           { typedef float type; };
-    template <>              struct ParameterType <double>          { typedef double type; };
-   #endif
-
-    /** A helpful macro to simplify the use of the ParameterType template.
-        @see ParameterType
-    */
-    #define PARAMETER_TYPE(a)    typename TypeHelpers::ParameterType<a>::type
-   #endif
-
-
-    /** These templates are designed to take a type, and if it's a double, they return a double
+/** These templates are designed to take a type, and if it's a double, they return a double
         type; for anything else, they return a float type.
     */
-    template <typename Type> struct SmallestFloatType             { typedef float  type; };
-    template <>              struct SmallestFloatType <double>    { typedef double type; };
+template <typename Type> struct SmallestFloatType             { typedef float  type; };
+template <>              struct SmallestFloatType <double>    { typedef double type; };
 }
 
 #define isPowOfTwo(number) ( ((number)>1) && (((number)&(number-1))==0) )
