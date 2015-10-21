@@ -8,6 +8,7 @@ namespace treecore
 
 class IdentifierWithIndex
 {
+public:
     IdentifierWithIndex() noexcept;
 
     IdentifierWithIndex( const char* name , uint index = 0 );
