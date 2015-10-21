@@ -71,7 +71,7 @@ template<typename T>
 struct LfQueueNode
 {
 public:
-    FORCE_TRIVIAL_CLASS( LfQueueNode );
+    TREECORE_FORCE_TRIVIAL_CLASS( LfQueueNode );
 public:
     T m_dataInNode;
     AtomicObject<int32> m_stateInNode;
@@ -80,7 +80,7 @@ public:
 class index_t
 {
 public:
-    FORCE_TRIVIAL_CLASS( index_t );
+    TREECORE_FORCE_TRIVIAL_CLASS( index_t );
     forcedinline index_t(uint32 index_,uint32 count_):index(index_),count(count_){}
     forcedinline operator uint32() const { return index; }
 public:

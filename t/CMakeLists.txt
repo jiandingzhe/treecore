@@ -23,6 +23,7 @@ foreach(test_name
     t_queue
     t_ref_count_singleton_st
     t_sorted_set
+    t_static_array
     t_string_pool
     t_var
     t_weak_ptr
