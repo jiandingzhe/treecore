@@ -22,6 +22,7 @@ foreach(test_name
     t_obj_pool
     t_queue
     t_ref_count_singleton_st
+    t_scoped_denormal_flag
     t_sorted_set
     t_static_array
     t_string_pool
