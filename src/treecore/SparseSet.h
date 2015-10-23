@@ -29,7 +29,10 @@
 #ifndef JUCE_SPARSESET_H_INCLUDED
 #define JUCE_SPARSESET_H_INCLUDED
 
+#include "treecore/Array.h"
 #include "treecore/Common.h"
+#include "treecore/DummyCriticalSection.h"
+#include "treecore/Range.h"
 #include "treecore/RefCountObject.h"
 
 namespace treecore {
@@ -285,7 +288,7 @@ public:
 private:
     //==============================================================================
     // alternating start/end values of ranges of values that are present.
-    Array<Type, DummyCriticalSection> values;
+    Array<Type> values;
 
     void simplify()
     {
