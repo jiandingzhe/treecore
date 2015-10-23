@@ -10,6 +10,24 @@
 namespace treecore
 {
 
+/**
+ * value would be true if T1 and T2 is same, otherwise false
+ */
+template<typename T1, typename T2>
+struct mpl_same_type
+{
+    const static bool value = false;
+};
+
+template<typename T>
+struct mpl_same_type<T, T>
+{
+    const static bool value = true;
+};
+
+/**
+ * type member would be TrueT if first argument is true, otherwise be FalseT
+ */
 template<bool, typename TrueT, typename FalseT>
 struct mpl_type_if;
 
@@ -25,6 +43,9 @@ struct mpl_type_if<false, TrueT, FalseT>
     typedef FalseT type;
 };
 
+/**
+ *
+ */
 template <size_t T,size_t... Ts>
 struct mpl_value_queue {
     TREECORE_FUNCTION_CLASS(mpl_value_queue);

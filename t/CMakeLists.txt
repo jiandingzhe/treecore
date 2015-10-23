@@ -19,6 +19,7 @@ foreach(test_name
     t_hash_map
     t_identifier
     t_lf_queue_st
+    t_mpl
     t_obj_pool
     t_queue
     t_ref_count_singleton_st
