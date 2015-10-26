@@ -17,6 +17,7 @@ foreach(test_name
     t_hash_set
     t_hash_set_string
     t_hash_map
+    t_hash_map_value_move
     t_identifier
     t_lf_queue_st
     t_mpl

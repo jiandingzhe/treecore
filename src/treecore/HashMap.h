@@ -454,6 +454,35 @@ public:
         return true;
     }
 
+    bool insertOrSelect(const KeyType& key, ValueType&& value, Iterator& result) noexcept
+    {
+        LOCK_HASH_MAP;
+
+        // search for existing entry
+        int i_bucket = m_impl.bucket_index(key);
+        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+
+        if (entry)
+        {
+            result.m_impl.i_bucket = i_bucket;
+            result.m_impl.entry = entry;
+            return false;
+        }
+
+        // create new one
+        entry = m_impl.create_entry_at(i_bucket, HashMapItem{key, std::move(value)});
+
+        if (m_impl.high_fill_rate())
+        {
+            m_impl.expand_buckets();
+            i_bucket  = m_impl.bucket_index(key);
+        }
+
+        result.m_impl.i_bucket = i_bucket;
+        result.m_impl.entry = entry;
+        return true;
+    }
+
     /**
      * @brief returns true if the hash contains at least one occurrence of a
      *        given value.
@@ -517,7 +546,28 @@ public:
             if (m_impl.high_fill_rate())
                 m_impl.expand_buckets();
         }
+    }
 
+    void set(const KeyType& key, ValueType&& value) noexcept
+    {
+        LOCK_HASH_MAP;
+        int i_bucket = m_impl.bucket_index(key);
+
+        // try to get existing entry
+        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+
+        if (entry)
+        {
+            entry->item.value = std::move(value);
+        }
+        else
+        {
+            // create new entry
+            entry = m_impl.create_entry_at(i_bucket, HashMapItem{key, std::move(value)});
+
+            if (m_impl.high_fill_rate())
+                m_impl.expand_buckets();
+        }
     }
 
     /**

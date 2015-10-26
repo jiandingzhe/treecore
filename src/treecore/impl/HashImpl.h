@@ -3,6 +3,7 @@
 
 #include "treecore/Array.h"
 #include "treecore/HashFunctions.h"
+#include "treecore/MPL.h"
 #include "treecore/ObjectPool.h"
 
 #define TREECORE_REHASH_CUTOFF 1.5
@@ -50,6 +51,12 @@ struct HashTableBase
     {
         HashEntry(const ItemType& item, HashEntry* next)
             : item(item)
+            , next_entry(next)
+        {
+        }
+
+        HashEntry(ItemType& item, HashEntry* next)
+            : item(std::move(item))
             , next_entry(next)
         {
         }
@@ -191,9 +198,13 @@ struct HashTableBase
         return float(num_entries) / float(buckets.size()) > TREECORE_REHASH_CUTOFF;
     }
 
-    HashEntry* create_entry_at(int i_bucket, const ItemType& item)
+    template<typename T1,typename T2>
+    void fuck(T1 a,T2 b)
+    {}
+
+    HashEntry* create_entry_at(int i_bucket, ItemType&& item)
     {
-        HashEntry* entry = EntryPoolType::getInstance()->generate(item, buckets[i_bucket]);
+        HashEntry* entry = EntryPoolType::getInstance()->generate(std::move(item), buckets[i_bucket]);
         buckets[i_bucket] = entry;
         num_entries++;
         return entry;

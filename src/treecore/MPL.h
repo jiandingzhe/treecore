@@ -10,6 +10,12 @@
 namespace treecore
 {
 
+template<typename T>
+struct mpl_rvalue
+{
+    typedef T&& type;
+};
+
 /**
  * value would be true if T1 and T2 is same, otherwise false
  */

@@ -88,7 +88,7 @@ public:
      * @return object of type T
      */
     template<typename... InitType>
-    T* generate(InitType... initValues) // TODO ref type or value type?
+    T* generate(InitType&&... initValues)
     {
         T* k = nullptr;
         unlikely_if(!m_objects.pop(k))
