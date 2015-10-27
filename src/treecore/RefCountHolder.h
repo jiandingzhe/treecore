@@ -82,10 +82,9 @@ public:
 
     RefCountHolder& operator = (RefCountHolder&& other)
     {
-        T* tmp = ms_ptr;
-        ms_ptr = other.ms_ptr;
-        other.ms_ptr = tmp;
-
+        // When other is destroyed, the swapped out object will unref by one,
+        // which is expected.
+        swapWith(other);
         return *this;
     }
 
@@ -99,6 +98,13 @@ public:
         ms_ptr = other;
 
         return *this;
+    }
+
+    void swapWith(RefCountHolder& other)
+    {
+        T* tmp = ms_ptr;
+        ms_ptr = other.ms_ptr;
+        other.ms_ptr = tmp;
     }
 
     operator T*() const noexcept

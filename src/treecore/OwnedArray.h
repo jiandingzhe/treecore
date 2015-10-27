@@ -38,6 +38,8 @@
 //==============================================================================
 namespace treecore {
 
+class DummyCriticalSection; // forward declaration to stop IDE claiming
+
 /** An array designed for holding objects.
 
     This holds a list of pointers to objects, and will automatically

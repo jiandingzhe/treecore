@@ -3,11 +3,12 @@
 
 #include "treecore/Array.h"
 #include "treecore/ArrayRef.h"
-#include "treecore/impl/HashImpl.h"
+#include "treecore/DummyCriticalSection.h"
 #include "treecore/ObjectPool.h"
 #include "treecore/RefCountObject.h"
 #include "treecore/RefCountSingleton.h"
-#include "treecore/DummyCriticalSection.h"
+
+#include "treecore/impl/HashImpl.h"
 
 #define LOCK_THIS_OBJECT const ScopedLockType _lock_this_(m_mutex)
 #define LOCK_PEER_OBJECT const ScopedLockType _lock_peer_(peer.m_mutex)

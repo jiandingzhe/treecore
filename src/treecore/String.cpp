@@ -157,9 +157,10 @@ String& String::operator= (const String& other) noexcept
     return *this;
 }
 
-String::String (String&& other) noexcept   : text (other.text)
+String::String (String&& other) noexcept
+    : text (other.text)
 {
-    other.text = &(emptyString.text);
+    other.text = &(emptyString.text); // why not use swap here?
 }
 
 String& String::operator= (String&& other) noexcept

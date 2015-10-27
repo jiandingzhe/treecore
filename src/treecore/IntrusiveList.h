@@ -43,12 +43,14 @@ public:
         Iterator& operator = (const Iterator& other)
         {
             ms_agent = other.ms_agent;
+            return *this;
         }
 
         Iterator& operator = (Iterator&& other)
         {
             ms_agent = other.ms_agent;
             other.ms_agent = nullptr;
+            return *this;
         }
 
         Type* operator -> () noexcept

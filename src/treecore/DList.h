@@ -34,11 +34,11 @@ struct DListNode
 {
 protected:
 
-    forcedinline DListNode() noexcept : DListNode(this,this) {}
+    DListNode() noexcept : DListNode(this,this) {}
 
-    forcedinline DListNode(const DListNode&) noexcept :DListNode(){}
+    DListNode(const DListNode&) noexcept :DListNode(){}
 
-    forcedinline DListNode& operator=(const DListNode&) noexcept { return *this; }
+    DListNode& operator=(const DListNode&) noexcept { return *this; }
 
     ~DListNode() =default;
 
@@ -86,21 +86,21 @@ public:
         oldPrev->m_next = obj;
     }
 
-    forcedinline T* next() const
+    T* next() const
     {
         jassert( isLinked() || ( !isAvilable() ) ); //必须在一条链表里,next才有意义!
         MemoryFetch( m_next );
         return static_cast<T*>(m_next);
     }
 
-    forcedinline T* prev() const
+    T* prev() const
     {
         jassert( isLinked() || ( !isAvilable() ) ); //必须在一条链表里,next才有意义!
         MemoryFetch( m_prev );
         return static_cast<T*>(m_prev);
     }
 
-    forcedinline bool isLinked() const
+    bool isLinked() const
     {
         const bool k = m_next != this;
 #if JUCE_DEBUG
@@ -111,7 +111,7 @@ public:
         return k;
     }
 
-    forcedinline bool isAvilable() const
+    bool isAvilable() const
     {
         return m_avilable;
     }
@@ -123,7 +123,7 @@ private:
 
     template <typename T2,int place_holder> friend struct Dlist;
 
-    forcedinline DListNode( DListNode<T>* prev , DListNode<T>* next , bool avilable =true ) noexcept : m_next( next ) , m_prev( prev ) , m_avilable( avilable ) {}
+    DListNode( DListNode<T>* prev , DListNode<T>* next , bool avilable =true ) noexcept : m_next( next ) , m_prev( prev ) , m_avilable( avilable ) {}
 
     JUCE_LEAK_DETECTOR(DListNode);
 };
@@ -146,40 +146,40 @@ struct DList {
 
     struct Iter {
         
-        forcedinline Iter(T* objToBegin):m_obj(objToBegin) { jassert(objToBegin!=nullptr); };
+        Iter(T* objToBegin):m_obj(objToBegin) { jassert(objToBegin!=nullptr); };
         
         Iter(const Iter& other) = default;
         
         ~Iter() = default;
         
         //* 向后迭代
-        forcedinline void operator++( ) noexcept{ m_obj = m_obj->next(); }
+        void operator++( ) noexcept{ m_obj = m_obj->next(); }
         
         //* 向前迭代
-        forcedinline void operator--( ) noexcept{ m_obj = m_obj->prev(); }
+        void operator--( ) noexcept{ m_obj = m_obj->prev(); }
         
         //* 返回T
-        forcedinline T& operator*( ) const  noexcept{ return *operator->(); }
+        T& operator*( ) const  noexcept{ return *operator->(); }
 
         //* 返回T
-        forcedinline T* operator->( ) const  noexcept{ jassert( m_obj->isAvilable() ); return static_cast<T*>( m_obj ); }
+        T* operator->( ) const  noexcept{ jassert( m_obj->isAvilable() ); return static_cast<T*>( m_obj ); }
         
-        forcedinline bool operator!( ) const noexcept{ return m_obj->isAvilable(); }
+        bool operator!( ) const noexcept{ return m_obj->isAvilable(); }
 
         //* C++11 range for 兼容
-        forcedinline bool operator!=(const Iter& other) const noexcept { return m_obj!=other.m_obj; }
+        bool operator!=(const Iter& other) const noexcept { return m_obj!=other.m_obj; }
 
         //* 在必要时iter可转义为一个T*
-        forcedinline operator T*() const  noexcept{ return operator->(); }
+        operator T*() const  noexcept{ return operator->(); }
         
         //* 你可以将一整条链表插入到迭代器所指元素的前面
-        forcedinline T* push_prev(T*const k) noexcept{
+        T* push_prev(T*const k) noexcept{
             m_obj->pushPrev(k);
             return k;
         }
         
         //* 将一个元素插入到到迭代器所指元素的后面
-        forcedinline T* push_next(T*const k) noexcept{
+        T* push_next(T*const k) noexcept{
             m_obj->pushNext( k );
             return k;
         }
@@ -215,7 +215,7 @@ struct DList {
         }
         
         //* 弹出当前节点,迭代器会自动向右走一格,以便一直指向可用元素
-        forcedinline T* pop_jump_next() noexcept{
+        T* pop_jump_next() noexcept{
             NodeType*const k = m_obj;
             MemoryFetch( m_obj->m_next );
             m_obj = m_obj->m_next;
@@ -224,7 +224,7 @@ struct DList {
         }
         
         //* 弹出当前节点,迭代器会自动向左走一格,以便一直指向可用元素
-        forcedinline T* pop_jump_prev() noexcept{
+        T* pop_jump_prev() noexcept{
             NodeType*const k = m_obj;
             MemoryFetch( m_obj->m_prev );
             m_obj = m_obj->m_prev;
@@ -240,33 +240,33 @@ struct DList {
     };
 
     //* 建立一个空的链表
-    forcedinline DList() noexcept :m_dummy(&m_dummy, &m_dummy,false)
+    DList() noexcept :m_dummy(&m_dummy, &m_dummy,false)
     {
         _set_empty();
         static_assert(is_base_of<typename DList<T>::NodeType,T>::value,"T must is a child from DlistNode<T>!");
     }
 
     //* 释放链表,请注意,这个函数不会删除链表中存在的节点!
-    forcedinline ~DList(){}
+    ~DList(){}
 
     //* 将一整条链表放入当前链表中,另一条链表将被清空
     template<int other_place_holder>
-    forcedinline Dlist( Dlist<T,other_place_holder>&& obj ) noexcept
-        :DList()
+    Dlist( Dlist<T,other_place_holder>&& obj ) noexcept
+        : DList()
     {
         this->push_tail(obj);
     }
 
     //* 将一整条链表放入当前链表中,另一条链表将被清空
     template<int other_place_holder>
-    forcedinline DList& operator=( DList<T,other_place_holder>&& obj ) noexcept
+    DList& operator=( DList<T,other_place_holder>&& obj ) noexcept
     {
         this->push_tail(obj);
         return *this;
     }
 
     //* 向链表的末尾添加一个节点,如果obj属于另一条链表,则将会先使obj从该条链表中被弹出
-    forcedinline void push_tail( T*const obj ) noexcept {
+    void push_tail( T*const obj ) noexcept {
         jassert(obj!=nullptr);
         obj->setUnlink();
         NodeType*const tail = m_dummy.m_prev;
@@ -275,7 +275,7 @@ struct DList {
 
     //* 向链表的末尾添加一整条链表,另一条链表将被清空
     template<int other_place_holder>
-    forcedinline void push_tail( DList<T,other_place_holder>& obj ) noexcept {
+    void push_tail( DList<T,other_place_holder>& obj ) noexcept {
         unlikely_if(obj.is_empty()) return;
         NodeType*const k_head = obj.m_dummy.m_next;
         NodeType*const k_tail = obj.m_dummy.m_prev;
@@ -289,7 +289,7 @@ struct DList {
     }
 
     //* 向链表的头部添加一个节点,如果obj属于另一条链表,将会先使obj从该条链表中被弹出
-    forcedinline void push_head( T*const obj ) noexcept {
+    void push_head( T*const obj ) noexcept {
         jassert(obj!=nullptr);
         obj->setUnlink();
         NodeType*const head = m_dummy.m_next;
@@ -298,7 +298,7 @@ struct DList {
 
     //* 向链表的头部添加一整条链表,另一条链表将被清空
     template<int other_place_holder>
-    forcedinline void push_head( DList<T,other_place_holder>& obj ) noexcept {
+    void push_head( DList<T,other_place_holder>& obj ) noexcept {
         unlikely_if(obj.is_empty()) return;
         NodeType*const k_head = obj.m_dummy.m_next;
         NodeType*const k_tail = obj.m_dummy.m_prev;
@@ -312,7 +312,7 @@ struct DList {
     }
 
     //* 从链表的尾部弹出一个元素,如果链表为空,则返回false
-    forcedinline bool pop_tail( T*& obj ) noexcept {
+    bool pop_tail( T*& obj ) noexcept {
         NodeType*const tail = m_dummy.m_prev;
         const bool k=!is_empty();
         tail->setUnlink();
@@ -321,7 +321,7 @@ struct DList {
     }
 
     //* 从链表的头部弹出一个元素,如果链表为空,则返回false
-    forcedinline bool pop_head( T*& obj ) noexcept {
+    bool pop_head( T*& obj ) noexcept {
         NodeType*const head = m_dummy.m_next;
         const bool k=!is_empty();
         head->setUnlink();
@@ -330,27 +330,27 @@ struct DList {
     }
 
     //* 检查链表是否为空
-    forcedinline bool is_empty() const noexcept {
+    bool is_empty() const noexcept {
         return !getHead()->isAvilable();
     }
 
     //* 返回链表中head元素
-    forcedinline T* getHead() const noexcept{ return static_cast<T*>( m_dummy.m_next ); }
+    T* getHead() const noexcept{ return static_cast<T*>( m_dummy.m_next ); }
 
     //* 返回链表中的tail元素
-    forcedinline T* getTail() const noexcept{ return static_cast<T*>( m_dummy.m_prev ); }
+    T* getTail() const noexcept{ return static_cast<T*>( m_dummy.m_prev ); }
 
     //* C++11 range for 兼容函数
-    forcedinline Iter begin() const noexcept { return Iter(getHead()); }
+    Iter begin() const noexcept { return Iter(getHead()); }
 
     //* C++11 range for 兼容函数
-    forcedinline Iter rbegin() const noexcept{ return Iter(getTail()); }
+    Iter rbegin() const noexcept{ return Iter(getTail()); }
 
     //* C++11 range for 兼容函数
-    forcedinline Iter end() noexcept{ return Iter( static_cast<T*>( &m_dummy ) ); }
+    Iter end() noexcept{ return Iter( static_cast<T*>( &m_dummy ) ); }
 
     //* 立即删除所有链表中的元素,这可能有风险! 请注意插件链表中元素的owner倒是是谁
-    forcedinline void delete_all() noexcept
+    void delete_all() noexcept
     {
         for(T* k=nullptr;pop_head(k);delete k);
     }
@@ -434,7 +434,7 @@ struct DList {
 private:
     NodeType m_dummy;
 
-    forcedinline void _set_empty() noexcept
+    void _set_empty() noexcept
     {
         m_dummy.m_next = &m_dummy;
         m_dummy.m_prev = &m_dummy;

@@ -514,8 +514,8 @@ var& var::operator= (RefCountObject* v)        { var v2 (v); swapWith (v2); retu
 var& var::operator= (NativeFunction v)           { var v2 (v); swapWith (v2); return *this; }
 
 var::var (var&& other) noexcept
-    : type (other.type),
-      value (other.value)
+    : type (other.type)
+    , value (other.value)
 {
     other.type = &VariantType_Void::instance;
 }

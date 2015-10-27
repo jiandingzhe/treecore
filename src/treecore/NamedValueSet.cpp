@@ -59,7 +59,7 @@ NamedValueSet::NamedValueSet (NamedValueSet&& other) noexcept
 
 NamedValueSet& NamedValueSet::operator= (NamedValueSet&& other) noexcept
 {
-    other.values.swapWith (values);
+    values = std::move(other.values);
     return *this;
 }
 

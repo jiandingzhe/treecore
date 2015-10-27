@@ -38,7 +38,9 @@
 
 class TestFramework;
 
-//==============================================================================
+#define _LOCK_THIS_OBJ_ const ScopedLockType _lock_this_obj_(getLock())
+#define _LOCK_PEER_OBJ_ const ScopedLockType _lock_peer_obj_(peer.getLock())
+
 namespace treecore {
 
 /**
@@ -82,19 +84,19 @@ public:
     /** Creates a copy of another array.
         @param other    the array to copy
     */
-    Array (const Array<ElementType, align_size, TypeOfCriticalSectionToUse>& other)
+    Array (const Array<ElementType, align_size, TypeOfCriticalSectionToUse>& peer)
     {
-        const ScopedLockType lock (other.getLock());
-        numUsed = other.numUsed;
-        data.setAllocatedSize (other.numUsed);
+        _LOCK_PEER_OBJ_;
+        numUsed = peer.numUsed;
+        data.setAllocatedSize (peer.numUsed);
 
         for (int i = 0; i < numUsed; ++i)
-            new (data.elements + i) ElementType (other.data.elements[i]);
+            new (data.elements + i) ElementType (peer.data.elements[i]);
     }
 
     Array (Array<ElementType, align_size, TypeOfCriticalSectionToUse>&& other) noexcept
-        : data (static_cast<ArrayAllocationBase<ElementType, TypeOfCriticalSectionToUse>&&> (other.data)),
-          numUsed (other.numUsed)
+        : data (static_cast<ArrayAllocationBase<ElementType, TypeOfCriticalSectionToUse>&&> (other.data))
+        , numUsed (other.numUsed)
     {
         other.numUsed = 0;
     }
@@ -135,24 +137,29 @@ public:
     /** Copies another array.
         @param other    the array to copy
     */
-    Array& operator= (const Array& other)
+    Array& operator= (const Array& peer)
     {
-        if (this != &other)
+        _LOCK_THIS_OBJ_;
+        _LOCK_PEER_OBJ_;
+
+        if (this != &peer)
         {
-            Array<ElementType, align_size, TypeOfCriticalSectionToUse> otherCopy (other);
+            Array<ElementType, align_size, TypeOfCriticalSectionToUse> otherCopy (peer);
             swapWith (otherCopy);
         }
 
         return *this;
     }
 
-    Array& operator= (Array&& other) noexcept
+    Array& operator= (Array&& peer) noexcept
     {
-        const ScopedLockType lock (getLock());
+        _LOCK_THIS_OBJ_;
+        _LOCK_PEER_OBJ_;
+
         deleteAllElements();
-        data = static_cast<ArrayAllocationBase<ElementType, TypeOfCriticalSectionToUse, align_size>&&> (other.data);
-        numUsed = other.numUsed;
-        other.numUsed = 0;
+        data = static_cast<ArrayAllocationBase<ElementType, TypeOfCriticalSectionToUse, align_size>&&> (peer.data);
+        numUsed = peer.numUsed;
+        peer.numUsed = 0;
         return *this;
     }
 
@@ -163,16 +170,16 @@ public:
         @param other    the other array to compare with
     */
     template <class OtherArrayType>
-    bool operator== (const OtherArrayType& other) const
+    bool operator== (const OtherArrayType& peer) const
     {
-        const ScopedLockType lock (getLock());
-        const typename OtherArrayType::ScopedLockType lock2 (other.getLock());
+        _LOCK_THIS_OBJ_;
+        _LOCK_PEER_OBJ_;
 
-        if (numUsed != other.numUsed)
+        if (numUsed != peer.numUsed)
             return false;
 
         for (int i = numUsed; --i >= 0;)
-            if (! (data.elements [i] == other.data.elements [i]))
+            if (! (data.elements [i] == peer.data.elements [i]))
                 return false;
 
         return true;
@@ -199,7 +206,7 @@ public:
     */
     void clear()
     {
-        const ScopedLockType lock (getLock());
+        _LOCK_THIS_OBJ_;
         deleteAllElements();
         data.setAllocatedSize (0);
         numUsed = 0;
@@ -210,7 +217,7 @@ public:
     */
     void clearQuick()
     {
-        const ScopedLockType lock (getLock());
+        _LOCK_THIS_OBJ_;
         deleteAllElements();
         numUsed = 0;
     }
@@ -235,7 +242,7 @@ public:
     */
     ElementType& operator[] (const int index) noexcept
     {
-        const ScopedLockType lock (getLock());
+        _LOCK_THIS_OBJ_;
         jassert(isPositiveAndBelow (index, numUsed));
         jassert (data.elements != nullptr);
         return data.elements [index];
@@ -243,7 +250,7 @@ public:
 
     const ElementType& operator[] (const int index) const noexcept
     {
-        const ScopedLockType lock (getLock());
+        _LOCK_THIS_OBJ_;
         jassert(isPositiveAndBelow (index, numUsed));
         jassert (data.elements != nullptr);
         return data.elements [index];
@@ -376,7 +383,7 @@ public:
     */
     bool contains (const ElementType& elementToLookFor) const noexcept
     {
-        const ScopedLockType lock (getLock());
+        _LOCK_THIS_OBJ_;
         const ElementType* e = data.elements.getData();
         const ElementType* const end_ = e + numUsed;
 
@@ -395,7 +402,7 @@ public:
     */
     void add (const ElementType& newElement)
     {
-        const ScopedLockType lock (getLock());
+        _LOCK_THIS_OBJ_;
         data.ensureAllocatedSize (numUsed + 1);
         new (data.elements + numUsed++) ElementType (newElement);
     }
@@ -407,7 +414,7 @@ public:
     */
     void add (ElementType&& newElement)
     {
-        const ScopedLockType lock (getLock());
+        _LOCK_THIS_OBJ_;
         data.ensureAllocatedSize (numUsed + 1);
         new (data.elements + numUsed++) ElementType (static_cast<ElementType&&> (newElement));
     }
@@ -1101,5 +1108,9 @@ public:
 };
 
 } // namespace treecore
+
+
+#undef _LOCK_THIS_OBJ_
+#undef _LOCK_PEER_OBJ_
 
 #endif   // JUCE_ARRAY_H_INCLUDED

@@ -39,46 +39,46 @@ namespace treecore {
 
 struct NumberCheck {
 
-        void setNum(int64 num) { m_num=num; }
+    void setNum(int64 num) { m_num=num; }
 
-        template<typename IntType>
-        void check(const IntType& ii) const
-        {
-                int64 i=(int64)ii;
-                jassert(i>=0&&i<m_num); //哥，您数组越界了
-        }
+    template<typename IntType>
+    void check(const IntType& ii) const
+    {
+        int64 i=(int64)ii;
+        jassert(i>=0&&i<m_num); //哥，您数组越界了
+    }
 
-        template<typename IntType>
-        void checkNum(const IntType& num2) const
-        {
-                int64 num=(int64)num2;
-                jassert(num>=0&&num<=m_num);
-        }
+    template<typename IntType>
+    void checkNum(const IntType& num2) const
+    {
+        int64 num=(int64)num2;
+        jassert(num>=0&&num<=m_num);
+    }
 
-        void swap( NumberCheck& other )
-        {
-                std::swap(m_num,other.m_num);
-        }
+    void swap( NumberCheck& other )
+    {
+        std::swap(m_num,other.m_num);
+    }
 
 private:
-        int64 m_num=0;
+    int64 m_num=0;
 };
 
 #else
 
 struct NumberCheck {
 
-        void setNum(size_t)const {}
+    void setNum(size_t)const {}
 
-        template<typename IntType>
-        void check(const IntType&) const
-        {}
+    template<typename IntType>
+    void check(const IntType&) const
+    {}
 
-        template<typename IntType>
-        void checkNum(const IntType&) const
-        {}
+    template<typename IntType>
+    void checkNum(const IntType&) const
+    {}
 
-        void swap(NumberCheck&){};
+    void swap(NumberCheck&){};
 
 };
 
@@ -87,11 +87,11 @@ struct NumberCheck {
 #ifndef DOXYGEN
 namespace HeapBlockHelper
 {
-    template <bool shouldThrow>
-    struct ThrowOnFail          { static void check (void*) {} };
+template <bool shouldThrow>
+struct ThrowOnFail          { static void check (void*) {} };
 
-    template<>
-    struct ThrowOnFail <true>   { static void check (void* data) { if (data == nullptr) throw std::bad_alloc(); } };
+template<>
+struct ThrowOnFail <true>   { static void check (void* data) { if (data == nullptr) throw std::bad_alloc(); } };
 }
 #endif
 
@@ -177,8 +177,8 @@ public:
     */
     HeapBlock (const size_t numElements, const bool initialiseToZero)
         : data (static_cast <ElementType*> (initialiseToZero
-                                               ? aligned_calloc<AlignSize> (numElements * sizeof (ElementType))
-                                               : aligned_malloc<AlignSize> (numElements * sizeof (ElementType))))
+                                            ? aligned_calloc<AlignSize> (numElements * sizeof (ElementType))
+                                            : aligned_malloc<AlignSize> (numElements * sizeof (ElementType))))
     {
         m_checker.setNum(numElements);
     }
