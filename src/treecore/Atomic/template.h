@@ -9,7 +9,7 @@ namespace treecore {
 
 // get and set
 template<typename T>
-T atomic_load(T* store) noexcept;
+T atomic_load(const T* store) noexcept;
 
 template<typename T>
 void atomic_store(T* store, T value) noexcept;

@@ -31,7 +31,7 @@ public:
         return &m_data;
     }
 
-    T load() noexcept
+    T load() const noexcept
     {
         return atomic_load<T>(&m_data);
     }

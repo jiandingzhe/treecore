@@ -29,13 +29,11 @@ public:
             fxsave [esi]
         }
 #elif defined TREECORE_COMPILER_MSVC && TREECORE_SIZE_PTR == 8
-        __builtin_ia32_fxsave(data);
+        _fxsave(data);
 #elif defined TREECORE_COMPILER_GCC
-        __attribute__(__target__("fxsr")) __builtin_ia32_fxsave(data);
+        __builtin_ia32_fxsave(data);
 #elif defined TREECORE_COMPILER_CLANG
-
-#else
-#  error unsupported platform!
+        abort();
 #endif
         uint32 f=*(uint32*)&data[28];
         const uint32 k=32;
@@ -86,7 +84,7 @@ private:
 ************************************************************************/
 forcedinline void MemoryFetch(const void*const ptr)
 {
-        _mm_prefetch((const char*)ptr,_MM_HINT_NTA);
+    _mm_prefetch((const char*)ptr,_MM_HINT_NTA);
 }
 
 /************************************************************************
@@ -94,7 +92,7 @@ forcedinline void MemoryFetch(const void*const ptr)
 ************************************************************************/
 forcedinline void MemoryFetchT2(const void*const ptr)
 {
-        _mm_prefetch((const char*)ptr,_MM_HINT_T2);
+    _mm_prefetch((const char*)ptr,_MM_HINT_T2);
 }
 
 /************************************************************************
@@ -102,7 +100,7 @@ forcedinline void MemoryFetchT2(const void*const ptr)
 ************************************************************************/
 forcedinline void MemoryFetchT1(const void*const ptr)
 {
-        _mm_prefetch((const char*)ptr,_MM_HINT_T1);
+    _mm_prefetch((const char*)ptr,_MM_HINT_T1);
 }
 
 /************************************************************************
@@ -110,7 +108,7 @@ forcedinline void MemoryFetchT1(const void*const ptr)
 ************************************************************************/
 forcedinline void MemoryFetchT0(const void*const ptr)
 {
-        _mm_prefetch((const char*)ptr,_MM_HINT_T0);
+    _mm_prefetch((const char*)ptr,_MM_HINT_T0);
 }
 
 

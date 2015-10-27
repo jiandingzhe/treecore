@@ -37,7 +37,7 @@ struct _gcc_atomic_type_helper_<8>
 #define TO_ORIG(arg) reinterpret_cast<T&>(arg)
 
 template<typename T>
-T atomic_load(T* store) noexcept
+T atomic_load(const T* store) noexcept
 {
     PRI_T re = __atomic_load_n(TO_PRIP(store), __ATOMIC_SEQ_CST);
     return TO_ORIG(re);
