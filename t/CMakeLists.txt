@@ -12,6 +12,8 @@ foreach(test_name
     t_aligned_malloc
     t_atomic_func_st
     t_atomic_obj_st
+    t_dlist
+    t_fxsave
     t_hash_multi_map
     t_hash_multi_map_move
     t_hash_set

@@ -3,6 +3,7 @@
 
 struct TestValue
 {
+    TestValue() {}
     TestValue(int value): content(value) {}
 
     TestValue(const TestValue& other) = delete;
@@ -16,6 +17,7 @@ struct TestValue
     {
         content = other.content;
         other.content = 0;
+        return *this;
     }
 
     int content = 456;

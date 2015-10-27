@@ -1,6 +1,8 @@
 #ifndef ztd_dlistnode_h__
 #define ztd_dlistnode_h__
 
+#include "treecore/SIMD.h"
+#include "treecore/StaticArray.h"
 #include "treecore/StandardHeader.h"
 #include "treecore/LeakedObjectDetector.h"
 
@@ -117,13 +119,18 @@ public:
     }
 
 private:
+    DListNode( DListNode<T>* prev , DListNode<T>* next , bool avilable = true ) noexcept
+        : m_next( next )
+        , m_prev( prev )
+        , m_avilable( avilable )
+    {
+    }
+
     DListNode<T>* m_next;
     DListNode<T>* m_prev;
     const bool    m_avilable;
 
-    template <typename T2,int place_holder> friend struct Dlist;
-
-    DListNode( DListNode<T>* prev , DListNode<T>* next , bool avilable =true ) noexcept : m_next( next ) , m_prev( prev ) , m_avilable( avilable ) {}
+    template <typename T2, int place_holder> friend struct DList;
 
     JUCE_LEAK_DETECTOR(DListNode);
 };
@@ -138,7 +145,7 @@ private:
 //  !! 请绝对注意,当一个双向链表被销毁时,其中的元素!不!会!被!自!动!销!毁! !!
 //  这样做的目的是这些元素可能来自于任何地方,例如来自于某个Array.如果你确定当前链表中
 //  所有的元素都可以直接被链表所销毁,请手动调用DeleteAll();
-template <typename T,int place_holder=0>
+template <typename T, int place_holder = 0>
 struct DList {
 
     //* 将DlistNode<T>类重定义为node类
@@ -413,7 +420,7 @@ struct DList {
 
     template<typename MaxFunc>
     void mergeBucketSorting(const MaxFunc& doExchangeFun) {
-        static_array<DList<T>, 64> buckets;			//64个桶即64个链表，第0个链表的长度不是0就是1，其他链表的长度不是0就是2^(i-1),所以64个桶可以用来排序2^64个的长度以内的链表，绝对够用了
+        StaticArray<DList<T>, 64> buckets;			//64个桶即64个链表，第0个链表的长度不是0就是1，其他链表的长度不是0就是2^(i-1),所以64个桶可以用来排序2^64个的长度以内的链表，绝对够用了
         for (T* k; this->pop_head(k);) {			//每次弹出第一个节点
             if (!buckets[0].is_empty()) {			//如果第0个桶是空的，就直接把节点丢进去，如果不是空的，就要把桶里的节点往后面的桶里丢，
                 for (int i = 0; i < 63; ++i) {		//遍历桶，从前往后归并，如果某一个桶和一个空桶做了归并，就break了
