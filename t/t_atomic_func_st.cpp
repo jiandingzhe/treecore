@@ -7,6 +7,17 @@ using namespace treecore;
 
 void TestFramework::content()
 {
+    // enum type
+    {
+        enum FooEnum
+        {
+            FOO_FOO,
+            FOO_BAR
+        };
+
+        FooEnum var = FOO_FOO;
+        atomic_store(&var, FOO_BAR);
+    }
     // 32 bit primitive type
     {
         int32 var = 111;

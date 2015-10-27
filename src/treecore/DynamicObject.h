@@ -105,7 +105,7 @@ public:
         helps to avoid accidentally invoking the wrong type of var constructor. It also makes
         the code easier to read,
     */
-    void setMethod (Identifier methodName, var::NativeFunction function);
+    void setDynamicMethod (Identifier methodName, var::NativeFunction function);
 
     //==============================================================================
     /** Removes all properties and methods from the object. */

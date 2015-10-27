@@ -50,7 +50,7 @@ void atomic_store(T* store, T value) noexcept
 }
 
 template<typename T>
-void atomic_store(T* store, std::nullptr_t value) noexcept
+void atomic_store(T** store, std::nullptr_t value) noexcept
 {
     __atomic_store_n(TO_PRIP(store), TO_PRI(value), __ATOMIC_SEQ_CST);
 }

@@ -15,7 +15,7 @@ template<typename T>
 void atomic_store(T* store, T value) noexcept;
 
 template<typename T>
-void atomic_store(T* store, std::nullptr_t value) noexcept;
+void atomic_store(T** store, std::nullptr_t value) noexcept;
 
 template<typename T>
 T atomic_exchange(T* store, T value) noexcept;

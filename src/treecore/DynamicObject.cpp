@@ -80,7 +80,7 @@ var DynamicObject::invokeMethod (Identifier method, const var::NativeFunctionArg
     return var();
 }
 
-void DynamicObject::setMethod (Identifier name, var::NativeFunction function)
+void DynamicObject::setDynamicMethod (Identifier name, var::NativeFunction function)
 {
     properties.set (name, var (function));
 }

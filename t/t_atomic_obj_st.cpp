@@ -5,6 +5,17 @@ using namespace treecore;
 
 void TestFramework::content()
 {
+    // enum type
+    {
+        enum FooEnum
+        {
+            FOO_FOO,
+            FOO_BAR
+        };
+
+        AtomicObject<FooEnum> var(FOO_FOO);
+    }
+
     // 32 bit primitive type
     {
         AtomicObject<int32> var(111);
