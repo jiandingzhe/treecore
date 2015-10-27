@@ -243,7 +243,7 @@ struct DList {
     DList() noexcept :m_dummy(&m_dummy, &m_dummy,false)
     {
         _set_empty();
-        static_assert(is_base_of<typename DList<T>::NodeType,T>::value,"T must is a child from DlistNode<T>!");
+        static_assert(std::is_base_of<typename DList<T>::NodeType,T>::value,"T must is a child from DlistNode<T>!");
     }
 
     //* 释放链表,请注意,这个函数不会删除链表中存在的节点!
@@ -251,7 +251,7 @@ struct DList {
 
     //* 将一整条链表放入当前链表中,另一条链表将被清空
     template<int other_place_holder>
-    Dlist( Dlist<T,other_place_holder>&& obj ) noexcept
+    DList( DList<T,other_place_holder>&& obj ) noexcept
         : DList()
     {
         this->push_tail(obj);
