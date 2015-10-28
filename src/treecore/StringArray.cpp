@@ -87,6 +87,12 @@ StringArray& StringArray::operator= (StringArray&& other) noexcept
     return *this;
 }
 
+StringArray::StringArray (const std::initializer_list<const char*>& stringList)
+{
+    strings.addArray (stringList);
+}
+
+
 StringArray::~StringArray()
 {
 }

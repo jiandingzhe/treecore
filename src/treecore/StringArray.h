@@ -90,6 +90,12 @@ public:
     */
     StringArray (const wchar_t* const* strings, int numberOfStrings);
 
+    ///
+    /// \brief StringArray
+    /// \param strings
+    ///
+    StringArray (const std::initializer_list<const char*>& strings);
+
     /** Destructor. */
     ~StringArray();
 

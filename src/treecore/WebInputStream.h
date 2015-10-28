@@ -69,7 +69,7 @@ public:
 
     int getStatus() const noexcept
     {
-        int m_status_code;
+        return m_status_code;
     }
 
 protected:

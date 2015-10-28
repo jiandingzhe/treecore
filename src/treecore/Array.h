@@ -662,6 +662,20 @@ public:
         }
     }
 
+    template <typename TypeToCreateFrom>
+    void addArray (const std::initializer_list<TypeToCreateFrom>& items)
+    {
+        const ScopedLockType lock (getLock());
+        data.ensureAllocatedSize (numUsed + (int) items.size());
+
+        for (auto& item : items)
+        {
+            new (data.elements + numUsed) ElementType (item);
+            ++numUsed;
+        }
+    }
+
+
     /** This will enlarge or shrink the array to the given number of elements, by adding
         or removing items from its end.
 
