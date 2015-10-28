@@ -30,6 +30,7 @@
 #define JUCE_RANGE_H_INCLUDED
 
 #include "treecore/Common.h"
+#include "treecore/MathsFunctions.h"
 
 namespace treecore {
 

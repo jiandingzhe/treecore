@@ -29,8 +29,9 @@
 #ifndef JUCE_ZIPFILE_H_INCLUDED
 #define JUCE_ZIPFILE_H_INCLUDED
 
-#include "treecore/RefCountObject.h"
+#include "treecore/CriticalSection.h"
 #include "treecore/OwnedArray.h"
+#include "treecore/RefCountObject.h"
 #include "treecore/Result.h"
 #include "treecore/String.h"
 #include "treecore/Time.h"

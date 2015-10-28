@@ -31,7 +31,8 @@
 
 #include "treecore/ArrayAllocationBase.h"
 #include "treecore/ContainerDeletePolicy.h"
-#include "treecore/CriticalSection.h"
+#include "treecore/DummyCriticalSection.h"
+#include "treecore/ElementComparator.h"
 #include "treecore/RefCountObject.h"
 #include "treecore/ScopedPointer.h"
 

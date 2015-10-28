@@ -29,6 +29,7 @@
 #ifndef JUCE_INTERPROCESSLOCK_H_INCLUDED
 #define JUCE_INTERPROCESSLOCK_H_INCLUDED
 
+#include "treecore/CriticalSection.h"
 #include "treecore/String.h"
 #include "treecore/ScopedPointer.h"
 
