@@ -375,6 +375,17 @@ public:
     }
 
     /**
+     * @brief get all keys in this table
+     * @return an array containing all keys
+     */
+    Array<KeyType> getAllKeys() const
+    {
+        Array<KeyType> re;
+        m_impl.get_all_keys(re);
+        return re;
+    }
+
+    /**
      * @brief get item by key
      *
      * @param key     key to search for

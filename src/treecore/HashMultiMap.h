@@ -174,6 +174,17 @@ public:
     }
 
     /**
+     * @brief get all keys in this table
+     * @return an array containing all keys
+     */
+    Array<KeyType> getAllKeys() const
+    {
+        Array<KeyType> re;
+        m_impl.get_all_keys(re);
+        return re;
+    }
+
+    /**
      * @brief test whether hash map contains this key
      * @param key
      * @return true if has this key, otherwise false

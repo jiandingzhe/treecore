@@ -17,6 +17,11 @@ void TestFramework::content()
     IS(map.size(), 1);
     IS(map.numUsedBuckets(), 1);
 
+    {
+        Array<String> keys = map.getAllKeys();
+        IS(keys.size(), 1);
+        OK(keys.contains("a"));
+    }
 
     map["a"] = "c";
     IS(map["a"], "c");
@@ -25,14 +30,35 @@ void TestFramework::content()
     IS(map.size(), 1);
     IS(map.numUsedBuckets(), 1);
 
+    {
+        Array<String> keys = map.getAllKeys();
+        IS(keys.size(), 1);
+        OK(keys.contains("a"));
+    }
+
     IS(map["d"], "");
     OK(map.contains("d"));
     IS(map.size(), 2);
+
+    {
+        Array<String> keys = map.getAllKeys();
+        IS(keys.size(), 2);
+        OK(keys.contains("a"));
+        OK(keys.contains("d"));
+    }
 
     map["ccccc"] = "abcde";
     IS(map.size(), 3);
     OK(map.contains("ccccc"));
     IS(map["ccccc"], "abcde");
+
+    {
+        Array<String> keys = map.getAllKeys();
+        IS(keys.size(), 3);
+        OK(keys.contains("a"));
+        OK(keys.contains("d"));
+        OK(keys.contains("ccccc"));
+    }
 
     // tests for const iterator
     {
@@ -106,6 +132,15 @@ void TestFramework::content()
         IS(&map["ccccc"], &it.value());
     }
 
+    {
+        Array<String> keys = map.getAllKeys();
+        IS(keys.size(), 4);
+        OK(keys.contains("a"));
+        OK(keys.contains("d"));
+        OK(keys.contains("ccccc"));
+        OK(keys.contains("eeeee"));
+    }
+
     // comparison operator test
     {
         MapType map2;
@@ -152,6 +187,21 @@ void TestFramework::content()
         OK(map != map2);
     }
 
+    // delete
+    OK(map.remove("d"));
+    IS(map.size(), 3);
+    OK(map.contains("a"));
+    OK(! map.contains("d"));
+    OK(map.contains("ccccc"));
+    OK(map.contains("eeeee"));
+
+    {
+        Array<String> keys = map.getAllKeys();
+        IS(keys.size(), 3);
+        OK(keys.contains("a"));
+        OK(keys.contains("ccccc"));
+        OK(keys.contains("eeeee"));
+    }
 
     // clear
     {

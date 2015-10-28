@@ -167,6 +167,18 @@ struct HashTableBase
         return true;
     }
 
+    void get_all_keys(Array<KeyType>& result) const
+    {
+        result.clear();
+        result.ensureStorageAllocated(num_entries);
+
+        for (int i_bucket = 0; i_bucket < buckets.size(); i_bucket++)
+        {
+            for (HashEntry* entry = buckets[i_bucket]; entry != nullptr; entry = entry->next_entry)
+                result.add(entry->item.key);
+        }
+    }
+
     HashEntry* search_entry_at(int i_bucket, const KeyType& key) const noexcept
     {
         for (const HashEntry* entry = buckets[i_bucket]; entry != nullptr; entry = entry->next_entry)
