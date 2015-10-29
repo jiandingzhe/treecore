@@ -163,6 +163,11 @@ public:
     public:
         Master() noexcept {}
 
+        Master(Master&& peer) noexcept
+            : sharedPointer(std::move(peer.sharedPointer))
+        {
+        }
+
         ~Master() noexcept
         {
             // You must remember to call clear() in your source object's destructor! See the notes
