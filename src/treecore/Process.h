@@ -74,21 +74,6 @@ public:
     */
     static void JUCE_CALLTYPE terminate();
 
-    //==============================================================================
-    /** Returns true if this application process is the one that the user is
-        currently using.
-    */
-    static bool JUCE_CALLTYPE isForegroundProcess();
-
-    /** Attempts to make the current process the active one.
-        (This is not possible on some platforms).
-    */
-    static void JUCE_CALLTYPE makeForegroundProcess();
-
-    /** Hides the application (on an OS that supports this, e.g. OSX) */
-    static void JUCE_CALLTYPE hide();
-
-    //==============================================================================
     /** Raises the current process's privilege level.
 
         Does nothing if this isn't supported by the current OS, or if process

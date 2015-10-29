@@ -43,28 +43,6 @@ bool isIOSAppActive = true;
 #endif
 
 //==============================================================================
-JUCE_API bool JUCE_CALLTYPE Process::isForegroundProcess()
-{
-   #ifdef TREECORE_OS_OSX
-    return [NSApp isActive];
-   #else
-    return isIOSAppActive;
-   #endif
-}
-
-JUCE_API void JUCE_CALLTYPE Process::makeForegroundProcess()
-{
-   #ifdef TREECORE_OS_OSX
-    [NSApp activateIgnoringOtherApps: YES];
-   #endif
-}
-
-JUCE_API void JUCE_CALLTYPE Process::hide()
-{
-   #ifdef TREECORE_OS_OSX
-    [NSApp hide: nil];
-   #endif
-}
 
 JUCE_API void JUCE_CALLTYPE Process::raisePrivilege()
 {
