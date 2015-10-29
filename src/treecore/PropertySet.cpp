@@ -127,12 +127,12 @@ bool PropertySet::getBoolValue (const String& keyName, const bool defaultValue) 
     MapType::ConstIterator i_key(properties);
     if (properties.select(keyName, i_key))
     {
-        return i_key.value().getIntValue();
+        return i_key.value().getIntValue() != 0;
     }
     else
     {
         return fallbackProperties
-                ? fallbackProperties->getIntValue(keyName, defaultValue)
+                ? fallbackProperties->getIntValue(keyName, defaultValue) != 0
                 : defaultValue;
     }
 }

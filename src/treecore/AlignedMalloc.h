@@ -87,7 +87,7 @@ forcedinline void* aligned_realloc(void* const ptr,size_t len)
 #define TREECORE_ALIGNED_ALLOCATOR(_TYPE_) \
     void* operator new (std::size_t size)\
     {\
-        void* ptr = treecore::aligned_malloc<alignof(_TYPE_)>(size);\
+        void* ptr = treecore::aligned_malloc<TREECORE_ALIGNOF(_TYPE_)>(size);\
         if (!ptr)\
             throw std::bad_alloc();\
         return ptr;\
@@ -95,17 +95,17 @@ forcedinline void* aligned_realloc(void* const ptr,size_t len)
     \
     void* operator new (std::size_t size, const std::nothrow_t& nothrow_value) noexcept\
     {\
-        return treecore::aligned_malloc<alignof(_TYPE_)>(size);\
+        return treecore::aligned_malloc<TREECORE_ALIGNOF(_TYPE_)>(size);\
     }\
     \
     void* operator new (std::size_t size, void* ptr) noexcept\
     {\
-        jassert(treecore::pointer_sized_uint(ptr) % alignof(_TYPE_) == 0);\
+        jassert(treecore::pointer_sized_uint(ptr) % TREECORE_ALIGNOF(_TYPE_) == 0);\
         return ptr;\
     }\
     void* operator new[] (std::size_t size)\
     {\
-        void* ptr = treecore::aligned_malloc<alignof(_TYPE_)>(size);\
+        void* ptr = treecore::aligned_malloc<TREECORE_ALIGNOF(_TYPE_)>(size);\
         if (!ptr)\
             throw std::bad_alloc();\
         return ptr;\
@@ -113,43 +113,43 @@ forcedinline void* aligned_realloc(void* const ptr,size_t len)
     \
     void* operator new[] (std::size_t size, const std::nothrow_t& nothrow) noexcept\
     {\
-        return treecore::aligned_malloc<alignof(_TYPE_)>(size);\
+        return treecore::aligned_malloc<TREECORE_ALIGNOF(_TYPE_)>(size);\
     }\
     \
     void* operator new[] (std::size_t size, void* ptr) noexcept\
     {\
-        jassert(treecore::pointer_sized_uint(ptr) % alignof(_TYPE_) == 0);\
+        jassert(treecore::pointer_sized_uint(ptr) % TREECORE_ALIGNOF(_TYPE_) == 0);\
         return ptr;\
     }\
     \
     void operator delete (void* ptr) noexcept\
     {\
-        treecore::aligned_free<alignof(_TYPE_)>(ptr);\
+        treecore::aligned_free<TREECORE_ALIGNOF(_TYPE_)>(ptr);\
     }\
     \
     void operator delete (void* ptr, const std::nothrow_t& nothrow_constant) noexcept\
     {\
-        treecore::aligned_free<alignof(_TYPE_)>(ptr);\
+        treecore::aligned_free<TREECORE_ALIGNOF(_TYPE_)>(ptr);\
     }\
     \
     void operator delete (void* ptr, void* ptr2) noexcept\
     {\
-        jassert(treecore::pointer_sized_uint(ptr) % alignof(_TYPE_) == 0);\
+        jassert(treecore::pointer_sized_uint(ptr) % TREECORE_ALIGNOF(_TYPE_) == 0);\
     }\
     \
     void operator delete[] (void* ptr) noexcept\
     {\
-        treecore::aligned_free<alignof(_TYPE_)>(ptr);\
+        treecore::aligned_free<TREECORE_ALIGNOF(_TYPE_)>(ptr);\
     }\
     \
     void operator delete[] (void* ptr, const std::nothrow_t& nothrow_constant) noexcept\
     {\
-        treecore::aligned_free<alignof(_TYPE_)>(ptr);\
+        treecore::aligned_free<TREECORE_ALIGNOF(_TYPE_)>(ptr);\
     }\
     \
     void operator delete[] (void* ptr, void* voidptr2) noexcept\
     {\
-        jassert(treecore::pointer_sized_uint(ptr) % alignof(_TYPE_) == 0);\
+        jassert(treecore::pointer_sized_uint(ptr) % TREECORE_ALIGNOF(_TYPE_) == 0);\
     }
 
 #endif // ztd_aligned_malloc_h__

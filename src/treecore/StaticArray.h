@@ -271,10 +271,7 @@ public:
 
 private:
 
-    TREECORE_ALN_BEGIN(alignof(T)) struct Temp
-    {
-        char data[sizeof(T)];
-    } TREECORE_ALN_END(alignof(T));
+    typedef typename std::aligned_storage<sizeof(T), TREECORE_ALIGNOF(T)>::type Temp;
 
     static_array_pod_imp<Temp,SizeQueue> m_rawArray;
 //    typename aligned_type< static_array_pod_imp<Temp,SizeQueue>, ALIGNOF(T) >::type m_rawArray;

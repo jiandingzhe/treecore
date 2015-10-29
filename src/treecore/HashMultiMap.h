@@ -86,7 +86,7 @@ public:
 
         bool hasContent() const noexcept
         {
-            return m_impl.entry;
+            return m_impl.entry != nullptr;
         }
 
         KeyType& key() noexcept
@@ -194,7 +194,7 @@ public:
         LOCK_THIS_OBJECT;
         int i_bucket = m_impl.bucket_index(key);
         EntryType* entry = m_impl.search_entry_at(i_bucket, key);
-        return entry;
+        return entry != nullptr;
     }
 
     bool contains(const KeyType& key, const ValueType& value) const noexcept

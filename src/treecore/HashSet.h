@@ -62,7 +62,7 @@ public:
 
         inline bool hasContent() const noexcept
         {
-            return m_impl.entry;
+            return m_impl.entry != nullptr;
         }
 
         inline const KeyType& content() const noexcept
@@ -135,7 +135,7 @@ public:
         LOCK_THIS_OBJECT;
         int i_bucket = m_impl.bucket_index(key);
         EntryType* entry = m_impl.search_entry_at(i_bucket, key);
-        return entry;
+        return entry != nullptr;
     }
 
     bool insert(const KeyType& content) noexcept
@@ -179,7 +179,7 @@ public:
             result.m_impl.entry    = entry;
         }
 
-        return entry;
+        return entry != nullptr;
     }
 
     /**

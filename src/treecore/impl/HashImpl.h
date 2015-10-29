@@ -231,7 +231,7 @@ struct HashTableBase
         if (entry)
             remove_entry(i_bucket, prev_entry, entry);
 
-        return entry;
+        return entry != nullptr;
     }
 
     void remove_entry(int i_bucket, HashEntry* prev_entry, HashEntry* entry)

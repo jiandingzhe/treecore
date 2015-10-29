@@ -90,8 +90,34 @@ class HashMap: public RefCountObject
 {
     struct HashMapItem
     {
-        const KeyType key;
-        ValueType value;
+        HashMapItem() {}
+
+        HashMapItem(const KeyType& key, const ValueType& value) 
+            : key(key)
+            , value(value) 
+        {
+        }
+
+        HashMapItem(const KeyType& key, ValueType&& value)
+            : key(key)
+            , value(std::move(value))
+        {
+        }
+
+        HashMapItem(HashMapItem&& peer)
+            : key(peer.key)
+            , value(std::move(peer.value))
+        {
+        }
+        
+        HashMapItem& operator = (HashMapItem&& peer)
+        {
+            key = std::move(peer.key);
+            value = std::move(peer.value);
+        }
+
+        const KeyType key{};
+        ValueType value{};
 
         bool operator == (const HashMapItem& other) const
         {
@@ -161,7 +187,7 @@ public:
          */
         bool hasContent() const noexcept
         {
-            return m_impl.entry;
+            return m_impl.entry != nullptr;
         }
 
         /**
@@ -219,7 +245,7 @@ public:
          */
         bool hasContent() const noexcept
         {
-            return m_impl.entry;
+            return m_impl.entry != nullptr;
         }
 
         /**
@@ -354,7 +380,7 @@ public:
         // create new entry
         if (!entry)
         {
-            entry = m_impl.create_entry_at(i_bucket, HashMapItem{key, ValueType{}});
+            entry = m_impl.create_entry_at(i_bucket, HashMapItem(key, ValueType{}));
 
             if (m_impl.high_fill_rate())
                 m_impl.expand_buckets();
@@ -371,7 +397,7 @@ public:
         LOCK_HASH_MAP;
         int i_bucket = m_impl.bucket_index(key);
         EntryType* entry = m_impl.search_entry_at(i_bucket, key);
-        return entry;
+        return entry != nullptr;
     }
 
     /**
@@ -406,7 +432,7 @@ public:
             result.m_impl.entry    = entry;
         }
 
-        return entry;
+        return entry != nullptr;
     }
 
     bool select(const KeyType& key, ConstIterator& result) const noexcept
@@ -421,7 +447,7 @@ public:
             result.m_impl.entry    = entry;
         }
 
-        return entry;
+        return entry != nullptr;
     }
 
     /**
@@ -452,7 +478,7 @@ public:
         }
 
         // create new one
-        entry = m_impl.create_entry_at(i_bucket, HashMapItem{key, value});
+        entry = m_impl.create_entry_at(i_bucket, HashMapItem(key, value));
 
         if (m_impl.high_fill_rate())
         {
@@ -481,7 +507,7 @@ public:
         }
 
         // create new one
-        entry = m_impl.create_entry_at(i_bucket, HashMapItem{key, std::move(value)});
+        entry = m_impl.create_entry_at(i_bucket, HashMapItem(key, std::move(value)));
 
         if (m_impl.high_fill_rate())
         {

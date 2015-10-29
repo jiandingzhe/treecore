@@ -7,12 +7,12 @@ IdentifierWithIndex::IdentifierWithIndex() noexcept
 {
 }
 
-IdentifierWithIndex::IdentifierWithIndex( const char* name , uint index)
+IdentifierWithIndex::IdentifierWithIndex(const char* name, unsigned int index)
     : m_content(String(name) + String(index))
 {
 }
 
-IdentifierWithIndex::IdentifierWithIndex( const String& name , uint index)
+IdentifierWithIndex::IdentifierWithIndex(const String& name, unsigned int index)
     : m_content(name + String(index))
 {
 }
@@ -22,7 +22,7 @@ IdentifierWithIndex::IdentifierWithIndex( String::CharPointerType nameStart , St
 {
 }
 
-IdentifierWithIndex::IdentifierWithIndex( const Identifier& other , uint index ) noexcept
+IdentifierWithIndex::IdentifierWithIndex(const Identifier& other, unsigned int index) noexcept
     : m_content(other.toString() + String(index))
 {
 }

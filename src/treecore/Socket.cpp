@@ -1,5 +1,6 @@
 ﻿#include "treecore/Socket.h"
 
+#include "treecore/MathsFunctions.h"
 #include "treecore/IPAddress.h"
 
 namespace treecore
@@ -15,6 +16,8 @@ namespace treecore
 #endif
 
 #ifdef TREECORE_OS_WINDOWS
+#include <WS2tcpip.h>
+#include <winsock.h>
 typedef int       juce_socklen_t;
 typedef SOCKET    SocketHandle;
 #else

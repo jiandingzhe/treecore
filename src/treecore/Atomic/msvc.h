@@ -26,7 +26,7 @@ struct _msvc_atomic_impl_<T, 4>
     typedef long volatile* store_type;
     typedef long value_type;
 
-    static T load(T* store) noexcept
+    static T load(const T* store) noexcept
     {
         value_type re = _InterlockedExchangeAdd( TO_PRIP(store), 0 );
         return TO_ORIG(re);
@@ -133,7 +133,7 @@ struct _msvc_atomic_impl_<T, 8>
     typedef __int64 volatile* store_type;
     typedef __int64 value_type;
 
-    static T load(T* store) noexcept
+    static T load(const T* store) noexcept
     {
         value_type re = _InterlockedExchangeAdd64( TO_PRIP(store), 0 );
         return TO_ORIG(re);
@@ -210,7 +210,7 @@ struct _msvc_atomic_impl_<T, 8>
         return TO_ORIG(tmp);
     }
 
-    virtual T xor_fetch(T* store, T value) noexcept
+    static T xor_fetch(T* store, T value) noexcept
     {
         value_type tmp = _InterlockedXor64(TO_PRIP(store), TO_PRI(value));
         tmp ^= TO_PRI(value);
@@ -241,7 +241,7 @@ struct _msvc_atomic_impl_<T, 8>
 
 // get and set
 template<typename T>
-inline T atomic_load(T* store) noexcept
+inline T atomic_load(const T* store) noexcept
 {
     return _impl_::_msvc_atomic_impl_<T, sizeof(T)>::load(store);
 }

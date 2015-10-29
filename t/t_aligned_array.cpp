@@ -20,7 +20,7 @@ TREECORE_ALN_BEGIN(32) struct Foo
 
 void TestFramework::content()
 {
-    IS(alignof(Foo), 32);
+    IS(TREECORE_ALIGNOF(Foo), 32);
     IS(sizeof(Foo), 32);
 
     {

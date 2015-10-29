@@ -10,6 +10,8 @@
 #include "treecore/RefCountObject.h"
 #include "treecore/RefCountSingleton.h"
 
+#include <type_traits>
+
 class TestFramework;
 
 namespace treecore
@@ -24,21 +26,26 @@ class ObjectPool: public RefCountObject, public RefCountSingleton<ObjectPool<T, 
 {
     friend class ::TestFramework;
 
-    TREECORE_ALN_BEGIN(alignof(T)) struct ObjBlock
+    struct ObjBlock
     {
-        ObjBlock() {}
-        ~ObjBlock() {}
+        ObjBlock()
+        {
+        }
+
+        ~ObjBlock() 
+        {
+        }
 
         T* operator[]( const int i )
         {
-            return (T*) &m_data[i*sizeof(T)];
+            T* p_data = (T*) &m_data;
+            return p_data + i;
         }
 
-        int8 m_data[sizeof(T) * BLOCK_SIZE];
+        typename std::aligned_storage<sizeof(T) * BLOCK_SIZE, TREECORE_ALIGNOF(T)>::type m_data;
 
-        TREECORE_ALIGNED_ALLOCATOR(ObjBlock);
         TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ObjBlock);
-    } TREECORE_ALN_END(alignof(T));
+    };
 
     typedef typename mpl_type_if<MULTI_THREAD, LfQueue<ObjBlock*> , Queue<ObjBlock*>>::type BlockQueueType;
     typedef typename mpl_type_if<MULTI_THREAD, LfQueue<T*>, Queue<T*>>::type ValueQueueType;

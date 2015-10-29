@@ -53,6 +53,14 @@
    email: m-mat @ math.sci.hiroshima-u.ac.jp (remove spaces)
 */
 
+#if _MSC_VER
+#  define _CRT_RAND_S
+#  include <stdlib.h>
+#  include <process.h>
+#else
+#  include <unistd.h>
+#endif
+
 #include "treecore/MT19937.h"
 
 #include "treecore/BigInteger.h"
@@ -63,12 +71,6 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include <errno.h>
-
-#if _MSC_VER
-#  include <process.h>
-#else
-#  include <unistd.h>
-#endif
 
 using namespace std;
 

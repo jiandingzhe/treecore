@@ -36,10 +36,10 @@ void TestFramework::content()
 
     treecore::StaticArray<int, 11> int_array;
     IS(int_array.size, 11);
-    IS(pointer_sized_uint(&int_array[0]) % alignof(int), 0);
-    IS(pointer_sized_uint(&int_array[1]) % alignof(int), 0);
-    IS(pointer_sized_uint(&int_array[9]) % alignof(int), 0);
-    IS(pointer_sized_uint(&int_array[10]) % alignof(int), 0);
+    IS(pointer_sized_uint(&int_array[0]) % TREECORE_ALIGNOF(int), 0);
+    IS(pointer_sized_uint(&int_array[1]) % TREECORE_ALIGNOF(int), 0);
+    IS(pointer_sized_uint(&int_array[9]) % TREECORE_ALIGNOF(int), 0);
+    IS(pointer_sized_uint(&int_array[10]) % TREECORE_ALIGNOF(int), 0);
 
     char fuck_yet_again = 3;
     IS(fuck_yet_again, 3);

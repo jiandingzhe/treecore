@@ -17,7 +17,7 @@ template<typename T> struct Baz
 void TestFramework::content()
 {
     bool value_int_int = treecore::mpl_same_type<int, int>::value;
-    OK(! value_int_int);
+    OK(value_int_int);
 
     bool value_int_float = treecore::mpl_same_type<int, float>::value;
     OK(! value_int_float);

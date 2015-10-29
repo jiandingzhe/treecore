@@ -369,7 +369,7 @@ template <> struct JuceStaticAssert <true> { static void dummy() {} };
 
 #if defined TREECORE_COMPILER_MSVC || (defined TREECORE_OS_WINDOWS && TREECORE_COMPILER_ICC)
 #  define TREECORE_SELECT_ANY __declspec(selectany)
-#elseif defined TREECORE_COMPILER_GCC && defined TREECORE_OS_WINDOWS
+#elif defined TREECORE_COMPILER_GCC && defined TREECORE_OS_WINDOWS
 #  define TREECORE_SELECT_ANY __attribute__((selectany))
 #else
 #  define TREECORE_SELECT_ANY

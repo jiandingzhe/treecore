@@ -1,5 +1,8 @@
 #include "treecore/AtomicObject.h"
+#include "treecore/IntTypes.h"
+
 #include "TestFramework.h"
+
 
 using namespace treecore;
 

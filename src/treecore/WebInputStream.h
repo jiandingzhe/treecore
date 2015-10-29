@@ -34,9 +34,7 @@ public:
     bool setPosition (int64 wantedPos) override;
     void closeSocket (bool resetLevelsOfRedirection = true);
 
-    int createConnection (URL::OpenStreamProgressCallback* progressCallback,
-                          void* progressCallbackContext,
-                          const int numRedirects);
+    int createConnection (URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext, const int numRedirects);
 
     String readResponse (const uint32 timeOutTime);
 
@@ -71,6 +69,14 @@ public:
     {
         return m_status_code;
     }
+
+private:
+    void close();
+    void createConnection(URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext);
+    void openConnection(URL_COMPONENTS& uc, HINTERNET sessionHandle, URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext);
+    void applyTimeout(HINTERNET sessionHandle, const DWORD option);
+    void openHTTPConnection(URL_COMPONENTS& uc, URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext);
+    void setSecurityFlags();
 
 protected:
     struct Impl;
