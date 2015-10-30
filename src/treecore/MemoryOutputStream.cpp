@@ -27,6 +27,7 @@
 */
 
 #include "treecore/InputStream.h"
+#include "treecore/IntTypes.h"
 #include "treecore/MemoryOutputStream.h"
 
 namespace treecore {

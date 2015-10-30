@@ -114,7 +114,7 @@ install(TARGETS treecore treecore_bin_builder
 install(FILES ${CMAKE_BINARY_DIR}/src/treecore/Config.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/treecore
 )
-install(DIRECTORY treecore/ treecore/native/ treecore/Atomic/ treecore/SIMD/
+install(DIRECTORY treecore/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/treecore
     FILES_MATCHING PATTERN "*.h"
     PATTERN internal EXCLUDE

@@ -1,7 +1,7 @@
 #ifndef TREECORE_INT_TYPES_H
 #define TREECORE_INT_TYPES_H
 
-#include "treecore/Common.h"
+#include "treecore/Config.h"
 
 #include <cstdint>
 #include <cstdlib>

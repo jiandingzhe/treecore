@@ -29,6 +29,7 @@
 #ifndef JUCE_INPUTSTREAM_H_INCLUDED
 #define JUCE_INPUTSTREAM_H_INCLUDED
 
+#include "treecore/IntTypes.h"
 #include "treecore/LeakedObjectDetector.h"
 #include "treecore/MathsFunctions.h"
 #include "treecore/String.h"

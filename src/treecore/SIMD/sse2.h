@@ -31,9 +31,15 @@ public:
 #elif defined TREECORE_COMPILER_MSVC && TREECORE_SIZE_PTR == 8
         _fxsave(data);
 #elif defined TREECORE_COMPILER_GCC
+#  if defined TREECORE_OS_LINUX
         __builtin_ia32_fxsave(data);
+#  else
+        abort(); // TODOyang1xi2
+#  endif
 #elif defined TREECORE_COMPILER_CLANG
-        abort();
+        abort(); // TODO fxsave in clang
+#else
+#  error fxsave in this platform??
 #endif
         uint32 f=*(uint32*)&data[28];
         const uint32 k=32;
