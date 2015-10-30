@@ -25,9 +25,7 @@ typedef std::uint64_t uint64;
 typedef std::intptr_t pointer_sized_int;
 typedef std::uintptr_t pointer_sized_uint;
 
-#ifdef TREECORE_COMPILER_MSVC
 typedef pointer_sized_int ssize_t;
-#endif
 
 }
 

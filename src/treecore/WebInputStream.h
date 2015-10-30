@@ -71,11 +71,15 @@ public:
     }
 
 private:
+
+#if defined TREECORE_OS_WINDOWS
     void close();
     void createConnection(URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext);
     void openConnection(URL_COMPONENTS& uc, HINTERNET sessionHandle, URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext);
     void applyTimeout(HINTERNET sessionHandle, const DWORD option);
     void openHTTPConnection(URL_COMPONENTS& uc, URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext);
+#endif
+
     void setSecurityFlags();
 
 protected:
