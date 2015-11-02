@@ -29,6 +29,7 @@
 #ifndef JUCE_THREAD_H_INCLUDED
 #define JUCE_THREAD_H_INCLUDED
 
+#include "treecore/Config.h"
 #include "treecore/String.h"
 #include "treecore/CriticalSection.h"
 #include "treecore/WaitableEvent.h"
@@ -38,7 +39,7 @@ namespace treecore {
 #if defined TREECORE_OS_WINDOWS
 extern HWND MESSAGE_WINDOW_HANDLE;
 #elif defined TREECORE_OS_LINUX
-extern Window MESSAGE_WINDOW_HANDLE;
+extern uint32 MESSAGE_WINDOW_HANDLE;
 #endif
 
 //==============================================================================

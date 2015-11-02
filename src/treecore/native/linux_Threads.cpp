@@ -36,7 +36,7 @@
 
 namespace treecore {
 
-Window MESSAGE_WINDOW_HANDLE = None;
+uint32 MESSAGE_WINDOW_HANDLE = 0;
 
 //==============================================================================
 JUCE_API void JUCE_CALLTYPE Process::setPriority (const ProcessPriority prior)
