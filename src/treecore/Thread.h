@@ -35,6 +35,12 @@
 
 namespace treecore {
 
+#if defined TREECORE_OS_WINDOWS
+extern HWND MESSAGE_WINDOW_HANDLE;
+#elif defined TREECORE_OS_LINUX
+extern Window MESSAGE_WINDOW_HANDLE;
+#endif
+
 //==============================================================================
 /**
     Encapsulates a thread.

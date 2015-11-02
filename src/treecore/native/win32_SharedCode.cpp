@@ -43,7 +43,7 @@
 namespace treecore
 {
 
-HWND juce_messageWindowHandle = 0;  // (this is used by other parts of the codebase)
+HWND MESSAGE_WINDOW_HANDLE = 0;  // (this is used by other parts of the codebase)
 
 void* getUser32Function (const char* functionName)
 {
@@ -90,9 +90,9 @@ void JUCE_API juce_threadEntryPoint (void*);
 
 static unsigned int __stdcall threadEntryProc (void* userData)
 {
-    if (juce_messageWindowHandle != 0)
-        AttachThreadInput (GetWindowThreadProcessId (juce_messageWindowHandle, 0),
-                           GetCurrentThreadId(), TRUE);
+    if (MESSAGE_WINDOW_HANDLE != 0)
+        AttachThreadInput(GetWindowThreadProcessId(MESSAGE_WINDOW_HANDLE, 0),
+                          GetCurrentThreadId(), TRUE);
 
     juce_threadEntryPoint (userData);
 
