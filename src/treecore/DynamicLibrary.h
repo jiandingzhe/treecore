@@ -35,6 +35,10 @@ namespace treecore {
 
 class String;
 
+#if defined TREECORE_OS_WINDOWS
+void* getUser32Function(const char* functionName);
+#endif
+
 /**
     Handles the opening and closing of DLLs.
 

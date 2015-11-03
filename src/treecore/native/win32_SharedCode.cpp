@@ -225,7 +225,7 @@ static int lastProcessPriority = -1;
 
 // called when the app gains focus because Windows does weird things to process priority
 // when you swap apps, and this forces an update when the app is brought to the front.
-void juce_repeatLastProcessPriority()
+void JUCE_CALLTYPE repeatLastProcessPriority()
 {
     if (lastProcessPriority >= 0) // (avoid changing this if it's not been explicitly set by the app..)
     {
@@ -249,7 +249,7 @@ void JUCE_CALLTYPE Process::setPriority (ProcessPriority prior)
     if (lastProcessPriority != (int) prior)
     {
         lastProcessPriority = (int) prior;
-        juce_repeatLastProcessPriority();
+        repeatLastProcessPriority();
     }
 }
 
@@ -298,7 +298,7 @@ void JUCE_CALLTYPE Process::terminate()
     ExitProcess (1);
 }
 
-bool juce_isRunningInWine()
+bool JUCE_CALLTYPE isRunningInWine()
 {
     HMODULE ntdll = GetModuleHandleA ("ntdll");
     return ntdll != 0 && GetProcAddress (ntdll, "wine_get_version") != nullptr;
