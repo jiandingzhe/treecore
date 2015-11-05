@@ -162,7 +162,7 @@ public:
         This will return a null pointer if the array's empty.
         @see getLast
     */
-    inline PointerType& getFirst() noexcept
+    inline PointerType getFirst() noexcept
     {
         const ScopedLockType lock (getLock());
         jassert(data.elements != nullptr);
@@ -170,12 +170,30 @@ public:
         return data.elements[0];
     }
 
-    inline PointerType const& getFirst() const noexcept
+    inline PointerType const getFirst() const noexcept
     {
         const ScopedLockType lock (getLock());
         jassert(data.elements != nullptr);
         jassert(numUsed > 0);
         return data.elements[0];
+    }
+
+    inline PointerType tryGetFirst() noexcept
+    {
+        const ScopedLockType lock (getLock());
+        if (numUsed > 0)
+            return data.elements[0];
+        else
+            return nullptr;
+    }
+
+    inline PointerType const tryGetFirst() const noexcept
+    {
+        const ScopedLockType lock (getLock());
+        if (numUsed > 0)
+            return data.elements[0];
+        else
+            return nullptr;
     }
 
     /** Returns a pointer to the last object in the array.
@@ -183,7 +201,7 @@ public:
         This will return a null pointer if the array's empty.
         @see getFirst
     */
-    inline PointerType& getLast() noexcept
+    inline PointerType getLast() noexcept
     {
         const ScopedLockType lock (getLock());
         jassert(data.elements != nullptr);
@@ -191,12 +209,30 @@ public:
         return data.elements[numUsed-1];
     }
 
-    inline PointerType const& getLast() const noexcept
+    inline PointerType const getLast() const noexcept
     {
         const ScopedLockType lock (getLock());
         jassert(data.elements != nullptr);
         jassert(numUsed > 0);
         return data.elements[numUsed-1];
+    }
+
+    inline PointerType tryGetLast() noexcept
+    {
+        const ScopedLockType lock (getLock());
+        if (numUsed > 0)
+            return data.elements[numUsed-1];
+        else
+            return nullptr;
+    }
+
+    inline PointerType const tryGetLast() const noexcept
+    {
+        const ScopedLockType lock (getLock());
+        if (numUsed > 0)
+            return data.elements[numUsed-1];
+        else
+            return nullptr;
     }
 
 
@@ -395,6 +431,22 @@ public:
             add (newObject);
 
         return newObject;
+    }
+
+    ObjectClass* tryGet(int index) noexcept
+    {
+        if (0 <= index && index < numUsed)
+            return data.elements[index];
+        else
+            return nullptr;
+    }
+
+    const ObjectClass* tryGet(int index) const noexcept
+    {
+        if (0 <= index && index < numUsed)
+            return data.elements[index];
+        else
+            return nullptr;
     }
 
     /** Replaces an object in the array with a different one.
