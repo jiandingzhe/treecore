@@ -26,26 +26,26 @@ public:
         T* tmp = nullptr;
 
         // early out
-        if (!m_building)
+        if (!get_building_lock())
         {
-            tmp = m_instance.load();
+            tmp = get_raw_instance().load();
             if (tmp)
                 return tmp;
         }
 
         // do build
-        while(m_building.compare_set(0, 1))
+        while(get_building_lock().compare_set(0, 1))
             Thread::yield();
 
-        tmp = m_instance.load();
+        tmp = get_raw_instance().load();
         if (!tmp)
         {
             tmp = new T();
             smart_ref(tmp);
-            m_instance = tmp;
+            get_raw_instance() = tmp;
         }
 
-        while (m_building.compare_set(1, 0))
+        while (get_building_lock().compare_set(1, 0))
             Thread::yield();
 
         return tmp;
@@ -58,7 +58,7 @@ public:
     static int32 releaseInstance()
     {
         // early out if it is already empty
-        T* tmp = m_instance.load();
+        T* tmp = get_raw_instance().load();
         if (!tmp)
             return -1;
 
@@ -70,33 +70,37 @@ public:
         // --refcnt
         // delete obj
         //             ++refcnt
-        while (m_building.compare_set(0, 1))
+        while (get_building_lock().compare_set(0, 1))
             Thread::yield();
 
-        tmp = m_instance.load();
+        tmp = get_raw_instance().load();
         int cnt_before_release = -1;
         if (tmp)
         {
             cnt_before_release = smart_unref(tmp);
-            m_instance = nullptr;
+            get_raw_instance() = nullptr;
         }
 
-        while (m_building.compare_set(1, 0))
+        while (get_building_lock().compare_set(1, 0))
             Thread::yield();
 
         return cnt_before_release;
     }
 
 private:
-    static AtomicObject<int> m_building;
-    static AtomicObject<T*> m_instance;
+
+    static AtomicObject<int>& get_building_lock()
+    {
+        static AtomicObject<int> m_building_fuck_cxx;
+        return m_building_fuck_cxx;
+    }
+
+    static AtomicObject<T*>& get_raw_instance()
+    {
+        static AtomicObject<T*> m_instance_fuck_cxx;
+        return m_instance_fuck_cxx;
+    }
 };
-
-template<typename T>
-TREECORE_SELECT_ANY AtomicObject<int> RefCountSingleton<T>::m_building;
-
-template<typename T>
-TREECORE_SELECT_ANY AtomicObject<T*> RefCountSingleton<T>::m_instance(nullptr);
 
 
 } // namespace treecore

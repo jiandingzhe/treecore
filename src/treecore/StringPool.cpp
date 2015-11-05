@@ -41,7 +41,10 @@ static inline const char* _add_or_get_it_(HashSet<String>& pool, const String& i
     return it.content().getCharPointer().getAddress();
 }
 
-StringPool::StringPool() noexcept {}
+StringPool::StringPool() noexcept
+{
+}
+
 StringPool::~StringPool() {}
 
 const char* StringPool::getPooledString (const char* const newString)

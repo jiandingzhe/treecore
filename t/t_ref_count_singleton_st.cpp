@@ -21,6 +21,11 @@ void TestFramework::content()
     OK(obj);
     IS(obj->get_ref_count(), 1);
 
+    Foo* obj2 = treecore::RefCountSingleton<Foo>::getInstance();
+    Foo* obj3 = treecore::RefCountSingleton<Foo>::getInstance();
+    IS(obj, obj2);
+    IS(obj, obj3);
+
     bool flag = true;
     obj->flag = &flag;
     IS(treecore::RefCountSingleton<Foo>::releaseInstance(), 0);
