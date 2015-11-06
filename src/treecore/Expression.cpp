@@ -670,16 +670,15 @@ struct Expression::Helpers
         {
         }
 
-        Term* readUpToComma()
+        TermPtr readUpToComma()
         {
             if (text.isEmpty())
                 return new Constant (0.0, false);
 
-            Term* e = readExpression();
+            TermPtr e = readExpression();
 
             if (e == nullptr || ((! readOperator (",")) && ! text.isEmpty()))
             {
-                if (e) delete e;
                 throw ParseError ("Syntax error: \"" + String (text) + "\"");
             }
 
@@ -981,7 +980,7 @@ Expression::Expression (const String& stringToParse)
 Expression Expression::parse (String::CharPointerType& stringToParse)
 {
     Helpers::Parser parser (stringToParse);
-    return Expression (parser.readUpToComma());
+    return Expression (parser.readUpToComma().get());
 }
 
 double Expression::evaluate() const
