@@ -37,6 +37,11 @@ namespace treecore {
 class String;
 class StringArray;
 
+#if defined TREECORE_OS_WINDOWS
+void repeatLastProcessPriority();
+bool isRunningInWine();
+#endif
+
 //==============================================================================
 /** Represents the current executable's process.
 
