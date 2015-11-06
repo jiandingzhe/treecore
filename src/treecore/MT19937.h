@@ -57,6 +57,7 @@
 
 #include "treecore/Common.h"
 #include "treecore/RefCountObject.h"
+#include "treecore/RefCountSingleton.h"
 #include "treecore/IntTypes.h"
 
 class TestFramework;
@@ -70,7 +71,7 @@ class BigInteger;
 /**
  * @brief pseudo random number generator using 64 bit MT19937
  */
-class MT19937: public RefCountObject
+class MT19937: public RefCountObject, public RefCountSingleton<MT19937>
 {
     friend class ::TestFramework;
 
@@ -188,11 +189,6 @@ public:
      * @param num_bits   number of bits to fill
      */
     void fill_bits_randomly(BigInteger& buffer, int start_bit, int num_bits);
-
-    /**
-     * @brief a global PRNG instance that can be used directly
-     */
-    static MT19937 easy;
 
 protected:
     uint64_t mt[NN];

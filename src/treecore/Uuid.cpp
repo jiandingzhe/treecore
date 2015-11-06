@@ -39,7 +39,7 @@ Uuid::Uuid()
 {
 
     for (size_t i = 0; i < sizeof (uuid); ++i)
-        uuid[i] = (uint8) (MT19937::easy.next_uint64_in_range(256));
+        uuid[i] = (uint8) (MT19937::getInstance()->next_uint64_in_range(256));
 
     // To make it RFC 4122 compliant, need to force a few bits...
     uuid[6] = (uuid[6] & 0x0f) | 0x40;

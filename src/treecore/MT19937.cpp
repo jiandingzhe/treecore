@@ -81,8 +81,6 @@ using namespace std;
 
 namespace treecore {
 
-MT19937 MT19937::easy;
-
 uint64 _get_seed_from_time_()
 {
     return Time::getCurrentTime().toMilliseconds();

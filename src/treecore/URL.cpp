@@ -265,7 +265,7 @@ void URL::createHeadersAndPostData (String& headers, MemoryBlock& headersAndPost
         // (this doesn't currently support mixing custom post-data with uploads..)
         jassert (postData.isEmpty());
 
-        const String boundary (String::toHexString(int64(MT19937::easy.next_uint64())));
+        const String boundary (String::toHexString(int64(MT19937::getInstance()->next_uint64())));
 
         headers << "Content-Type: multipart/form-data; boundary=" << boundary << "\r\n";
 

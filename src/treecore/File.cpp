@@ -891,7 +891,7 @@ String File::getRelativePathFrom (const File& dir)  const
 File File::createTempFile (StringRef fileNameEnding)
 {
     const File tempFile (getSpecialLocation (tempDirectory)
-                            .getChildFile( "temp_" + String::toHexString(int(MT19937::easy.next_uint64())) )
+                            .getChildFile( "temp_" + String::toHexString(int(MT19937::getInstance()->next_uint64())) )
                             .withFileExtension (fileNameEnding));
 
     if (tempFile.exists())

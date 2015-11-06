@@ -691,7 +691,7 @@ String juce_getOutputFromCommand (const String& command)
 {
     // slight bodge here, as we just pipe the output into a temp file and read it...
     const File tempFile (File::getSpecialLocation (File::tempDirectory)
-                           .getNonexistentChildFile (String::toHexString(int(MT19937::easy.next_uint64())), ".tmp", false));
+                           .getNonexistentChildFile (String::toHexString(int(MT19937::getInstance()->next_uint64())), ".tmp", false));
 
     juce_runSystemCommand (command + " > " + tempFile.getFullPathName());
 
