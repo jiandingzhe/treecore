@@ -264,7 +264,7 @@ public:
      *
      * @return element
      */
-    ElementType getOrDefault(int index, ElementType default_val) const noexcept
+    const ElementType& getOrDefault(int index, const ElementType& default_val) const noexcept
     {
         _LOCK_THIS_OBJ_;
         if (0 <= index && index < numUsed)

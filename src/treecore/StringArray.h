@@ -146,6 +146,14 @@ public:
         return strings[index];
     }
 
+    const String& tryGet(int index) const noexcept
+    {
+        if (0 <= index && index < strings.size())
+            return strings[index];
+        else
+            return String::empty;
+    }
+
     /** Returns a pointer to the first String in the array.
         This method is provided for compatibility with standard C++ iteration mechanisms.
     */
