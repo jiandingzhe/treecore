@@ -87,7 +87,7 @@ public:
 
 private:
     //==============================================================================
-    mutable int lock;
+    mutable int lock = 0;
 
     TREECORE_DECLARE_NON_COPYABLE (SpinLock)
 };
