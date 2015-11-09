@@ -94,7 +94,7 @@ static unsigned int __stdcall threadEntryProc (void* userData)
         AttachThreadInput(GetWindowThreadProcessId(MESSAGE_WINDOW_HANDLE, 0),
                           GetCurrentThreadId(), TRUE);
 
-    juce_threadEntryPoint (userData);
+    juce_threadEntryPoint (userData); // actually userData->ThreadEntryPoint()
 
     _endthreadex (0);
     return 0;
@@ -102,8 +102,10 @@ static unsigned int __stdcall threadEntryProc (void* userData)
 
 void Thread::launchThread()
 {
-    unsigned int newThreadId;
+    unsigned int newThreadId = 0;
     threadHandle = (void*) _beginthreadex (0, 0, &threadEntryProc, this, 0, &newThreadId);
+    if (threadHandle == 0)
+        abort();
     threadId = (ThreadID) newThreadId;
 }
 
