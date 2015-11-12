@@ -84,7 +84,7 @@ endfunction()
 
 function(treecore_set_compiler_options target_name)
     if(TREECORE_CMAKE_COMPILER STREQUAL "_MSVC" OR (TREECORE_CMAKE_COMPILER STREQUAL "_ICC" AND TREECORE_OS STREQUAL "WINDOWS"))
-        target_compile_options(${target_name} PUBLIC "/wd4819")
+        target_compile_options(${target_name} PUBLIC "/wd4819" "/wd4800")
 
     elseif(TREECORE_CMAKE_COMPILER STREQUAL "_GCC" OR (TREECORE_CMAKE_COMPILER STREQUAL "_ICC" AND (TREECORE_OS STREQUAL "LINUX" OR TREECORE_OS STREQUAL "OSX")) OR TREECORE_CMAKE_COMPILER STREQUAL "_CLANG")
         target_compile_options(${target_name} PUBLIC -fPIC -msse3)

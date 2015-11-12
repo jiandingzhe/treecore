@@ -324,6 +324,19 @@ private:
     TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThreadPool)
 };
 
-}
+class ThreadPool::ThreadPoolThread : public Thread
+{
+public:
+    ThreadPoolThread(ThreadPool& p);
+
+    void run() override;
+
+    ThreadPoolJob* volatile currentJob;
+    ThreadPool& pool;
+
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ThreadPoolThread)
+};
+
+} // namespace treecore
 
 #endif   // JUCE_THREADPOOL_H_INCLUDED

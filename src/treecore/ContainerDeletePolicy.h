@@ -49,7 +49,14 @@ struct ContainerDeletePolicy
 {
     static void destroy (ObjectType* object)
     {
+#if _MSC_VER
+#  pragma warning(push)
+#  pragma warning(disable:4150)
+#endif
         delete object;
+#if _MSC_VER
+#  pragma warning(pop)
+#endif
     }
 };
 

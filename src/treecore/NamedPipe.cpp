@@ -25,9 +25,14 @@
 
   ==============================================================================
 */
-
 #include "treecore/NamedPipe.h"
 #include "treecore/ScopedWriteLock.h"
+
+#if defined TREECORE_OS_WINDOWS
+#  include "treecore/native/win32_NamedPipe.h"
+#else
+#  error not implemented
+#endif
 
 namespace treecore {
 

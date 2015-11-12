@@ -7,12 +7,9 @@ namespace treecore
 {
 
 #ifdef TREECORE_COMPILER_MSVC
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #pragma warning (push)
 #pragma warning (disable : 4127 4389 4018)
-#endif
-
-#ifndef AI_NUMERICSERV  // (missing in older Mac SDKs)
-#define AI_NUMERICSERV 0x1000
 #endif
 
 #ifdef TREECORE_OS_WINDOWS
@@ -33,6 +30,9 @@ typedef socklen_t juce_socklen_t;
 typedef int       SocketHandle;
 #endif
 
+#ifndef AI_NUMERICSERV  // (missing in older Mac SDKs)
+#define AI_NUMERICSERV 0x1000
+#endif
 
 //==============================================================================
 namespace SocketHelpers

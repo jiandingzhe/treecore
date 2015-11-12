@@ -292,7 +292,7 @@ template <typename FloatingPointType>
 inline bool juce_isfinite (FloatingPointType value)
 {
 #if defined TREECORE_OS_WINDOWS
-    return _finite (value);
+    return _finite (value) != 0;
 #elif defined TREECORE_OS_ANDROID
     return isfinite (value);
 #else

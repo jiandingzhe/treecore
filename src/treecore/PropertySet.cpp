@@ -116,7 +116,7 @@ double PropertySet::getDoubleValue (const String& keyName, const double defaultV
     else
     {
         return fallbackProperties
-                ? fallbackProperties->getIntValue(keyName, defaultValue)
+                ? fallbackProperties->getDoubleValue(keyName, defaultValue)
                 : defaultValue;
     }
 }

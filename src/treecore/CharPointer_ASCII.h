@@ -224,6 +224,9 @@ public:
     /** Copies a source string to this pointer, advancing this pointer as it goes. */
     void writeAll (const CharPointer_ASCII src) noexcept
     {
+#if defined TREECORE_COMPILER_MSVC
+#  pragma warning(suppress:4996)
+#endif
         strcpy (data, src.data);
     }
 

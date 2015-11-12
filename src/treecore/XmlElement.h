@@ -304,7 +304,7 @@ public:
 
         @see getAttributeValue, getStringAttribute
     */
-    const String& getAttributeName (int attributeIndex) const noexcept;
+    String getAttributeName (int attributeIndex) const noexcept;
 
     /** Returns the value of one of the elements attributes.
 

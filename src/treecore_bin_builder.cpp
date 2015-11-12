@@ -19,7 +19,7 @@
 using namespace treecore;
 
 //==============================================================================
-static int addFile (const File& file,
+static size_t addFile (const File& file,
                     const String& classname,
                     OutputStream& headerStream,
                     OutputStream& cppStream)

@@ -445,7 +445,7 @@ int XmlElement::getNumAttributes() const noexcept
     return attributes.size();
 }
 
-const String& XmlElement::getAttributeName (const int index) const noexcept
+String XmlElement::getAttributeName (const int index) const noexcept
 {
     if (const XmlAttributeNode* const att = attributes [index])
         return att->name.toString();

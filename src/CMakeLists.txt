@@ -28,6 +28,11 @@ file(GLOB treecore_common_src_files
     "treecore/SIMD/template.h"
 )
 
+file(GLOB treecore_internal_src_files
+    treecore/internal/*.h
+    treecore/internal/*.cpp
+)
+
 # OS-specific source
 if(TREECORE_OS STREQUAL "LINUX")
     file(GLOB treecore_platform_src_files
