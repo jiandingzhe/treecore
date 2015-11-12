@@ -38,9 +38,9 @@ namespace treecore {
 
 // (NB: on win32, native thread-locals aren't possible in a dynamically loaded DLL in XP).
 #if ! ((defined TREECORE_COMIPLER_MSVC && (TREECORE_SIZE_PTR == 8 || ! defined (JucePlugin_PluginCode))) \
-       || (defined TREECORE_OS_OSX && defined TREECORE_COMPILER_CLANG && defined (MAC_OS_X_VERSION_10_7) \
-             && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7))
- #define JUCE_NO_COMPILER_THREAD_LOCAL 1
+    || (defined TREECORE_OS_OSX && defined TREECORE_COMPILER_CLANG && defined (MAC_OS_X_VERSION_10_7) \
+    && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7))
+#  define JUCE_NO_COMPILER_THREAD_LOCAL 1
 #endif
 
 //==============================================================================
@@ -75,14 +75,14 @@ public:
     */
     ~ThreadLocalValue()
     {
-       #if JUCE_NO_COMPILER_THREAD_LOCAL
+#if JUCE_NO_COMPILER_THREAD_LOCAL
         for (ObjectHolder* o = first; o != nullptr;)
         {
             ObjectHolder* const next = o->next;
             delete o;
             o = next;
         }
-       #endif
+#endif
     }
 
     /** Returns a reference to this thread's instance of the value.
@@ -116,7 +116,7 @@ public:
     */
     Type& get() const noexcept
     {
-       #if JUCE_NO_COMPILER_THREAD_LOCAL
+#if JUCE_NO_COMPILER_THREAD_LOCAL
         const Thread::ThreadID threadId = Thread::getCurrentThreadId();
 
         for (ObjectHolder* o = first; o != nullptr; o = o->next)
@@ -152,13 +152,13 @@ public:
         while (! atomic_compare_set(&first, newObject->next, newObject));
 
         return newObject->object;
-       #elif defined TREECORE_OS_OSX
+#elif defined TREECORE_OS_OSX
         static __thread Type object;
         return object;
-       #elif defined TREECORE_COMPILER_MSVC
+#elif defined TREECORE_COMPILER_MSVC
         static __declspec(thread) Type object;
         return object;
-       #endif
+#endif
     }
 
     /** Called by a thread before it terminates, to allow this class to release
@@ -166,7 +166,7 @@ public:
     */
     void releaseCurrentThreadStorage()
     {
-       #if JUCE_NO_COMPILER_THREAD_LOCAL
+#if JUCE_NO_COMPILER_THREAD_LOCAL
         const Thread::ThreadID threadId = Thread::getCurrentThreadId();
 
         for (ObjectHolder* o = first; o != nullptr; o = o->next)
@@ -177,12 +177,12 @@ public:
                 o->threadId = nullptr;
             }
         }
-       #endif
+#endif
     }
 
 private:
     //==============================================================================
-   #if JUCE_NO_COMPILER_THREAD_LOCAL
+#if JUCE_NO_COMPILER_THREAD_LOCAL
     struct ObjectHolder
     {
         ObjectHolder (const Thread::ThreadID& tid)
@@ -196,9 +196,9 @@ private:
         TREECORE_DECLARE_NON_COPYABLE (ObjectHolder)
     };
 
-    mutable ObjectHolder* first;
+    mutable ObjectHolder* first = nullptr;
     SpinLock lock;
-   #endif
+#endif
 
     TREECORE_DECLARE_NON_COPYABLE (ThreadLocalValue)
 };
