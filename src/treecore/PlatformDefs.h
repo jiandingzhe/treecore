@@ -123,10 +123,11 @@ inline void __attribute__((analyzer_noreturn)) juce_assert_noreturn() {}
 
 #  if JUCE_LOG_ASSERTIONS
 #    define jassert(expression)      { if (! (expression)) jassertfalse; }
+#    define DBGCODE(...) __VA_ARGS__
 #  else
 #    define jassert(a)               {}
+#    define DBGCODE(...)
 #  endif
-#  define DBGCODE(...)
 #endif
 
 //==============================================================================
