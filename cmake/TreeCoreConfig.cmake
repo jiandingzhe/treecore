@@ -73,7 +73,7 @@ endfunction()
 
 function(treecore_set_compiler_definitions target_name)
     if(MSVC)
-            target_compile_definitions(${target_name} PRIVATE _CRT_SECURE_NO_WARNINGS)
+            target_compile_definitions(${target_name} PRIVATE _CRT_SECURE_NO_WARNINGS _UNICODE UNICODE)
     endif()
 
     target_compile_definitions(${target_name} PRIVATE
