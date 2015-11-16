@@ -34,7 +34,7 @@ public:
 #  if defined TREECORE_OS_LINUX
         __builtin_ia32_fxsave(data);
 #  else
-        abort(); // TODOyang1xi2
+        abort(); // TODO fxsave in MinGW
 #  endif
 #elif defined TREECORE_COMPILER_CLANG
         abort(); // TODO fxsave in clang

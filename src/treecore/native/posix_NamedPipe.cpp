@@ -31,158 +31,128 @@
 #include "treecore/ScopedReadLock.h"
 #include "treecore/ScopedWriteLock.h"
 #include "treecore/StringRef.h"
-#include "treecore/Time.h"
 
 #include "treecore/internal/SystemStats_private.h"
+#include "treecore/native/posix_NamedPipe.h"
 
 namespace treecore {
 
-class NamedPipe::Pimpl
+NamedPipe::Pimpl::Pimpl (const String& pipePath, bool createPipe)
+   : pipeInName  (pipePath + "_in"),
+     pipeOutName (pipePath + "_out"),
+     pipeIn (-1), pipeOut (-1),
+     createdPipe (createPipe),
+     stopReadOperation (false)
 {
-public:
-    Pimpl (const String& pipePath, bool createPipe)
-       : pipeInName  (pipePath + "_in"),
-         pipeOutName (pipePath + "_out"),
-         pipeIn (-1), pipeOut (-1),
-         createdPipe (createPipe),
-         stopReadOperation (false)
+    signal (SIGPIPE, signalHandler);
+    juce_siginterrupt (SIGPIPE, 1);
+}
+
+NamedPipe::Pimpl::~Pimpl()
+{
+    if (pipeIn  != -1)  ::close (pipeIn);
+    if (pipeOut != -1)  ::close (pipeOut);
+
+    if (createdPipe)
     {
-        signal (SIGPIPE, signalHandler);
-        juce_siginterrupt (SIGPIPE, 1);
+        unlink (pipeInName.toUTF8());
+        unlink (pipeOutName.toUTF8());
     }
+}
 
-    ~Pimpl()
+int NamedPipe::Pimpl::read (char* destBuffer, int maxBytesToRead, int timeOutMilliseconds)
+{
+    const uint32 timeoutEnd = getTimeoutEnd (timeOutMilliseconds);
+
+    if (pipeIn == -1)
     {
-        if (pipeIn  != -1)  ::close (pipeIn);
-        if (pipeOut != -1)  ::close (pipeOut);
-
-        if (createdPipe)
-        {
-            unlink (pipeInName.toUTF8());
-            unlink (pipeOutName.toUTF8());
-        }
-    }
-
-    int read (char* destBuffer, int maxBytesToRead, int timeOutMilliseconds)
-    {
-        const uint32 timeoutEnd = getTimeoutEnd (timeOutMilliseconds);
+        pipeIn = openPipe (createdPipe ? pipeInName : pipeOutName, O_RDWR | O_NONBLOCK, timeoutEnd);
 
         if (pipeIn == -1)
-        {
-            pipeIn = openPipe (createdPipe ? pipeInName : pipeOutName, O_RDWR | O_NONBLOCK, timeoutEnd);
-
-            if (pipeIn == -1)
-                return -1;
-        }
-
-        int bytesRead = 0;
-
-        while (bytesRead < maxBytesToRead)
-        {
-            const int bytesThisTime = maxBytesToRead - bytesRead;
-            const int numRead = (int) ::read (pipeIn, destBuffer, (size_t) bytesThisTime);
-
-            if (numRead <= 0)
-            {
-                if (errno != EWOULDBLOCK || stopReadOperation || hasExpired (timeoutEnd))
-                    return -1;
-
-                const int maxWaitingTime = 30;
-                waitForInput (pipeIn, timeoutEnd == 0 ? maxWaitingTime
-                                                      : jmin (maxWaitingTime,
-                                                              (int) (timeoutEnd - Time::getMillisecondCounter())));
-                continue;
-            }
-
-            bytesRead += numRead;
-            destBuffer += numRead;
-        }
-
-        return bytesRead;
+            return -1;
     }
 
-    int write (const char* sourceBuffer, int numBytesToWrite, int timeOutMilliseconds)
+    int bytesRead = 0;
+
+    while (bytesRead < maxBytesToRead)
     {
-        const uint32 timeoutEnd = getTimeoutEnd (timeOutMilliseconds);
+        const int bytesThisTime = maxBytesToRead - bytesRead;
+        const int numRead = (int) ::read (pipeIn, destBuffer, (size_t) bytesThisTime);
+
+        if (numRead <= 0)
+        {
+            if (errno != EWOULDBLOCK || stopReadOperation || hasExpired (timeoutEnd))
+                return -1;
+
+            const int maxWaitingTime = 30;
+            waitForInput (pipeIn, timeoutEnd == 0 ? maxWaitingTime
+                                                  : jmin (maxWaitingTime,
+                                                          (int) (timeoutEnd - Time::getMillisecondCounter())));
+            continue;
+        }
+
+        bytesRead += numRead;
+        destBuffer += numRead;
+    }
+
+    return bytesRead;
+}
+
+int NamedPipe::Pimpl::write (const char* sourceBuffer, int numBytesToWrite, int timeOutMilliseconds)
+{
+    const uint32 timeoutEnd = getTimeoutEnd (timeOutMilliseconds);
+
+    if (pipeOut == -1)
+    {
+        pipeOut = openPipe (createdPipe ? pipeOutName : pipeInName, O_WRONLY, timeoutEnd);
 
         if (pipeOut == -1)
-        {
-            pipeOut = openPipe (createdPipe ? pipeOutName : pipeInName, O_WRONLY, timeoutEnd);
-
-            if (pipeOut == -1)
-                return -1;
-        }
-
-        int bytesWritten = 0;
-
-        while (bytesWritten < numBytesToWrite && ! hasExpired (timeoutEnd))
-        {
-            const int bytesThisTime = numBytesToWrite - bytesWritten;
-            const int numWritten = (int) ::write (pipeOut, sourceBuffer, (size_t) bytesThisTime);
-
-            if (numWritten <= 0)
-                return -1;
-
-            bytesWritten += numWritten;
-            sourceBuffer += numWritten;
-        }
-
-        return bytesWritten;
+            return -1;
     }
 
-    bool createFifos() const
+    int bytesWritten = 0;
+
+    while (bytesWritten < numBytesToWrite && ! hasExpired (timeoutEnd))
     {
-        return (mkfifo (pipeInName .toUTF8(), 0666) == 0 || errno == EEXIST)
-            && (mkfifo (pipeOutName.toUTF8(), 0666) == 0 || errno == EEXIST);
+        const int bytesThisTime = numBytesToWrite - bytesWritten;
+        const int numWritten = (int) ::write (pipeOut, sourceBuffer, (size_t) bytesThisTime);
+
+        if (numWritten <= 0)
+            return -1;
+
+        bytesWritten += numWritten;
+        sourceBuffer += numWritten;
     }
 
-    const String pipeInName, pipeOutName;
-    int pipeIn, pipeOut;
+    return bytesWritten;
+}
 
-    const bool createdPipe;
-    bool stopReadOperation;
-
-private:
-    static void signalHandler (int) {}
-
-    static uint32 getTimeoutEnd (const int timeOutMilliseconds)
+int NamedPipe::Pimpl::openPipe (const String& name, int flags, const uint32 timeoutEnd)
+{
+    for (;;)
     {
-        return timeOutMilliseconds >= 0 ? Time::getMillisecondCounter() + (uint32) timeOutMilliseconds : 0;
+        const int p = ::open (name.toUTF8(), flags);
+
+        if (p != -1 || hasExpired (timeoutEnd) || stopReadOperation)
+            return p;
+
+        Thread::sleep (2);
     }
+}
 
-    static bool hasExpired (const uint32 timeoutEnd)
-    {
-        return timeoutEnd != 0 && Time::getMillisecondCounter() >= timeoutEnd;
-    }
+void NamedPipe::Pimpl::waitForInput (const int handle, const int timeoutMsecs) noexcept
+{
+    struct timeval timeout;
+    timeout.tv_sec = timeoutMsecs / 1000;
+    timeout.tv_usec = (timeoutMsecs % 1000) * 1000;
 
-    int openPipe (const String& name, int flags, const uint32 timeoutEnd)
-    {
-        for (;;)
-        {
-            const int p = ::open (name.toUTF8(), flags);
+    fd_set rset;
+    FD_ZERO (&rset);
+    FD_SET (handle, &rset);
 
-            if (p != -1 || hasExpired (timeoutEnd) || stopReadOperation)
-                return p;
+    select (handle + 1, &rset, nullptr, 0, &timeout);
+}
 
-            Thread::sleep (2);
-        }
-    }
-
-    static void waitForInput (const int handle, const int timeoutMsecs) noexcept
-    {
-        struct timeval timeout;
-        timeout.tv_sec = timeoutMsecs / 1000;
-        timeout.tv_usec = (timeoutMsecs % 1000) * 1000;
-
-        fd_set rset;
-        FD_ZERO (&rset);
-        FD_SET (handle, &rset);
-
-        select (handle + 1, &rset, nullptr, 0, &timeout);
-    }
-
-    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Pimpl)
-};
 
 void NamedPipe::close()
 {

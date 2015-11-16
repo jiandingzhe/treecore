@@ -31,7 +31,7 @@
 #if defined TREECORE_OS_WINDOWS
 #  include "treecore/native/win32_NamedPipe.h"
 #else
-#  error not implemented
+#  include "treecore/native/posix_NamedPipe.h"
 #endif
 
 namespace treecore {
