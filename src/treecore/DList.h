@@ -1,7 +1,7 @@
 #ifndef ztd_dlistnode_h__
 #define ztd_dlistnode_h__
 
-#include "treecore/SIMD.h"
+#include "treecore/SimdFunc.h"
 #include "treecore/StaticArray.h"
 #include "treecore/StandardHeader.h"
 #include "treecore/LeakedObjectDetector.h"

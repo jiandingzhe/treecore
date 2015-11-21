@@ -3,7 +3,7 @@
 #include "treecore/AlignedMalloc.h"
 #include "treecore/RefCountHolder.h"
 #include "treecore/IntTypes.h"
-#include "treecore/SIMD.h"
+#include "treecore/SimdFunc.h"
 
 using namespace treecore;
 
@@ -35,12 +35,12 @@ struct Vec4f
 {
     Vec4f(float x, float y, float z, float w)
     {
-        data = simd_set<float, 16>(x, y, z, w);
+        simd_set_all<float, 16>(data, x, y, z, w);
     }
 
     float get_x() const
     {
-        return simd_get_one<0, float, 16>(data);
+        return simd_get_one<0, float>(data);
     }
 
     float get_y() const

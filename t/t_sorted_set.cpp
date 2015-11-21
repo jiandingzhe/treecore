@@ -1,5 +1,5 @@
 #include "treecore/SortedSet.h"
-#include "treecore/SIMD.h"
+#include "treecore/SimdFunc.h"
 #include "TestFramework.h"
 
 using namespace treecore;

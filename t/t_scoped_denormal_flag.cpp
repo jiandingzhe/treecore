@@ -1,4 +1,4 @@
-#include "treecore/SIMD.h"
+#include "treecore/SimdFunc.h"
 
 #include "TestFramework.h"
 

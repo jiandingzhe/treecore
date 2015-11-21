@@ -25,7 +25,7 @@ file(GLOB treecore_common_src_files
     "treecore/*.cpp"
     "treecore/impl/*.h"
     "treecore/Atomic/template.h"
-    "treecore/SIMD/template.h"
+    "treecore/simd/template.h"
 )
 
 file(GLOB treecore_internal_src_files
@@ -60,7 +60,7 @@ endif()
 
 # CPU-specific
 if(TREECORE_CPU STREQUAL "X86")
-    list(APPEND treecore_platform_src_files "treecore/SIMD/sse2.h")
+    list(APPEND treecore_platform_src_files "treecore/simd/sse2.h")
 else()
     message(SEND_ERROR "unsupported CPU: ${TREECORE_CPU}")
 endif()

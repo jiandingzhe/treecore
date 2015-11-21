@@ -3,7 +3,7 @@
 #include <treecore/AlignedMalloc.h>
 #include <treecore/Array.h>
 #include <treecore/IntTypes.h>
-#include <treecore/SIMD.h>
+#include <treecore/SimdFunc.h>
 
 using treecore::Array;
 using treecore::SIMDType;

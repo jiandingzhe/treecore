@@ -4,9 +4,9 @@
 #include "treecore/Config.h"
 
 #if defined TREECORE_CPU_X86
-#  include "treecore/SIMD/sse2.h"
+#  include "treecore/simd/sse2.h"
 #elif defined TREECORE_CPU_ARM
-#  include "treecore/SIMD/neon.h"
+#  include "treecore/simd/neon.h"
 #else
 #  error "SIMD function wrapper for CPU is not implemented"
 #endif
