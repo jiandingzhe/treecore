@@ -485,7 +485,7 @@ public:
     int64 getIntValue64() const noexcept
     {
         //TODO ios and osx
-#if defined TREECORE_OS_LINUX || defined TREECORE_OS_ANDROID
+#if defined TREECORE_OS_LINUX || defined TREECORE_OS_ANDROID || defined TREECORE_OS_OSX
         return atoll (data);
 #elif defined TREECORE_OS_WINDOWS
         return _atoi64 (data);

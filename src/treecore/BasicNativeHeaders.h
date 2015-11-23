@@ -42,15 +42,12 @@
 #    import <MobileCoreServices/MobileCoreServices.h>
 #    include <sys/fcntl.h>
 #  else
-#    define Point CarbonDummyPointName
-#    define Component CarbonDummyCompName
 #    import <Cocoa/Cocoa.h>
 #    import <CoreAudio/HostTime.h>
-#    undef Point
-#    undef Component
 #    include <sys/dir.h>
 #  endif
 
+#  include <pwd.h>
 #  include <sys/socket.h>
 #  include <sys/sysctl.h>
 #  include <sys/stat.h>
@@ -58,6 +55,7 @@
 #  include <sys/mount.h>
 #  include <sys/utsname.h>
 #  include <sys/mman.h>
+#  include <sys/types.h>
 #  include <fnmatch.h>
 #  include <utime.h>
 #  include <dlfcn.h>
@@ -68,6 +66,7 @@
 #  include <objc/runtime.h>
 #  include <objc/objc.h>
 #  include <objc/message.h>
+#  include <uuid/uuid.h>
 
 #elif defined TREECORE_OS_WINDOWS
 
@@ -222,5 +221,7 @@
 #undef min
 #undef direct
 #undef check
+#undef Point
+#undef Component
 
 #endif   // JUCE_BASICNATIVEHEADERS_H_INCLUDED

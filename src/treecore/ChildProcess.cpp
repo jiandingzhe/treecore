@@ -35,7 +35,7 @@
 
 #if defined TREECORE_OS_WINDOWS
 #  include "treecore/native/win32_ChildProcess.h"
-#elif defined TREECORE_OS_LINUX
+#elif defined TREECORE_OS_LINUX || defined TREECORE_OS_OSX
 #  include "treecore/native/posix_ChildProcess.h"
 #else
 #  error "TODO"

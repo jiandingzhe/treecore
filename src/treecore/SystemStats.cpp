@@ -34,8 +34,10 @@
 #include "treecore/SystemStats.h"
 #include "treecore/internal/SystemStats_private.h"
 
-#ifdef _MSC_VER
+#ifdef TREECORE_OS_WINDOWS
 #  include <DbgHelp.h>
+#elif defined TREECORE_OS_OSX
+#  include <execinfo.h>
 #endif
 
 namespace treecore {

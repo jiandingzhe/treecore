@@ -6,7 +6,6 @@
 #include "treecore/StandardHeader.h"
 
 #include <new>
-#include <malloc.h>
 
 namespace treecore
 {

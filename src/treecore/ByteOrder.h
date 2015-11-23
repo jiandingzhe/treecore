@@ -130,7 +130,7 @@ inline uint16 ByteOrder::swap (uint16 n) noexcept
 inline uint32 ByteOrder::swap (uint32 n) noexcept
 {
 #if defined TREECORE_OS_OSX || defined TREECORE_OS_IOS
-    return OSSwapInt32 (n);
+    return _OSSwapInt32 (n);
 #elif defined TREECORE_COMPILER_GCC && defined TREECORE_CPU_X86 && ! JUCE_NO_INLINE_ASM
     asm("bswap %%eax" : "=a"(n) : "a"(n));
     return n;
@@ -153,7 +153,7 @@ inline uint32 ByteOrder::swap (uint32 n) noexcept
 inline uint64 ByteOrder::swap (uint64 value) noexcept
 {
    #if defined TREECORE_OS_OSX || defined TREECORE_OS_IOS
-    return OSSwapInt64 (value);
+    return _OSSwapInt64 (value);
    #elif JUCE_USE_INTRINSICS
     return _byteswap_uint64 (value);
    #else

@@ -189,12 +189,12 @@ String File::addTrailingSeparator (const String& path)
 }
 
 //==============================================================================
-#if defined TREECORE_OS_LINUX
+#if defined TREECORE_OS_LINUX || defined TREECORE_OS_OSX
 #  define NAMES_ARE_CASE_SENSITIVE 1
 #elif defined TREECORE_OS_WINDOWS
 #
 #else
-#  error "TODO"
+#  error TODO
 #endif
 
 bool File::areFileNamesCaseSensitive()

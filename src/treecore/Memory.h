@@ -83,7 +83,7 @@ public:
 private:
     void* pool;
 
-    JUCE_DECLARE_NON_COPYABLE (ScopedAutoReleasePool)
+    TREECORE_DECLARE_NON_COPYABLE (ScopedAutoReleasePool)
 };
 
 /** A macro that can be used to easily declare a local ScopedAutoReleasePool

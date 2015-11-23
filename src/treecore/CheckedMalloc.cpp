@@ -4,7 +4,6 @@
 #include "treecore/PlatformDefs.h"
 #include "treecore/StandardHeader.h"
 
-#include <malloc.h>
 #include <new>
 
 namespace treecore {

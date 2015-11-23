@@ -38,6 +38,10 @@
 #include "treecore/CharPointer_UTF16.h"
 #include "treecore/CharPointer_UTF32.h"
 
+#ifdef TREECORE_OS_OSX
+#  include <CoreFoundation/CFString.h>
+#endif
+
 namespace treecore {
 
 class OutputStream;

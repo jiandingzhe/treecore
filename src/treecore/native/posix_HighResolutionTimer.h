@@ -97,7 +97,7 @@ private:
 
     struct Clock
     {
-#if defined TREECORE_OS_MAC || defined TREECORE_OS_IOS
+#if defined TREECORE_OS_OSX || defined TREECORE_OS_IOS
         Clock (double millis) noexcept
         {
             mach_timebase_info_data_t timebase;
