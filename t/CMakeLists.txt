@@ -27,6 +27,9 @@ foreach(test_name
     t_queue
     t_ref_count_singleton_st
     t_scoped_denormal_flag
+    t_simd_64
+    t_simd_128
+    t_similar_float
     t_sorted_set
     t_sparse_set
     t_static_array
