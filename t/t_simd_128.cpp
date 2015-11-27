@@ -214,4 +214,18 @@ void TestFramework::content()
         simd_set_all<float>(b, 0.0, 3.4, 0.0, 7.8);
         OK(!simd_equal<float>(a, b));
     }
+
+    OK("equal operator double");
+    {
+        SIMDType<16> a, b;
+        simd_set_all<double>(a, 1.2, 123.456);
+        simd_set_all<double>(b, 1.2, 123.456);
+        OK(simd_equal<double>(a, b));
+
+        simd_set_all<double>(b, 1.2001, 123.456);
+        OK(! simd_equal<double>(a, b));
+
+        simd_set_all<double>(b, 1.3, 123.4567);
+        OK(! simd_equal<double>(a, b));
+    }
 }
