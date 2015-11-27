@@ -29,6 +29,7 @@ foreach(test_name
     t_scoped_denormal_flag
     t_simd_64
     t_simd_128
+    t_simd_obj_128
     t_similar_float
     t_sorted_set
     t_sparse_set
