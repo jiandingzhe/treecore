@@ -59,6 +59,21 @@ struct SimdObject
         simd_set_one<IDX, T>(data, value);
     }
 
+    void set_all(T v1, T v2) noexcept
+    {
+        simd_set_all<T>(data, v1, v2);
+    }
+
+    void set_all(T v1, T v2, T v3, T v4) noexcept
+    {
+        simd_set_all<T>(data, v1, v2, v3, v4);
+    }
+
+    void set_all(T v1, T v2, T v3, T v4, T v5, T v6, T v7, T v8) noexcept
+    {
+        simd_set_all<T>(data, v1, v2, v3, v4, v5, v6, v7, v8);
+    }
+
     SimdObject& operator = (const SimdObject& peer) noexcept
     {
         data = peer.data;
@@ -99,21 +114,24 @@ struct SimdObject
         return result;
     }
 
-    SimdObject operator & (const SimdObject& peer) const noexcept
+    template<typename T2, int N_ELEM2>
+    SimdObject operator & (const SimdObject<T2, N_ELEM2>& peer) const noexcept
     {
         SimdObject result;
         simd_and<T>(result.data, data, peer.data);
         return result;
     }
 
-    SimdObject operator | (const SimdObject& peer) const noexcept
+    template<typename T2, int N_ELEM2>
+    SimdObject operator | (const SimdObject<T2, N_ELEM2>& peer) const noexcept
     {
         SimdObject result;
         simd_or<T>(result.data, data, peer.data);
         return result;
     }
 
-    SimdObject operator ^ (const SimdObject& peer) const noexcept
+    template<typename T2, int N_ELEM2>
+    SimdObject operator ^ (const SimdObject<T2, N_ELEM2>& peer) const noexcept
     {
         SimdObject result;
         simd_xor<T>(result.data, data, peer.data);
@@ -144,28 +162,32 @@ struct SimdObject
         return *this;
     }
 
-    SimdObject& operator &= (const SimdObject& peer) noexcept
+    template<typename T2, int N_ELEM2>
+    SimdObject& operator &= (const SimdObject<T2, N_ELEM2>& peer) noexcept
     {
         simd_and<T>(data, data, peer.data);
         return *this;
     }
 
-    SimdObject& operator |= (const SimdObject& peer) noexcept
+    template<typename T2, int N_ELEM2>
+    SimdObject& operator |= (const SimdObject<T2, N_ELEM2>& peer) noexcept
     {
         simd_or<T>(data, data, peer.data);
         return *this;
     }
 
-    SimdObject& operator ^= (const SimdObject& peer) noexcept
+    template<typename T2, int N_ELEM2>
+    SimdObject& operator ^= (const SimdObject<T2, N_ELEM2>& peer) noexcept
     {
         simd_xor<T>(data, data, peer.data);
         return *this;
     }
 
-    SimdObject& operator ~ () noexcept
+    SimdObject operator ~ () const noexcept
     {
-        simd_cmpl<T>(data);
-        return *this;
+        SimdObject result(data);
+        simd_cmpl<T>(result.data);
+        return result;
     }
 
     template<int IDX1, int IDX2, int IDX3, int IDX4>
