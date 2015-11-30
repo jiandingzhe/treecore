@@ -137,13 +137,15 @@ union SIMDType<16>
     __m128  simd_by_float;
     __m128i simd_by_int;
     __m128d simd_by_double;
-    float   values_by_float[4];
-    int16   values_by_i8[16];
+    int8   values_by_i8[16];
     int16   values_by_i16[8];
     int32   values_by_i32[4];
     int64   values_by_i64[2];
+    float   values_by_float[4];
     double  values_by_double[2];
 };
+
+static_assert(sizeof(SIMDType<16>) == 16, "SIMDType<16> is 16 byte");
 
 // get one component
 template<> inline int8 simd_get_one<0,  int8, 16> (const SIMDType<16>& data) noexcept { return data.values_by_i8[0]; }
@@ -405,6 +407,9 @@ inline float simd_sum<float, 16>(const SIMDType<16>& value) noexcept
 //
 // 64 bit SIMD operations
 //
+
+#if ! (defined TREECORE_COMPILER_MSVC && TREECORE_SIZE_PTR == 8)
+
 template<>
 union SIMDType<8>
 {
@@ -502,6 +507,8 @@ template<> inline bool simd_equal<int32, 8>(const SIMDType<8>& a, const SIMDType
 {
     return a.value_by_i64 == b.value_by_i64;
 }
+
+#endif // 64bit MSVC
 
 } // namespace treecore
 

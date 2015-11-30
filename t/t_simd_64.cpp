@@ -5,6 +5,7 @@ using namespace treecore;
 
 void TestFramework::content()
 {
+#if ! (defined TREECORE_COMPILER_MSVC && TREECORE_SIZE_PTR == 8)
     // set values
     {
         SIMDType<8> obj;
@@ -64,4 +65,5 @@ void TestFramework::content()
             IS(v7, 31);
         }
     }
+#endif // 64bit MSVC
 }

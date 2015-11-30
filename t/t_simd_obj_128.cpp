@@ -19,7 +19,7 @@ void TestFramework::content()
         IS(obj.get<2>(), 1.1f);
         IS(obj.get<3>(), 1.1f);
 
-        ftype obj2(1.2, 3.4, 5.6, 7.8);
+        ftype obj2(1.2f, 3.4f, 5.6f, 7.8f);
         IS(obj2.get<0>(), 1.2f);
         IS(obj2.get<1>(), 3.4f);
         IS(obj2.get<2>(), 5.6f);
@@ -31,7 +31,7 @@ void TestFramework::content()
         IS(obj.get<2>(), 5.6f);
         IS(obj.get<3>(), 7.8f);
 
-        obj.set_all(111.111, 222.222, 333.333, 444.444);
+        obj.set_all(111.111f, 222.222f, 333.333f, 444.444f);
         IS(obj.get<0>(), 111.111f);
         IS(obj.get<1>(), 222.222f);
         IS(obj.get<2>(), 333.333f);
@@ -42,7 +42,7 @@ void TestFramework::content()
     {
         OK("add");
         ftype obj;
-        obj += ftype(234.5, 678.9, 111.1, 123.4);
+        obj += ftype(234.5f, 678.9f, 111.1f, 123.4f);
         IS(obj.get<0>(), 234.5f);
         IS(obj.get<1>(), 678.9f);
         IS(obj.get<2>(), 111.1f);
@@ -113,7 +113,7 @@ void TestFramework::content()
     }
     {
         OK("sub");
-        ftype result = ftype(555.444, 222.333, 111.111, 345.123) - ftype(666.666, 555.555, 444.444, 333.333);
+        ftype result = ftype(555.444f, 222.333f, 111.111f, 345.123f) - ftype(666.666f, 555.555f, 444.444f, 333.333f);
         IS_EPSILON(result.get<0>(), -111.222f);
         IS_EPSILON(result.get<1>(), -333.222f);
         IS_EPSILON(result.get<2>(), -333.333f);

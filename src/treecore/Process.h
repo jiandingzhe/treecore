@@ -38,8 +38,8 @@ class String;
 class StringArray;
 
 #if defined TREECORE_OS_WINDOWS
-void repeatLastProcessPriority();
-bool isRunningInWine();
+void JUCE_CALLTYPE repeatLastProcessPriority();
+bool JUCE_CALLTYPE isRunningInWine();
 #endif
 
 //==============================================================================

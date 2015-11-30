@@ -127,6 +127,7 @@ struct _msvc_atomic_impl_<T, 4>
     }
 };
 
+#if TREECORE_SIZE_PTR == 8
 template<typename T>
 struct _msvc_atomic_impl_<T, 8>
 {
@@ -232,6 +233,210 @@ struct _msvc_atomic_impl_<T, 8>
         return re;
     }
 };
+
+#else
+
+template<typename T>
+struct _msvc_atomic_impl_<T, 8>
+{
+    typedef __int64 volatile* store_type;
+    typedef __int64 value_type;
+
+    static T load(const T* store) noexcept
+    {
+        value_type re = _InterlockedCompareExchange64(TO_PRIP(store), 0, 0);
+        return TO_ORIG(re);
+    }
+
+    static void store(T* store, T value) noexcept
+    {
+        for (;;)
+        {
+            value_type old = _InterlockedCompareExchange64(TO_PRIP(store), 0, 0);
+            if (_InterlockedCompareExchange64(TO_PRIP(store), TO_PRI(value), old) == old) break;
+        }
+    }
+
+    static T fetch_set(T* store, T value) noexcept
+    {
+        value_type old;
+        for (;;)
+        {
+            old = _InterlockedCompareExchange64(TO_PRIP(store), 0, 0);
+            if (_InterlockedCompareExchange64(TO_PRIP(store), TO_PRI(value), old) == old) break;
+        }
+        return TO_ORIG(old);
+    }
+
+    // get value before modify
+    static T fetch_add(T* store, T value) noexcept
+    {
+        value_type old_value;
+        value_type new_value;
+        
+        for (;;)
+        {
+            old_value = _InterlockedCompareExchange64(TO_PRIP(store), 0, 0);
+            new_value = old_value + TO_PRI(value);
+            if (_InterlockedCompareExchange64(TO_PRIP(store), new_value, old_value) == old_value) break;
+        }
+
+        return TO_ORIG(old_value);
+    }
+
+    static T fetch_sub(T* store, T value) noexcept
+    {
+        value_type old_value;
+        value_type new_value;
+
+        for (;;)
+        {
+            old_value = _InterlockedCompareExchange64(TO_PRIP(store), 0, 0);
+            new_value = old_value - TO_PRI(value);
+            if (_InterlockedCompareExchange64(TO_PRIP(store), new_value, old_value) == old_value) break;
+        }
+
+        return TO_ORIG(old_value);
+    }
+
+    static T fetch_or(T* store, T value) noexcept
+    {
+        value_type old_value;
+        value_type new_value;
+
+        for (;;)
+        {
+            old_value = _InterlockedCompareExchange64(TO_PRIP(store), 0, 0);
+            new_value = old_value | TO_PRI(value);
+            if (_InterlockedCompareExchange64(TO_PRIP(store), new_value, old_value) == old_value) break;
+        }
+
+        return TO_ORIG(old_value);
+    }
+
+    static T fetch_and(T* store, T value) noexcept
+    {
+        value_type old_value;
+        value_type new_value;
+
+        for (;;)
+        {
+            old_value = _InterlockedCompareExchange64(TO_PRIP(store), 0, 0);
+            new_value = old_value & TO_PRI(value);
+            if (_InterlockedCompareExchange64(TO_PRIP(store), new_value, old_value) == old_value) break;
+        }
+
+        return TO_ORIG(old_value);
+    }
+
+    static T fetch_xor(T* store, T value) noexcept
+    {
+        value_type old_value;
+        value_type new_value;
+
+        for (;;)
+        {
+            old_value = _InterlockedCompareExchange64(TO_PRIP(store), 0, 0);
+            new_value = old_value ^ TO_PRI(value);
+            if (_InterlockedCompareExchange64(TO_PRIP(store), new_value, old_value) == old_value) break;
+        }
+
+        return TO_ORIG(old_value);
+    }
+
+        // get modified value
+    static T add_fetch(T* store, T value) noexcept
+    {
+        value_type old_value;
+        value_type new_value;
+
+        for (;;)
+        {
+            old_value = _InterlockedCompareExchange64(TO_PRIP(store), 0, 0);
+            new_value = old_value + TO_PRI(value);
+            if (_InterlockedCompareExchange64(TO_PRIP(store), new_value, old_value) == old_value) break;
+        }
+
+        return TO_ORIG(new_value);
+    }
+
+    static T sub_fetch(T* store, T value) noexcept
+    {
+        value_type old_value;
+        value_type new_value;
+
+        for (;;)
+        {
+            old_value = _InterlockedCompareExchange64(TO_PRIP(store), 0, 0);
+            new_value = old_value - TO_PRI(value);
+            if (_InterlockedCompareExchange64(TO_PRIP(store), new_value, old_value) == old_value) break;
+        }
+
+        return TO_ORIG(new_value);
+    }
+
+    static T or_fetch(T* store, T value) noexcept
+    {
+        value_type old_value;
+        value_type new_value;
+
+        for (;;)
+        {
+            old_value = _InterlockedCompareExchange64(TO_PRIP(store), 0, 0);
+            new_value = old_value | TO_PRI(value);
+            if (_InterlockedCompareExchange64(TO_PRIP(store), new_value, old_value) == old_value) break;
+        }
+
+        return TO_ORIG(new_value);
+    }
+
+    static T and_fetch(T* store, T value) noexcept
+    {
+        value_type old_value;
+        value_type new_value;
+
+        for (;;)
+        {
+            old_value = _InterlockedCompareExchange64(TO_PRIP(store), 0, 0);
+            new_value = old_value & TO_PRI(value);
+            if (_InterlockedCompareExchange64(TO_PRIP(store), new_value, old_value) == old_value) break;
+        }
+
+        return TO_ORIG(new_value);
+    }
+
+    static T xor_fetch(T* store, T value) noexcept
+    {
+        value_type old_value;
+        value_type new_value;
+
+        for (;;)
+        {
+            old_value = _InterlockedCompareExchange64(TO_PRIP(store), 0, 0);
+            new_value = old_value ^ TO_PRI(value);
+            if (_InterlockedCompareExchange64(TO_PRIP(store), new_value, old_value) == old_value) break;
+        }
+
+        return TO_ORIG(new_value);
+    }
+
+    // CAS
+    static bool cas(T* store, T expect, T value) noexcept
+    {
+        value_type old = _InterlockedCompareExchange64(TO_PRIP(store), TO_PRI(value), TO_PRI(expect));
+        return old == TO_PRI(expect);
+    }
+
+    static bool cae(T* store, T* expect, T value) noexcept
+    {
+        value_type old = _InterlockedCompareExchange64(TO_PRIP(store), TO_PRI(value), TO_PRI(*expect));
+        bool re = (old == TO_PRI(*expect));
+        *expect = TO_ORIG(old);
+        return re;
+    }
+};
+
+#endif
 
 #undef TO_PRI
 #undef TO_PRIP

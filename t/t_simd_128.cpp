@@ -131,7 +131,7 @@ void TestFramework::content()
         SIMDType<16> result;
         SIMDType<16> input;
         SIMDType<16> mask;
-        simd_set_all<float, 16>(input, 1.2, 3.4, 5.6, 7.8);
+        simd_set_all<float, 16>(input, 1.2f, 3.4f, 5.6f, 7.8f);
         simd_set_all<int32, 16>(mask, 0x80000000, 0, 0x80000000, 0);
         simd_xor<float>(result, input, mask);
         IS(result.values_by_float[0], -1.2f);
@@ -201,17 +201,17 @@ void TestFramework::content()
     OK("equal operator float");
     {
         SIMDType<16> a, b;
-        simd_set_all<float>(a, 1.2, 3.4, 5.6, 7.8);
-        simd_set_all<float>(b, 1.2, 3.4, 5.6, 7.8);
+        simd_set_all<float>(a, 1.2f, 3.4f, 5.6f, 7.8f);
+        simd_set_all<float>(b, 1.2f, 3.4f, 5.6f, 7.8f);
         OK(simd_equal<float>(a, b));
 
-        simd_set_all<float>(b, 1.1, 3.4, 5.6, 7.8);
+        simd_set_all<float>(b, 1.1f, 3.4f, 5.6f, 7.8f);
         OK(! simd_equal<float>(a, b));
 
-        simd_set_all<float>(b, 1.2, 3.4, 5.6, 7.7);
+        simd_set_all<float>(b, 1.2f, 3.4f, 5.6f, 7.7f);
         OK(! simd_equal<float>(a, b));
 
-        simd_set_all<float>(b, 0.0, 3.4, 0.0, 7.8);
+        simd_set_all<float>(b, 0.0f, 3.4f, 0.0f, 7.8f);
         OK(!simd_equal<float>(a, b));
     }
 
