@@ -455,7 +455,7 @@ template<> inline void simd_set_one<1, int32, 8> (SIMDType<8>& data, int32 value
 template<> inline void simd_set_all<int8,  8> (SIMDType<8>& target, int8 a, int8 b, int8 c, int8 d, int8 e, int8 f, int8 g, int8 h) noexcept { target.simd_value = _mm_set_pi8(h, g, f, e, d, c, b, a); }
 template<> inline void simd_set_all<int16, 8> (SIMDType<8>& target, int16 a, int16 b, int16 c, int16 d) noexcept { target.simd_value = _mm_set_pi16(d, c, b, a); }
 template<> inline void simd_set_all<int32, 8> (SIMDType<8>& target, int32 a, int32 b) noexcept { target.simd_value = _mm_set_pi32(b, a); }
-template<> inline void simd_set_all<int64, 8> (SIMDType<8>& target, int64 value) noexcept { target.simd_value = _mm_cvtsi64_m64(value); }
+//template<> inline void simd_set_all<int64, 8> (SIMDType<8>& target, int64 value) noexcept { target.simd_value = _mm_cvtsi64_m64(value); }
 
 // set all components using one same value
 template<> inline void simd_broadcast<int8,  8> (SIMDType<8>& target, int8  value) noexcept { target.simd_value = _mm_set1_pi8 (value); }

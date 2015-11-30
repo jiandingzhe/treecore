@@ -2,6 +2,7 @@
 #define TREECORE_SIMD_FUNC_TEMP_H
 
 #include "treecore/Common.h"
+#include "treecore/PlatformDefs.h"
 
 namespace treecore
 {
