@@ -74,9 +74,20 @@ struct SimdObject
         simd_set_all<T>(data, v1, v2, v3, v4, v5, v6, v7, v8);
     }
 
+    void set_all(const T* values) noexcept
+    {
+        simd_set_all<T>(data, values);
+    }
+
     SimdObject& operator = (const SimdObject& peer) noexcept
     {
         data = peer.data;
+        return *this;
+    }
+
+    SimdObject& operator = (const DataType& value) noexcept
+    {
+        data = value;
         return *this;
     }
 
@@ -190,10 +201,28 @@ struct SimdObject
         return result;
     }
 
+    bool operator == (const SimdObject& peer) const noexcept
+    {
+        return simd_equal<T>(data, peer.data);
+    }
+
+    bool operator != (const SimdObject& peer) const noexcept
+    {
+        return !simd_equal<T>(data, peer.data);
+    }
+
     template<int IDX1, int IDX2, int IDX3, int IDX4>
     void shuffle() noexcept
     {
         simd_shuffle<IDX1, IDX2, IDX3, IDX4>(data);
+    }
+
+    template<int IDX1, int IDX2, int IDX3, int IDX4>
+    SimdObject get_shuffle() const noexcept
+    {
+        SimdObject result(*this);
+        result.template shuffle<IDX1, IDX2, IDX3, IDX4>();
+        return result;
     }
 
     T sum() const noexcept
