@@ -1,7 +1,7 @@
 #include "TestFramework.h"
 
 #include "treecore/MPL.h"
-#include "treecore/SimilarFloat.h"
+#include "treecore/FloatUtils.h"
 #include "treecore/IntTypes.h"
 
 
@@ -30,4 +30,32 @@ void TestFramework::content()
     OK(uint64_float_is_double);
     OK(float_float_is_float);
     OK(double_double_is_double);
+
+    {
+        float fvalue = 123.456f;
+        float fvalue_inv;
+        reinterpret_cast<treecore::uint32&>(fvalue_inv) = reinterpret_cast<treecore::uint32&>(fvalue) ^ treecore::float_sign_mask<float>::value;
+        IS(fvalue_inv, -fvalue);
+    }
+
+    {
+        float fvalue = -874.316f;
+        float fvalue_inv;
+        reinterpret_cast<treecore::uint32&>(fvalue_inv) = reinterpret_cast<treecore::uint32&>(fvalue) ^ treecore::float_sign_mask<float>::value;
+        IS(fvalue_inv, -fvalue);
+    }
+
+    {
+        double dvalue = 51234.56789;
+        double dvalue_inv;
+        reinterpret_cast<treecore::uint64&>(dvalue_inv) = reinterpret_cast<treecore::uint64&>(dvalue) ^ treecore::float_sign_mask<double>::value;
+        IS(dvalue_inv, -dvalue);
+    }
+
+    {
+        double dvalue = -97413.21315;
+        double dvalue_inv;
+        reinterpret_cast<treecore::uint64&>(dvalue_inv) = reinterpret_cast<treecore::uint64&>(dvalue) ^ treecore::float_sign_mask<double>::value;
+        IS(dvalue_inv, -dvalue);
+    }
 }

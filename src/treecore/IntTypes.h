@@ -27,6 +27,6 @@ typedef std::uintptr_t pointer_sized_uint;
 
 typedef pointer_sized_int ssize_t;
 
-}
+} // namespace treecore
 
 #endif // TREECORE_INT_TYPES_H

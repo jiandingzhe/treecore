@@ -13,6 +13,7 @@ foreach(test_name
     t_atomic_func_st
     t_atomic_obj_st
     t_dlist
+    t_float_utils
     t_fxsave
     t_hash_multi_map
     t_hash_multi_map_move
@@ -21,6 +22,8 @@ foreach(test_name
     t_hash_map
     t_hash_map_value_move
     t_identifier
+    t_int_utils
+    t_int_type
     t_lf_queue_st
     t_mpl
     t_obj_pool
@@ -30,7 +33,6 @@ foreach(test_name
     t_simd_64
     t_simd_128
     t_simd_obj_128
-    t_similar_float
     t_sorted_set
     t_sparse_set
     t_static_array
