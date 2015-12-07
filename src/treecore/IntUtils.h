@@ -22,7 +22,6 @@ template<> struct sized_uint<2> { typedef uint16 type; };
 template<> struct sized_uint<4> { typedef uint32 type; };
 template<> struct sized_uint<8> { typedef uint64 type; };
 
-
 template<int SZ>
 struct sized_ones_mask;
 
@@ -41,6 +40,18 @@ template<typename T>
 struct similar_uint
 {
     typedef typename sized_uint<sizeof(T)>::type type;
+};
+
+template<typename T>
+struct larger_int
+{
+    typedef typename sized_int<sizeof(T)*2>::type type;
+};
+
+template<typename T>
+struct larger_uint
+{
+    typedef typename sized_uint<sizeof(T)*2>::type type;
 };
 
 } // namespace treecore
