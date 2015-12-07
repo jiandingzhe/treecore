@@ -25,6 +25,12 @@ public:
     {
     }
 
+    ArrayRef(const Array<typename std::remove_const<T>::type>& data)
+        : m_data(data.getRawDataConstPointer())
+        , m_size(data.size())
+    {
+    }
+
     ArrayRef(const ArrayRef& other)
         : m_data(other.m_data)
         , m_size(other.m_size)
@@ -63,17 +69,12 @@ public:
         return *this;
     }
 
-    inline T operator [] (int index) const noexcept
+    inline T& operator [] (int index) noexcept
     {
         return m_data[index];
     }
 
-    inline T& get_reference(int index) noexcept
-    {
-        return m_data[index];
-    }
-
-    inline const T& get_const_reference(int index) const noexcept
+    inline const T& operator[] (int index) const noexcept
     {
         return m_data[index];
     }
@@ -83,7 +84,7 @@ public:
         return m_data;
     }
 
-    inline const T* get_const_data() const noexcept
+    inline const T* get_data() const noexcept
     {
         return m_data;
     }
