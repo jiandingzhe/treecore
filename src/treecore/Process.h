@@ -31,6 +31,7 @@
 
 #include "treecore/BasicNativeHeaders.h"
 #include "treecore/StandardHeader.h"
+#include "treecore/IntTypes.h"
 
 namespace treecore {
 
@@ -97,7 +98,7 @@ public:
     /** Returns true if this process is being hosted by a debugger. */
     static bool JUCE_CALLTYPE isRunningUnderDebugger();
 
-
+    static int32 JUCE_CALLTYPE getProcessID();
     //==============================================================================
     /** Tries to launch the OS's default reader application for a given file or URL. */
     static bool JUCE_CALLTYPE openDocument (const String& documentURL, const String& parameters);

@@ -175,6 +175,11 @@ void JUCE_CALLTYPE Process::terminate()
    #endif
 }
 
+int32 JUCE_CALLTYPE Process::getProcessID()
+{
+    return getpid();
+}
+
 //==============================================================================
 const juce_wchar File::separator = '/';
 const String File::separatorString ("/");

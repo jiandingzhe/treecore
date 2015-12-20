@@ -300,6 +300,11 @@ void JUCE_CALLTYPE Process::terminate()
     ExitProcess (1);
 }
 
+int32 JUCE_CALLTYPE Process::getProcessID()
+{
+    return GetCurrentProcessId();
+}
+
 bool JUCE_CALLTYPE isRunningInWine()
 {
     HMODULE ntdll = GetModuleHandleA ("ntdll");
