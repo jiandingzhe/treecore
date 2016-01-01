@@ -13,6 +13,7 @@ foreach(test_name
     t_array_ref
     t_atomic_func_st
     t_atomic_obj_st
+    t_cmd_parser
     t_dlist
     t_float_utils
     t_fxsave

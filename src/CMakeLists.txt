@@ -86,6 +86,7 @@ add_library(treecore STATIC
     ${zlib_src_files}
     ${treecore_common_src_files} 
     ${treecore_platform_src_files}
+    ${PROJECT_SOURCE_DIR}/uncrustify.cfg
 )
 set_target_properties(treecore PROPERTIES
     DEBUG_POSTFIX          _dbg
