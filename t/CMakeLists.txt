@@ -13,7 +13,6 @@ foreach(test_name
     t_array_ref
     t_atomic_func_st
     t_atomic_obj_st
-    t_cmd_parser
     t_dlist
     t_float_utils
     t_fxsave
@@ -29,6 +28,7 @@ foreach(test_name
     t_lf_queue_st
     t_mpl
     t_obj_pool
+    t_option_parser
     t_queue
     t_ref_count_singleton_st
     t_scoped_denormal_flag

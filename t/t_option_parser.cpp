@@ -1,4 +1,4 @@
-#include "treecore/CmdParser.h"
+#include "treecore/OptionParser.h"
 #include "TestFramework.h"
 
 using namespace treecore;
