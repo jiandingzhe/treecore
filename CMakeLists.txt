@@ -11,6 +11,7 @@ include(GNUInstallDirs)
 # add build directory to inc
 add_subdirectory(src)
 add_subdirectory(t)
+add_subdirectory(test)
 
 # install cmake modules
 install(

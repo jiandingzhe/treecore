@@ -1,0 +1,2 @@
+add_executable(mt19937_float_distribute mt19937_float_distribute.cpp)
+target_use_treecore(mt19937_float_distribute)
