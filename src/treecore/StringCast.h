@@ -1,8 +1,9 @@
 #ifndef TREECORE_STRING_CAST_H
 #define TREECORE_STRING_CAST_H
 
+#include "treecore/File.h"
 #include "treecore/String.h"
-
+#include "treecore/StringRef.h"
 #include <cstdlib>
 
 namespace treecore
@@ -13,6 +14,24 @@ bool fromString( const String& str, T& result_value );
 
 template<typename T>
 String toString( T value );
+
+template<>
+inline bool fromString<String>(const String& str, String& result)
+{
+    result = str;
+    return true;
+}
+
+template<>
+inline bool fromString<File>(const String& str, File& result)
+{
+    if (File::isAbsolutePath(str))
+        result = File(str);
+    else
+        result = File::getCurrentWorkingDirectory().getChildFile(str);
+
+    return true;
+}
 
 template<>
 inline bool fromString<short>( const String& str, short& result )
@@ -103,6 +122,12 @@ inline bool fromString<double>( const String& str, double& result )
     result = std::strtod( data, &end );
     return data != end;
 }
+
+template<>
+inline String toString<String>(String value) { return value; }
+
+template<>
+inline String toString<File>(File value) { return value.getFullPathName(); }
 
 template<>
 inline String toString<int16>( int16 value ) { return String( value ); }
