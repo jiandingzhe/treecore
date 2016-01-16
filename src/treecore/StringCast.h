@@ -38,7 +38,7 @@ inline bool fromString<short>( const String& str, short& result )
 {
     char* data = str.getCharPointer().getAddress();
     char* end  = data;
-    result = std::strtol( data, &end, 0 );
+    result = (short) std::strtol( data, &end, 0 );
     return data != end;
 }
 
@@ -47,7 +47,7 @@ inline bool fromString<unsigned short>( const String& str, unsigned short& resul
 {
     char* data = str.getCharPointer().getAddress();
     char* end  = data;
-    result = std::strtoul( data, &end, 0 );
+    result = (unsigned short) std::strtoul( data, &end, 0 );
     return data != end;
 }
 

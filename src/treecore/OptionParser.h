@@ -95,7 +95,7 @@ protected:
 
         virtual bool cast_values( const Array<String>& values )
         {
-            for (size_t i = 0; i < values.size(); i++)
+            for (int i = 0; i < values.size(); i++)
             {
                 T tmp;
                 if ( !fromString<T>( values[i], tmp ) )
@@ -108,7 +108,7 @@ protected:
         virtual String to_string()
         {
             String result;
-            for (size_t i = 0; i < value_list->size(); i++)
+            for (int i = 0; i < value_list->size(); i++)
             {
                 if (i > 0) result += " ";
                 result += toString( (*value_list)[i] );

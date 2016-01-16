@@ -167,7 +167,7 @@ int main (int argc, char* argv[])
     *cpp << "/* (Auto-generated binary data file). */\r\n\r\n"
             "#include \"" << className << ".h\"\r\n\r\n";
 
-    int totalBytes = 0;
+    size_t totalBytes = 0;
 
     for (int i = 0; i < files.size(); ++i)
     {
