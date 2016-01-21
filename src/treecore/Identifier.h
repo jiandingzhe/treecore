@@ -158,16 +158,6 @@ public:
     /** A null identifier. */
     static Identifier null;
 
-    /** Checks a given string for characters that might not be valid in an Identifier.
-        Since Identifiers are used as a script variables and XML attributes, they should only contain
-        alphanumeric characters, underscores, or the '-' and ':' characters.
-    */
-    static bool isValidIdentifier (const String& possibleIdentifier) noexcept
-    {
-        return possibleIdentifier.isNotEmpty()
-                && possibleIdentifier.containsOnly("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-:#@$%");
-    }
-
 private:
     const char* m_name = nullptr;
 };
