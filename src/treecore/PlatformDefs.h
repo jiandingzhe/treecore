@@ -350,6 +350,10 @@ template <> struct JuceStaticAssert <true> { static void dummy() {} };
 
 #endif
 
+#if defined TREECORE_COMPILER_MSVC && _MSC_VER >= 1900
+#  define JUCE_COMPILER_SUPPORTS_noexcept 1
+#endif
+
 #if defined (_MSC_VER) && _MSC_VER >= 1700
 #  define JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL 1
 #endif
