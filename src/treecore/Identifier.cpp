@@ -48,25 +48,16 @@ Identifier& Identifier::operator= (const Identifier other) noexcept
 Identifier::Identifier (const String& nm)
     : m_name(StringPool::getInstance()->getPooledString(nm))
 {
-    /* An Identifier string must be suitable for use as a script variable or XML
-       attribute, so it can only contain this limited set of characters.. */
-    jassert (isValidIdentifier (toString()));
 }
 
 Identifier::Identifier (const char* nm)
     : m_name(StringPool::getInstance()->getPooledString(nm))
 {
-    /* An Identifier string must be suitable for use as a script variable or XML
-       attribute, so it can only contain this limited set of characters.. */
-    jassert (isValidIdentifier (toString()));
 }
 
 Identifier::Identifier (String::CharPointerType start, String::CharPointerType end)
     : m_name(StringPool::getInstance()->getPooledString(start, end))
 {
-    /* An Identifier string must be suitable for use as a script variable or XML
-       attribute, so it can only contain this limited set of characters.. */
-    jassert (isValidIdentifier (toString()));
 }
 
 Identifier Identifier::null;
