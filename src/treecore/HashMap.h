@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,8 +23,8 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #ifndef JUCE_HASHMAP_H_INCLUDED
 #define JUCE_HASHMAP_H_INCLUDED
@@ -35,7 +35,7 @@
 
 #include <unordered_map>
 
-#define LOCK_HASH_MAP const ScopedLockType _lock_(m_mutex)
+#define LOCK_HASH_MAP const ScopedLockType _lock_( m_mutex )
 
 class TestFramework;
 
@@ -81,50 +81,47 @@ namespace treecore {
 
     @tparam HashFunctionType The class of hash function, which must be copy-constructible.
     @see CriticalSection, DefaultHashFunctions, NamedValueSet, SortedSet
-*/
-template <typename KeyType,
-          typename ValueType,
-          class HashFunctionType = DefaultHashFunctions,
-          class MutexType = DummyCriticalSection>
+ */
+template<typename KeyType,
+         typename ValueType,
+         class HashFunctionType = DefaultHashFunctions,
+         class MutexType = DummyCriticalSection>
 class HashMap: public RefCountObject
 {
     struct HashMapItem
     {
         HashMapItem() {}
 
-        HashMapItem(const KeyType& key, const ValueType& value) 
-            : key(key)
-            , value(value) 
-        {
-        }
+        HashMapItem( const KeyType& key, const ValueType& value )
+            : key( key )
+            , value( value )
+        {}
 
-        HashMapItem(const KeyType& key, ValueType&& value)
-            : key(key)
-            , value(std::move(value))
-        {
-        }
+        HashMapItem( const KeyType& key, ValueType&& value )
+            : key( key )
+            , value( std::move( value ) )
+        {}
 
-        HashMapItem(HashMapItem&& peer)
-            : key(peer.key)
-            , value(std::move(peer.value))
+        HashMapItem( HashMapItem&& peer )
+            : key( peer.key )
+            , value( std::move( peer.value ) )
+        {}
+
+        HashMapItem& operator = ( HashMapItem&& peer )
         {
-        }
-        
-        HashMapItem& operator = (HashMapItem&& peer)
-        {
-            key = std::move(peer.key);
-            value = std::move(peer.value);
+            key   = std::move( peer.key );
+            value = std::move( peer.value );
         }
 
         const KeyType key{};
         ValueType value{};
 
-        bool operator == (const HashMapItem& other) const
+        bool operator == ( const HashMapItem& other ) const
         {
             return key == other.key && value == other.value;
         }
 
-        bool operator != (const HashMapItem& other) const
+        bool operator != ( const HashMapItem& other ) const
         {
             return key != other.key || value != other.value;
         }
@@ -134,7 +131,6 @@ class HashMap: public RefCountObject
     typedef typename TableImplType::HashEntry EntryType;
 
     friend class ::TestFramework;
-
 
 public:
     //==============================================================================
@@ -159,23 +155,22 @@ public:
         iterators that were created beforehand will cease to be valid, and should not be used.
 
         @see HashMap
-    */
+     */
     class Iterator
     {
         friend class HashMap;
         typedef typename TableImplType::template IteratorBase<TableImplType&, EntryType*> ItImplType;
 
-    public:
+public:
         //==============================================================================
-        Iterator (HashMap& target)
-            : m_impl(target.m_impl)
-        {
-        }
+        Iterator ( HashMap& target )
+            : m_impl( target.m_impl )
+        {}
 
         /** Moves to the next item, if one is available.
             When this returns true, you can get the item's key and value using getKey() and
             getValue(). If it returns false, the iteration has finished and you should stop.
-        */
+         */
         bool next() noexcept
         {
             return m_impl.next();
@@ -197,43 +192,42 @@ public:
          */
         const KeyType& key() const
         {
-            jassert(m_impl.entry != nullptr);
+            jassert( m_impl.entry != nullptr );
             return m_impl.entry->item.key;
         }
 
         /**
          * @brief get current item's value.
-         * 
+         *
          * This should only be called when a call to next() has just returned true.
          */
         ValueType& value()
         {
-            jassert(m_impl.entry != nullptr);
+            jassert( m_impl.entry != nullptr );
             return m_impl.entry->item.value;
         }
 
-    private:
+private:
         ItImplType m_impl;
 
-        TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Iterator)
+        TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR( Iterator )
     };
-    
+
     class ConstIterator
     {
         friend class HashMap;
         typedef typename TableImplType::template IteratorBase<const TableImplType&, EntryType*> ItImplType;
 
-    public:
+public:
         //==============================================================================
-        ConstIterator(const HashMap& target)
-            : m_impl(target.m_impl)
-        {
-        }
+        ConstIterator( const HashMap& target )
+            : m_impl( target.m_impl )
+        {}
 
         /** Moves to the next item, if one is available.
             When this returns true, you can get the item's key and value using getKey() and
             getValue(). If it returns false, the iteration has finished and you should stop.
-        */
+         */
         bool next() noexcept
         {
             return m_impl.next();
@@ -268,10 +262,10 @@ public:
             return m_impl.entry->item.value;
         }
 
-    private:
+private:
         ItImplType m_impl;
 
-        TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConstIterator)
+        TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR( ConstIterator )
     };
 
     /** Returns the type of scoped lock to use for locking this array */
@@ -288,55 +282,51 @@ public:
         @param hashFunction An instance of HashFunctionType, which will be copied and
                             stored to use with the HashMap. This parameter can be omitted
                             if HashFunctionType has a default constructor.
-    */
-    explicit HashMap (int numberOfSlots = defaultHashTableSize,
-                      HashFunctionType hashFunction = HashFunctionType())
-       : m_impl(numberOfSlots, hashFunction)
-    {
-    }
+     */
+    explicit HashMap ( int numberOfSlots = defaultHashTableSize,
+                       HashFunctionType hashFunction = HashFunctionType() )
+        : m_impl( numberOfSlots, hashFunction )
+    {}
 
     /**
      * @brief create HashMap by copying another table's contents
      */
-    HashMap(const HashMap& other)
-        : m_impl(other.m_impl)
+    HashMap( const HashMap& other )
+        : m_impl( other.m_impl )
         , m_mutex()
-    {
-    }
+    {}
 
-    HashMap(HashMap&& other)
-        : m_impl(std::move(other.m_impl))
-    {
-    }
+    HashMap( HashMap&& other )
+        : m_impl( std::move( other.m_impl ) )
+    {}
 
     /**
      * @brief destructor
      * @see HashTableBase::~HashTableBase()
      */
     virtual ~HashMap()
-    {
-    }
+    {}
 
-    HashMap& operator= (const HashMap& other)
+    HashMap& operator = ( const HashMap& other )
     {
         LOCK_HASH_MAP;
-        const ScopedLockType sl_other(other.m_mutex);
+        const ScopedLockType sl_other( other.m_mutex );
 
-        m_impl.clone_slots_from(other.m_impl);
+        m_impl.clone_slots_from( other.m_impl );
         return *this;
     }
 
-    bool operator== (const HashMap& other) const noexcept
+    bool operator == ( const HashMap& other ) const noexcept
     {
         LOCK_HASH_MAP;
-        const ScopedLockType sl_other(other.m_mutex);
+        const ScopedLockType sl_other( other.m_mutex );
         return m_impl == other.m_impl;
     }
 
-    bool operator!= (const HashMap& other) const noexcept
+    bool operator != ( const HashMap& other ) const noexcept
     {
         LOCK_HASH_MAP;
-        const ScopedLockType sl_other(other.m_mutex);
+        const ScopedLockType sl_other( other.m_mutex );
         return !(m_impl == other.m_impl);
     }
 
@@ -369,20 +359,20 @@ public:
      *
      * @return reference to value stored by this key
      */
-    inline ValueType& operator[] (const KeyType& key) noexcept
+    inline ValueType& operator [] ( const KeyType& key ) noexcept
     {
         LOCK_HASH_MAP;
-        int i_bucket = m_impl.bucket_index(key);
+        int i_bucket = m_impl.bucket_index( key );
 
         // search existing entry
-        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+        EntryType* entry = m_impl.search_entry_at( i_bucket, key );
 
         // create new entry
         if (!entry)
         {
-            entry = m_impl.create_entry_at(i_bucket, HashMapItem(key, ValueType{}));
+            entry = m_impl.create_entry_at( i_bucket, HashMapItem( key, ValueType{} ) );
 
-            if (m_impl.high_fill_rate())
+            if ( m_impl.high_fill_rate() )
                 m_impl.expand_buckets();
         }
 
@@ -392,11 +382,11 @@ public:
     /**
      * Returns true if the map contains an item with the specied key.
      */
-    bool contains(const KeyType& key) const noexcept
+    bool contains( const KeyType& key ) const noexcept
     {
         LOCK_HASH_MAP;
-        int i_bucket = m_impl.bucket_index(key);
-        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+        int i_bucket = m_impl.bucket_index( key );
+        EntryType* entry = m_impl.search_entry_at( i_bucket, key );
         return entry != nullptr;
     }
 
@@ -407,7 +397,7 @@ public:
     Array<KeyType> getAllKeys() const
     {
         Array<KeyType> re;
-        m_impl.get_all_keys(re);
+        m_impl.get_all_keys( re );
         return re;
     }
 
@@ -420,11 +410,11 @@ public:
      *
      * @return true if got key, false if not
      */
-    bool select(const KeyType& key, Iterator& result) noexcept
+    bool select( const KeyType& key, Iterator& result ) noexcept
     {
         LOCK_HASH_MAP;
-        int i_bucket = m_impl.bucket_index(key);
-        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+        int i_bucket = m_impl.bucket_index( key );
+        EntryType* entry = m_impl.search_entry_at( i_bucket, key );
 
         if (entry)
         {
@@ -435,11 +425,11 @@ public:
         return entry != nullptr;
     }
 
-    bool select(const KeyType& key, ConstIterator& result) const noexcept
+    bool select( const KeyType& key, ConstIterator& result ) const noexcept
     {
         LOCK_HASH_MAP;
-        int i_bucket = m_impl.bucket_index(key);
-        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+        int i_bucket = m_impl.bucket_index( key );
+        EntryType* entry = m_impl.search_entry_at( i_bucket, key );
 
         if (entry)
         {
@@ -462,61 +452,111 @@ public:
      * @return True if insertion is actually performed, false if key already
      *         exists in table.
      */
-    bool insertOrSelect(const KeyType& key, const ValueType& value, Iterator& result) noexcept
+    bool insertOrSelect( const KeyType& key, const ValueType& value, Iterator& result ) noexcept
     {
         LOCK_HASH_MAP;
 
         // search for existing entry
-        int i_bucket = m_impl.bucket_index(key);
-        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+        int i_bucket = m_impl.bucket_index( key );
+        EntryType* entry = m_impl.search_entry_at( i_bucket, key );
 
-        if (entry)
+        if (entry != nullptr)
         {
             result.m_impl.i_bucket = i_bucket;
-            result.m_impl.entry = entry;
+            result.m_impl.entry    = entry;
             return false;
         }
 
         // create new one
-        entry = m_impl.create_entry_at(i_bucket, HashMapItem(key, value));
+        entry = m_impl.create_entry_at( i_bucket, HashMapItem( key, value ) );
 
-        if (m_impl.high_fill_rate())
+        if ( m_impl.high_fill_rate() )
         {
             m_impl.expand_buckets();
-            i_bucket  = m_impl.bucket_index(key);
+            i_bucket = m_impl.bucket_index( key );
         }
 
         result.m_impl.i_bucket = i_bucket;
-        result.m_impl.entry = entry;
+        result.m_impl.entry    = entry;
         return true;
     }
 
-    bool insertOrSelect(const KeyType& key, ValueType&& value, Iterator& result) noexcept
+    bool insertOrSelect( const KeyType& key, ValueType&& value, Iterator& result ) noexcept
     {
         LOCK_HASH_MAP;
 
         // search for existing entry
-        int i_bucket = m_impl.bucket_index(key);
-        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+        int i_bucket = m_impl.bucket_index( key );
+        EntryType* entry = m_impl.search_entry_at( i_bucket, key );
 
-        if (entry)
+        if (entry != nullptr)
         {
             result.m_impl.i_bucket = i_bucket;
-            result.m_impl.entry = entry;
+            result.m_impl.entry    = entry;
             return false;
         }
 
         // create new one
-        entry = m_impl.create_entry_at(i_bucket, HashMapItem(key, std::move(value)));
+        entry = m_impl.create_entry_at( i_bucket, HashMapItem( key, std::move( value ) ) );
 
-        if (m_impl.high_fill_rate())
+        if ( m_impl.high_fill_rate() )
         {
             m_impl.expand_buckets();
-            i_bucket  = m_impl.bucket_index(key);
+            i_bucket = m_impl.bucket_index( key );
         }
 
         result.m_impl.i_bucket = i_bucket;
-        result.m_impl.entry = entry;
+        result.m_impl.entry    = entry;
+        return true;
+    }
+
+    ///
+    /// \brief store value if key is not exist
+    /// \param key
+    /// \param value
+    /// \return true if insert success, false if key already exists
+    ///
+    bool tryInsert( const KeyType& key, const ValueType& value )
+    {
+        LOCK_HASH_MAP;
+
+        // search for existing entry
+        int i_bucket = m_impl.bucket_index( key );
+        EntryType* entry = m_impl.search_entry_at( i_bucket, key );
+
+        if (entry != nullptr) return false;
+
+        // create new one
+        entry = m_impl.create_entry_at( i_bucket, HashMapItem( key, value ) );
+
+        if ( m_impl.high_fill_rate() )
+        {
+            m_impl.expand_buckets();
+            i_bucket = m_impl.bucket_index( key );
+        }
+
+        return true;
+    }
+
+    bool tryInsert( const KeyType& key, ValueType&& value )
+    {
+        LOCK_HASH_MAP;
+
+        // search for existing entry
+        int i_bucket = m_impl.bucket_index( key );
+        EntryType* entry = m_impl.search_entry_at( i_bucket, key );
+
+        if (entry != nullptr) return false;
+
+        // create new one
+        entry = m_impl.create_entry_at( i_bucket, HashMapItem( key, std::move( value ) ) );
+
+        if ( m_impl.high_fill_rate() )
+        {
+            m_impl.expand_buckets();
+            i_bucket = m_impl.bucket_index( key );
+        }
+
         return true;
     }
 
@@ -524,7 +564,7 @@ public:
      * @brief returns true if the hash contains at least one occurrence of a
      *        given value.
      */
-    bool containsValue(const ValueType& value) const
+    bool containsValue( const ValueType& value ) const
     {
         LOCK_HASH_MAP;
 
@@ -540,16 +580,16 @@ public:
         return false;
     }
 
-    ValueType& getOrDefault(const KeyType& key, ValueType& defaultValue) noexcept
+    ValueType& getOrDefault( const KeyType& key, ValueType& defaultValue ) noexcept
     {
-        return const_cast<ValueType&>(((const HashMap*)this)->getOrDefault(key, defaultValue));
+        return const_cast<ValueType&>( ( (const HashMap*) this )->getOrDefault( key, defaultValue ) );
     }
 
-    const ValueType& getOrDefault(const KeyType& key, const ValueType& defaultValue) const noexcept
+    const ValueType& getOrDefault( const KeyType& key, const ValueType& defaultValue ) const noexcept
     {
         LOCK_HASH_MAP;
-        int i_bucket = m_impl.bucket_index(key);
-        const EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+        int i_bucket = m_impl.bucket_index( key );
+        const EntryType* entry = m_impl.search_entry_at( i_bucket, key );
 
         if (entry)
             return entry->item.value;
@@ -563,13 +603,13 @@ public:
      * If there's already an item with the given key, this will replace its
      * value. Otherwise, a new item will be added to the map.
      */
-    void set(const KeyType& key, const ValueType& value) noexcept
+    void set( const KeyType& key, const ValueType& value ) noexcept
     {
         LOCK_HASH_MAP;
-        int i_bucket = m_impl.bucket_index(key);
+        int i_bucket = m_impl.bucket_index( key );
 
         // try to get existing entry
-        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+        EntryType* entry = m_impl.search_entry_at( i_bucket, key );
 
         if (entry)
         {
@@ -578,31 +618,31 @@ public:
         else
         {
             // create new entry
-            entry = m_impl.create_entry_at(i_bucket, HashMapItem{key, value});
+            entry = m_impl.create_entry_at( i_bucket, HashMapItem{key, value} );
 
-            if (m_impl.high_fill_rate())
+            if ( m_impl.high_fill_rate() )
                 m_impl.expand_buckets();
         }
     }
 
-    void set(const KeyType& key, ValueType&& value) noexcept
+    void set( const KeyType& key, ValueType&& value ) noexcept
     {
         LOCK_HASH_MAP;
-        int i_bucket = m_impl.bucket_index(key);
+        int i_bucket = m_impl.bucket_index( key );
 
         // try to get existing entry
-        EntryType* entry = m_impl.search_entry_at(i_bucket, key);
+        EntryType* entry = m_impl.search_entry_at( i_bucket, key );
 
         if (entry)
         {
-            entry->item.value = std::move(value);
+            entry->item.value = std::move( value );
         }
         else
         {
             // create new entry
-            entry = m_impl.create_entry_at(i_bucket, HashMapItem{key, std::move(value)});
+            entry = m_impl.create_entry_at( i_bucket, HashMapItem{key, std::move( value )} );
 
-            if (m_impl.high_fill_rate())
+            if ( m_impl.high_fill_rate() )
                 m_impl.expand_buckets();
         }
     }
@@ -612,18 +652,18 @@ public:
      * @param key key to remove
      * @return true if removed, false if no this key
      */
-    bool remove(const KeyType& key) noexcept
+    bool remove( const KeyType& key ) noexcept
     {
         LOCK_HASH_MAP;
-        const int i_bucket = m_impl.bucket_index(key);
-        return m_impl.remove_entry_at(i_bucket, key);
+        const int i_bucket = m_impl.bucket_index( key );
+        return m_impl.remove_entry_at( i_bucket, key );
     }
 
     /**
      * @brief removes all items with the given value
      * @return number of items removed
      */
-    int removeValue (const ValueType& value) noexcept
+    int removeValue( const ValueType& value ) noexcept
     {
         LOCK_HASH_MAP;
         int n_removed = 0;
@@ -637,7 +677,7 @@ public:
             {
                 if (entry->value == value)
                 {
-                    remove_entry_at(i_bucket, prev_entry, entry);
+                    remove_entry_at( i_bucket, prev_entry, entry );
                     entry = prev_entry->next_entry;
                     n_removed++;
                 }
@@ -655,11 +695,11 @@ public:
     /** Remaps the hash-map to use a different number of slots for its hash function.
         Each slot corresponds to a single hash-code, and each one can contain multiple items.
         @see getNumSlots()
-    */
-    void remapTable (int numBuckets)
+     */
+    void remapTable( int numBuckets )
     {
         LOCK_HASH_MAP;
-        m_impl.rehash(numBuckets);
+        m_impl.rehash( numBuckets );
     }
 
     /**
@@ -684,19 +724,19 @@ public:
 
     //==============================================================================
     /** Efficiently swaps the contents of two hash-maps. */
-    template <class OtherHashMapType>
-    void swapWith (OtherHashMapType& otherHashMap) noexcept
+    template<class OtherHashMapType>
+    void swapWith( OtherHashMapType& otherHashMap ) noexcept
     {
         LOCK_HASH_MAP;
-        const typename OtherHashMapType::ScopedLockType lock2 (otherHashMap.m_mutex);
-        m_impl.swapWith(otherHashMap.m_impl);
+        const typename OtherHashMapType::ScopedLockType lock2( otherHashMap.m_mutex );
+        m_impl.swapWith( otherHashMap.m_impl );
     }
 
     //==============================================================================
     /** Returns the CriticalSection that locks this structure.
         To lock, you can call getLock().enter() and getLock().exit(), or preferably use
         an object of ScopedLockType as an RAII lock for it.
-    */
+     */
     inline const MutexType& getLock() const noexcept
     {
         return m_mutex;
@@ -709,7 +749,7 @@ private:
     TableImplType m_impl;
     MutexType m_mutex;
 
-    JUCE_LEAK_DETECTOR (HashMap)
+    JUCE_LEAK_DETECTOR( HashMap )
 };
 
 } // namespace treecore
