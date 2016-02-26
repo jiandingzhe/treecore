@@ -1,53 +1,155 @@
-#include <type_traits>
-#include <tuple>
-#include <functional>
+//!********************************************************************************
+//! This file is part of the Three-Body Technology code base.
+//! Copyright(C), 2012-2015, Three-Body Technology, all rights reserved. 
+//! 
+//! This file is protected by the copyright law of the people's Republic of China.
+//! Permission to use this file is only granted for the employee of Three-Body 
+//! Technology, or other company/group/individual who has expressly authorized by
+//! Three-Body Technology. 
+//!
+//! @file    TypeArray.h
+//! @author  Meng Ke
+//! @version 1.0
+//! @date    2016/02/25
+//! @brief   
+//!********************************************************************************
 
-using namespace std;
+#ifndef ____TYPEARRAY__74A35F79_37C0_42AA_AF6B_2B2CB336645E
+#define ____TYPEARRAY__74A35F79_37C0_42AA_AF6B_2B2CB336645E
+
+#include <tuple>
+#include "ValueType.h"
+#include "CutLastInParameterPack.h"
+
+#include "begin_mpl_function.h"
 
 namespace treecore {
-namespace mpl {
 
-template <typename T>
-struct function_traits : public function_traits<decltype( &T::operator() )>
-{};
-// For generic types, directly use the result of the signature of its 'operator()'
-
-template <typename ClassType , typename ReturnType , typename... Args>
-struct function_traits<ReturnType( ClassType::* )( Args... ) const>
-    // we specialize for pointers to member function
+template< typename T0 , typename... OtherTs >
+struct TypeArray
 {
-    enum { arity = sizeof...( Args ) };
-    // arity is the number of arguments.
+    enum { NumElement = sizeof...(OtherTs) +1 };
 
-    typedef ReturnType result_type;
+    enum { MaxSizeOf = std::max( sizeof( T0 ) , TypeArray<OtherTs...>::MaxSizeOf ) };
 
-    template <size_t i>
-    struct arg
+    enum { MinSizeOf = std::max( sizeof( T0 ) , TypeArray<OtherTs...>::MinSizeOf ) };
+
+    enum { AllSize = sizeof( T0 ) + TypeArray<OtherTs...>::AllSize };
+
+    enum { MaxAlignmentOf = std::max( sizeof( T0 ) , TypeArray<OtherTs...>::MaxAlignmentOf ) };
+
+    enum { MinAlignmentOf = std::max( sizeof( T0 ) , TypeArray<OtherTs...>::MinAlignmentOf ) };
+
+    typedef T0 HeadType;
+
+    typedef typename TypeArray<OtherTs...>::TailType TailType;
+
+    template< typename TypeToSearch >
+    struct FindIndex
     {
-        typedef typename std::tuple_element<i , std::tuple<Args...>>::type type;
-        // the i-th argument is equivalent to the i-th tuple element of a tuple
-        // composed of those arguments.
+        enum
+        {
+            index = TypeIf<is_same<TypeToSearch , HeadType>::value , ValueType<0> , ValueType<TypeArray<OtherTs...>::FindIndex::index> >::type::value;
+        };
     };
+
+    template< typename TypeToSearch >
+    struct HasType
+    {
+        enum { value = FindIndex<TypeToSearch>::value != -1 };
+    };
+
+    TYPE_FUNCTION( Get , size_t idx )
+    {
+        RETURN_TYPE_BY_NAME( type , std::tuple_element<i , std::tuple<T0 , OtherTs...>>::type );
+    };
+
+    TYPE_FUNCTION( PushHead , typename pushT )
+    {
+        RETURN_TYPE_BY_NAME( type , TypeArray<pushT , T0 , OtherTs...> );
+    };
+
+    TYPE_FUNCTION( PushTail , typename pushT )
+    {
+        RETURN_TYPE_BY_NAME( type , TypeArray<T0 , OtherTs... , PushTail> );
+    };
+
+    TYPE_FUNCTION( PopHead , typename IgnoreType = void )
+    {
+        typedef IgnoreType _IgnoreType;
+        RETURN_TYPE_BY_NAME( type , TypeArray<OtherTs...> );
+    };
+
+    TYPE_FUNCTION( PopTail , typename IgnoreType = void )
+    {
+        typedef IgnoreType _IgnoreType;
+        RETURN_TYPE_BY_NAME( type , details::CutLastElementInParameterPack<TypeArray , T0 , OtherTs...>::type );
+    };
+
 };
 
-long fun( int , int ) {};
+//------------------------------------------------------------------------
 
-// test code below:
-int main()
+template< typename T0 >
+struct TypeArray
 {
-    auto lambda = []( int i , float k ) { return long( i * 10 ); };
-    std::function<long( int , int )> k;
+    enum { NumElement = 1 };
+    enum { MaxSizeOf = sizeof( T0 ) };
+    enum { MinSizeOf = sizeof( T0 ) };
+    enum { AllSize = sizeof( T0 ) };
+    enum { MaxAlignmentOf = alignof( T0 ) };
+    enum { MinAlignmentOf = alignof( T0 ) };
 
-    typedef function_traits<decltype( k )> traits;
-    typedef function_traits<function<decltype( fun )>> traits;
+    typedef T0 HeadType;
 
-    static_assert( std::is_same<long , traits::result_type>::value , "err" );
-    static_assert( std::is_same<int , traits::arg<0>::type>::value , "err" );
-    static_assert( std::is_same<int , traits::arg<1>::type>::value , "err" );
+    typedef T0 TailType;
 
-    return 0;
+    template< typename TypeToSearch >
+    struct FindIndex
+    {
+        enum
+        {
+            index = TypeIf<is_same<TypeToSearch , HeadType>::value , ValueType<0> , ValueType<TypeArray<OtherTs...>::FindIndex::index> >::type::value;
+        };
+    };
+
+    template< typename TypeToSearch >
+    struct HasType
+    {
+        enum { value = FindIndex<TypeToSearch>::value != -1 };
+    };
+
+    TYPE_FUNCTION( Get , size_t idx )
+    {
+        RETURN_TYPE_BY_NAME( type , std::tuple_element<i , std::tuple<T0 , OtherTs...>>::type );
+    };
+
+    TYPE_FUNCTION( PushHead , typename pushT )
+    {
+        RETURN_TYPE_BY_NAME( type , TypeArray<pushT , T0 , OtherTs...> );
+    };
+
+    TYPE_FUNCTION( PushTail , typename pushT )
+    {
+        RETURN_TYPE_BY_NAME( type , TypeArray<T0 , OtherTs... , PushTail> );
+    };
+
+    TYPE_FUNCTION( PopHead , typename IgnoreType = void )
+    {
+        typedef IgnoreType _IgnoreType;
+        RETURN_TYPE_BY_NAME( type , TypeArray<OtherTs...> );
+    };
+
+    TYPE_FUNCTION( PopTail , typename IgnoreType = void )
+    {
+        typedef IgnoreType _IgnoreType;
+        RETURN_TYPE_BY_NAME( type , details::CutLastElementInParameterPack<TypeArray , T0 , OtherTs...>::type );
+    };
+
+};
+
 }
 
+#include "end_mpl_function.h"
 
-}
-}
+#endif // ____TYPEARRAY__74A35F79_37C0_42AA_AF6B_2B2CB336645E
