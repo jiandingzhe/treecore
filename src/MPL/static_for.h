@@ -21,8 +21,9 @@
 #include "BestParam.h"
 
 namespace treecore {
-namespace details {
 
+
+namespace details {
 
 template< typename FunType , typename CountType , typename... Args >
 forcedinline static void staticLoopImpl( const FunType fun , CountType* , Args&&... args ) noexcept
@@ -37,16 +38,12 @@ forcedinline static void staticLoopImpl( const FunType , ValueType<0>* , Args&&.
 } //namespace details
 
 
-template< int size , typename FunType , typename... Args >
-forcedinline static void staticLoop( const FunType fun , Args&&... args ) noexcept( )
-{
-    details::staticLoopImpl( fun , ( ValueType<size>* )( nullptr ) , args... );
-}
-
-
-} //namespace treecore
-
-
+///
+///
+/// 
+/*
+ *@code
+ *@
 struct K
 {
     static forcedinline void runLoop( int counter , int& k )
@@ -64,3 +61,15 @@ int main()
     system( "PAUSE" );
     return k;
 }
+ *@endcode
+ */
+template< int size , typename FunType , typename... Args >
+forcedinline static void staticLoop( const FunType fun , Args&&... args ) noexcept( )
+{
+    details::staticLoopImpl( fun , ( ValueType<size>* )( nullptr ) , args... );
+}
+
+
+} //namespace treecore
+
+#endif //____STATIC_FOR__28A85C7F_BE55_4176_B729_5F0B72F8A746

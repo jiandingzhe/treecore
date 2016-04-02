@@ -17,7 +17,7 @@
 #ifndef ____COMPLIER__572642FE_0E30_4CA6_9E47_7B28603375C4
 #define ____COMPLIER__572642FE_0E30_4CA6_9E47_7B28603375C4
 
-
+#include "UserFlags.h"
 
 /**********************************************************************
 查找编译器类型,TREECORE支持的编译器共有以下几种:
@@ -126,7 +126,8 @@ icc: 14
 **********************************************************************/
 #if TREECORE_COMPILER_MSVC && !TREECORE_COMPILER_INTEL_ICC
 #   if _MSC_VER < 1900 //VS 2015
-#   define TREECORE_COMPILER_NOT_GOOD
+#       define TREECORE_COMPILER_NOT_GOOD
+#   endif
 #endif
 
 #if TREECORE_COMPILER_GCC && !TREECORE_COMPILER_CLANG
@@ -143,19 +144,19 @@ icc: 14
 
 #if TREECORE_COMPILER_INTEL_ICC
 #   if defined(__INTEL_COMPILER)
-#      if __INTEL_COMPILER < 1400
-#          define TREECORE_COMPILER_NOT_GOOD
-#      endif
+#       if __INTEL_COMPILER < 1400
+#           define TREECORE_COMPILER_NOT_GOOD
+#       endif
 #   elif defined(__ICL)
-#      if __ICL < 1400
-#          define TREECORE_COMPILER_NOT_GOOD
-#      endif
+#       if __ICL < 1400
+#           define TREECORE_COMPILER_NOT_GOOD
+#       endif
 #   elif defined(__ICC)
-#      if __ICC < 1400
-#          define TREECORE_COMPILER_NOT_GOOD
-#      endif
+#       if __ICC < 1400
+#           define TREECORE_COMPILER_NOT_GOOD
+#       endif
 #   else
-#      error can not know ICC version some how!
+#       error can not know ICC version some how!
 #   endif
 #endif
 

@@ -14,8 +14,8 @@
 //! @brief   
 //!********************************************************************************
 
-#ifndef ____TARGETANDCPU__6885B4BA_7871_43AC_95B0_FE0136651082
-#define ____TARGETANDCPU__6885B4BA_7871_43AC_95B0_FE0136651082
+#ifndef ____ARCHANDCPU__6885B4BA_7871_43AC_95B0_FE0136651082
+#define ____ARCHANDCPU__6885B4BA_7871_43AC_95B0_FE0136651082
 
 #include "OS.h"
 
@@ -42,10 +42,17 @@ TREECORE_CPU_ARM
 /**************************************************
 下面是对32位和64位的选择
 **************************************************/
-#if defined(_WIN64) || defined(__MINGW64__) || defined(__amd64__) || defined(__LLP64__) || defined(__LP64__) || defined(_LP64) || defined(__arm64__) || defined(__ARM_ARCH_ISA_A64)
-#   define TREECORE_TARGET_64BIT 1
+#if defined(_WIN64)      ||\
+    defined(__MINGW64__) ||\
+    defined(__amd64__)   ||\
+    defined(__LLP64__)   ||\
+    defined(__LP64__)    ||\
+    defined(_LP64)       ||\
+    defined(__arm64__)   ||\
+    defined(__ARM_ARCH_ISA_A64)
+#   define TREECORE_ARCH_64BIT 1
 #else
-#   define TREECORE_TARGET_32BIT 1
+#   define TREECORE_ARCH_32BIT 1
 #endif
 
 #if TREECORE_CPU_ARM && TREECORE_OS_WINDOWS
@@ -56,11 +63,11 @@ TREECORE_CPU_ARM
 #   error something wrong, I don't know there is any version of iOS running on x86.
 #endif
 
-#ifndef TREECORE_TARGET_64BIT
-#   define TREECORE_TARGET_64BIT 0
+#ifndef TREECORE_ARCH_64BIT
+#   define TREECORE_ARCH_64BIT 0
 #endif
-#ifndef TREECORE_TARGET_32BIT
-#   define TREECORE_TARGET_32BIT 0
+#ifndef TREECORE_ARCH_32BIT
+#   define TREECORE_ARCH_32BIT 0
 #endif
 
-#endif // ____TARGETANDCPU__6885B4BA_7871_43AC_95B0_FE0136651082
+#endif // ____ARCHANDCPU__6885B4BA_7871_43AC_95B0_FE0136651082

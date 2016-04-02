@@ -18,12 +18,13 @@
 #ifndef ____MINIMAL_WINDOWS__FCB4B14D_1B86_4BED_B527_523060EEB1D2
 #define ____MINIMAL_WINDOWS__FCB4B14D_1B86_4BED_B527_523060EEB1D2
 
+#include "../Unils/OS.h"
+
+#if TREECORE_OS_WINDOWS && !TREECORE_COMPILER_DOXYGEN
 
 /*
-
 this file is a minimal include <windows.h> since windows.h has so many 
 marco defines and maybe make chaos.
-
 */
 
 //* without this marco, windows.h will use ANSI version of functions other 
@@ -45,5 +46,8 @@ marco defines and maybe make chaos.
 #endif
 
 #include <windows.h>
+
+
+#endif //TREECORE_OS_WINDOWS
 
 #endif // ____MINIMAL_WINDOWS__FCB4B14D_1B86_4BED_B527_523060EEB1D2

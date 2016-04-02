@@ -18,12 +18,14 @@
 #ifndef ____SCOPEDWIN32HANDLE__A2529323_2F71_4B85_AA04_9120C47B1700
 #define ____SCOPEDWIN32HANDLE__A2529323_2F71_4B85_AA04_9120C47B1700
 
-#include "minimal_windows.h"
-#include <JuceHeader.h>
+#include "Headers/WindowsHeaders/minimal_windows_header.h"
+#include "../Unils/Asserts.h"
 
-using namespace juce;
+#include "../Unils/OS.h"
 
-namespace ztd {
+#if TREECORE_OS_WINDOWS
+
+namespace treecore {
 
 
 /* 智能释放的windows句柄,
@@ -64,7 +66,7 @@ public:
     void tryThrow() const;
 
     //* 将handle暴露到外部.
-    operator HANDLE() const { jassert( mHandle != NULL ); return mHandle; }
+    operator HANDLE() const { tassert( mHandle != NULL ); return mHandle; }
 
     //* 关闭当前句柄并将当前句柄置空,多次调用是安全的.
     void closeHandle();
@@ -78,6 +80,10 @@ private:
 };
 
 
-} //namespace ztd
+} //namespace treecore
+
+
+#endif //TREECORE_OS_WINDOWS
+
 
 #endif // ____SCOPEDWIN32HANDLE__A2529323_2F71_4B85_AA04_9120C47B1700

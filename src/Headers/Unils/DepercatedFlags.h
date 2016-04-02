@@ -93,39 +93,6 @@ forcedinline and neverinline
 
 
 
-/*************************************************************** 
-This will try to break into the debugger if the app is currently being debugged.
-If called by an app that's not being debugged, the behaiour isn't defined - it may crash or not, depending
-on the platform.
-***************************************************************/
-#if defined(TREECORE_CPU_ARM)
-#    define treecore_debugBreak { ::kill (0, SIGTRAP); }
-#elif defined(TREECORE_COMPILER_MSVC)
-#   ifndef TREECORE_COMPILER_ICC
-#       pragma intrinsic (__debugbreak)
-#   endif
-#   define treecore_debugBreak { __debugbreak(); }
-#else
-#   define treecore_debugBreak{ asm ("int $3"); }
-#endif
-
-#if JUCE_LOG_ASSERTIONS || JUCE_DEBUG
-#   define TREECORE_LogCurrentAssertion treecore::logAssertion (__FILE__, __LINE__);
-#else
-#   define TREECORE_LogCurrentAssertion
-#endif
-
-#define tassertfalse TREECORE_MACRO_FORCED_SEMICOLON( { TREECORE_LogCurrentAssertion; treecore_debugBreak; TREECORE_TELL_STATIC_ANALYZER_NORETURN } ) 
-
-#if TREECORE_DEBUG
-#   define tassert(expression) TREECORE_MACRO_FORCED_SEMICOLON( if(!(expression)) tassertfalse; )
-#   define run_with_check(experssion) tassert(experssion)
-#   define TREECORE_DBGCODE(...) __VA_ARGS__
-#else
-#   define tassert(expression)
-#   define run_with_check(experssion) experssion
-#   define TREECORE_DBGCODE(...)
-#endif
 
 
 
