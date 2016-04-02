@@ -17,6 +17,8 @@
 #ifndef ____INTERLOCKED__BBF95929_3B59_4030_8BFF_1E7E2F092E31
 #define ____INTERLOCKED__BBF95929_3B59_4030_8BFF_1E7E2F092E31
 
+#include ""
+#define "MPL/BestParam.h"
 
 namespace treecore {
 
@@ -70,27 +72,45 @@ CAST_HELPER_T_DECLARE( 16 , int128_t );
 #define __InterlockedCompareExchange8 _InterlockedCompareExchange8
 #define __InterlockedCompareExchange16 _InterlockedCompareExchange16
 #define __InterlockedCompareExchange32 _InterlockedCompareExchange
+#define __InterlockedCompareExchange64 _InterlockedCompareExchange64
 
 #ifdef TREECORE_TARGET_64BIT
 
 #define __InterlockedExchange64 _InterlockedExchange64
+#define __InterlockedExchangeAdd64 _InterlockedExchangeAdd64
 
 #else //not 64bit
 
 ///! windows系统的32位环境中没有InterlockedExchange64函数,所以我们只能用
 ///! _InterlockedCompareExchange64做一个模拟
-int64_t _InterlockedExchange64On32BitWindows( volatile int64_t* Target , int64_t Value ) noexcept
+forcedinline int64_t _InterlockedExchange64On32BitWindows( volatile int64_t* Target , int64_t Value ) noexcept
 {
-    int64_t k = _InterlockedCompareExchange64( Target , 0 , 0 );
+    int64_t k = 0;
     for( ;;)
     {
-        int64_t const temp = k + Value;
-        if( _InterlockedCompareExchange64( Target , temp , k ) == k ) break;
+        const int64_t temp = k + Value;
+        const int64_t oldValue = _InterlockedCompareExchange64( Target , temp , k );
+        if( oldValue == k ) break;
+        k=oldValue;
+    }
+    return k;
+};
+
+forcedinline int64_t _InterlockedExchangeAdd64On32BitWindows( volatile int64_t* Target , int64_t Value ) noexcept
+{
+    int64_t k = 0;
+    for(;;) {
+        const int64_t temp = K + Value;
+        const int64_t oldValue = _InterlockedCompareExchange64( Target , temp , k );
+        if( oldValue == k ) break;
+        k=oldValue;
     }
     return k;
 };
 
 #define __InterlockedExchange64 _InterlockedExchange64On32BitWindows
+#define __InterlockedExchangeAdd64 _InterlockedExchangeAdd64On32BitWindows
+
 
 #endif //TREECORE_TARGET_32BIT
 
@@ -103,37 +123,77 @@ int64_t _InterlockedExchange64On32BitWindows( volatile int64_t* Target , int64_t
 
 #define FUNCTIONS(Number)\
 template< typename T >\
-static T exchange( volatile T& objToExchange , const T& exchangeValue , ENABLE_IF_SIZE_IS(Number) ) noexcept\
+class InterlockedGut \
 {\
-    RETURN(Number,__InterlockedExchange##Number( CASTPTR( objToExchange , Number ) , CAST( exchangeValue , Number ) ) );\
-}\
-template< typename T >\
-static T get( volatile T& objToGet , ENABLE_IF_SIZE_IS(Number) ) noexcept\
-{\
-    RETURN(Number, __InterlockedExchangeAdd##Number( CASTPTR(objToGet,Number) , 0 ) );\
-}\
-template< typename T >\
-static void set( volatile T& objToSet , T newValue , ENABLE_IF_SIZE_IS(Number) ) noexcept\
-{\
-    __InterlockedExchange##Number( CASTPTR( objToSet , Number ) , CAST( newValue , Number ) );\
-};\
-template< typename T >\
-static T compareAndSwapReturnOldValue( volatile T& objToCAS , T compareValue , T newValue , ENABLE_IF_SIZE_IS(Number) ) noexcept\
-{\
-    RETURN(Number, __InterlockedCompareExchange##Number( CASTPTR( objToCAS , Number ) , CAST( compareValue , Number ) , CAST( newValue , Number ) ) );\
-}\
-template< typename T >\
-static bool compareAndSwap( volatile T& objToCAS , T compareValue , T newValue , ENABLE_IF_SIZE_IS(Number) ) noexcept\
-{\
-    return Number, __InterlockedCompareExchange##Number( CASTPTR( objToCAS , Number ) , CAST( compareValue , Number ) , CAST( newValue , Number ) ) == CAST( newValue , Number );\
-}\
-template< typename T >\
-static bool compareAndSwapFetchCompareValue( volatile T& objToCAS , T& compareValue , T newValue , ENABLE_IF_SIZE_IS(Number) ) noexcept\
-{\
-    const auto temp = __InterlockedCompareExchange##Number( CASTPTR( objToCAS , Number ) , CAST( compareValue , Number ) , CAST( newValue , Number ) );\
-    const bool k = ( temp == CAST( newValue , Number ) );\
-    compareValue = reinterpret_cast<const T&>( temp );\
-    return k;\
+public:\
+    typedef typename BestParam<T>::type Param;
+    static T exchange( volatile T& objToExchange , Param exchangeValue ) noexcept\
+    {\
+        RETURN(Number,__InterlockedExchange##Number( CASTPTR( objToExchange , Number ) , CAST( exchangeValue , Number ) ) );\
+    }\
+    static T get( volatile T& objToGet ) noexcept\
+    {\
+        RETURN(Number, __InterlockedExchangeAdd##Number( CASTPTR(objToGet,Number) , 0 ) );\
+    }\
+    static void set( volatile T& objToSet , Param newValue ) noexcept\
+    {\
+        __InterlockedExchange##Number( CASTPTR( objToSet , Number ) , CAST( newValue , Number ) );\
+    };\
+    static T compareAndSwapReturnOldValue( volatile T& objToCAS , Param compareValue , Param newValue ) noexcept\
+    {\
+        RETURN(Number, __InterlockedCompareExchange##Number( CASTPTR( objToCAS , Number ) , CAST( compareValue , Number ) , CAST( newValue , Number ) ) );\
+    }\
+    static bool compareAndSwap( volatile T& objToCAS , Param compareValue , Param newValue ) noexcept\
+    {\
+        return __InterlockedCompareExchange##Number( CASTPTR( objToCAS , Number ) , CAST( compareValue , Number ) , CAST( newValue , Number ) ) == CAST( newValue , Number );\
+    }\
+    static bool compareAndSwapFetchCompareValue( volatile T& objToCAS , T& compareValue , Param newValue ) noexcept\
+    {\
+        const auto temp = __InterlockedCompareExchange##Number( CASTPTR( objToCAS , Number ) , CAST( compareValue , Number ) , CAST( newValue , Number ) );\
+        const bool k = ( temp == CAST( newValue , Number ) );\
+        compareValue = reinterpret_cast<const T&>( temp );\
+        return k;\
+    }\
+    static forcedinline T fetchAndAdd( volatile T* Target, const Param valueToAdd ) noexcept \
+    {
+        const int k = __InterlockedExchangeAdd##Number( CASTPTR(Target,Number) , CAST(valueToAdd,Number) );
+        return reinterpret_cast<const T&>(k);
+    }\
+    static forcedinline T addAndFetch( volatile T* Target, const Param valueToAdd ) noexcept \
+    {
+        const int k = __InterlockedExchangeAdd##Number( CASTPTR(Target,Number) , CAST(valueToAdd,Number) );
+        return reinterpret_cast<const T&>(k+CAST(valueToAdd,Number));
+    }\
+    static forcedinline T fetchAndInc( volatile T* Target ) noexcept \
+    {\
+        const int k = __InterlockedExchangeAdd##Number( CASTPTR(Target,Number) , 1 );\
+        return reinterpret_cast<const T&>(k);\
+    }\
+    static forcedinline T incAndFetch( volatile T* Target ) noexcept \
+    {\
+        const int k = __InterlockedExchangeAdd##Number( CASTPTR(Target,Number) , 1 );\
+        return reinterpret_cast<const T&>(k+1);\
+    }\
+    static forcedinline T fetchAndDec( volatile T* Target, const Param valueToDec ) noexcept \
+    {\
+        const int k = __InterlockedExchangeAdd##Number( CASTPTR(Target,Number) , -CAST(valueToDec,Number) );\
+        return reinterpret_cast<const T&>(k);\
+    }\
+    static forcedinline T decAndFetch( volatile T* Target, const Param valueToDec ) noexcept \
+    {\
+        const int k = __InterlockedExchangeAdd##Number( CASTPTR(Target,Number) , -CAST(valueToDec,Number) );\
+        return reinterpret_cast<const T&>(k-CAST(valueToDec,Number));\
+    }\
+    static forcedinline T fetchAndDec( volatile T* Target ) noexcept \
+    {\
+        const int k = __InterlockedExchangeAdd##Number( CASTPTR(Target,Number) , -1 );\
+        return reinterpret_cast<const T&>(k);\
+    }\
+    static forcedinline T decAndFetch( volatile T* Target ) noexcept \
+    {\
+        const int k = __InterlockedExchangeAdd##Number( CASTPTR(Target,Number) , -1 );\
+        return reinterpret_cast<const T&>(k-1);\
+    }\
 };
 
 //------------------------------------------------------------------------
@@ -165,6 +225,7 @@ public:
 #undef __InterlockedCompareExchange16
 #undef __InterlockedCompareExchange32
 #undef __InterlockedExchange64
+#undef __InterlockedExchangeAdd64
 #undef ENABLE_IF_SIZE_IS
 #undef CASTPTR
 #undef CAST
@@ -178,7 +239,7 @@ public:
     sizeof(T)==8||\
     ( TREECORE_ENABLE_128BIT_ATOMIC && TREECORE_TARGET_64BIT && sizeof(T)==16 )\
     ,"atomic operator is very limited, u can only use very a few size obj to do");\
-    tassert( sizeof(T)!= 16 || CHECK_PTR_ALIGN(&obj,16) )
+    tassert( sizeof(T)!= 16 || CHECK_PTR_ALIGN(&obj,sizeof(T)) )
 
 } //namespace details
 #endif //!TREECORE_DOXYGEN
@@ -215,7 +276,7 @@ public:
     ///! @warning 原子读操作只保障原子性,并不保障时序性,多条线程
     ///!          不会因为操作同一个原子而影响同步规则.
     template< typename T >
-    static T exchange( volatile T& objToExchange , const T& exchangeValue ) noexcept
+    static T exchange( volatile T& objToExchange , BestParam<T>::type exchangeValue ) noexcept
     {
         ATOMIC_SIZE_AND_ALIGN_CHECK( objToExchange );
         return details::InterlockedGut::exchange( objToExchange , exchangeValue );
@@ -239,21 +300,21 @@ public:
     }
 
     template< typename T >
-    static void set( volatile T& objToSet , T newValue ) noexcept
+    static void set( volatile T& objToSet , BestParam<T>::type newValue ) noexcept
     {
         ATOMIC_SIZE_AND_ALIGN_CHECK( objToSet );
         details::InterlockedGut::set( objToSet , newValue );
     }
 
     template< typename T >
-    static bool compareAndSwap( volatile T& objToCAS , T compareValue , T newValue ) noexcept
+    static bool compareAndSwap( volatile T& objToCAS , BestParam<T>::type compareValue , BestParam<T>::type newValue ) noexcept
     {
         ATOMIC_SIZE_AND_ALIGN_CHECK( objToCAS );
         return details::InterlockedGut::compareAndSwap( objToCAS , compareValue , newValue );
     }
 
     template< typename T >
-    static T compareAndSwapReturnOldValue( volatile T& objToCAS , T compareValue , T newValue ) noexcept
+    static T compareAndSwapReturnOldValue( volatile T& objToCAS , BestParam<T>::type compareValue , BestParam<T>::type newValue ) noexcept
     {
         ATOMIC_SIZE_AND_ALIGN_CHECK( objToCAS );
         return details::InterlockedGut::compareAndSwapReturnOldValue( objToCAS , compareValue , newValue );
@@ -274,11 +335,23 @@ public:
     ///! @param newValue 一旦CAS成功,objToCAS的值将被刷新为这个值.
     ///! @return 返回CAS操作是否成功.
     template< typename T >
-    static bool compareAndSwapFetchCompareValue( volatile T& objToCAS , T& compareValue , T newValue ) noexcept
+    static bool compareAndSwapFetchCompareValue( volatile T& objToCAS , T& compareValue , BestParam<T>::type newValue ) noexcept
     {
         ATOMIC_SIZE_AND_ALIGN_CHECK( objToCAS );
         return details::InterlockedGut::compareAndSwapFetchCompareValue( objToCAS , compareValue , newValue );
     }
+
+    /** Implements a memory read/write barrier. */
+    static forcedinline void memoryBarrier() noexcept
+    {
+#       if JUCE_ATOMICS_MAC_LEGACY
+        OSMemoryBarrier();
+#       elif JUCE_ATOMICS_GCC
+        __sync_synchronize();
+#       elif JUCE_ATOMICS_WINDOWS
+        _ReadWriteBarrier();
+#       endif
+    };
 
 };
 

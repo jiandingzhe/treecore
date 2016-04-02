@@ -1,0 +1,6 @@
+
+RefCountObj中有Ptr类.
+
+但RefCountPtr是另一个类,它在发现类中没有名为"Ptr"的类时,会使用标准库的引用计数指针.
+
+WeakPtr同理

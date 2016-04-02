@@ -26,6 +26,8 @@
   ==============================================================================
 */
 
+  这个可以和引用计数单例结合一下,我觉得比User好
+
 #ifndef JUCE_SHAREDRESOURCEPOINTER_H_INCLUDED
 #define JUCE_SHAREDRESOURCEPOINTER_H_INCLUDED
 

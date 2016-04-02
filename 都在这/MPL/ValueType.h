@@ -97,9 +97,11 @@ void fun( int& a , IntValue<i>* = nullptr )
 */
 
 template< int Val >
-struct IntValue
+struct ValueType
 {
     enum : int { value = Val };
+    typedef typename ValueType<Val + 1>::type incType;
+    typedef typename ValueType<Val + 1>::type decType;
 };
 
 }
