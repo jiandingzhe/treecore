@@ -18,43 +18,46 @@
 #ifndef ____ASSERTS__81B43ADE_BB23_4732_8FF8_B0BCFB4151DC
 #define ____ASSERTS__81B43ADE_BB23_4732_8FF8_B0BCFB4151DC
 
-#include "Complier.h"
-#include "TargetAndCPU.h"
-#include "DebugFlags.h"
-#include "DepercatedFlags.h"
+#include "Headers/Unils/Complier.h"
+#include "Headers/Unils/Architectures.h"
+#include "Headers/Unils/DebugFlags.h"
 
 /***************************************************************
 This will try to break into the debugger if the app is currently being debugged.
 If called by an app that's not being debugged, the behaiour isn't defined - it may crash or not, depending
 on the platform.
 ***************************************************************/
-#if TREECORE_CPU_ARM
-#    define treecore_debugBreak { ::kill (0, SIGTRAP); }
-#elif TREECORE_COMPILER_MSVC
-#   ifndef TREECORE_COMPILER_ICC
+#if TREE_CPU_ARM
+#    define tree_debugBreak { ::kill (0, SIGTRAP); }
+#elif TREE_COMPILER_MSVC
+#   if !TREE_COMPILER_INTEL_ICC
 #       pragma intrinsic (__debugbreak)
 #   endif
-#   define treecore_debugBreak { __debugbreak(); }
-#else
-#   define treecore_debugBreak{ asm ("int $3"); }
+#   define tree_debugBreak { __debugbreak(); }
+#else //GCC
+#   define tree_debugBreak { asm("int $3"); }
 #endif
 
-#if JUCE_LOG_ASSERTIONS || JUCE_DEBUG
-#   define TREECORE_LogCurrentAssertion treecore::logAssertion (__FILE__, __LINE__);
+/// @breif 静态断言,和标准静态断言的区别是这个静态断言可以不写message
+#define tstatic_assert(x,...) static_assert((x),""__VA_ARGS__)
+
+
+#if JUCE_LOG_ASSERTIONS || TREE_DEBUG
+#   define TREE_LogCurrentAssertion treecore::logAssertion (__FILE__, __LINE__);
 #else
-#   define TREECORE_LogCurrentAssertion
+#   define TREE_LogCurrentAssertion
 #endif
 
-#define tassertfalse TREECORE_MACRO_FORCED_SEMICOLON( { TREECORE_LogCurrentAssertion; treecore_debugBreak; TREECORE_TELL_STATIC_ANALYZER_NORETURN } ) 
+#define tassertfalse TREE_MACRO_FORCED_SEMICOLON( { TREE_LogCurrentAssertion; tree_debugBreak; TREE_TELL_STATIC_ANALYZER_NORETURN } ) 
 
-#if TREECORE_DEBUG
-#   define tassert(expression) TREECORE_MACRO_FORCED_SEMICOLON( if(!(expression)) tassertfalse; )
+#if TREE_DEBUG
+#   define tassert(expression) TREE_MACRO_FORCED_SEMICOLON( if(!(expression)) tassertfalse; )
 #   define run_with_check(experssion) tassert(experssion)
-#   define TREECORE_DBGCODE(...) __VA_ARGS__
+#   define TREE_DBGCODE(...) __VA_ARGS__
 #else
 #   define tassert(expression)
 #   define run_with_check(experssion) experssion
-#   define TREECORE_DBGCODE(...)
+#   define TREE_DBGCODE(...)
 #endif
 
 

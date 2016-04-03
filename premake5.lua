@@ -9,15 +9,23 @@ workspace "treecore"
     filter "configurations:*64"
         architecture "x86_64"
 
+    filter "configurations:Debug*"
+        defines { "DEBUG","_DEBUG","__DEBUG","__DEBUG__" }
+        flags { "Symbols" }
+        
+    filter "configurations:Release*"
+        defines { "NDEBUG","_NDEBUG","__NDEBUG","__NDEBUG__" }
+        flags { "Symbols" }
+        
 project "treecore"
     kind "StaticLib"
     includedirs { "src/" }
     files { "src/Headers/*.h", "src/Headers/*.cpp" }
     files { "src/Headers/Unils/*.h", "src/Headers/Unils/*.cpp" }
     files { "src/MPL/*.h", "src/MPL/*.cpp" }
-    files { "src/Atomic/*.h", "src/Atomic/*.cpp" }
-    files { "src/Memory/*.h", "src/Memory/*.cpp" }
-    files { "src/App/*.h", "src/App/*.cpp" }
+    --files { "src/Atomic/*.h", "src/Atomic/*.cpp" }
+    --files { "src/Memory/*.h", "src/Memory/*.cpp" }
+    --files { "src/App/*.h", "src/App/*.cpp" }
     
 filter "system:Windows"
     files { "src/Headers/WindowsHeaders/*.h", "src/Headers/WindowsHeaders/*.cpp" }

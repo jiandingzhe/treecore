@@ -17,7 +17,7 @@
 #ifndef ____STRONG_TYPEDEF__6BBD0942_2250_4D00_A927_CAC665D561DB
 #define ____STRONG_TYPEDEF__6BBD0942_2250_4D00_A927_CAC665D561DB
 
-#define TREECORE_STRONG_TYPEDEF(tName,newName) \
+#define TREE_STRONG_TYPEDEF(tName,newName) \
     struct newName \
     { \
         tName t; \

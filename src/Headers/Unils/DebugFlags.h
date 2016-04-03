@@ -23,26 +23,27 @@
 treecore在debug模式和release模式下很多行为会有所不同,
 其中有很多会影响效率,因此务必确保debug和release的正确设置.
 如果想在release模式下依然开启一些断言检查,可在项目设置中
-定义"TREECORE_FORCE_DEBUG"宏.
+定义"TREE_FORCE_DEBUG"宏.
 ***************************************************/
-#if defined(__DEBUG) || defined(_DEBUG) || defined(DEBUG) || defined(__DEBUG__) || defined(TREECORE_FORCE_DEBUG)
-#   define TREECORE_DEBUG 1
+#if defined(__DEBUG) || defined(_DEBUG) || defined(DEBUG) || defined(__DEBUG__) || TREE_FORCE_DEBUG
+#   define TREE_DEBUG 1
 #endif
-#if !defined(TREECORE_FORCE_DEBUG) && ( defined(__NDEBUG) || defined(_NDEBUG) || defined(NDEBUG) || defined(__NDEBUG__) )
-#   define TREECORE_RELEASE 1
-#endif
-#if defined(TREECORE_DEBUG) && defined(TREECORE_RELEASE)
-#   error both "release" and "debug" flags defined! can not know witch to use.
-#endif
-#if !defined(TREECORE_DEBUG) && !defined(TREECORE_RELEASE)
-#   error both "release" and "debug" flags are NOT defined! can not know witch to use.
+#if !TREE_FORCE_DEBUG && ( defined(__NDEBUG) || defined(_NDEBUG) || defined(NDEBUG) || defined(__NDEBUG__) )
+#   define TREE_RELEASE 1
 #endif
 
-#ifndef TREECORE_FORCE_DEBUG
-#   define TREECORE_FORCE_DEBUG 0
+#ifndef TREE_FORCE_DEBUG
+#   define TREE_FORCE_DEBUG 0
 #endif
-#ifndef TREECORE_RELEASE
-#   define TREECORE_RELEASE 0
+#ifndef TREE_RELEASE
+#   define TREE_RELEASE 0
+#endif
+
+#if TREE_DEBUG && TREE_RELEASE
+#   error both "release" and "debug" flags defined! can not know witch to use.
+#endif
+#if !TREE_DEBUG && !TREE_RELEASE
+#   error both "release" and "debug" flags are NOT defined! can not know witch to use.
 #endif
 
 #endif // ____DEBUGFLAGS__17D3A5E0_673E_45DB_8188_5B882E126A49

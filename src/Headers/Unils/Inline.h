@@ -17,21 +17,21 @@
 #ifndef ____INLINE__EC95C21C_42B8_45EB_A450_E22D6160DABA
 #define ____INLINE__EC95C21C_42B8_45EB_A450_E22D6160DABA
 
-#include "../DebugFlags.h"
+#include "Headers/Unils/DebugFlags.h"
 
 /*******************************************************
 forcedinline and neverinline
 ********************************************************/
-#if TREECORE_DEBUG || TREECORE_COMPILER_DOXYGEN
+#if TREE_DEBUG || TREE_COMPILER_DOXYGEN
 #   define forcedinline inline
 #   define dontinline // "noinline" macro may defined by other lib, so define "dontinline" here.
 #else
-#   if TREECORE_COMPILER_MSVC
+#   if TREE_COMPILER_MSVC
 #       define forcedinline __forceinline
-#       define dontinline __attribute__((noinline))
+#       define dontinline   __attribute__((noinline))
 #   else
 #       define forcedinline inline __attribute__((always_inline))
-#       define dontinline __declspec(noinline)
+#       define dontinline   __declspec(noinline)
 #   endif
 #endif
 
