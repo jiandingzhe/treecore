@@ -43,7 +43,7 @@ void _break_desc_lines_( const String& input, size_t line_size, Array<String>& o
 
     for (size_t line_i = 0; line_i < paragraphs.size(); line_i++)
     {
-        output.add( String::empty );
+        output.add( String::empty() );
         const String& para = paragraphs[line_i];
         StringArray tokens;
         tokens.addTokens( para, " \t", "" );
@@ -52,7 +52,7 @@ void _break_desc_lines_( const String& input, size_t line_size, Array<String>& o
         {
             const String& token = tokens[i_token];
             if (output.getLast().length() + token.length() + 1 > line_size)
-                output.add( String::empty );
+                output.add( String::empty() );
             if (output.getLast().length() > 0)
                 output.getLast() += " ";
             output.getLast() += token;
@@ -98,7 +98,7 @@ bool Option::BoolSwitch::cast_values( const Array<String>& values )
 
 String Option::BoolSwitch::to_string()
 {
-    return String::empty;
+    return String::empty();
 }
 
 Option::Option( Option&& other ) noexcept

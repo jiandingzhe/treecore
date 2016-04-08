@@ -151,7 +151,7 @@ public:
         if (0 <= index && index < strings.size())
             return strings[index];
         else
-            return String::empty;
+            return String::empty();
     }
 
     /** Returns a pointer to the first String in the array.

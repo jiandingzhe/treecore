@@ -176,7 +176,7 @@ String XmlDocument::getFileContents (const String& filename) const
             return in->readEntireStreamAsString();
     }
 
-    return String::empty;
+    return String::empty();
 }
 
 treecore_wchar XmlDocument::readNextChar() noexcept

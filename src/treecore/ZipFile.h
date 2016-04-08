@@ -206,7 +206,7 @@ public:
             will be stored for this file.
         */
         void addFile (const File& fileToAdd, int compressionLevel,
-                      const String& storedPathName = String::empty);
+                      const String& storedPathName = String::empty());
 
         /** Adds a file while should be added to the archive.
 

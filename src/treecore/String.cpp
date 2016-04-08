@@ -121,7 +121,11 @@ size_t StringHolder::getAllocatedNumBytes( const CharPointerType text ) noexcept
     return bufferFromText( text )->allocatedNumBytes;
 }
 
-const String String::empty;
+const String& String::empty()
+{
+    static String empty_string_instance;
+    return empty_string_instance;
+}
 
 //==============================================================================
 String::String() noexcept: text( &(emptyString.text) )

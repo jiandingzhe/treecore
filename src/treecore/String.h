@@ -174,7 +174,7 @@ public:
         It's better to use this than String() because it explains what's going on
         and is more efficient.
      */
-    static const String empty;
+    static const String& empty();
 
     /** This is the character encoding type used internally to store the string.
 

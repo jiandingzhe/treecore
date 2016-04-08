@@ -40,6 +40,7 @@ foreach(test_name
     t_sparse_set
     t_static_array
     t_string_pool
+    t_text_diff
     t_thread
     t_var
     t_weak_ptr
