@@ -16,6 +16,8 @@
 #include "treecore/ScopedPointer.h"
 #include "treecore/StringRef.h"
 
+#include <iostream>
+
 using namespace treecore;
 
 //==============================================================================

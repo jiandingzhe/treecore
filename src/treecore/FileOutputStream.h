@@ -29,6 +29,7 @@
 #ifndef JUCE_FILEOUTPUTSTREAM_H_INCLUDED
 #define JUCE_FILEOUTPUTSTREAM_H_INCLUDED
 
+#include "treecore/ClassUtils.h"
 #include "treecore/OutputStream.h"
 #include "treecore/File.h"
 
@@ -40,7 +41,7 @@ namespace treecore {
 
     @see OutputStream, FileInputStream, File::createOutputStream
 */
-class JUCE_API  FileOutputStream  : public OutputStream
+class TREECORE_SHARED_API  FileOutputStream  : public OutputStream
 {
 public:
     //==============================================================================

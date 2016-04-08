@@ -2,9 +2,7 @@
 #define TREECORE_NATIVE_WIN32_CHILD_PROCESS_H
 
 #include "treecore/ChildProcess.h"
-#include "treecore/BasicNativeHeaders.h"
 #include "treecore/PlatformDefs.h"
-#include "treecore/StandardHeader.h"
 
 namespace treecore
 {

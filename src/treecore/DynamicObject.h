@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_DYNAMICOBJECT_H_INCLUDED
-#define JUCE_DYNAMICOBJECT_H_INCLUDED
+#ifndef TREECORE_DYNAMICOBJECT_H
+#define TREECORE_DYNAMICOBJECT_H
 
 #include "treecore/RefCountObject.h"
 #include "treecore/RefCountHolder.h"
@@ -52,7 +52,7 @@ class OutputStream;
     by subclassing hasMethod() and invokeMethod(), you can give your object
     methods.
 */
-class JUCE_API  DynamicObject  : public RefCountObject
+class TREECORE_SHARED_API  DynamicObject  : public RefCountObject
 {
 public:
     //==============================================================================
@@ -137,14 +137,9 @@ private:
     //==============================================================================
     NamedValueSet properties;
 
-   #if JUCE_CATCH_DEPRECATED_CODE_MISUSE
-    // These methods have been deprecated - use var::invoke instead
-    virtual void invokeMethod (const Identifier&, const var*, int) {}
-   #endif
-
-    JUCE_LEAK_DETECTOR (DynamicObject)
+    TREECORE_LEAK_DETECTOR (DynamicObject)
 };
 
 }
 
-#endif   // JUCE_DYNAMICOBJECT_H_INCLUDED
+#endif   // TREECORE_DYNAMICOBJECT_H

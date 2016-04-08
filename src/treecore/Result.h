@@ -62,7 +62,7 @@ namespace treecore {
     }
     @endcode
 */
-class JUCE_API  Result
+class TREECORE_SHARED_API  Result
 {
 public:
     //==============================================================================

@@ -29,7 +29,6 @@
 #ifndef JUCE_STRINGREF_H_INCLUDED
 #define JUCE_STRINGREF_H_INCLUDED
 
-#include "treecore/StandardHeader.h"
 #include "treecore/String.h"
 
 namespace treecore {
@@ -67,7 +66,7 @@ namespace treecore {
 
     @see String
 */
-class JUCE_API  StringRef
+class TREECORE_SHARED_API  StringRef
 {
 public:
     /** Creates a StringRef from a raw string literal.
@@ -107,7 +106,7 @@ public:
     int length() const noexcept                                         { return (int) text.length(); }
 
     /** Retrieves a character by index. */
-    juce_wchar operator[] (int index) const noexcept                    { return text[index]; }
+    treecore_wchar operator[] (int index) const noexcept                    { return text[index]; }
 
     /** Compares this StringRef with a String. */
     bool operator== (const String& s) const noexcept                    { return text.compare (s.getCharPointer()) == 0; }
@@ -126,9 +125,9 @@ public:
 
 //==============================================================================
 /** Case-sensitive comparison of two strings. */
-JUCE_API bool JUCE_CALLTYPE operator== (const String& string1, StringRef string2) noexcept;
+TREECORE_SHARED_API bool TREECORE_STDCALL operator== (const String& string1, StringRef string2) noexcept;
 /** Case-sensitive comparison of two strings. */
-JUCE_API bool JUCE_CALLTYPE operator!= (const String& string1, StringRef string2) noexcept;
+TREECORE_SHARED_API bool TREECORE_STDCALL operator!= (const String& string1, StringRef string2) noexcept;
 
 }
 

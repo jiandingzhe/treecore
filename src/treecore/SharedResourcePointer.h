@@ -26,10 +26,14 @@
   ==============================================================================
 */
 
-#ifndef JUCE_SHAREDRESOURCEPOINTER_H_INCLUDED
-#define JUCE_SHAREDRESOURCEPOINTER_H_INCLUDED
+#ifndef TREECORE_SHAREDRESOURCEPOINTER_H
+#define TREECORE_SHAREDRESOURCEPOINTER_H
 
 #include "treecore/Common.h"
+#include "treecore/DebugUtils.h"
+#include "treecore/RefCountObject.h"
+#include "treecore/ScopedPointer.h"
+#include "treecore/SpinLock.h"
 
 namespace treecore {
 
@@ -133,7 +137,7 @@ public:
     SharedObjectType* operator->() const noexcept       { return sharedObject; }
 
 private:
-    struct SharedObjectHolder  : public ReferenceCountedObject
+    struct SharedObjectHolder  : public RefCountObject
     {
         SpinLock lock;
         ScopedPointer<SharedObjectType> sharedInstance;
@@ -148,9 +152,9 @@ private:
 
     SharedObjectType* sharedObject;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SharedResourcePointer)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SharedResourcePointer)
 };
 
 }
 
-#endif   // JUCE_SHAREDRESOURCEPOINTER_H_INCLUDED
+#endif   // TREECORE_SHAREDRESOURCEPOINTER_H

@@ -71,7 +71,7 @@ namespace treecore {
 
     @see File, FileOutputStream
 */
-class JUCE_API  TemporaryFile
+class TREECORE_SHARED_API  TemporaryFile
 {
 public:
     //==============================================================================

@@ -208,7 +208,7 @@ public:
     int toInt (const ValueUnion& data) const noexcept override       { return data.boolValue ? 1 : 0; };
     int64 toInt64 (const ValueUnion& data) const noexcept override   { return data.boolValue ? 1 : 0; };
     double toDouble (const ValueUnion& data) const noexcept override { return data.boolValue ? 1.0 : 0.0; }
-    String toString (const ValueUnion& data) const override          { return String::charToString (data.boolValue ? (juce_wchar) '1' : (juce_wchar) '0'); }
+    String toString (const ValueUnion& data) const override          { return String::charToString (data.boolValue ? (treecore_wchar) '1' : (treecore_wchar) '0'); }
     bool toBool (const ValueUnion& data) const noexcept override     { return data.boolValue; }
     bool isBool() const noexcept override                            { return true; }
 
@@ -295,13 +295,13 @@ public:
         if (DynamicObject* d = original.getDynamicObject())
             return d->clone().get();
 
-        jassertfalse; // can only clone DynamicObjects!
+        treecore_assert_false; // can only clone DynamicObjects!
         return var();
     }
 
     void writeToStream (const ValueUnion&, OutputStream& output) const override
     {
-        jassertfalse; // Can't write an object to a stream!
+        treecore_assert_false; // Can't write an object to a stream!
         output.writeCompressedInt (0);
     }
 };
@@ -415,7 +415,7 @@ public:
 
     void writeToStream (const ValueUnion&, OutputStream& output) const override
     {
-        jassertfalse; // Can't write a method to a stream!
+        treecore_assert_false; // Can't write a method to a stream!
         output.writeCompressedInt (0);
     }
 };
@@ -662,7 +662,7 @@ const var& var::operator[] (int arrayIndex) const
 
     // When using this method, the var must actually be an array, and the index
     // must be in-range!
-    jassert (array != nullptr && isPositiveAndBelow (arrayIndex, array->size()));
+    treecore_assert (array != nullptr && isPositiveAndBelow (arrayIndex, array->size()));
 
     return array->operator[](arrayIndex);
 }
@@ -673,7 +673,7 @@ var& var::operator[] (int arrayIndex)
 
     // When using this method, the var must actually be an array, and the index
     // must be in-range!
-    jassert (array != nullptr && isPositiveAndBelow (arrayIndex, array->size()));
+    treecore_assert (array != nullptr && isPositiveAndBelow (arrayIndex, array->size()));
 
     return array->operator[](arrayIndex);
 }

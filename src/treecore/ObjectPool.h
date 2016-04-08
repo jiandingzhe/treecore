@@ -70,7 +70,7 @@ public:
     ~ObjectPool()
     {
         ObjBlock* k;
-        likely_while(m_blocks.pop(k)) { delete k; }
+        while likely(m_blocks.pop(k)) { delete k; }
     }
 
     /**
@@ -80,7 +80,7 @@ public:
     T* generate()
     {
         T* k = nullptr;
-        unlikely_if(!m_objects.pop(k))
+        if unlikely(!m_objects.pop(k))
         {
             createSome();
         }
@@ -98,7 +98,7 @@ public:
     T* generate(InitType&&... initValues)
     {
         T* k = nullptr;
-        unlikely_if(!m_objects.pop(k))
+        if unlikely(!m_objects.pop(k))
         {
             createSome();
         }
@@ -113,7 +113,7 @@ public:
      */
     void recycle(T* k)
     {
-        unlikely_if(k == nullptr) return;
+        if unlikely(k == nullptr) return;
         k->~T();
         m_objects.push(k);
     }
@@ -124,7 +124,7 @@ public:
      */
     void createSome(int numBlock = 1)
     {
-        jassert( numBlock>0 );
+        treecore_assert( numBlock>0 );
 
 
         for (int i = 0; i < numBlock; i++)

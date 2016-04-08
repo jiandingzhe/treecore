@@ -4,12 +4,14 @@
 #include "treecore/Config.h"
 #include "treecore/String.h"
 
+#include <iostream>
+
 namespace treecore
 {
 
 struct EmptyString
 {
-    int refCount;
+    int    refCount;
     size_t allocatedBytes;
     String::CharPointerType::CharType text;
 };
@@ -25,95 +27,95 @@ public:
     typedef String::CharPointerType::CharType CharType;
 
     //==============================================================================
-    static CharPointerType createUninitialisedBytes (size_t numBytes);
+    static CharPointerType createUninitialisedBytes( size_t numBytes );
 
-    template <class CharPointer>
-    static CharPointerType createFromCharPointer (const CharPointer text)
+    template<class CharPointer>
+    static CharPointerType createFromCharPointer( const CharPointer text )
     {
-        if (text.getAddress() == nullptr || text.isEmpty())
-            return CharPointerType (&(emptyString.text));
+        if ( text.getAddress() == nullptr || text.isEmpty() )
+            return CharPointerType( &(emptyString.text) );
 
-        CharPointer t (text);
-        size_t bytesNeeded = sizeof (CharType);
+        CharPointer t( text );
+        size_t bytesNeeded = sizeof(CharType);
 
-        while (! t.isEmpty())
-            bytesNeeded += CharPointerType::getBytesRequiredFor (t.getAndAdvance());
+        while ( !t.isEmpty() )
+            bytesNeeded += CharPointerType::getBytesRequiredFor( t.getAndAdvance() );
 
-        const CharPointerType dest (createUninitialisedBytes (bytesNeeded));
-        CharPointerType (dest).writeAll (text);
+        const CharPointerType dest( createUninitialisedBytes( bytesNeeded ) );
+        CharPointerType( dest ).writeAll( text );
         return dest;
     }
 
-    template <class CharPointer>
-    static CharPointerType createFromCharPointer (const CharPointer text, size_t maxChars)
+    template<class CharPointer>
+    static CharPointerType createFromCharPointer( const CharPointer text, size_t maxChars )
     {
         if (text.getAddress() == nullptr || text.isEmpty() || maxChars == 0)
-            return CharPointerType (&(emptyString.text));
+            return CharPointerType( &(emptyString.text) );
 
-        CharPointer end (text);
-        size_t numChars = 0;
-        size_t bytesNeeded = sizeof (CharType);
+        CharPointer end( text );
+        size_t numChars    = 0;
+        size_t bytesNeeded = sizeof(CharType);
 
-        while (numChars < maxChars && ! end.isEmpty())
+        while ( numChars < maxChars && !end.isEmpty() )
         {
-            bytesNeeded += CharPointerType::getBytesRequiredFor (end.getAndAdvance());
+            bytesNeeded += CharPointerType::getBytesRequiredFor( end.getAndAdvance() );
             ++numChars;
         }
 
-        const CharPointerType dest (createUninitialisedBytes (bytesNeeded));
-        CharPointerType (dest).writeWithCharLimit (text, (int) numChars + 1);
+        const CharPointerType dest( createUninitialisedBytes( bytesNeeded ) );
+        CharPointerType( dest ).writeWithCharLimit( text, (int) numChars + 1 );
         return dest;
     }
 
-    template <class CharPointer>
-    static CharPointerType createFromCharPointer (const CharPointer start, const CharPointer end)
+    template<class CharPointer>
+    static CharPointerType createFromCharPointer( const CharPointer start, const CharPointer end )
     {
-        if (start.getAddress() == nullptr || start.isEmpty())
-            return CharPointerType (&(emptyString.text));
+        if ( start.getAddress() == nullptr || start.isEmpty() )
+            return CharPointerType( &(emptyString.text) );
 
-        CharPointer e (start);
+        CharPointer e( start );
         int numChars = 0;
-        size_t bytesNeeded = sizeof (CharType);
+        size_t bytesNeeded = sizeof(CharType);
 
-        while (e < end && ! e.isEmpty())
+        while ( e < end && !e.isEmpty() )
         {
-            bytesNeeded += CharPointerType::getBytesRequiredFor (e.getAndAdvance());
+            bytesNeeded += CharPointerType::getBytesRequiredFor( e.getAndAdvance() );
             ++numChars;
         }
 
-        const CharPointerType dest (createUninitialisedBytes (bytesNeeded));
-        CharPointerType (dest).writeWithCharLimit (start, numChars + 1);
+        const CharPointerType dest( createUninitialisedBytes( bytesNeeded ) );
+        CharPointerType( dest ).writeWithCharLimit( start, numChars + 1 );
         return dest;
     }
 
-    static CharPointerType createFromCharPointer (const CharPointerType start, const CharPointerType end);
+    static CharPointerType createFromCharPointer( const CharPointerType start, const CharPointerType end );
 
-    static CharPointerType createFromFixedLength (const char* const src, const size_t numChars);
+    static CharPointerType createFromFixedLength( const char* const src, const size_t numChars );
 
     //==============================================================================
-    static void retain (const CharPointerType text) noexcept;
+    static void retain( const CharPointerType text ) noexcept;
 
-    static inline void release (StringHolder* const b) noexcept
+    static inline void release( StringHolder* const b ) noexcept
     {
         if (b != (StringHolder*) &emptyString)
             if (--(b->refCount) == -1)
-                delete[] reinterpret_cast<char*> (b);
+                delete[] reinterpret_cast<char*>(b);
     }
 
-    static void release (const CharPointerType text) noexcept
+    static void release( const CharPointerType text ) noexcept
     {
-        release(bufferFromText (text));
+        release( bufferFromText( text ) );
     }
 
-    static inline int getReferenceCount (const CharPointerType text) noexcept
+    static inline int getReferenceCount( const CharPointerType text ) noexcept
     {
-        return atomic_load(&bufferFromText(text)->refCount) + 1;
+        return atomic_load( &bufferFromText( text )->refCount ) + 1;
     }
 
     //==============================================================================
-    static CharPointerType makeUniqueWithByteSize (const CharPointerType text, size_t numBytes);
+    static CharPointerType makeUniqueWithByteSize( const CharPointerType text, size_t numBytes );
 
-    static size_t getAllocatedNumBytes (const CharPointerType text) noexcept;
+    static size_t getAllocatedNumBytes( const CharPointerType text ) noexcept;
 
     //==============================================================================
     int refCount;
@@ -121,80 +123,80 @@ public:
     CharType text[1];
 
 private:
-    static inline StringHolder* bufferFromText (const CharPointerType text) noexcept
+    static inline StringHolder* bufferFromText( const CharPointerType text ) noexcept
     {
         // (Can't use offsetof() here because of warnings about this not being a POD)
-        return reinterpret_cast<StringHolder*> (reinterpret_cast<char*> (text.getAddress())
-                    - (reinterpret_cast<size_t> (reinterpret_cast<StringHolder*> (1)->text) - 1));
+        return reinterpret_cast<StringHolder*>( reinterpret_cast<char*>( text.getAddress() )
+                                                - (reinterpret_cast<size_t>(reinterpret_cast<StringHolder*>(1)->text) - 1) );
     }
 
     void compileTimeChecks()
     {
         // Let me know if any of these assertions fail on your system!
-       #if JUCE_NATIVE_WCHAR_IS_UTF8
-        static_jassert (sizeof (wchar_t) == 1);
-       #elif JUCE_NATIVE_WCHAR_IS_UTF16
-        static_jassert (sizeof (wchar_t) == 2);
-       #elif JUCE_NATIVE_WCHAR_IS_UTF32
-        static_jassert (sizeof (wchar_t) == 4);
+       #if TREECORE_NATIVE_WCHAR_IS_UTF8
+        static_assert( sizeof(wchar_t) == 1 );
+       #elif TREECORE_NATIVE_WCHAR_IS_UTF16
+        static_assert( sizeof(wchar_t) == 2 );
+       #elif TREECORE_NATIVE_WCHAR_IS_UTF32
+        static_assert( sizeof(wchar_t) == 4, "wchar_t is 4 byte" );
        #else
-        #error "native wchar_t size is unknown"
+        #    error "native wchar_t size is unknown"
        #endif
 
-        static_jassert (sizeof (EmptyString) == sizeof (StringHolder));
+        static_assert( sizeof(EmptyString) == sizeof(StringHolder), "EmptyString is same size of StringHolder" );
     }
 };
 
 namespace NumberToStringConverters
 {
-    enum
+enum
+{
+    charsNeededForInt    = 32,
+    charsNeededForDouble = 48
+};
+
+template<typename Type>
+static char* printDigits( char* t, Type v ) noexcept
+{
+    *--t = 0;
+
+    do
     {
-        charsNeededForInt = 32,
-        charsNeededForDouble = 48
-    };
+        *--t = '0' + (char) (v % 10);
+        v   /= 10;
 
-    template <typename Type>
-    static char* printDigits (char* t, Type v) noexcept
-    {
-        *--t = 0;
+    } while (v > 0);
 
-        do
-        {
-            *--t = '0' + (char) (v % 10);
-            v /= 10;
+    return t;
+}
 
-        } while (v > 0);
+// pass in a pointer to the END of a buffer..
+char* numberToString( char* t, const int64 n ) noexcept;
 
-        return t;
-    }
+char* numberToString( char* t, uint64 v ) noexcept;
 
-    // pass in a pointer to the END of a buffer..
-    char* numberToString (char* t, const int64 n) noexcept;
+char* numberToString( char* t, const int n ) noexcept;
 
-    char* numberToString (char* t, uint64 v) noexcept;
+char* numberToString( char* t, unsigned int v ) noexcept;
 
-    char* numberToString (char* t, const int n) noexcept;
+struct StackArrayStream: public std::basic_streambuf<char, std::char_traits<char> >
+{
+    explicit StackArrayStream ( char* d );
+    size_t writeDouble( double n, int numDecPlaces );
+};
 
-    char* numberToString (char* t, unsigned int v) noexcept;
+char* doubleToString( char* buffer, const int numChars, double n, int numDecPlaces, size_t& len ) noexcept;
 
-    struct StackArrayStream  : public std::basic_streambuf<char, std::char_traits<char> >
-    {
-        explicit StackArrayStream (char* d);
-        size_t writeDouble (double n, int numDecPlaces);
-    };
+template<typename IntegerType>
+String::CharPointerType createFromInteger( const IntegerType number )
+{
+    char buffer [charsNeededForInt];
+    char* const end   = buffer + numElementsInArray( buffer );
+    char* const start = numberToString( end, number );
+    return StringHolder::createFromFixedLength( start, size_t( end - start - 1 ) );
+}
 
-    char* doubleToString (char* buffer, const int numChars, double n, int numDecPlaces, size_t& len) noexcept;
-
-    template <typename IntegerType>
-    String::CharPointerType createFromInteger (const IntegerType number)
-    {
-        char buffer [charsNeededForInt];
-        char* const end = buffer + numElementsInArray (buffer);
-        char* const start = numberToString (end, number);
-        return StringHolder::createFromFixedLength (start, (size_t) (end - start - 1));
-    }
-
-    String::CharPointerType createFromDouble (const double number, const int numberOfDecimalPlaces);
+String::CharPointerType createFromDouble( const double number, const int numberOfDecimalPlaces );
 }
 
 } // namespace treecore

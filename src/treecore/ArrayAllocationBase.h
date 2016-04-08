@@ -29,10 +29,9 @@
 #ifndef JUCE_ARRAYALLOCATIONBASE_H_INCLUDED
 #define JUCE_ARRAYALLOCATIONBASE_H_INCLUDED
 
-#include "treecore/StandardHeader.h"
+#include "treecore/ClassUtils.h"
 #include "treecore/HeapBlock.h"
 
-//==============================================================================
 namespace treecore {
 
 /**
@@ -50,7 +49,6 @@ template <class ElementType, class TypeOfCriticalSectionToUse, size_t align_size
 class ArrayAllocationBase  : public TypeOfCriticalSectionToUse
 {
 public:
-    //==============================================================================
     /** Creates an empty array. */
     ArrayAllocationBase() noexcept
         : numAllocated (0)
@@ -109,7 +107,7 @@ public:
         if (minNumElements > numAllocated)
             setAllocatedSize ((minNumElements + minNumElements / 2 + 8) & ~7);
 
-        jassert (numAllocated <= 0 || elements != nullptr);
+        treecore_assert (numAllocated <= 0 || elements != nullptr);
     }
 
     /** Minimises the amount of storage allocated so that it's no more than

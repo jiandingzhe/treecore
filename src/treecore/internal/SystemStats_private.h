@@ -5,6 +5,8 @@
 #include "treecore/PlatformDefs.h"
 #include "treecore/SystemStats.h"
 
+#include <signal.h>
+
 namespace treecore
 {
 
@@ -25,7 +27,7 @@ struct CPUInformation
     bool hasMMX, hasSSE, hasSSE2, hasSSE3, has3DNow;
 };
 
-#if defined TREECORE_OS_WINDOWS
+#if TREECORE_OS_WINDOWS
 static LONG WINAPI handleCrash (LPEXCEPTION_POINTERS)
 {
     globalCrashHandler();
@@ -37,8 +39,6 @@ static void handleCrash (int)
     globalCrashHandler();
     kill (getpid(), SIGKILL);
 }
-
-int juce_siginterrupt (int sig, int flag);
 #endif
 
 } // namespace treecore

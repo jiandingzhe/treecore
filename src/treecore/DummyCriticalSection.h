@@ -1,7 +1,7 @@
 #ifndef TREECORE_DUMMY_CRITICAL_SECTION_H
 #define TREECORE_DUMMY_CRITICAL_SECTION_H
 
-#include "treecore/StandardHeader.h"
+#include "treecore/PlatformDefs.h"
 
 namespace treecore
 {
@@ -15,7 +15,7 @@ namespace treecore
 
     @see CriticalSection, Array, OwnedArray, ReferenceCountedArray
 */
-class JUCE_API  DummyCriticalSection
+class TREECORE_SHARED_API  DummyCriticalSection
 {
 public:
     inline DummyCriticalSection() noexcept      {}

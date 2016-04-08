@@ -81,7 +81,7 @@ template<typename T> struct ContainerDeletePolicy;
     get a list of all the messages by searching for the TRANS() macro in the Juce source
     code).
 */
-class JUCE_API  LocalisedStrings
+class TREECORE_SHARED_API  LocalisedStrings
 {
     typedef HashMap<String, String> MapType;
 
@@ -205,7 +205,7 @@ private:
 
     void loadFromText (const String&, bool ignoreCase);
 
-    JUCE_LEAK_DETECTOR (LocalisedStrings)
+    TREECORE_LEAK_DETECTOR (LocalisedStrings)
 };
 
 //==============================================================================
@@ -231,22 +231,22 @@ private:
 /** Uses the LocalisedStrings class to translate the given string literal.
     @see LocalisedStrings
 */
-JUCE_API String translate (const String& stringLiteral);
+TREECORE_SHARED_API String translate (const String& stringLiteral);
 
 /** Uses the LocalisedStrings class to translate the given string literal.
     @see LocalisedStrings
 */
-JUCE_API String translate (const char* stringLiteral);
+TREECORE_SHARED_API String translate (const char* stringLiteral);
 
 /** Uses the LocalisedStrings class to translate the given string literal.
     @see LocalisedStrings
 */
-JUCE_API String translate (CharPointer_UTF8 stringLiteral);
+TREECORE_SHARED_API String translate (CharPointer_UTF8 stringLiteral);
 
 /** Uses the LocalisedStrings class to translate the given string literal.
     @see LocalisedStrings
 */
-JUCE_API String translate (const String& stringLiteral, const String& resultIfNotFound);
+TREECORE_SHARED_API String translate (const String& stringLiteral, const String& resultIfNotFound);
 
 }
 

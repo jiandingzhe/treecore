@@ -41,7 +41,7 @@ namespace treecore {
     The data that was written into the stream can then be accessed later as
     a contiguous block of memory.
 */
-class JUCE_API  MemoryOutputStream  : public OutputStream
+class TREECORE_SHARED_API  MemoryOutputStream  : public OutputStream
 {
 public:
     //==============================================================================
@@ -97,7 +97,7 @@ public:
     void preallocate (size_t bytesToPreallocate);
 
     /** Appends the utf-8 bytes for a unicode character */
-    bool appendUTF8Char (juce_wchar character);
+    bool appendUTF8Char (treecore_wchar character);
 
     /** Returns a String created from the (UTF8) data that has been written to the stream. */
     String toUTF8() const;
@@ -137,7 +137,7 @@ private:
 };
 
 /** Copies all the data that has been written to a MemoryOutputStream into another stream. */
-OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const MemoryOutputStream& streamToRead);
+OutputStream& TREECORE_STDCALL operator<< (OutputStream& stream, const MemoryOutputStream& streamToRead);
 
 }
 

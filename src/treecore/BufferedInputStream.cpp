@@ -35,7 +35,7 @@ namespace
     int calcBufferStreamBufferSize (int requestedSize, InputStream* const source) noexcept
     {
         // You need to supply a real stream when creating a BufferedInputStream
-        jassert (source != nullptr);
+        treecore_assert (source != nullptr);
 
         requestedSize = jmax (256, requestedSize);
 
@@ -135,7 +135,7 @@ void BufferedInputStream::ensureBuffered()
 
 int BufferedInputStream::read (void* destBuffer, int maxBytesToRead)
 {
-    jassert (destBuffer != nullptr && maxBytesToRead >= 0);
+    treecore_assert (destBuffer != nullptr && maxBytesToRead >= 0);
 
     if (position >= bufferStart
          && position + maxBytesToRead <= lastReadPos)

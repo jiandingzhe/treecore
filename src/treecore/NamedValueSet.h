@@ -44,7 +44,7 @@ class var;
     This can be used as a basic structure to hold a set of var object, which can
     be retrieved by using their identifier.
 */
-class JUCE_API  NamedValueSet
+class TREECORE_SHARED_API  NamedValueSet
 {
 public:
     typedef HashMap<Identifier, var> MapType;

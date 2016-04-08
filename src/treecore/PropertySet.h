@@ -48,7 +48,7 @@ class var;
     See the PropertiesFile class for a subclass of this, which automatically broadcasts change
     messages and saves/loads the list from a file.
 */
-class JUCE_API  PropertySet
+class TREECORE_SHARED_API  PropertySet
 {
     typedef HashMap<String, String> MapType;
 
@@ -214,7 +214,7 @@ private:
     CriticalSection lock;
     bool ignoreCaseOfKeys;
 
-    JUCE_LEAK_DETECTOR (PropertySet)
+    TREECORE_LEAK_DETECTOR (PropertySet)
 };
 
 } // namespace treecore

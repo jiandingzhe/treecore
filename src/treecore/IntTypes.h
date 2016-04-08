@@ -1,10 +1,11 @@
 #ifndef TREECORE_INT_TYPES_H
 #define TREECORE_INT_TYPES_H
 
-#include "treecore/Config.h"
+#include "treecore/PlatformDefs.h"
 
 #include <cstdint>
 #include <cstdlib>
+#include <unistd.h>
 
 namespace treecore {
 
@@ -25,7 +26,12 @@ typedef std::uint64_t uint64;
 typedef std::intptr_t pointer_sized_int;
 typedef std::uintptr_t pointer_sized_uint;
 
-typedef pointer_sized_int ssize_t;
+#if TREECORE_COMPILER_MSVC
+typedef std::intptr_t ssize_t;
+static_assert( sizeof(size_t) == sizeof(ssize_t), "size type validation" )
+#else
+using ::ssize_t;
+#endif
 
 } // namespace treecore
 

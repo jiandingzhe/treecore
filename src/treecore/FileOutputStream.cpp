@@ -30,7 +30,7 @@
 
 namespace treecore {
 
-int64 juce_fileSetPosition (void* handle, int64 pos);
+int64 treecore_fileSetPosition (void* handle, int64 pos);
 
 //==============================================================================
 FileOutputStream::FileOutputStream (const File& f, const size_t bufferSizeToUse)
@@ -61,7 +61,7 @@ bool FileOutputStream::setPosition (int64 newPosition)
     if (newPosition != currentPosition)
     {
         flushBuffer();
-        currentPosition = juce_fileSetPosition (fileHandle, newPosition);
+        currentPosition = treecore_fileSetPosition (fileHandle, newPosition);
     }
 
     return newPosition == currentPosition;
@@ -88,7 +88,7 @@ void FileOutputStream::flush()
 
 bool FileOutputStream::write (const void* const src, const size_t numBytes)
 {
-    jassert (src != nullptr && ((ssize_t) numBytes) >= 0);
+    treecore_assert (src != nullptr && ((ssize_t) numBytes) >= 0);
 
     if (bytesInBuffer + numBytes < bufferSize)
     {
@@ -124,7 +124,7 @@ bool FileOutputStream::write (const void* const src, const size_t numBytes)
 
 bool FileOutputStream::writeRepeatedByte (uint8 byte, size_t numBytes)
 {
-    jassert (((ssize_t) numBytes) >= 0);
+    treecore_assert (((ssize_t) numBytes) >= 0);
 
     if (bytesInBuffer + numBytes < bufferSize)
     {

@@ -29,10 +29,8 @@
 #ifndef JUCE_EXPRESSION_H_INCLUDED
 #define JUCE_EXPRESSION_H_INCLUDED
 
-#include "treecore/RefCountHolder.h"
-
 #include "treecore/Array.h"
-#include "treecore/StandardHeader.h"
+#include "treecore/RefCountHolder.h"
 #include "treecore/String.h"
 
 namespace treecore {
@@ -55,7 +53,7 @@ struct ContainerDeletePolicy;
     is expected to be able to resolve the symbol names and perform the functions that
     are used.
 */
-class JUCE_API  Expression
+class TREECORE_SHARED_API  Expression
 {
 public:
     //==============================================================================
@@ -118,7 +116,7 @@ public:
     /** When evaluating an Expression object, this class is used to resolve symbols and
         perform functions that the expression uses.
     */
-    class JUCE_API  Scope
+    class TREECORE_SHARED_API  Scope
     {
     public:
         Scope();

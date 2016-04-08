@@ -40,8 +40,8 @@ ReadWriteLock::ReadWriteLock() noexcept
 
 ReadWriteLock::~ReadWriteLock() noexcept
 {
-    jassert (readerThreads.size() == 0);
-    jassert (numWriters == 0);
+    treecore_assert (readerThreads.size() == 0);
+    treecore_assert (numWriters == 0);
 }
 
 //==============================================================================
@@ -100,7 +100,7 @@ void ReadWriteLock::exitRead() const noexcept
         }
     }
 
-    jassertfalse; // unlocking a lock that wasn't locked..
+    treecore_assert_false; // unlocking a lock that wasn't locked..
 }
 
 //==============================================================================
@@ -144,7 +144,7 @@ void ReadWriteLock::exitWrite() const noexcept
     const SpinLock::ScopedLockType sl (accessLock);
 
     // check this thread actually had the lock..
-    jassert (numWriters > 0 && writerThreadId == Thread::getCurrentThreadId());
+    treecore_assert (numWriters > 0 && writerThreadId == Thread::getCurrentThreadId());
 
     if (--numWriters == 0)
     {

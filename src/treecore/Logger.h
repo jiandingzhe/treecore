@@ -26,10 +26,10 @@
   ==============================================================================
 */
 
-#ifndef JUCE_LOGGER_H_INCLUDED
-#define JUCE_LOGGER_H_INCLUDED
+#ifndef TREECORE_LOGGER_H_INCLUDED
+#define TREECORE_LOGGER_H_INCLUDED
 
-#include "treecore/StandardHeader.h"
+#include "treecore/PlatformDefs.h"
 
 //==============================================================================
 namespace treecore {
@@ -47,7 +47,7 @@ class String;
 
     @see FileLogger
 */
-class JUCE_API  Logger
+class TREECORE_SHARED_API  Logger
 {
 public:
     //==============================================================================
@@ -61,7 +61,7 @@ public:
         the caller must make sure that it is not deleted while still being used.
         A null pointer can be passed-in to disable any logging.
     */
-    static void JUCE_CALLTYPE setCurrentLogger (Logger* newLogger) noexcept;
+    static void TREECORE_STDCALL setCurrentLogger (Logger* newLogger) noexcept;
 
     /** Returns the current logger, or nullptr if none has been set. */
     static Logger* getCurrentLogger() noexcept;
@@ -73,16 +73,16 @@ public:
 
         @see logMessage
     */
-    static void JUCE_CALLTYPE writeToLog (const String& message);
+    static void TREECORE_STDCALL writeToLog (const String& message);
 
 
     //==============================================================================
     /** Writes a message to the standard error stream.
 
-        This can be called directly, or by using the DBG() macro in
-        juce_PlatformDefs.h (which will avoid calling the method in non-debug builds).
+        This can be called directly, or by using the TREECORE_DBG() macro in
+        DebugUtils.h (which will avoid calling the method in non-debug builds).
     */
-    static void JUCE_CALLTYPE outputDebugString (const String& text);
+    static void TREECORE_STDCALL outputDebugString (const String& text);
 
 
 protected:
@@ -100,4 +100,4 @@ private:
 
 }
 
-#endif   // JUCE_LOGGER_H_INCLUDED
+#endif   // TREECORE_LOGGER_H_INCLUDED

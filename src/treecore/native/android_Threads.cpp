@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,17 +23,26 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 /*
     Note that a lot of methods that you'd expect to find in this file actually
     live in juce_posix_SharedCode.h!
-*/
+ */
 
 //==============================================================================
 // sets the process to 0=low priority, 1=normal, 2=high, 3=realtime
-JUCE_API void JUCE_CALLTYPE Process::setPriority (ProcessPriority prior)
+
+#include "treecore/Process.h"
+
+#include <pthread.h>
+#include <sched.h>
+
+namespace treecore
+{
+
+TREECORE_SHARED_API void TREECORE_STDCALL Process::setPriority( ProcessPriority prior )
 {
     // TODO
 
@@ -47,30 +56,27 @@ JUCE_API void JUCE_CALLTYPE Process::setPriority (ProcessPriority prior)
     else
         policy = SCHED_RR;
 
-    minp = sched_get_priority_min (policy);
-    maxp = sched_get_priority_max (policy);
+    minp = sched_get_priority_min( policy );
+    maxp = sched_get_priority_max( policy );
 
     if (p < 2)
         param.sched_priority = 0;
-    else if (p == 2 )
+    else if (p == 2)
         // Set to middle of lower realtime priority range
         param.sched_priority = minp + (maxp - minp) / 4;
     else
         // Set to middle of higher realtime priority range
         param.sched_priority = minp + (3 * (maxp - minp) / 4);
 
-    pthread_setschedparam (pthread_self(), policy, &param);
+    pthread_setschedparam( pthread_self(), policy, &param );
 }
 
-JUCE_API bool JUCE_CALLTYPE juce_isRunningUnderDebugger()
+TREECORE_SHARED_API bool TREECORE_STDCALL Process::isRunningUnderDebugger()
 {
     return false;
 }
 
-JUCE_API bool JUCE_CALLTYPE Process::isRunningUnderDebugger()
-{
-    return juce_isRunningUnderDebugger();
-}
+TREECORE_SHARED_API void TREECORE_STDCALL Process::raisePrivilege() {}
+TREECORE_SHARED_API void TREECORE_STDCALL Process::lowerPrivilege() {}
 
-JUCE_API void JUCE_CALLTYPE Process::raisePrivilege() {}
-JUCE_API void JUCE_CALLTYPE Process::lowerPrivilege() {}
+} // namespace treecore

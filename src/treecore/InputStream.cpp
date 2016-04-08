@@ -104,7 +104,7 @@ int InputStream::readCompressedInt()
     const int numBytes = (sizeByte & 0x7f);
     if (numBytes > 4)
     {
-        jassertfalse;    // trying to read corrupt data - this method must only be used
+        treecore_assert_false;    // trying to read corrupt data - this method must only be used
                        // to read data that was written by OutputStream::writeCompressedInt()
         return 0;
     }
@@ -140,7 +140,7 @@ int64 InputStream::readInt64BigEndian()
 float InputStream::readFloat()
 {
     // the union below relies on these types being the same size...
-    static_jassert (sizeof (int32) == sizeof (float));
+    static_assert (sizeof (int32) == sizeof (float), "int32 is 4 byte");
     union { int32 asInt; float asFloat; } n;
     n.asInt = (int32) readInt();
     return n.asFloat;

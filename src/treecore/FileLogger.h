@@ -41,7 +41,7 @@ namespace treecore {
 
     @see Logger
 */
-class JUCE_API  FileLogger  : public Logger
+class TREECORE_SHARED_API  FileLogger  : public Logger
 {
 public:
     //==============================================================================

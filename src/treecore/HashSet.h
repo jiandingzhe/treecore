@@ -67,7 +67,7 @@ public:
 
         inline const KeyType& content() const noexcept
         {
-            jassert(m_impl.entry != nullptr)
+            treecore_assert(m_impl.entry != nullptr)
             return m_impl.entry->item.key;
         }
 

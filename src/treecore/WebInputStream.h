@@ -72,7 +72,7 @@ public:
 
 private:
 
-#if defined TREECORE_OS_WINDOWS
+#if TREECORE_OS_WINDOWS
     void close();
     void createConnection(URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext);
     void openConnection(URL_COMPONENTS& uc, HINTERNET sessionHandle, URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext);

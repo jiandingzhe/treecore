@@ -159,7 +159,7 @@ int64 GZIPDecompressorInputStream::getTotalLength()
 
 int GZIPDecompressorInputStream::read (void* destBuffer, int howMany)
 {
-    jassert (destBuffer != nullptr && howMany >= 0);
+    treecore_assert (destBuffer != nullptr && howMany >= 0);
 
     if (howMany > 0 && ! isEof)
     {

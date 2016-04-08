@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,62 +23,55 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 /*
     Note that a lot of methods that you'd expect to find in this file actually
     live in juce_posix_SharedCode.h!
-*/
+ */
 
-#include "treecore/Common.h"
-#include "treecore/Config.h"
-#include "treecore/StandardHeader.h"
+#include "treecore/PlatformDefs.h"
+#include "treecore/Process.h"
 
 namespace treecore
 {
 
-#ifdef TREECORE_OS_IOS
+#if TREECORE_OS_IOS
 bool isIOSAppActive = true;
 #endif
 
 //==============================================================================
 
-JUCE_API void JUCE_CALLTYPE Process::raisePrivilege()
+TREECORE_SHARED_API void TREECORE_STDCALL Process::raisePrivilege()
 {
-    jassertfalse;
+    treecore_assert_false;
 }
 
-JUCE_API void JUCE_CALLTYPE Process::lowerPrivilege()
+TREECORE_SHARED_API void TREECORE_STDCALL Process::lowerPrivilege()
 {
-    jassertfalse;
+    treecore_assert_false;
 }
 
-JUCE_API void JUCE_CALLTYPE Process::setPriority (ProcessPriority)
+TREECORE_SHARED_API void TREECORE_STDCALL Process::setPriority( ProcessPriority )
 {
     // xxx
 }
 
-//==============================================================================
-JUCE_API bool JUCE_CALLTYPE juce_isRunningUnderDebugger()
+TREECORE_SHARED_API bool TREECORE_STDCALL Process::isRunningUnderDebugger()
 {
     static char testResult = 0;
 
     if (testResult == 0)
     {
         struct kinfo_proc info;
-        int m[] = { CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid() };
-        size_t sz = sizeof (info);
-        sysctl (m, 4, &info, &sz, 0, 0);
-        testResult = ((info.kp_proc.p_flag & P_TRACED) != 0) ? 1 : -1;
+        int m[]   = { CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid() };
+        size_t sz = sizeof(info);
+        sysctl( m, 4, &info, &sz, 0, 0 );
+        testResult = ( (info.kp_proc.p_flag & P_TRACED) != 0 ) ? 1 : -1;
     }
 
     return testResult > 0;
-}
-
-JUCE_API bool JUCE_CALLTYPE Process::isRunningUnderDebugger()
-{
-    return juce_isRunningUnderDebugger();
 }
 
 } // namespace treecore

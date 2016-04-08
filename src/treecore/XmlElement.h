@@ -148,7 +148,7 @@ class File;
 
     @see XmlDocument
 */
-class JUCE_API  XmlElement
+class TREECORE_SHARED_API  XmlElement
 {
 public:
     //==============================================================================
@@ -763,7 +763,7 @@ private:
     // UTF-16, cast it to a String and use the other constructor.
     XmlElement (const wchar_t*) = delete;
 
-    JUCE_LEAK_DETECTOR (XmlElement)
+    TREECORE_LEAK_DETECTOR (XmlElement)
 };
 
 }

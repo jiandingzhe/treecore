@@ -1,29 +1,34 @@
 #ifndef TREECORE_NATIVE_POSIX_INTER_PROCESS_LOCK_H
 #define TREECORE_NATIVE_POSIX_INTER_PROCESS_LOCK_H
 
+#include "treecore/File.h"
 #include "treecore/InterProcessLock.h"
-#include "treecore/BasicNativeHeaders.h"
+#include "treecore/Thread.h"
+#include "treecore/Time.h"
+
+#include <sys/fcntl.h>
+#include <sys/types.h>
 
 namespace treecore {
 
 class InterProcessLock::Pimpl
 {
 public:
-    Pimpl (const String& lockName, const int timeOutMillisecs)
-        : handle (0), refCount (1)
+    Pimpl ( const String& lockName, const int timeOutMillisecs )
+        : handle( 0 ), refCount( 1 )
     {
-       #ifdef TREECORE_OS_OSX
-        if (! createLockFile (File ("~/Library/Caches/com.juce.locks").getChildFile (lockName), timeOutMillisecs))
+#if TREECORE_OS_OSX
+        if ( !createLockFile( File( "~/Library/Caches/com.juce.locks" ).getChildFile( lockName ), timeOutMillisecs ) )
             // Fallback if the user's home folder is on a network drive with no ability to lock..
-            createLockFile (File ("/tmp/com.juce.locks").getChildFile (lockName), timeOutMillisecs);
+            createLockFile( File( "/tmp/com.juce.locks" ).getChildFile( lockName ), timeOutMillisecs );
 
-       #else
-        File tempFolder ("/var/tmp");
-        if (! tempFolder.isDirectory())
+#else
+        File tempFolder( "/var/tmp" );
+        if ( !tempFolder.isDirectory() )
             tempFolder = "/tmp";
 
-        createLockFile (tempFolder.getChildFile (lockName), timeOutMillisecs);
-       #endif
+        createLockFile( tempFolder.getChildFile( lockName ), timeOutMillisecs );
+#endif
     }
 
     ~Pimpl()
@@ -31,24 +36,24 @@ public:
         closeFile();
     }
 
-    bool createLockFile (const File& file, const int timeOutMillisecs)
+    bool createLockFile( const File& file, const int timeOutMillisecs )
     {
         file.create();
-        handle = open (file.getFullPathName().toUTF8(), O_RDWR);
+        handle = open( file.getFullPathName().toUTF8(), O_RDWR );
 
         if (handle != 0)
         {
             struct flock fl;
-            zerostruct (fl);
+            zerostruct( fl );
 
             fl.l_whence = SEEK_SET;
-            fl.l_type = F_WRLCK;
+            fl.l_type   = F_WRLCK;
 
             const int64 endTime = Time::currentTimeMillis() + timeOutMillisecs;
 
-            for (;;)
+            for (;; )
             {
-                const int result = fcntl (handle, F_SETLK, &fl);
+                const int result = fcntl( handle, F_SETLK, &fl );
 
                 if (result >= 0)
                     return true;
@@ -60,11 +65,11 @@ public:
                     if (error == EBADF || error == ENOTSUP)
                         return false;
 
-                    if (timeOutMillisecs == 0
-                         || (timeOutMillisecs > 0 && Time::currentTimeMillis() >= endTime))
+                    if ( timeOutMillisecs == 0
+                         || (timeOutMillisecs > 0 && Time::currentTimeMillis() >= endTime) )
                         break;
 
-                    Thread::sleep (10);
+                    Thread::sleep( 10 );
                 }
             }
         }
@@ -78,15 +83,15 @@ public:
         if (handle != 0)
         {
             struct flock fl;
-            zerostruct (fl);
+            zerostruct( fl );
 
             fl.l_whence = SEEK_SET;
-            fl.l_type = F_UNLCK;
+            fl.l_type   = F_UNLCK;
 
-            while (! (fcntl (handle, F_SETLKW, &fl) >= 0 || errno != EINTR))
+            while ( !(fcntl( handle, F_SETLKW, &fl ) >= 0 || errno != EINTR) )
             {}
 
-            close (handle);
+            close( handle );
             handle = 0;
         }
     }

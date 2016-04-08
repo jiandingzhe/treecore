@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.0)
 project(treecore)
+enable_testing()
 
+set(TREECORE_VERSION_MAJOR 0)
+set(TREECORE_VERSION_MINOR 1)
+set(TREECORE_VERSION_PATCH 0)
 
 # include CMake modules
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")

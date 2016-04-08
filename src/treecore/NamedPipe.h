@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,11 +23,11 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
-#ifndef JUCE_NAMEDPIPE_H_INCLUDED
-#define JUCE_NAMEDPIPE_H_INCLUDED
+#ifndef TREECORE_NAMED_PIPE_H
+#define TREECORE_NAMED_PIPE_H
 
 #include "treecore/LeakedObjectDetector.h"
 #include "treecore/ReadWriteLock.h"
@@ -42,8 +42,8 @@ namespace treecore {
     Two processes can use NamedPipe objects to exchange blocks of data.
 
     @see InterprocessConnection
-*/
-class JUCE_API  NamedPipe
+ */
+class TREECORE_SHARED_API NamedPipe
 {
 public:
     //==============================================================================
@@ -56,13 +56,13 @@ public:
     //==============================================================================
     /** Tries to open a pipe that already exists.
         Returns true if it succeeds.
-    */
-    bool openExisting (const String& pipeName);
+     */
+    bool openExisting( const String& pipeName );
 
     /** Tries to create a new pipe.
         Returns true if it succeeds.
-    */
-    bool createNewPipe (const String& pipeName);
+     */
+    bool createNewPipe( const String& pipeName );
 
     /** Closes the pipe, if it's open. */
     void close();
@@ -85,26 +85,26 @@ public:
 
         If timeOutMilliseconds is less than zero, it will wait indefinitely, otherwise
         this is a maximum timeout for reading from the pipe.
-    */
-    int read (void* destBuffer, int maxBytesToRead, int timeOutMilliseconds);
+     */
+    int read( void* destBuffer, int maxBytesToRead, int timeOutMilliseconds );
 
     /** Writes some data to the pipe.
         @returns the number of bytes written, or -1 on failure.
-    */
-    int write (const void* sourceBuffer, int numBytesToWrite, int timeOutMilliseconds);
+     */
+    int write( const void* sourceBuffer, int numBytesToWrite, int timeOutMilliseconds );
 
 private:
     //==============================================================================
-    JUCE_PUBLIC_IN_DLL_BUILD (class Pimpl)
+    TREECORE_PUBLIC_IN_DLL_BUILD( class Pimpl )
     ScopedPointer<Pimpl> pimpl;
     String currentPipeName;
     ReadWriteLock lock;
 
-    bool openInternal (const String& pipeName, const bool createPipe);
+    bool openInternal( const String& pipeName, const bool createPipe );
 
-    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NamedPipe)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR( NamedPipe )
 };
 
 }
 
-#endif   // JUCE_NAMEDPIPE_H_INCLUDED
+#endif   // TREECORE_NAMED_PIPE_H

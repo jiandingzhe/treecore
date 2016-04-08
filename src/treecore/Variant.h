@@ -30,7 +30,6 @@
 #define JUCE_VARIANT_H_INCLUDED
 
 #include "treecore/Array.h"
-#include "treecore/StandardHeader.h"
 #include "treecore/String.h"
 
 //==============================================================================
@@ -57,7 +56,7 @@ class RefCountObject;
     @see JSON, DynamicObject
 */
 
-class JUCE_API  var
+class TREECORE_SHARED_API  var
 {
 public:
     //==============================================================================

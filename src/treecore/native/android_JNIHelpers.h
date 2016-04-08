@@ -26,11 +26,14 @@
   ==============================================================================
 */
 
-#ifndef JUCE_ANDROID_JNIHELPERS_H_INCLUDED
-#define JUCE_ANDROID_JNIHELPERS_H_INCLUDED
+#ifndef TREECORE_ANDROID_JNIHELPERS_H
+#define TREECORE_ANDROID_JNIHELPERS_H
 
-#if ! (defined (JUCE_ANDROID_ACTIVITY_CLASSNAME) && defined (JUCE_ANDROID_ACTIVITY_CLASSPATH))
- #error "The JUCE_ANDROID_ACTIVITY_CLASSNAME and JUCE_ANDROID_ACTIVITY_CLASSPATH macros must be set!"
+#include "treecore/ClassUtils.h"
+#include "treecore/StringCast.h"
+
+#if ! (defined (TREECORE_ANDROID_ACTIVITY_CLASSNAME) && defined (TREECORE_ANDROID_ACTIVITY_CLASSPATH))
+ #error "The TREECORE_ANDROID_ACTIVITY_CLASSNAME and TREECORE_ANDROID_ACTIVITY_CLASSPATH macros must be set!"
 #endif
 
 //==============================================================================
@@ -146,34 +149,35 @@ private:
 };
 
 //==============================================================================
-namespace
+
+String toString (JNIEnv* env, jstring s)
 {
-    String juceString (JNIEnv* env, jstring s)
-    {
-        const char* const utf8 = env->GetStringUTFChars (s, nullptr);
-        CharPointer_UTF8 utf8CP (utf8);
-        const String result (utf8CP);
-        env->ReleaseStringUTFChars (s, utf8);
-        return result;
-    }
-
-    String juceString (jstring s)
-    {
-        return juceString (getEnv(), s);
-    }
-
-    LocalRef<jstring> javaString (const String& s)
-    {
-        return LocalRef<jstring> (getEnv()->NewStringUTF (s.toUTF8()));
-    }
-
-    LocalRef<jstring> javaStringFromChar (const juce_wchar c)
-    {
-        char utf8[8] = { 0 };
-        CharPointer_UTF8 (utf8).write (c);
-        return LocalRef<jstring> (getEnv()->NewStringUTF (utf8));
-    }
+    const char* const utf8 = env->GetStringUTFChars (s, nullptr);
+    CharPointer_UTF8 utf8CP (utf8);
+    const String result (utf8CP);
+    env->ReleaseStringUTFChars (s, utf8);
+    return result;
 }
+
+template<>
+String toString<jstring> (jstring s)
+{
+    return toString (getEnv(), s);
+}
+
+template<>
+LocalRef<jstring> fromString<LocalRef<jstring> > (const String& s)
+{
+    return LocalRef<jstring> (getEnv()->NewStringUTF (s.toUTF8()));
+}
+
+LocalRef<jstring> javaStringFromChar (const treecore_wchar c)
+{
+    char utf8[8] = { 0 };
+    CharPointer_UTF8 (utf8).write (c);
+    return LocalRef<jstring> (getEnv()->NewStringUTF (utf8));
+}
+
 
 //==============================================================================
 class JNIClassBase
@@ -203,7 +207,7 @@ private:
     void initialise (JNIEnv*);
     void release (JNIEnv*);
 
-    JUCE_DECLARE_NON_COPYABLE (JNIClassBase)
+    TREECORE_DECLARE_NON_COPYABLE (JNIClassBase)
 };
 
 //==============================================================================
@@ -231,8 +235,8 @@ private:
 
 
 //==============================================================================
-#define JUCE_JNI_CALLBACK(className, methodName, returnType, params) \
-  extern "C" __attribute__ ((visibility("default"))) returnType JUCE_JOIN_MACRO (JUCE_JOIN_MACRO (Java_, className), _ ## methodName) params
+#define TREECORE_JNI_CALLBACK(className, methodName, returnType, params) \
+  extern "C" __attribute__ ((visibility("default"))) returnType TREECORE_STRINGIFY_JOIN (TREECORE_STRINGIFY_JOIN (Java_, className), _ ## methodName) params
 
 //==============================================================================
 class AndroidSystem
@@ -283,7 +287,7 @@ public:
                 return addEnv (env);
             }
 
-            jassertfalse;
+            treecore_assert_false;
         }
 
         return nullptr;
@@ -341,7 +345,7 @@ private:
             }
         }
 
-        jassertfalse; // too many threads!
+        treecore_assert_false; // too many threads!
         return nullptr;
     }
 
@@ -374,15 +378,15 @@ struct AndroidThreadScope
 
 //==============================================================================
 #define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD) \
- METHOD (createNewView,          "createNewView",        "(ZJ)L" JUCE_ANDROID_ACTIVITY_CLASSPATH "$ComponentPeerView;") \
- METHOD (deleteView,             "deleteView",           "(L" JUCE_ANDROID_ACTIVITY_CLASSPATH "$ComponentPeerView;)V") \
+ METHOD (createNewView,          "createNewView",        "(ZJ)L" TREECORE_ANDROID_ACTIVITY_CLASSPATH "$ComponentPeerView;") \
+ METHOD (deleteView,             "deleteView",           "(L" TREECORE_ANDROID_ACTIVITY_CLASSPATH "$ComponentPeerView;)V") \
  METHOD (postMessage,            "postMessage",          "(J)V") \
  METHOD (finish,                 "finish",               "()V") \
  METHOD (getClipboardContent,    "getClipboardContent",  "()Ljava/lang/String;") \
  METHOD (setClipboardContent,    "setClipboardContent",  "(Ljava/lang/String;)V") \
  METHOD (excludeClipRegion,      "excludeClipRegion",    "(Landroid/graphics/Canvas;FFFF)V") \
  METHOD (renderGlyph,            "renderGlyph",          "(CLandroid/graphics/Paint;Landroid/graphics/Matrix;Landroid/graphics/Rect;)[I") \
- STATICMETHOD (createHTTPStream, "createHTTPStream",     "(Ljava/lang/String;Z[BLjava/lang/String;I[ILjava/lang/StringBuffer;)L" JUCE_ANDROID_ACTIVITY_CLASSPATH "$HTTPStream;") \
+ STATICMETHOD (createHTTPStream, "createHTTPStream",     "(Ljava/lang/String;Z[BLjava/lang/String;I[ILjava/lang/StringBuffer;)L" TREECORE_ANDROID_ACTIVITY_CLASSPATH "$HTTPStream;") \
  METHOD (launchURL,              "launchURL",            "(Ljava/lang/String;)V") \
  METHOD (showMessageBox,         "showMessageBox",       "(Ljava/lang/String;Ljava/lang/String;J)V") \
  METHOD (showOkCancelBox,        "showOkCancelBox",      "(Ljava/lang/String;Ljava/lang/String;J)V") \
@@ -390,7 +394,7 @@ struct AndroidThreadScope
  STATICMETHOD (getLocaleValue,   "getLocaleValue",       "(Z)Ljava/lang/String;") \
  METHOD (scanFile,               "scanFile",             "(Ljava/lang/String;)V")
 
-DECLARE_JNI_CLASS (JuceAppActivity, JUCE_ANDROID_ACTIVITY_CLASSPATH);
+DECLARE_JNI_CLASS (TreecoreAppActivity, TREECORE_ANDROID_ACTIVITY_CLASSPATH);
 #undef JNI_CLASS_MEMBERS
 
 //==============================================================================
@@ -431,4 +435,4 @@ DECLARE_JNI_CLASS (RectClass, "android/graphics/Rect");
 
 } // namespace treecore
 
-#endif   // JUCE_ANDROID_JNIHELPERS_H_INCLUDED
+#endif   // TREECORE_ANDROID_JNIHELPERS_H

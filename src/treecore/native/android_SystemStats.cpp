@@ -54,7 +54,7 @@ Array<JNIClassBase*>& JNIClassBase::getClasses()
 void JNIClassBase::initialise (JNIEnv* env)
 {
     classRef = (jclass) env->NewGlobalRef (env->FindClass (classPath));
-    jassert (classRef != 0);
+    treecore_assert (classRef != 0);
 
     initialiseFields (env);
 }
@@ -81,44 +81,44 @@ void JNIClassBase::releaseAllClasses (JNIEnv* env)
 jmethodID JNIClassBase::resolveMethod (JNIEnv* env, const char* methodName, const char* params)
 {
     jmethodID m = env->GetMethodID (classRef, methodName, params);
-    jassert (m != 0);
+    treecore_assert (m != 0);
     return m;
 }
 
 jmethodID JNIClassBase::resolveStaticMethod (JNIEnv* env, const char* methodName, const char* params)
 {
     jmethodID m = env->GetStaticMethodID (classRef, methodName, params);
-    jassert (m != 0);
+    treecore_assert (m != 0);
     return m;
 }
 
 jfieldID JNIClassBase::resolveField (JNIEnv* env, const char* fieldName, const char* signature)
 {
     jfieldID f = env->GetFieldID (classRef, fieldName, signature);
-    jassert (f != 0);
+    treecore_assert (f != 0);
     return f;
 }
 
 jfieldID JNIClassBase::resolveStaticField (JNIEnv* env, const char* fieldName, const char* signature)
 {
     jfieldID f = env->GetStaticFieldID (classRef, fieldName, signature);
-    jassert (f != 0);
+    treecore_assert (f != 0);
     return f;
 }
 
 //==============================================================================
 ThreadLocalJNIEnvHolder threadLocalJNIEnvHolder;
 
-#if JUCE_DEBUG
+#if TREECORE_DEBUG
 static bool systemInitialised = false;
 #endif
 
 JNIEnv* getEnv() noexcept
 {
-   #if JUCE_DEBUG
+   #if TREECORE_DEBUG
     if (! systemInitialised)
     {
-        DBG ("*** Call to getEnv() when system not initialised");
+        TREECORE_DBG ("*** Call to getEnv() when system not initialised");
         jassertfalse;
         std::exit (EXIT_FAILURE);
     }
@@ -144,7 +144,7 @@ void AndroidSystem::initialise (JNIEnv* env, jobject act, jstring file, jstring 
     JNIClassBase::initialiseAllClasses (env);
 
     threadLocalJNIEnvHolder.initialise (env);
-   #if JUCE_DEBUG
+   #if TREECORE_DEBUG
     systemInitialised = true;
    #endif
 
@@ -157,7 +157,7 @@ void AndroidSystem::shutdown (JNIEnv* env)
 {
     activity.clear();
 
-   #if JUCE_DEBUG
+   #if TREECORE_DEBUG
     systemInitialised = false;
    #endif
 
@@ -291,7 +291,7 @@ void CPUInformation::initialise() noexcept
 }
 
 //==============================================================================
-uint32 juce_millisecondsSinceStartup() noexcept
+uint32 _milli_seconds_since_startup_() noexcept
 {
     timespec t;
     clock_gettime (CLOCK_MONOTONIC, &t);

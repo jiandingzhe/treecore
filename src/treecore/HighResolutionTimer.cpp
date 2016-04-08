@@ -32,9 +32,9 @@
 #include "treecore/Config.h"
 
 // TODO: android and ios
-#if defined TREECORE_OS_LINUX || defined TREECORE_OS_OSX
+#if TREECORE_OS_LINUX || TREECORE_OS_OSX || TREECORE_OS_FREEBSD
 #  include "treecore/native/posix_HighResolutionTimer.h"
-#elif defined TREECORE_OS_WINDOWS
+#elif TREECORE_OS_WINDOWS
 #  include "treecore/native/win32_HighResolutionTimer.h"
 #else
 #  error "unimplemented OS"

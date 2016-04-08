@@ -71,12 +71,12 @@ namespace treecore {
     hash.set (1, "item1");
     hash.set (2, "item2");
 
-    DBG (hash [1]); // prints "item1"
-    DBG (hash [2]); // prints "item2"
+    TREECORE_DBG (hash [1]); // prints "item1"
+    TREECORE_DBG (hash [2]); // prints "item2"
 
     // This iterates the map, printing all of its key -> value pairs..
     for (HashMap<int, String>::Iterator i (hash); i.next();)
-        DBG (i.getKey() << " -> " << i.getValue());
+        TREECORE_DBG (i.getKey() << " -> " << i.getValue());
     @endcode
 
     @tparam HashFunctionType The class of hash function, which must be copy-constructible.
@@ -144,7 +144,7 @@ public:
 
         while (i.next())
         {
-            DBG (i.getKey() << " -> " << i.getValue());
+            TREECORE_DBG (i.getKey() << " -> " << i.getValue());
         }
         @endcode
 
@@ -192,7 +192,7 @@ public:
          */
         const KeyType& key() const
         {
-            jassert( m_impl.entry != nullptr );
+            treecore_assert( m_impl.entry != nullptr );
             return m_impl.entry->item.key;
         }
 
@@ -203,7 +203,7 @@ public:
          */
         ValueType& value()
         {
-            jassert( m_impl.entry != nullptr );
+            treecore_assert( m_impl.entry != nullptr );
             return m_impl.entry->item.value;
         }
 
@@ -749,7 +749,7 @@ private:
     TableImplType m_impl;
     MutexType m_mutex;
 
-    JUCE_LEAK_DETECTOR( HashMap )
+    TREECORE_LEAK_DETECTOR( HashMap )
 };
 
 } // namespace treecore

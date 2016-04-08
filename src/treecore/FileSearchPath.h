@@ -42,7 +42,7 @@ class File;
 
     @see File
 */
-class JUCE_API  FileSearchPath
+class TREECORE_SHARED_API  FileSearchPath
 {
 public:
     //==============================================================================
@@ -165,7 +165,7 @@ private:
 
     void init (const String&);
 
-    JUCE_LEAK_DETECTOR (FileSearchPath)
+    TREECORE_LEAK_DETECTOR (FileSearchPath)
 };
 
 }

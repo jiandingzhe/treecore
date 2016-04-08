@@ -72,13 +72,19 @@ function(treecore_set_dep_libraries target_name)
 endfunction()
 
 function(treecore_set_compiler_definitions target_name)
-    if(MSVC)
-            target_compile_definitions(${target_name} PRIVATE _CRT_SECURE_NO_WARNINGS _UNICODE UNICODE)
+    if(WIN32)
+        target_compile_definitions(${target_name} PRIVATE
+            _CRT_SECURE_NO_WARNINGS
+            STRICT=1
+            _UNICODE=1
+            UNICODE=1
+            WIN32_LEAN_AND_MEAN=1)
     endif()
 
     target_compile_definitions(${target_name} PRIVATE
-        $<$<CONFIG:Debug>:          JUCE_LOG_ASSERTIONS=1 JUCE_CHECK_MEMORY_LEAKS=1>
-        $<$<CONFIG:RelWithDebInfo>: JUCE_LOG_ASSERTIONS=1 JUCE_CHECK_MEMORY_LEAKS=1>
+        $<$<CONFIG:Debug>:          TREECORE_LOG_ASSERTIONS=1 TREECORE_CHECK_MEMORY_LEAKS=1>
+        $<$<CONFIG:RelWithDebInfo>: TREECORE_LOG_ASSERTIONS=1 TREECORE_CHECK_MEMORY_LEAKS=0>
+        $<$<CONFIG:Release>:        TREECORE_LOG_ASSERTIONS=0 TREECORE_CHECK_MEMORY_LEAKS=0>
     )
 endfunction()
 
@@ -87,11 +93,11 @@ function(treecore_set_compiler_options target_name)
         target_compile_options(${target_name} PUBLIC "/wd4819" "/wd4800")
 
     elseif(TREECORE_CMAKE_COMPILER STREQUAL "_GCC" OR (TREECORE_CMAKE_COMPILER STREQUAL "_ICC" AND (TREECORE_OS STREQUAL "LINUX" OR TREECORE_OS STREQUAL "OSX")) OR TREECORE_CMAKE_COMPILER STREQUAL "_CLANG")
-        target_compile_options(${target_name} PUBLIC -fPIC -msse3)
+        target_compile_options(${target_name} PUBLIC -fPIC)
         target_compile_options(${target_name} INTERFACE -std=c++11)
 
-        if(TREEFACE_CPU STREQUAL "X86")
-                target_compile_options(${target_name} PRIVATE -msse3 -mstackrealign)
+        if(TREECORE_CPU STREQUAL "X86")
+            target_compile_options(${target_name} PRIVATE -msse3 -mstackrealign)
         endif()
     endif()
 endfunction()

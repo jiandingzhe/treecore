@@ -24,7 +24,7 @@ namespace treecore {
  * that RefCountObject can be directly used by RefCountHolder, which
  * automatically handles reference count at construction and destruction.
  */
-class JUCE_API RefCountObject
+class TREECORE_SHARED_API RefCountObject
 {
     friend class ::TestFramework;
 public:
@@ -85,7 +85,7 @@ public:
 private:
     mutable AtomicObject<int32> ms_count;
 
-    JUCE_LEAK_DETECTOR(RefCountObject);
+    TREECORE_LEAK_DETECTOR(RefCountObject);
 }; // class Object
 
 inline void smart_ref(const RefCountObject* obj) noexcept

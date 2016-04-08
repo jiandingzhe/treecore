@@ -46,7 +46,7 @@ namespace treecore {
 
     @see NamedValueSet, ValueTree
 */
-class JUCE_API  Identifier
+class TREECORE_SHARED_API  Identifier
 {
     friend class ::TestFramework;
 

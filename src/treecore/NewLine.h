@@ -29,7 +29,6 @@
 #ifndef JUCE_NEWLINE_H_INCLUDED
 #define JUCE_NEWLINE_H_INCLUDED
 
-#include "treecore/StandardHeader.h"
 #include "treecore/StringRef.h"
 
 //==============================================================================
@@ -45,7 +44,7 @@ namespace treecore {
     The exact character sequence that will be used for the new-line can be set and
     retrieved with OutputStream::setNewLineString() and OutputStream::getNewLineString().
 */
-class JUCE_API  NewLine
+class TREECORE_SHARED_API  NewLine
 {
 public:
     /** Returns the default new-line sequence that the library uses.
@@ -81,7 +80,7 @@ extern NewLine newLine;
     myString << "Hello World" << newLine << newLine;
     @endcode
 */
-JUCE_API String& JUCE_CALLTYPE operator<< (String& string1, const NewLine&);
+TREECORE_SHARED_API String& TREECORE_STDCALL operator<< (String& string1, const NewLine&);
 
 }
 

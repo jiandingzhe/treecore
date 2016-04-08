@@ -4,8 +4,7 @@
 #include <cstddef>
 #include <new>
 
-#include "treecore/ClassUtil.h"
-
+#include "treecore/ClassUtils.h"
 
 namespace treecore
 {
@@ -46,38 +45,38 @@ struct mpl_type_if<false, TrueT, FalseT>
 /**
  *
  */
-template <size_t T,size_t... Ts>
+template<size_t T, size_t ... Ts>
 struct mpl_value_queue {
-    TREECORE_FUNCTION_CLASS(mpl_value_queue);
+    TREECORE_FUNCTION_CLASS( mpl_value_queue );
 
-    enum :size_t
+    enum : size_t
     {
-        head = T ,
-        number = 1+sizeof...(Ts)
+        head   = T,
+        number = 1 + sizeof ... (Ts)
     };
 
-    typedef mpl_value_queue<Ts...> pop_head;
+    typedef mpl_value_queue<Ts ...> pop_head;
 
 public:
     template<size_t pushT>
     struct push_tail
     {
-        typedef mpl_value_queue<T, Ts..., pushT> type;
+        typedef mpl_value_queue<T, Ts ..., pushT> type;
     };
 
     template<size_t pushT>
     struct push_head
     {
-        typedef mpl_value_queue<pushT, T, Ts...> type;
+        typedef mpl_value_queue<pushT, T, Ts ...> type;
     };
 };
 
-template <size_t T>
+template<size_t T>
 struct mpl_value_queue<T> {
-    TREECORE_FUNCTION_CLASS(mpl_value_queue);
+    TREECORE_FUNCTION_CLASS( mpl_value_queue );
 
     enum {
-        head = T,
+        head   = T,
         number = 1
     };
 

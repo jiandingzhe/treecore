@@ -26,7 +26,14 @@
   ==============================================================================
 */
 
+#include "treecore/Logger.h"
+
+namespace treecore
+{
+
 void Logger::outputDebugString (const String& text)
 {
-    __android_log_print (ANDROID_LOG_INFO, "JUCE", "%s", text.toUTF8().getAddress());
+    __android_log_print (ANDROID_LOG_INFO, "TREECORE", "%s", text.toUTF8().getAddress());
 }
+
+} // namespace treecore

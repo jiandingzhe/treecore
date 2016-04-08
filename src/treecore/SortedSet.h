@@ -34,7 +34,7 @@
 
 namespace treecore {
 
-#if defined TREECORE_COMPILER_MSVC
+#if TREECORE_COMPILER_MSVC
  #pragma warning (push)
  #pragma warning (disable: 4512)
 #endif
@@ -339,13 +339,13 @@ public:
 
         {
             const ScopedLockType lock2 (getLock());
-            jassert (this != &setToAddFrom);
+            treecore_assert (this != &setToAddFrom);
 
             if (this != &setToAddFrom)
             {
                 if (startIndex < 0)
                 {
-                    jassertfalse;
+                    treecore_assert_false;
                     startIndex = 0;
                 }
 
@@ -488,7 +488,7 @@ private:
 };
 
 
-#if defined TREECORE_COMPILER_MSVC
+#if TREECORE_COMPILER_MSVC
  #pragma warning (pop)
 #endif
 

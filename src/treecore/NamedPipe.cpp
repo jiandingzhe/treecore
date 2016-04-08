@@ -28,7 +28,7 @@
 #include "treecore/NamedPipe.h"
 #include "treecore/ScopedWriteLock.h"
 
-#if defined TREECORE_OS_WINDOWS
+#if TREECORE_OS_WINDOWS
 #  include "treecore/native/win32_NamedPipe.h"
 #else
 #  include "treecore/native/posix_NamedPipe.h"

@@ -70,7 +70,7 @@ int64 MemoryInputStream::getTotalLength()
 
 int MemoryInputStream::read (void* const buffer, const int howMany)
 {
-    jassert (buffer != nullptr && howMany >= 0);
+    treecore_assert (buffer != nullptr && howMany >= 0);
 
     const int num = jmin (howMany, (int) (dataSize - position));
     if (num <= 0)
@@ -97,70 +97,4 @@ int64 MemoryInputStream::getPosition()
     return (int64) position;
 }
 
-
-//==============================================================================
-#if JUCE_UNIT_TESTS
-
-class MemoryStreamTests  : public UnitTest
-{
-public:
-    MemoryStreamTests() : UnitTest ("MemoryInputStream & MemoryOutputStream") {}
-
-    void runTest()
-    {
-        beginTest ("Basics");
-        Random r = getRandom();
-
-        int randomInt = r.nextInt();
-        int64 randomInt64 = r.nextInt64();
-        double randomDouble = r.nextDouble();
-        String randomString (createRandomWideCharString (r));
-
-        MemoryOutputStream mo;
-        mo.writeInt (randomInt);
-        mo.writeIntBigEndian (randomInt);
-        mo.writeCompressedInt (randomInt);
-        mo.writeString (randomString);
-        mo.writeInt64 (randomInt64);
-        mo.writeInt64BigEndian (randomInt64);
-        mo.writeDouble (randomDouble);
-        mo.writeDoubleBigEndian (randomDouble);
-
-        MemoryInputStream mi (mo.getData(), mo.getDataSize(), false);
-        expect (mi.readInt() == randomInt);
-        expect (mi.readIntBigEndian() == randomInt);
-        expect (mi.readCompressedInt() == randomInt);
-        expectEquals (mi.readString(), randomString);
-        expect (mi.readInt64() == randomInt64);
-        expect (mi.readInt64BigEndian() == randomInt64);
-        expect (mi.readDouble() == randomDouble);
-        expect (mi.readDoubleBigEndian() == randomDouble);
-    }
-
-    static String createRandomWideCharString (Random& r)
-    {
-        juce_wchar buffer [50] = { 0 };
-
-        for (int i = 0; i < numElementsInArray (buffer) - 1; ++i)
-        {
-            if (r.nextBool())
-            {
-                do
-                {
-                    buffer[i] = (juce_wchar) (1 + r.nextInt (0x10ffff - 1));
-                }
-                while (! CharPointer_UTF16::canRepresent (buffer[i]));
-            }
-            else
-                buffer[i] = (juce_wchar) (1 + r.nextInt (0xff));
-        }
-
-        return CharPointer_UTF32 (buffer);
-    }
-};
-
-static MemoryStreamTests memoryInputStreamUnitTests;
-
-#endif
-
-}
+} // namespace treecore

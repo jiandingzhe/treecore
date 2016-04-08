@@ -26,19 +26,17 @@
   ==============================================================================
 */
 
-#ifndef JUCE_WIN32_COMSMARTPTR_H_INCLUDED
-#define JUCE_WIN32_COMSMARTPTR_H_INCLUDED
+#ifndef TREECORE_WIN32_COMSMARTPTR_H
+#define TREECORE_WIN32_COMSMARTPTR_H
 
-#include "treecore/Common.h"
-#include "treecore/BasicNativeHeaders.h"
 #include "treecore/MathsFunctions.h"
-#include "treecore/StandardHeader.h"
+#include "treecore/PlatformDefs.h"
 
 namespace treecore
 {
 
 #if ! (defined (_MSC_VER) || defined (__uuidof))
-template<typename Type> struct UUIDGetter { static CLSID get() { jassertfalse; return CLSID(); } };
+template<typename Type> struct UUIDGetter { static CLSID get() { treecore_assert_false; return CLSID(); } };
 #define __uuidof(x)  UUIDGetter<x>::get()
 #endif
 
@@ -125,7 +123,7 @@ private:
 };
 
 //==============================================================================
-#define JUCE_COMRESULT  HRESULT __stdcall
+#define TREECORE_COMRESULT  HRESULT __stdcall
 
 //==============================================================================
 template <class ComClass>
@@ -141,7 +139,7 @@ public:
 protected:
     ULONG refCount;
 
-    JUCE_COMRESULT QueryInterface (REFIID refId, void** result)
+    TREECORE_COMRESULT QueryInterface (REFIID refId, void** result)
     {
         if (refId == IID_IUnknown)
             return castToType <IUnknown> (result);
@@ -151,7 +149,7 @@ protected:
     }
 
     template <class Type>
-    JUCE_COMRESULT castToType (void** result)
+    TREECORE_COMRESULT castToType (void** result)
     {
         this->AddRef(); *result = dynamic_cast <Type*> (this); return S_OK;
     }
@@ -166,7 +164,7 @@ public:
     ComBaseClassHelper (unsigned int initialRefCount = 1) : ComBaseClassHelperBase <ComClass> (initialRefCount) {}
     ~ComBaseClassHelper() {}
 
-    JUCE_COMRESULT QueryInterface (REFIID refId, void** result)
+    TREECORE_COMRESULT QueryInterface (REFIID refId, void** result)
     {
         if (refId == __uuidof (ComClass))
             return this->template castToType <ComClass> (result);
@@ -177,4 +175,4 @@ public:
 
 } // namespace treecore
 
-#endif   // JUCE_WIN32_COMSMARTPTR_H_INCLUDED
+#endif   // TREECORE_WIN32_COMSMARTPTR_H

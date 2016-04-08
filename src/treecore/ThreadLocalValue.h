@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,8 +23,8 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #ifndef JUCE_THREADLOCALVALUE_H_INCLUDED
 #define JUCE_THREADLOCALVALUE_H_INCLUDED
@@ -36,14 +36,6 @@
 
 namespace treecore {
 
-// (NB: on win32, native thread-locals aren't possible in a dynamically loaded DLL in XP).
-#if ! ((defined TREECORE_COMIPLER_MSVC && (TREECORE_SIZE_PTR == 8 || ! defined (JucePlugin_PluginCode))) \
-    || (defined TREECORE_OS_OSX && defined TREECORE_COMPILER_CLANG && defined (MAC_OS_X_VERSION_10_7) \
-    && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7))
-#  define JUCE_NO_COMPILER_THREAD_LOCAL 1
-#endif
-
-//==============================================================================
 /**
     Provides cross-platform support for thread-local objects.
 
@@ -60,148 +52,68 @@ namespace treecore {
     to allow the storage to be re-used by another thread. If a thread exits without calling
     this method, the object storage will be left allocated until the ThreadLocalValue object
     is deleted.
-*/
-template <typename Type>
-class ThreadLocalValue
-{
-public:
-    /** */
-    ThreadLocalValue() noexcept
-    {
-    }
+ */
+//template<typename Type>
+//class ThreadLocalValue
+//{
+//public:
+//    /** */
+//    ThreadLocalValue() noexcept
+//    {}
 
-    /** Destructor.
-        When this object is deleted, all the value objects for all threads will be deleted.
-    */
-    ~ThreadLocalValue()
-    {
-#if JUCE_NO_COMPILER_THREAD_LOCAL
-        for (ObjectHolder* o = first; o != nullptr;)
-        {
-            ObjectHolder* const next = o->next;
-            delete o;
-            o = next;
-        }
-#endif
-    }
+//    /** Destructor.
+//        When this object is deleted, all the value objects for all threads will be deleted.
+//     */
+//    ~ThreadLocalValue()
+//    {
+//    }
 
-    /** Returns a reference to this thread's instance of the value.
-        Note that the first time a thread tries to access the value, an instance of the
-        value object will be created - so if your value's class has a non-trivial
-        constructor, be aware that this method could invoke it.
-    */
-    Type& operator*() const noexcept                        { return get(); }
+//    /** Returns a reference to this thread's instance of the value.
+//        Note that the first time a thread tries to access the value, an instance of the
+//        value object will be created - so if your value's class has a non-trivial
+//        constructor, be aware that this method could invoke it.
+//     */
+//    Type& operator * () const noexcept                        { return get(); }
 
-    /** Returns a pointer to this thread's instance of the value.
-        Note that the first time a thread tries to access the value, an instance of the
-        value object will be created - so if your value's class has a non-trivial
-        constructor, be aware that this method could invoke it.
-    */
-    operator Type*() const noexcept                         { return &get(); }
+//    /** Returns a pointer to this thread's instance of the value.
+//        Note that the first time a thread tries to access the value, an instance of the
+//        value object will be created - so if your value's class has a non-trivial
+//        constructor, be aware that this method could invoke it.
+//     */
+//    operator Type* () const noexcept{ return &get(); }
 
-    /** Accesses a method or field of the value object.
-        Note that the first time a thread tries to access the value, an instance of the
-        value object will be created - so if your value's class has a non-trivial
-        constructor, be aware that this method could invoke it.
-    */
-    Type* operator->() const noexcept                       { return &get(); }
+//    /** Accesses a method or field of the value object.
+//        Note that the first time a thread tries to access the value, an instance of the
+//        value object will be created - so if your value's class has a non-trivial
+//        constructor, be aware that this method could invoke it.
+//     */
+//    Type* operator -> () const noexcept                       { return &get(); }
 
-    /** Assigns a new value to the thread-local object. */
-    ThreadLocalValue& operator= (const Type& newValue)      { get() = newValue; return *this; }
+//    /** Assigns a new value to the thread-local object. */
+//    ThreadLocalValue& operator = ( const Type& newValue )      { get() = newValue; return *this; }
 
-    /** Returns a reference to this thread's instance of the value.
-        Note that the first time a thread tries to access the value, an instance of the
-        value object will be created - so if your value's class has a non-trivial
-        constructor, be aware that this method could invoke it.
-    */
-    Type& get() const noexcept
-    {
-#if JUCE_NO_COMPILER_THREAD_LOCAL
-        const Thread::ThreadID threadId = Thread::getCurrentThreadId();
+//    /** Returns a reference to this thread's instance of the value.
+//        Note that the first time a thread tries to access the value, an instance of the
+//        value object will be created - so if your value's class has a non-trivial
+//        constructor, be aware that this method could invoke it.
+//     */
+//    Type& get() const noexcept
+//    {
+//        static thread_local Type object;
+//        return object;
+//    }
 
-        for (ObjectHolder* o = first; o != nullptr; o = o->next)
-        {
-            if (o->threadId == threadId)
-                return o->object;
-        }
+//    /** Called by a thread before it terminates, to allow this class to release
+//        any storage associated with the thread.
+//     */
+//    void releaseCurrentThreadStorage()
+//    {
+//    }
 
-        for (ObjectHolder* o = first; o != nullptr; o = o->next)
-        {
-            if (o->threadId == nullptr)
-            {
-                {
-                    SpinLock::ScopedLockType sl (lock);
+//private:
 
-                    if (o->threadId != nullptr)
-                        continue;
-
-                    o->threadId = threadId;
-                }
-
-                o->object = Type();
-                return o->object;
-            }
-        }
-
-        ObjectHolder* const newObject = new ObjectHolder (threadId);
-
-        do
-        {
-            atomic_store(&newObject->next, first);
-        }
-        while (! atomic_compare_set(&first, newObject->next, newObject));
-
-        return newObject->object;
-#elif defined TREECORE_OS_OSX
-        static __thread Type object;
-        return object;
-#elif defined TREECORE_COMPILER_MSVC
-        static __declspec(thread) Type object;
-        return object;
-#endif
-    }
-
-    /** Called by a thread before it terminates, to allow this class to release
-        any storage associated with the thread.
-    */
-    void releaseCurrentThreadStorage()
-    {
-#if JUCE_NO_COMPILER_THREAD_LOCAL
-        const Thread::ThreadID threadId = Thread::getCurrentThreadId();
-
-        for (ObjectHolder* o = first; o != nullptr; o = o->next)
-        {
-            if (o->threadId == threadId)
-            {
-                SpinLock::ScopedLockType sl (lock);
-                o->threadId = nullptr;
-            }
-        }
-#endif
-    }
-
-private:
-    //==============================================================================
-#if JUCE_NO_COMPILER_THREAD_LOCAL
-    struct ObjectHolder
-    {
-        ObjectHolder (const Thread::ThreadID& tid)
-            : threadId (tid), next (nullptr), object()
-        {}
-
-        Thread::ThreadID threadId;
-        ObjectHolder* next;
-        Type object;
-
-        TREECORE_DECLARE_NON_COPYABLE (ObjectHolder)
-    };
-
-    mutable ObjectHolder* first = nullptr;
-    SpinLock lock;
-#endif
-
-    TREECORE_DECLARE_NON_COPYABLE (ThreadLocalValue)
-};
+//    TREECORE_DECLARE_NON_COPYABLE( ThreadLocalValue )
+//};
 
 }
 

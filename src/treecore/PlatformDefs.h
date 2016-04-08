@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,361 +23,261 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
-#ifndef JUCE_PLATFORMDEFS_H_INCLUDED
-#define JUCE_PLATFORMDEFS_H_INCLUDED
+#ifndef TREECORE_PLATFORM_DEFS_H
+#define TREECORE_PLATFORM_DEFS_H
 
-#include "treecore/Common.h"
 #include "treecore/Config.h"
+#include "treecore/MiscUtils.h"
 
-//==============================================================================
-/*  This file defines miscellaneous macros for debugging, assertions, etc.
-*/
-
-//==============================================================================
-
-/** This macro defines the C calling convention used as the standard for Juce calls. */
-#if defined TREECORE_COMPILER_MSVC
-#  define JUCE_CALLTYPE   __stdcall
-#  define JUCE_CDECL      __cdecl
+// CPU properties
+#if TREECORE_CPU_X86
+#    define TREECORE_ENDIAN_LITTLE 1
+#    define TREECORE_ENDIAN_BIG 0
 #else
-#  define JUCE_CALLTYPE
-#  define JUCE_CDECL
-#endif
-
-//==============================================================================
-#if defined TREECORE_OS_IOS || defined TREECORE_OS_LINUX || defined TREECORE_OS_ANDROID || defined TREECORE_CPU_PPC
-/** This will try to break into the debugger if the app is currently being debugged.
-      If called by an app that's not being debugged, the behaiour isn't defined - it may crash or not, depending
-      on the platform.
-      @see jassert()
-  */
-#  define juce_breakDebugger        { ::kill (0, SIGTRAP); }
-#elif JUCE_USE_INTRINSICS
-#  ifndef TREECORE_COMPILER_ICC
-#    pragma intrinsic (__debugbreak)
-#  endif
-#  define juce_breakDebugger        { __debugbreak(); }
-#elif defined TREECORE_COMPILER_GCC || defined TREECORE_OS_OSX
-#  if JUCE_NO_INLINE_ASM
-#    define juce_breakDebugger       { }
-#  else
-#    define juce_breakDebugger       { asm ("int $3"); }
-#  endif
-#else
-#  define juce_breakDebugger        { __asm int 3 }
-#endif
-
-#if defined TREECORE_COMPILER_CLANG && defined (__has_feature) && ! defined (JUCE_ANALYZER_NORETURN)
-#  if __has_feature (attribute_analyzer_noreturn)
-inline void __attribute__((analyzer_noreturn)) juce_assert_noreturn() {}
-#    define JUCE_ANALYZER_NORETURN juce_assert_noreturn();
-#  endif
-#endif
-
-#ifndef JUCE_ANALYZER_NORETURN
-#  define JUCE_ANALYZER_NORETURN
-#endif
-
-#if JUCE_LOG_ASSERTIONS || JUCE_DEBUG
-#  define juce_LogCurrentAssertion    treecore::logAssertion (__FILE__, __LINE__);
-#else
-#  define juce_LogCurrentAssertion
-#endif
-
-//==============================================================================
-#if JUCE_DEBUG || DOXYGEN
-/** Writes a string to the standard error stream.
-      This is only compiled in a debug build.
-      @see Logger::outputDebugString
-  */
-#  define DBG(dbgtext)              { treecore::String tempDbgBuf; tempDbgBuf << dbgtext; treecore::Logger::outputDebugString (tempDbgBuf); }
-
-//==============================================================================
-/** This will always cause an assertion failure.
-      It is only compiled in a debug build, (unless JUCE_LOG_ASSERTIONS is enabled for your build).
-      @see jassert
-  */
-#  define jassertfalse              { juce_LogCurrentAssertion; if (treecore::juce_isRunningUnderDebugger()) juce_breakDebugger; JUCE_ANALYZER_NORETURN }
-
-//==============================================================================
-/** Platform-independent assertion macro.
-
-      This macro gets turned into a no-op when you're building with debugging turned off, so be
-      careful that the expression you pass to it doesn't perform any actions that are vital for the
-      correct behaviour of your program!
-      @see jassertfalse
-  */
-#  define jassert(expression)       { if (! (expression)) jassertfalse; }
-
-#  define DBGCODE(...) __VA_ARGS__
-
-#else
-//==============================================================================
-// If debugging is disabled, these dummy debug and assertion macros are used..
-
-#  define DBG(dbgtext)
-#  define jassertfalse              { juce_LogCurrentAssertion }
-
-#  if JUCE_LOG_ASSERTIONS
-#    define jassert(expression)      { if (! (expression)) jassertfalse; }
-#    define DBGCODE(...) __VA_ARGS__
-#  else
-#    define jassert(a)               {}
-#    define DBGCODE(...)
-#  endif
-#endif
-
-//==============================================================================
-#ifndef DOXYGEN
-
-namespace treecore {
-
-template <bool b> struct JuceStaticAssert;
-template <> struct JuceStaticAssert <true> { static void dummy() {} };
-
-}
-
-#endif
-
-/** A compile-time assertion macro.
-    If the expression parameter is false, the macro will cause a compile error. (The actual error
-    message that the compiler generates may be completely bizarre and seem to have no relation to
-    the place where you put the static_assert though!)
-*/
-#define static_jassert(expression)      treecore::JuceStaticAssert<expression>::dummy();
-
-/** This is a shorthand macro for declaring stubs for a class's copy constructor and operator=.
-
-    For example, instead of
-    @code
-    class MyClass
-    {
-        etc..
-
-    private:
-        MyClass (const MyClass&);
-        MyClass& operator= (const MyClass&);
-    };@endcode
-
-    ..you can just write:
-
-    @code
-    class MyClass
-    {
-        etc..
-
-    private:
-        JUCE_DECLARE_NON_COPYABLE (MyClass)
-    };@endcode
-*/
-#define TREECORE_DECLARE_NON_COPYABLE(className) \
-    className (const className&) = delete;\
-    className& operator= (const className&) = delete;
-
-#define TREECORE_DECLARE_NON_MOVABLE(class_name) \
-    class_name(class_name&&) = delete;\
-    class_name& operator = (class_name&&) = delete;
-
-/** This is a shorthand way of writing both a JUCE_DECLARE_NON_COPYABLE and
-    JUCE_LEAK_DETECTOR macro for a class.
-*/
-#define TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(className) \
-    TREECORE_DECLARE_NON_COPYABLE(className) \
-    JUCE_LEAK_DETECTOR(className)
-
-/** This macro can be added to class definitions to disable the use of new/delete to
-    allocate the object on the heap, forcing it to only be used as a stack or member variable.
-*/
-#define JUCE_PREVENT_HEAP_ALLOCATION \
-    private: \
-    static void* operator new (size_t) = delete; \
-    static void operator delete (void*) = delete;
-
-
-//==============================================================================
-#if ! DOXYGEN
-#  define JUCE_JOIN_MACRO_HELPER(a, b) a ## b
-#  define JUCE_STRINGIFY_MACRO_HELPER(a) #a
-#endif
-
-/** A good old-fashioned C macro concatenation helper.
-    This combines two items (which may themselves be macros) into a single string,
-    avoiding the pitfalls of the ## macro operator.
-*/
-#define JUCE_JOIN_MACRO(item1, item2)  JUCE_JOIN_MACRO_HELPER (item1, item2)
-
-/** A handy C macro for stringifying any symbol, rather than just a macro parameter.
-*/
-#define JUCE_STRINGIFY(item)  JUCE_STRINGIFY_MACRO_HELPER (item)
-
-
-//==============================================================================
-#if JUCE_CATCH_UNHANDLED_EXCEPTIONS
-
-#  define JUCE_TRY try
-#  define JUCE_CATCH_ALL            catch (...) {}
-#  define JUCE_CATCH_ALL_ASSERT     catch (...) { jassertfalse; }
-
-#  if ! JUCE_MODULE_AVAILABLE_juce_gui_basics
-#    define JUCE_CATCH_EXCEPTION    JUCE_CATCH_ALL
-#  else
-/** Used in try-catch blocks, this macro will send exceptions to the JUCEApplicationBase
-        object so they can be logged by the application if it wants to.
-    */
-#    define JUCE_CATCH_EXCEPTION \
-    catch (const std::exception& e)  \
-{ \
-    treecore::JUCEApplicationBase::sendUnhandledException (&e, __FILE__, __LINE__); \
-    } \
-    catch (...) \
-{ \
-    treecore::JUCEApplicationBase::sendUnhandledException (nullptr, __FILE__, __LINE__); \
-    }
-#  endif
-
-#else
-
-#  define JUCE_TRY
-#  define JUCE_CATCH_EXCEPTION
-#  define JUCE_CATCH_ALL
-#  define JUCE_CATCH_ALL_ASSERT
-
-#endif
-
-//==============================================================================
-#if JUCE_DEBUG || DOXYGEN
-/** A platform-independent way of forcing an inline function.
-      Use the syntax: @code
-      forcedinline void myfunction (int x)
-      @endcode
-  */
-#  define forcedinline  inline
-#else
-#  if defined TREECORE_COMPILER_MSVC
-#    define forcedinline       __forceinline
-#  else
-#    define forcedinline       inline __attribute__((always_inline))
-#  endif
-#endif
-
-#if defined TREECORE_COMPILER_MSVC || DOXYGEN
-/** This can be placed before a stack or member variable declaration to tell the compiler
-      to align it to the specified number of bytes. */
-#  define JUCE_ALIGN(bytes)   __declspec (align (bytes))
-#else
-#  define JUCE_ALIGN(bytes)   __attribute__ ((aligned (bytes)))
+#    error "unsupported CPU"
 #endif
 
 //
-//#if defined TREECORE_COMPILER_MSVC
-//#   define restrict __restrict
-//#endif
+// compiler-specific stuffs
+//
 
-#if defined TREECORE_COMPILER_GCC
-#   define likely(arg) __builtin_expect(!!(arg),1)
-#   define unlikely(arg) __builtin_expect(!!(arg),0)
+// compiler type
+#if defined __INTEL_COMPILER // ICC must be firstly processed, as it would mimic other compiler's flags
+#    define TREECORE_COMPILER_ICC 1
+#elif defined _MSC_VER
+#    define TREECORE_COMPILER_MSVC 1
+#elif defined __clang__
+#    define TREECORE_COMPILER_CLANG 1
+#elif defined __GNUC__
+#    define TREECORE_COMPILER_GCC 1
+#elif defined DOXYGEN
+#    define TREECORE_COMPILER_DOXYGEN 1
 #else
-#   define likely(arg) (arg)
-#   define unlikely(arg) (arg)
+#    error "unknown compiler"
 #endif
 
-#define likely_if(x) if(likely(x))
-#define unlikely_if(x) if(unlikely(x))
-#define likely_while(x) while(likely(x))
-#define unlikely_while(x) while(unlikely(x))
+#ifndef TREECORE_COMPILER_ICC
+#    define TREECORE_COMPILER_ICC 0
+#endif
+#ifndef TREECORE_COMPILER_MSVC
+#    define TREECORE_COMPILER_MSVC 0
+#endif
+#ifndef TREECORE_COMPILER_CLANG
+#    define TREECORE_COMPILER_CLANG 0
+#endif
+#ifndef TREECORE_COMPILER_GCC
+#    define TREECORE_COMPILER_GCC 0
+#endif
+#ifndef TREECORE_COMPILER_DOXYGEN
+#    define TREECORE_COMPILER_DOXYGEN 0
+#endif
 
-//==============================================================================
-// Cross-compiler deprecation macros..
-#ifdef DOXYGEN
-/** This macro can be used to wrap a function which has been deprecated. */
-#  define JUCE_DEPRECATED(functionDef)
-#  define JUCE_DEPRECATED_WITH_BODY(functionDef, body)
-#elif defined TREECORE_COMPILER_MSVC && ! JUCE_NO_DEPRECATION_WARNINGS
-#  define JUCE_DEPRECATED(functionDef)                   __declspec(deprecated) functionDef
-#  define JUCE_DEPRECATED_WITH_BODY(functionDef, body)   __declspec(deprecated) functionDef body
-#elif defined TREECORE_COMPILER_GCC && ! JUCE_NO_DEPRECATION_WARNINGS
-#  define JUCE_DEPRECATED(functionDef)                   functionDef __attribute__ ((deprecated))
-#  define JUCE_DEPRECATED_WITH_BODY(functionDef, body)   functionDef __attribute__ ((deprecated)) body
+// how to access compiler attribute
+// some compilers (such as ICC) has multiple sets of builtin convensions on different platforms
+#if TREECORE_COMPILER_MSVC || (TREECORE_OS_WINDOWS && TREECORE_COMPILER_ICC)
+#    define TREECORE_COMPILER_ATTR_MSVC 1
+#elif TREECORE_COMPILER_CLANG
+#    define TREECORE_COMPILER_ATTR_CLANG 1
+#elif TREECORE_COMPILER_GCC || ( ( TREECORE_OS_LINUX || TREECORE_OS_OSX) && TREECORE_COMPILER_ICC )
+#    define TREECORE_COMPILER_ATTR_GCC 1
 #else
-#  define JUCE_DEPRECATED(functionDef)                   functionDef
-#  define JUCE_DEPRECATED_WITH_BODY(functionDef, body)   functionDef body
+#    error don't know how to treat with compiler-specific attributes
 #endif
 
-//==============================================================================
-#if defined TREECORE_OS_ANDROID && ! DOXYGEN
-#define JUCE_MODAL_LOOPS_PERMITTED 0
-#elif ! defined (JUCE_MODAL_LOOPS_PERMITTED)
-/** Some operating environments don't provide a modal loop mechanism, so this flag can be
-     used to disable any functions that try to run a modal loop. */
-#define JUCE_MODAL_LOOPS_PERMITTED 1
+#ifndef TREECORE_COMPILER_ATTR_MSVC
+#    define TREECORE_COMPILER_ATTR_MSVC 0
+#endif
+#ifndef TREECORE_COMPILER_ATTR_CLANG
+#    define TREECORE_COMPILER_ATTR_CLANG 0
+#endif
+#ifndef TREECORE_COMPILER_ATTR_GCC
+#    define TREECORE_COMPILER_ATTR_GCC 0
 #endif
 
-//==============================================================================
-#if defined TREECORE_COMPILER_GCC
-#  define JUCE_PACKED __attribute__((packed))
-#elif ! DOXYGEN
-#  define JUCE_PACKED
+//
+// compiler-specific stuffs
+//
+#if TREECORE_COMPILER_MSVC
+
+#    if _MSC_VER >= 1900
+#        define TREECORE_COMPILER_VS2015 1
+#    else
+#        error _MSC_VER compiler older than 1900 (Visual Studio 2015) is not supported!
+#    endif
+
+#    if TREECORE_SIZE_PTR == 8
+#        define TREECORE_MSVC_INTRIN 1
+#    endif
+
+#    ifndef _CPPRTTI
+#        error RTTI not enabled!
+#    endif
+#    ifndef _CPPUNWIND
+#        error exception not enabled!
+#    endif
+
+#    pragma comment (lib, "kernel32.lib")
+#    pragma comment (lib, "user32.lib")
+#    pragma comment (lib, "wininet.lib")
+#    pragma comment (lib, "advapi32.lib")
+#    pragma comment (lib, "ws2_32.lib")
+#    pragma comment (lib, "version.lib")
+#    pragma comment (lib, "shlwapi.lib")
+#    pragma comment (lib, "winmm.lib")
+
+#    ifdef _NATIVE_WCHAR_T_DEFINED
+#        if TREECORE_DEBUG
+#            pragma comment (lib, "comsuppwd.lib")
+#        else
+#            pragma comment (lib, "comsuppw.lib")
+#        endif
+#    else
+#        if TREECORE_DEBUG
+#            pragma comment (lib, "comsuppd.lib")
+#        else
+#            pragma comment (lib, "comsupp.lib")
+#        endif
+#    endif
+
+#    define TREECORE_LOAD_WINAPI_FUNCTION( dll, functionName, localFunctionName, returnType, params ) \
+    typedef returnType ( WINAPI* type ## localFunctionName ) params;                                  \
+    type ## localFunctionName localFunctionName = (type ## localFunctionName)dll.getFunction(#functionName );
+
+#endif // TREECORE_COMPILER_MSVC
+
+#ifndef TREECORE_MSVC_INTRIN
+#    define TREECORE_MSVC_INTRIN 0
 #endif
 
-//==============================================================================
-// Here, we'll check for C++11 compiler support, and if it's not available, define
-// a few workarounds, so that we can still use some of the newer language features.
-#if (__cplusplus >= 201103L || defined (__GXX_EXPERIMENTAL_CXX0X__)) && (__GNUC__ * 100 + __GNUC_MINOR__) >= 405
-#  define JUCE_COMPILER_SUPPORTS_noexcept 1
-
-#  if (__GNUC__ * 100 + __GNUC_MINOR__) >= 407 && ! defined (JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL)
-#    define JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL 1
-#  endif
-
+// TODO: fuck it
+#if TREECORE_MSVC_INTRIN
+#    include <intrin.h>
 #endif
 
-#if defined TREECORE_COMPILER_CLANG && defined (__has_feature)
-
-#  if __has_feature (cxx_noexcept)
-#    define JUCE_COMPILER_SUPPORTS_noexcept 1
-#  endif
-
-#  ifndef JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL
-#    define JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL 1
-#  endif
-
-#  ifndef JUCE_COMPILER_SUPPORTS_ARC
-#    define JUCE_COMPILER_SUPPORTS_ARC 1
-#  endif
-
-#endif
-
-#if defined TREECORE_COMPILER_MSVC && _MSC_VER >= 1900
-#  define JUCE_COMPILER_SUPPORTS_noexcept 1
-#endif
-
-#if defined (_MSC_VER) && _MSC_VER >= 1700
-#  define JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL 1
-#endif
-
-//==============================================================================
-// Declare some fake versions of nullptr and noexcept, for older compilers:
-#if ! (DOXYGEN || JUCE_COMPILER_SUPPORTS_noexcept)
-#  define noexcept throw()
-#  if defined (_MSC_VER) && _MSC_VER > 1600
-#    define _ALLOW_KEYWORD_MACROS 1 // (to stop VC2012 complaining)
-#  endif
-#endif
-
-#if ! (DOXYGEN || JUCE_COMPILER_SUPPORTS_OVERRIDE_AND_FINAL)
-#  undef  override
-#  define override
-#endif
-
-#if defined TREECORE_COMPILER_MSVC || (defined TREECORE_OS_WINDOWS && TREECORE_COMPILER_ICC)
-#  define TREECORE_SELECT_ANY __declspec(selectany)
-#elif defined TREECORE_COMPILER_GCC && defined TREECORE_OS_WINDOWS
-#  define TREECORE_SELECT_ANY __attribute__((selectany))
+// calling convention
+#if TREECORE_CPU_X86 && TREECORE_SIZE_PTR <= 4
+#    if TREECORE_COMPILER_ATTR_MSVC
+#        define TREECORE_STDCALL  __stdcall
+#        define TREECORE_CDECL    __cdecl
+#    else
+#        define TREECORE_STDCALL  __attribute__( (stdcall) )
+#        define TREECORE_CDECL    __attribute__( (cdecl) )
+#    endif
 #else
-#  define TREECORE_SELECT_ANY
+#    define TREECORE_STDCALL
+#    define TREECORE_CDECL
 #endif
 
-#endif   // JUCE_PLATFORMDEFS_H_INCLUDED
+#if TREECORE_COMPILER_ATTR_CLANG || TREECORE_COMPILER_ATTR_GCC
+#    define TREECORE_NORETURN __attribute__ ( (noreturn) )
+#elif TREECORE_COMPILER_ATTR_MSVC
+#    define TREECORE_NORETURN __declspec( noreturn )
+#else
+#    define TREECORE_NORETURN
+#endif
+
+// API deprecation
+#if TREECORE_COMPILER_DOXYGEN
+
+///
+/// \brief wrap a function which has been deprecated
+///
+/// synopsis: `TREECORE_DEPRECATED_FUNCTION( int foobar(int arg1, float arg2) );`
+///
+#    define TREECORE_DEPRECATED_FUNCTION( ... )
+
+#elif TREECORE_NO_DEPRECATION_WARNINGS
+#    define TREECORE_DEPRECATED_FUNCTION( ... ) __VA_ARGS__
+#else
+#    if TREECORE_COMPILER_ATTR_MSVC
+#        define TREECORE_DEPRECATED_FUNCTION( ... ) __declspec( deprecated ) __VA_ARGS__
+#    elif TREECORE_COMPILER_ATTR_GCC || TREECORE_COMPILER_ATTR_CLANG
+#        define TREECORE_DEPRECATED_FUNCTION( ... ) __VA_ARGS__ __attribute__( (deprecated) )
+#    else
+#        error don't know how to mark API deprecation in such compiler
+#    endif
+#endif
+
+// dynamic library symbol visibility
+#ifndef TREECORE_DLL_BUILD
+#    define TREECORE_DLL_BUILD 0
+#endif
+#ifndef TREECORE_USING_DLL
+#    define TREECORE_USING_DLL 0
+#endif
+
+#if TREECORE_OS_WINDOWS
+#    if TREECORE_COMPILER_ATTR_MSVC
+#        if TREECORE_DLL_BUILD
+#            define TREECORE_SHARED_API __declspec( dllexport )
+#        elif TREECORE_USING_DLL
+#            define TREECORE_SHARED_API __declspec( dllimport )
+#        else
+#            define TREECORE_SHARED_API
+#        endif
+#    else
+#        if TREECORE_DLL_BUILD
+#            define TREECORE_SHARED_API __attribute__( (dllexport) )
+#        elif TREECORE_USING_DLL
+#            define TREECORE_SHARED_API __attribute__( (dllimport) )
+#        else
+#            define TREECORE_SHARED_API
+#        endif
+#    endif
+#    define TREECORE_SHARED_HIDDEN
+#else
+#    define TREECORE_SHARED_API __attribute__ ( ( visibility( "default" ) ) )
+#    define TREECORE_SHARED_HIDDEN __attribute__ ( ( visibility( "hidden" ) ) )
+#endif
+
+#if TREECORE_DLL_BUILD
+#    define TREECORE_PUBLIC_IN_DLL_BUILD( declaration )  public: declaration; private:
+#else
+#    define TREECORE_PUBLIC_IN_DLL_BUILD( declaration )  declaration;
+#endif
+
+/** This macro is added to all library API public function declarations. */
+#define TREECORE_PUBLIC_FUNCTION TREECORE_SHARED_API TREECORE_STDCALL
+
+// force inline
+#if TREECORE_DEBUG || TREECORE_COMPILER_DOXYGEN
+///
+/// \brief platform-independent way of forcing an inline function
+///
+/// Use the syntax: `forcedinline void myfunction (int x)`
+///
+#    define forcedinline  inline
+#else
+#    if TREECORE_COMPILER_ATTR_MSVC
+#        define forcedinline       __forceinline
+#    else
+#        define forcedinline       inline __attribute__( (always_inline) )
+#    endif
+#endif
+
+// branch prediction hints
+#if TREECORE_COMPILER_GCC
+#    define likely( arg )   ( __builtin_expect( !!(arg), 1 ) )
+#    define unlikely( arg ) ( __builtin_expect( !!(arg), 0 ) )
+#else
+#    define likely( arg ) (arg)
+#    define unlikely( arg ) (arg)
+#endif
+
+// how to link identical symbol
+#if TREECORE_OS_WINDOWS
+#    if TREECORE_COMPILER_ATTR_MSVC
+#        define TREECORE_SELECT_ANY( _arg_ ) __declspec( selectany ) _arg_
+#    elif TREECORE_COMPILER_ATTR_GCC
+#        define TREECORE_SELECT_ANY( _arg_ ) _arg_ __attribute__( (selectany) )
+#    else
+#        define TREECORE_SELECT_ANY( _arg_ ) _arg_
+#    endif
+#else
+#    define TREECORE_SELECT_ANY( _arg_ ) _arg_
+#endif
+
+#endif   // TREECORE_PLATFORM_DEFS_H

@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,12 +23,13 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #ifndef JUCE_SCOPEDPOINTER_H_INCLUDED
 #define JUCE_SCOPEDPOINTER_H_INCLUDED
 
+#include "treecore/ClassUtils.h"
 #include "treecore/ContainerDeletePolicy.h"
 #include "treecore/LeakedObjectDetector.h"
 
@@ -70,39 +71,39 @@ namespace treecore {
     ScopedPointer contains an overloaded constructor that should cause a syntax error in these
     circumstances, but it does mean that instead of returning a ScopedPointer from a function,
     you'd need to return a raw pointer (or use a std::auto_ptr instead).
-*/
-template <class ObjectType>
+ */
+template<class ObjectType>
 class ScopedPointer
 {
 public:
     //==============================================================================
     /** Creates a ScopedPointer containing a null pointer. */
-    inline ScopedPointer() noexcept   : object (nullptr)
-    {
-    }
+    inline ScopedPointer() noexcept: object( nullptr )
+    {}
 
     /** Creates a ScopedPointer that owns the specified object. */
-    inline ScopedPointer (ObjectType* const objectToTakePossessionOf) noexcept
-        : object (objectToTakePossessionOf)
-    {
-    }
+    inline ScopedPointer ( ObjectType* const objectToTakePossessionOf ) noexcept
+        : object( objectToTakePossessionOf )
+    {}
 
     /** Creates a ScopedPointer that takes its pointer from another ScopedPointer.
 
         Because a pointer can only belong to one ScopedPointer, this transfers
         the pointer from the other object to this one, and the other object is reset to
         be a null pointer.
-    */
-    ScopedPointer (ScopedPointer& objectToTransferFrom) noexcept
-        : object (objectToTransferFrom.object)
+     */
+    ScopedPointer ( ScopedPointer& objectToTransferFrom ) noexcept
+        : object( objectToTransferFrom.object )
     {
         objectToTransferFrom.object = nullptr;
     }
 
+    TREECORE_DECLARE_NON_COPYABLE( ScopedPointer )
+
     /** Destructor.
         This will delete the object that this ScopedPointer currently refers to.
-    */
-    inline ~ScopedPointer()                 { ContainerDeletePolicy<ObjectType>::destroy (object); }
+     */
+    inline ~ScopedPointer()                 { ContainerDeletePolicy<ObjectType>::destroy( object ); }
 
     /** Changes this ScopedPointer to point to a new object.
 
@@ -112,19 +113,19 @@ public:
 
         If this ScopedPointer already points to an object, that object
         will first be deleted.
-    */
-    ScopedPointer& operator= (ScopedPointer& objectToTransferFrom)
+     */
+    ScopedPointer& operator = ( ScopedPointer& objectToTransferFrom )
     {
-        if (this != objectToTransferFrom.getAddress())
+        if ( this != objectToTransferFrom.getAddress() )
         {
             // Two ScopedPointers should never be able to refer to the same object - if
             // this happens, you must have done something dodgy!
-            jassert (object == nullptr || object != objectToTransferFrom.object);
+            treecore_assert( object == nullptr || object != objectToTransferFrom.object );
 
             ObjectType* const oldObject = object;
             object = objectToTransferFrom.object;
             objectToTransferFrom.object = nullptr;
-            ContainerDeletePolicy<ObjectType>::destroy (oldObject);
+            ContainerDeletePolicy<ObjectType>::destroy( oldObject );
         }
 
         return *this;
@@ -136,26 +137,26 @@ public:
         will first be deleted.
 
         The pointer that you pass in may be a nullptr.
-    */
-    ScopedPointer& operator= (ObjectType* const newObjectToTakePossessionOf)
+     */
+    ScopedPointer& operator = ( ObjectType* const newObjectToTakePossessionOf )
     {
         if (object != newObjectToTakePossessionOf)
         {
             ObjectType* const oldObject = object;
             object = newObjectToTakePossessionOf;
-            ContainerDeletePolicy<ObjectType>::destroy (oldObject);
+            ContainerDeletePolicy<ObjectType>::destroy( oldObject );
         }
 
         return *this;
     }
 
-    ScopedPointer (ScopedPointer&& other) noexcept
-        : object (other.object)
+    ScopedPointer ( ScopedPointer&& other ) noexcept
+        : object( other.object )
     {
         other.object = nullptr;
     }
 
-    ScopedPointer& operator= (ScopedPointer&& other) noexcept
+    ScopedPointer& operator = ( ScopedPointer&& other ) noexcept
     {
         object = other.object;
         other.object = nullptr;
@@ -164,40 +165,40 @@ public:
 
     //==============================================================================
     /** Returns the object that this ScopedPointer refers to. */
-    inline operator ObjectType*() const noexcept                                    { return object; }
+    inline operator ObjectType* () const noexcept                                    { return object; }
 
     /** Returns the object that this ScopedPointer refers to. */
     inline ObjectType* get() const noexcept                                         { return object; }
 
     /** Returns the object that this ScopedPointer refers to. */
-    inline ObjectType& operator*() const noexcept                                   { return *object; }
+    inline ObjectType& operator * () const noexcept                                   { return *object; }
 
     /** Lets you access methods and properties of the object that this ScopedPointer refers to. */
-    inline ObjectType* operator->() const noexcept                                  { return object; }
+    inline ObjectType* operator -> () const noexcept                                  { return object; }
 
     //==============================================================================
     /** Removes the current object from this ScopedPointer without deleting it.
         This will return the current object, and set the ScopedPointer to a null pointer.
-    */
+     */
     ObjectType* release() noexcept                                                  { ObjectType* const o = object; object = nullptr; return o; }
 
     //==============================================================================
     /** Swaps this object with that of another ScopedPointer.
         The two objects simply exchange their pointers.
-    */
-    void swapWith (ScopedPointer <ObjectType>& other) noexcept
+     */
+    void swapWith( ScopedPointer<ObjectType>& other ) noexcept
     {
         // Two ScopedPointers should never be able to refer to the same object - if
         // this happens, you must have done something dodgy!
-        jassert (object != other.object || this == other.getAddress());
+        treecore_assert( object != other.object || this == other.getAddress() );
 
-        std::swap (object, other.object);
+        std::swap( object, other.object );
     }
 
     /** If the pointer is non-null, this will attempt to return a new copy of the object that is pointed to.
         If the pointer is null, this will safely return a nullptr.
-    */
-    inline ObjectType* createCopy() const                                           { return createCopyIfNotNull (object); }
+     */
+    inline ObjectType* createCopy() const { return createCopyIfNotNull( object ); }
 
 private:
     //==============================================================================
@@ -205,52 +206,32 @@ private:
 
     // (Required as an alternative to the overloaded & operator).
     const ScopedPointer* getAddress() const noexcept                                { return this; }
-
-  #if !defined TREECORE_COMPILER_MSVC // (MSVC can't deal with multiple copy constructors)
-    /* The copy constructors are private to stop people accidentally copying a const ScopedPointer
-       (the compiler would let you do so by implicitly casting the source to its raw object pointer).
-
-       A side effect of this is that in a compiler that doesn't support C++11, you may hit an
-       error when you write something like this:
-
-          ScopedPointer<MyClass> m = new MyClass();  // Compile error: copy constructor is private.
-
-       Even though the compiler would normally ignore the assignment here, it can't do so when the
-       copy constructor is private. It's very easy to fix though - just write it like this:
-
-          ScopedPointer<MyClass> m (new MyClass());  // Compiles OK
-
-       It's probably best to use the latter form when writing your object declarations anyway, as
-       this is a better representation of the code that you actually want the compiler to produce.
-    */
-    TREECORE_DECLARE_NON_COPYABLE (ScopedPointer)
-  #endif
 };
 
 //==============================================================================
 /** Compares a ScopedPointer with another pointer.
     This can be handy for checking whether this is a null pointer.
-*/
-template <class ObjectType>
-bool operator== (const ScopedPointer<ObjectType>& pointer1, ObjectType* const pointer2) noexcept
+ */
+template<class ObjectType>
+bool operator == ( const ScopedPointer<ObjectType>& pointer1, ObjectType* const pointer2 ) noexcept
 {
-    return static_cast <ObjectType*> (pointer1) == pointer2;
+    return static_cast<ObjectType*>(pointer1) == pointer2;
 }
 
 /** Compares a ScopedPointer with another pointer.
     This can be handy for checking whether this is a null pointer.
-*/
-template <class ObjectType>
-bool operator!= (const ScopedPointer<ObjectType>& pointer1, ObjectType* const pointer2) noexcept
+ */
+template<class ObjectType>
+bool operator != ( const ScopedPointer<ObjectType>& pointer1, ObjectType* const pointer2 ) noexcept
 {
-    return static_cast <ObjectType*> (pointer1) != pointer2;
+    return static_cast<ObjectType*>(pointer1) != pointer2;
 }
 
 //==============================================================================
 #ifndef DOXYGEN
 // NB: This is just here to prevent any silly attempts to call deleteAndZero() on a ScopedPointer.
-template <typename Type>
-void deleteAndZero (ScopedPointer<Type>&)  { static_jassert (sizeof (Type) == 12345); }
+template<typename Type>
+void deleteAndZero( ScopedPointer<Type>& )  { static_assert( sizeof(Type) == 12345, "deleteAndZero is not allowed for ScopedPointer" ); }
 #endif
 
 }

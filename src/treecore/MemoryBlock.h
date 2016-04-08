@@ -43,7 +43,7 @@ class StringRef;
     A class to hold a resizable block of raw data.
 
 */
-class JUCE_API  MemoryBlock
+class TREECORE_SHARED_API  MemoryBlock
 {
 public:
     //==============================================================================
@@ -252,7 +252,7 @@ private:
     HeapBlock<char> data;
     size_t size;
 
-    JUCE_LEAK_DETECTOR (MemoryBlock)
+    TREECORE_LEAK_DETECTOR (MemoryBlock)
 };
 
 }

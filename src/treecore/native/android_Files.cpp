@@ -26,6 +26,15 @@
   ==============================================================================
 */
 
+#include "treecore/File.h"
+#include "treecore/Process.h"
+
+#include "treecore/native/android_JNIHelpers.h"
+#include "treecore/native/posix_private.h"
+
+namespace treecore
+{
+
 bool File::isOnCDRomDrive() const
 {
     return false;
@@ -73,10 +82,10 @@ File File::getSpecialLocation (const SpecialLocationType type)
         case currentExecutableFile:
         case currentApplicationFile:
         case hostApplicationPath:
-            return juce_getExecutableFile();
+            return _get_executable_file_();
 
         default:
-            jassertfalse; // unknown type?
+            treecore_assert_false; // unknown type?
             break;
     }
 
@@ -92,13 +101,15 @@ bool File::moveToTrash() const
     return false;
 }
 
-JUCE_API bool JUCE_CALLTYPE Process::openDocument (const String& fileName, const String& parameters)
+TREECORE_SHARED_API bool TREECORE_STDCALL Process::openDocument (const String& fileName, const String& parameters)
 {
     const LocalRef<jstring> t (javaString (fileName));
-    android.activity.callVoidMethod (JuceAppActivity.launchURL, t.get());
+    android.activity.callVoidMethod (TreecoreAppActivity.launchURL, t.get());
     return true;
 }
 
 void File::revealToUser() const
 {
 }
+
+} // namespace treecore

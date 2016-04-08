@@ -5,7 +5,7 @@
 #include <limits>
 #include <cstdio>
 
-#if defined _WIN32 || defined _WIN64
+#if TREECORE_OS_WINDOWS
 #    include <windows.h>
 #else
 #    include <sys/ioctl.h>
@@ -16,7 +16,7 @@ namespace treecore
 
 size_t get_terminal_width()
 {
-#if defined _WIN32 || defined _WIN64
+#if TREECORE_OS_WINDOWS
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo( GetStdHandle( STD_OUTPUT_HANDLE ), &csbi );
     size_t columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
@@ -91,7 +91,7 @@ Option::BoolSwitch::~BoolSwitch() {}
 
 bool Option::BoolSwitch::cast_values( const Array<String>& values )
 {
-    jassert( values.size() == 0 );
+    treecore_assert( values.size() == 0 );
     *value = true;
     return true;
 }
@@ -261,7 +261,7 @@ inline void _dump_value_group_( OptionValueMap& store, Option* option, IndexedVa
     values.clear();
 }
 
-void OptionParser::parse_options( int& argc, char const ** argv )
+void OptionParser::parse_options( int& argc, char const** argv )
 {
     //
     // collect values by option
@@ -578,7 +578,7 @@ Option* OptionParser::find_option_short( char key )
 
 struct GroupSort
 {
-    GroupSort(const HashMap<String, size_t>& ids ): ids( ids ) {}
+    GroupSort( const HashMap<String, size_t>& ids ): ids( ids ) {}
 
     int compareElements( const String& a, const String& b )
     {
@@ -627,8 +627,8 @@ String OptionParser::format_document()
         while ( it.next() )
             group_names.add( it.key() );
 
-        GroupSort sorter(group_ids);
-        group_names.sort(sorter);
+        GroupSort sorter( group_ids );
+        group_names.sort( sorter );
     }
 
     // format document for each option group

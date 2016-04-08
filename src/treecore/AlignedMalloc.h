@@ -3,7 +3,6 @@
 
 #include "treecore/Align.h"
 #include "treecore/IntTypes.h"
-#include "treecore/StandardHeader.h"
 
 #include <new>
 #include <malloc.h>
@@ -100,7 +99,7 @@ forcedinline void* aligned_realloc(void* const ptr,size_t len)
     \
     void* operator new (std::size_t size, void* ptr) noexcept\
     {\
-        jassert(treecore::pointer_sized_uint(ptr) % TREECORE_ALIGNOF(_TYPE_) == 0);\
+        treecore_assert(treecore::pointer_sized_uint(ptr) % TREECORE_ALIGNOF(_TYPE_) == 0);\
         return ptr;\
     }\
     void* operator new[] (std::size_t size)\
@@ -118,7 +117,7 @@ forcedinline void* aligned_realloc(void* const ptr,size_t len)
     \
     void* operator new[] (std::size_t size, void* ptr) noexcept\
     {\
-        jassert(treecore::pointer_sized_uint(ptr) % TREECORE_ALIGNOF(_TYPE_) == 0);\
+        treecore_assert(treecore::pointer_sized_uint(ptr) % TREECORE_ALIGNOF(_TYPE_) == 0);\
         return ptr;\
     }\
     \
@@ -134,7 +133,7 @@ forcedinline void* aligned_realloc(void* const ptr,size_t len)
     \
     void operator delete (void* ptr, void* ptr2) noexcept\
     {\
-        jassert(treecore::pointer_sized_uint(ptr) % TREECORE_ALIGNOF(_TYPE_) == 0);\
+        treecore_assert(treecore::pointer_sized_uint(ptr) % TREECORE_ALIGNOF(_TYPE_) == 0);\
     }\
     \
     void operator delete[] (void* ptr) noexcept\
@@ -149,7 +148,7 @@ forcedinline void* aligned_realloc(void* const ptr,size_t len)
     \
     void operator delete[] (void* ptr, void* voidptr2) noexcept\
     {\
-        jassert(treecore::pointer_sized_uint(ptr) % TREECORE_ALIGNOF(_TYPE_) == 0);\
+        treecore_assert(treecore::pointer_sized_uint(ptr) % TREECORE_ALIGNOF(_TYPE_) == 0);\
     }
 
 #endif // ztd_aligned_malloc_h__

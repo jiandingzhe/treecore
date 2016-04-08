@@ -42,7 +42,7 @@ namespace treecore {
 
     @see Array String
 */
-class JUCE_API  StringArray
+class TREECORE_SHARED_API  StringArray
 {
 public:
     //==============================================================================
@@ -478,7 +478,7 @@ public:
     Array<String> strings;
 
 private:
-    JUCE_LEAK_DETECTOR (StringArray)
+    TREECORE_LEAK_DETECTOR (StringArray)
 };
 
 }

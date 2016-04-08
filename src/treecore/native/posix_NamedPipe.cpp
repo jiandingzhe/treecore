@@ -33,9 +33,15 @@
 #include "treecore/StringRef.h"
 
 #include "treecore/internal/SystemStats_private.h"
+#include "treecore/native/posix_private.h"
 #include "treecore/native/posix_NamedPipe.h"
 
+#include <fcntl.h>
+#include <signal.h>
+
 namespace treecore {
+
+
 
 NamedPipe::Pimpl::Pimpl (const String& pipePath, bool createPipe)
    : pipeInName  (pipePath + "_in"),
@@ -45,7 +51,7 @@ NamedPipe::Pimpl::Pimpl (const String& pipePath, bool createPipe)
      stopReadOperation (false)
 {
     signal (SIGPIPE, signalHandler);
-    juce_siginterrupt (SIGPIPE, 1);
+    _sig_interrupt_ (SIGPIPE, 1);
 }
 
 NamedPipe::Pimpl::~Pimpl()
@@ -171,17 +177,17 @@ void NamedPipe::close()
 
 bool NamedPipe::openInternal (const String& pipeName, const bool createPipe)
 {
-   #if defined TREECORE_OS_IOS
+#if TREECORE_OS_IOS
     pimpl = new Pimpl (File::getSpecialLocation (File::tempDirectory)
                          .getChildFile (File::createLegalFileName (pipeName)).getFullPathName(), createPipe);
-   #else
+#else
     String file (pipeName);
 
     if (! File::isAbsolutePath (file))
         file = "/tmp/" + File::createLegalFileName (file);
 
     pimpl = new Pimpl (file, createPipe);
-   #endif
+#endif
 
     if (createPipe && ! pimpl->createFifos())
     {

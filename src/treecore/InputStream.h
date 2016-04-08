@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,12 +23,13 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #ifndef JUCE_INPUTSTREAM_H_INCLUDED
 #define JUCE_INPUTSTREAM_H_INCLUDED
 
+#include "treecore/ClassUtils.h"
 #include "treecore/IntTypes.h"
 #include "treecore/LeakedObjectDetector.h"
 #include "treecore/MathsFunctions.h"
@@ -45,8 +46,8 @@ class MemoryBlock;
     some or all of the virtual functions to implement their behaviour.
 
     @see OutputStream, MemoryInputStream, BufferedInputStream, FileInputStream
-*/
-class JUCE_API  InputStream
+ */
+class TREECORE_SHARED_API InputStream
 {
 public:
     /** Destructor. */
@@ -61,13 +62,13 @@ public:
         If the size of the stream isn't actually known, this will return -1.
 
         @see getNumBytesRemaining
-    */
+     */
     virtual int64 getTotalLength() = 0;
 
     /** Returns the number of bytes available for reading, or a negative value if
         the remaining length is not known.
         @see getTotalLength
-    */
+     */
     int64 getNumBytesRemaining();
 
     /** Returns true if the stream has no more data to read. */
@@ -87,34 +88,34 @@ public:
 
         @returns    the actual number of bytes that were read, which may be less than
                     maxBytesToRead if the stream is exhausted before it gets that far
-    */
-    virtual int read (void* destBuffer, int maxBytesToRead) = 0;
+     */
+    virtual int read( void* destBuffer, int maxBytesToRead ) = 0;
 
     /** Reads a byte from the stream.
         If the stream is exhausted, this will return zero.
         @see OutputStream::writeByte
-    */
+     */
     virtual char readByte();
 
     /** Reads a boolean from the stream.
         The bool is encoded as a single byte - non-zero for true, 0 for false.
         If the stream is exhausted, this will return false.
         @see OutputStream::writeBool
-    */
+     */
     virtual bool readBool();
 
     /** Reads two bytes from the stream as a little-endian 16-bit value.
         If the next two bytes read are byte1 and byte2, this returns (byte1 | (byte2 << 8)).
         If the stream is exhausted partway through reading the bytes, this will return zero.
         @see OutputStream::writeShort, readShortBigEndian
-    */
+     */
     virtual short readShort();
 
     /** Reads two bytes from the stream as a little-endian 16-bit value.
         If the next two bytes read are byte1 and byte2, this returns (byte2 | (byte1 << 8)).
         If the stream is exhausted partway through reading the bytes, this will return zero.
         @see OutputStream::writeShortBigEndian, readShort
-    */
+     */
     virtual short readShortBigEndian();
 
     /** Reads four bytes from the stream as a little-endian 32-bit value.
@@ -125,7 +126,7 @@ public:
         If the stream is exhausted partway through reading the bytes, this will return zero.
 
         @see OutputStream::writeInt, readIntBigEndian
-    */
+     */
     virtual int readInt();
 
     /** Reads four bytes from the stream as a big-endian 32-bit value.
@@ -136,7 +137,7 @@ public:
         If the stream is exhausted partway through reading the bytes, this will return zero.
 
         @see OutputStream::writeIntBigEndian, readInt
-    */
+     */
     virtual int readIntBigEndian();
 
     /** Reads eight bytes from the stream as a little-endian 64-bit value.
@@ -147,7 +148,7 @@ public:
         If the stream is exhausted partway through reading the bytes, this will return zero.
 
         @see OutputStream::writeInt64, readInt64BigEndian
-    */
+     */
     virtual int64 readInt64();
 
     /** Reads eight bytes from the stream as a big-endian 64-bit value.
@@ -158,42 +159,42 @@ public:
         If the stream is exhausted partway through reading the bytes, this will return zero.
 
         @see OutputStream::writeInt64BigEndian, readInt64
-    */
+     */
     virtual int64 readInt64BigEndian();
 
     /** Reads four bytes as a 32-bit floating point value.
         The raw 32-bit encoding of the float is read from the stream as a little-endian int.
         If the stream is exhausted partway through reading the bytes, this will return zero.
         @see OutputStream::writeFloat, readDouble
-    */
+     */
     virtual float readFloat();
 
     /** Reads four bytes as a 32-bit floating point value.
         The raw 32-bit encoding of the float is read from the stream as a big-endian int.
         If the stream is exhausted partway through reading the bytes, this will return zero.
         @see OutputStream::writeFloatBigEndian, readDoubleBigEndian
-    */
+     */
     virtual float readFloatBigEndian();
 
     /** Reads eight bytes as a 64-bit floating point value.
         The raw 64-bit encoding of the double is read from the stream as a little-endian int64.
         If the stream is exhausted partway through reading the bytes, this will return zero.
         @see OutputStream::writeDouble, readFloat
-    */
+     */
     virtual double readDouble();
 
     /** Reads eight bytes as a 64-bit floating point value.
         The raw 64-bit encoding of the double is read from the stream as a big-endian int64.
         If the stream is exhausted partway through reading the bytes, this will return zero.
         @see OutputStream::writeDoubleBigEndian, readFloatBigEndian
-    */
+     */
     virtual double readDoubleBigEndian();
 
     /** Reads an encoded 32-bit number from the stream using a space-saving compressed format.
         For small values, this is more space-efficient than using readInt() and OutputStream::writeInt()
         The format used is: number of significant bytes + up to 4 bytes in little-endian order.
         @see OutputStream::writeCompressedInt()
-    */
+     */
     virtual int readCompressedInt();
 
     //==============================================================================
@@ -204,7 +205,7 @@ public:
         After this call, the stream's position will be left pointing to the next character
         following the line-feed, but the linefeeds aren't included in the string that
         is returned.
-    */
+     */
     virtual String readNextLine();
 
     /** Reads a zero-terminated UTF-8 string from the stream.
@@ -213,14 +214,14 @@ public:
         or end-of-stream.
 
         @see OutputStream::writeString, readEntireStreamAsString
-    */
+     */
     virtual String readString();
 
     /** Tries to read the whole stream and turn it into a string.
 
         This will read from the stream's current position until the end-of-stream.
         It can read from UTF-8 data, or UTF-16 if it detects suitable header-bytes.
-    */
+     */
     virtual String readEntireStreamAsString();
 
     /** Reads from the stream and appends the data to a MemoryBlock.
@@ -230,14 +231,14 @@ public:
                                     of bytes that will be read - if it's negative, data
                                     will be read until the stream is exhausted.
         @returns the number of bytes that were added to the memory block
-    */
-    virtual size_t readIntoMemoryBlock (MemoryBlock& destBlock,
-                                        ssize_t maxNumBytesToRead = -1);
+     */
+    virtual size_t readIntoMemoryBlock( MemoryBlock& destBlock,
+                                        ssize_t      maxNumBytesToRead = -1 );
 
     //==============================================================================
     /** Returns the offset of the next byte that will be read from the stream.
         @see setPosition
-    */
+     */
     virtual int64 getPosition() = 0;
 
     /** Tries to move the current read position of the stream.
@@ -251,24 +252,23 @@ public:
 
         @returns  true if the stream manages to reposition itself correctly
         @see getPosition
-    */
-    virtual bool setPosition (int64 newPosition) = 0;
+     */
+    virtual bool setPosition( int64 newPosition ) = 0;
 
     /** Reads and discards a number of bytes from the stream.
 
         Some input streams might implement this efficiently, but the base
         class will just keep reading data until the requisite number of bytes
         have been done.
-    */
-    virtual void skipNextBytes (int64 numBytesToSkip);
-
+     */
+    virtual void skipNextBytes( int64 numBytesToSkip );
 
 protected:
     //==============================================================================
     InputStream() noexcept {}
 
 private:
-    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InputStream)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR( InputStream )
 };
 
 }

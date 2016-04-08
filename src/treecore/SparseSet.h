@@ -157,7 +157,7 @@ public:
     {
         if (values.size() > 0)
         {
-            jassert ((values.size() & 1) == 0);
+            treecore_assert ((values.size() & 1) == 0);
             return Range<Type> (values[0],
                     values[values.size() - 1]);
         }
@@ -171,7 +171,7 @@ public:
     */
     void addRange (const Range<Type> range)
     {
-        jassert (range.getLength() >= 0);
+        treecore_assert (range.getLength() >= 0);
         if (range.getLength() > 0)
         {
             removeRange (range);
@@ -188,7 +188,7 @@ public:
     */
     void removeRange (const Range<Type> rangeToRemove)
     {
-        jassert (rangeToRemove.getLength() >= 0);
+        treecore_assert (rangeToRemove.getLength() >= 0);
 
         if (rangeToRemove.getLength() > 0
                 && values.size() > 0
@@ -292,7 +292,7 @@ private:
 
     void simplify()
     {
-        jassert ((values.size() & 1) == 0);
+        treecore_assert ((values.size() & 1) == 0);
 
         for (int i = values.size(); --i > 0;)
             if (values[i] == values[i - 1])

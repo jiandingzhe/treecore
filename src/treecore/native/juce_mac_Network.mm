@@ -1,5 +1,5 @@
 ﻿/*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,14 +23,29 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
-void MACAddress::findAllAddresses (Array<MACAddress>& result)
+#include "treecore/InputStream.h"
+#include "treecore/MacAddress.h"
+#include "treecore/MemoryBlock.h"
+#include "treecore/Process.h"
+#include "treecore/ScopedPointer.h"
+#include "treecore/StringArray.h"
+#include "treecore/Thread.h"
+#include "treecore/URL.h"
+
+#include <sys/types.h>
+#include <ifaddrs.h>
+
+namespace treecore
+{
+
+void MacAddress::findAllAddresses( Array<MacAddress>& result )
 {
     ifaddrs* addrs = nullptr;
 
-    if (getifaddrs (&addrs) == 0)
+    if (getifaddrs( &addrs ) == 0)
     {
         for (const ifaddrs* cursor = addrs; cursor != nullptr; cursor = cursor->ifa_next)
         {
@@ -45,63 +60,63 @@ void MACAddress::findAllAddresses (Array<MACAddress>& result)
 
                 if (sadd->sdl_type == IFT_ETHER)
                 {
-                    MACAddress ma (MACAddress (((const uint8*) sadd->sdl_data) + sadd->sdl_nlen));
+                    MacAddress ma( MACAddress( ( (const uint8*) sadd->sdl_data ) + sadd->sdl_nlen ) );
 
-                    if (! ma.isNull())
-                        result.addIfNotAlreadyThere (ma);
+                    if ( !ma.isNull() )
+                        result.addIfNotAlreadyThere( ma );
                 }
             }
         }
 
-        freeifaddrs (addrs);
+        freeifaddrs( addrs );
     }
 }
 
 //==============================================================================
-bool JUCE_CALLTYPE Process::openEmailWithAttachments (const String& targetEmailAddress,
-                                                      const String& emailSubject,
-                                                      const String& bodyText,
-                                                      const StringArray& filesToAttach)
+bool TREECORE_STDCALL Process::openEmailWithAttachments( const String&      targetEmailAddress,
+                                                         const String&      emailSubject,
+                                                         const String&      bodyText,
+                                                         const StringArray& filesToAttach )
 {
-  #if JUCE_IOS
+  #if TREECORE_OS_IOS
     (void) targetEmailAddress;
     (void) emailSubject;
     (void) bodyText;
     (void) filesToAttach;
 
     //xxx probably need to use MFMailComposeViewController
-    jassertfalse;
+    treecore_assert_false;
     return false;
   #else
-    JUCE_AUTORELEASEPOOL
+    TREECORE_AUTO_RELEASE_POOL
     {
         String script;
         script << "tell application \"Mail\"\r\n"
-                  "set newMessage to make new outgoing message with properties {subject:\""
-               << emailSubject.replace ("\"", "\\\"")
+            "set newMessage to make new outgoing message with properties {subject:\""
+               << emailSubject.replace( "\"", "\\\"" )
                << "\", content:\""
-               << bodyText.replace ("\"", "\\\"")
+               << bodyText.replace( "\"", "\\\"" )
                << "\" & return & return}\r\n"
-                  "tell newMessage\r\n"
-                  "set visible to true\r\n"
-                  "set sender to \"sdfsdfsdfewf\"\r\n"
-                  "make new to recipient at end of to recipients with properties {address:\""
+            "tell newMessage\r\n"
+            "set visible to true\r\n"
+            "set sender to \"sdfsdfsdfewf\"\r\n"
+            "make new to recipient at end of to recipients with properties {address:\""
                << targetEmailAddress
                << "\"}\r\n";
 
         for (int i = 0; i < filesToAttach.size(); ++i)
         {
             script << "tell content\r\n"
-                      "make new attachment with properties {file name:\""
-                   << filesToAttach[i].replace ("\"", "\\\"")
+                "make new attachment with properties {file name:\""
+                   << filesToAttach[i].replace( "\"", "\\\"" )
                    << "\"} at after the last paragraph\r\n"
-                      "end tell\r\n";
+                "end tell\r\n";
         }
 
         script << "end tell\r\n"
-                  "end tell\r\n";
+            "end tell\r\n";
 
-        NSAppleScript* s = [[NSAppleScript alloc] initWithSource: juceStringToNS (script)];
+        NSAppleScript* s    = [[NSAppleScript alloc] initWithSource: juceStringToNS( script )];
         NSDictionary* error = nil;
         const bool ok = [s executeAndReturnError: &error] != nil;
         [s release];
@@ -112,27 +127,27 @@ bool JUCE_CALLTYPE Process::openEmailWithAttachments (const String& targetEmailA
 }
 
 //==============================================================================
-class URLConnectionState   : public Thread
+class URLConnectionState: public Thread
 {
 public:
-    URLConnectionState (NSURLRequest* req, const int maxRedirects)
-        : Thread ("http connection"),
-          contentLength (-1),
-          delegate (nil),
-          request ([req retain]),
-          connection (nil),
-          data ([[NSMutableData data] retain]),
-          headers (nil),
-          statusCode (0),
-          initialised (false),
-          hasFailed (false),
-          hasFinished (false),
-          numRedirectsToFollow (maxRedirects),
-          numRedirects (0)
+    URLConnectionState ( NSURLRequest* req, const int maxRedirects )
+        : Thread( "http connection" ),
+        contentLength( -1 ),
+        delegate( nil ),
+        request([req retain] ),
+        connection( nil ),
+        data([[NSMutableData data] retain] ),
+        headers( nil ),
+        statusCode( 0 ),
+        initialised( false ),
+        hasFailed( false ),
+        hasFinished( false ),
+        numRedirectsToFollow( maxRedirects ),
+        numRedirects( 0 )
     {
         static DelegateClass cls;
         delegate = [cls.createInstance() init];
-        DelegateClass::setState (delegate, this);
+        DelegateClass::setState( delegate, this );
     }
 
     ~URLConnectionState()
@@ -145,42 +160,42 @@ public:
         [delegate release];
     }
 
-    bool start (URL::OpenStreamProgressCallback* callback, void* context)
+    bool start( URL::OpenStreamProgressCallback* callback, void* context )
     {
         startThread();
 
-        while (isThreadRunning() && ! initialised)
+        while (isThreadRunning() && !initialised)
         {
             if (callback != nullptr)
-                callback (context, -1, (int) [[request HTTPBody] length]);
+                callback( context, -1, (int) [[request HTTPBody] length] );
 
-            Thread::sleep (1);
+            Thread::sleep( 1 );
         }
 
-        return connection != nil && ! hasFailed;
+        return connection != nil && !hasFailed;
     }
 
     void stop()
     {
         [connection cancel];
-        stopThread (10000);
+        stopThread( 10000 );
     }
 
-    int read (char* dest, int numBytes)
+    int read( char* dest, int numBytes )
     {
         int numDone = 0;
 
         while (numBytes > 0)
         {
-            const int available = jmin (numBytes, (int) [data length]);
+            const int available = jmin( numBytes, (int) [data length] );
 
             if (available > 0)
             {
-                const ScopedLock sl (dataLock);
-                [data getBytes: dest length: (NSUInteger) available];
-                [data replaceBytesInRange: NSMakeRange (0, (NSUInteger) available) withBytes: nil length: 0];
+                const ScopedLock sl( dataLock );
+                [data getBytes : dest length : (NSUInteger) available];
+                [data replaceBytesInRange : NSMakeRange( 0, (NSUInteger) available ) withBytes : nil length : 0];
 
-                numDone += available;
+                numDone  += available;
                 numBytes -= available;
                 dest += available;
             }
@@ -189,35 +204,35 @@ public:
                 if (hasFailed || hasFinished)
                     break;
 
-                Thread::sleep (1);
+                Thread::sleep( 1 );
             }
         }
 
         return numDone;
     }
 
-    void didReceiveResponse (NSURLResponse* response)
+    void didReceiveResponse( NSURLResponse* response )
     {
         {
-            const ScopedLock sl (dataLock);
-            [data setLength: 0];
+            const ScopedLock sl( dataLock );
+            [data setLength : 0];
         }
 
-        initialised = true;
+        initialised   = true;
         contentLength = [response expectedContentLength];
 
         [headers release];
         headers = nil;
 
-        if ([response isKindOfClass: [NSHTTPURLResponse class]])
+        if ([response isKindOfClass : [NSHTTPURLResponse class]])
         {
             NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*) response;
-            headers = [[httpResponse allHeaderFields] retain];
+            headers    = [[httpResponse allHeaderFields] retain];
             statusCode = (int) [httpResponse statusCode];
         }
     }
 
-    NSURLRequest* willSendRequest (NSURLRequest* newRequest, NSURLResponse* redirectResponse)
+    NSURLRequest* willSendRequest( NSURLRequest* newRequest, NSURLResponse* redirectResponse )
     {
         if (redirectResponse != nullptr)
         {
@@ -230,24 +245,23 @@ public:
         return newRequest;
     }
 
-    void didFailWithError (NSError* error)
+    void didFailWithError( NSError* error )
     {
-        DBG (nsStringToJuce ([error description])); (void) error;
-        hasFailed = true;
+        TREECORE_DBG( toString([error description] ) ); (void) error;
+        hasFailed   = true;
         initialised = true;
         signalThreadShouldExit();
     }
 
-    void didReceiveData (NSData* newData)
+    void didReceiveData( NSData* newData )
     {
-        const ScopedLock sl (dataLock);
-        [data appendData: newData];
+        const ScopedLock sl( dataLock );
+        [data appendData : newData];
         initialised = true;
     }
 
-    void didSendBodyData (NSInteger /*totalBytesWritten*/, NSInteger /*totalBytesExpected*/)
-    {
-    }
+    void didSendBodyData( NSInteger /*totalBytesWritten*/, NSInteger /*totalBytesExpected*/ )
+    {}
 
     void finishedLoading()
     {
@@ -259,12 +273,12 @@ public:
     void run() override
     {
         connection = [[NSURLConnection alloc] initWithRequest: request
-                                                     delegate: delegate];
-        while (! threadShouldExit())
+                      delegate: delegate];
+        while ( !threadShouldExit() )
         {
-            JUCE_AUTORELEASEPOOL
+            TREECORE_AUTO_RELEASE_POOL
             {
-                [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.01]];
+                [[NSRunLoop currentRunLoop] runUntilDate : [NSDate dateWithTimeIntervalSinceNow : 0.01]];
             }
         }
     }
@@ -283,76 +297,75 @@ public:
 
 private:
     //==============================================================================
-    struct DelegateClass  : public ObjCClass<NSObject>
+    struct DelegateClass: public ObjCClass<NSObject>
     {
-        DelegateClass()  : ObjCClass<NSObject> ("JUCEAppDelegate_")
+        DelegateClass(): ObjCClass<NSObject>( "TreecoreAppDelegate_" )
         {
-            addIvar<URLConnectionState*> ("state");
+            addIvar<URLConnectionState*>( "state" );
 
-            addMethod (@selector (connection:didReceiveResponse:), didReceiveResponse,            "v@:@@");
-            addMethod (@selector (connection:didFailWithError:),   didFailWithError,              "v@:@@");
-            addMethod (@selector (connection:didReceiveData:),     didReceiveData,                "v@:@@");
-            addMethod (@selector (connection:didSendBodyData:totalBytesWritten:totalBytesExpectedToWrite:),
-                                                                   connectionDidSendBodyData,     "v@:@iii");
-            addMethod (@selector (connectionDidFinishLoading:),    connectionDidFinishLoading,    "v@:@");
-            addMethod (@selector (connection:willSendRequest:redirectResponse:), willSendRequest, "@@:@@@");
+            addMethod( @selector (connection:didReceiveResponse:),               didReceiveResponse,         "v@:@@" );
+            addMethod( @selector (connection:didFailWithError:),                 didFailWithError,           "v@:@@" );
+            addMethod( @selector (connection:didReceiveData:),                   didReceiveData,             "v@:@@" );
+            addMethod( @selector (connection:didSendBodyData:totalBytesWritten:totalBytesExpectedToWrite:),
+                       connectionDidSendBodyData,     "v@:@iii" );
+            addMethod( @selector (connectionDidFinishLoading:),                  connectionDidFinishLoading, "v@:@" );
+            addMethod( @selector (connection:willSendRequest:redirectResponse:), willSendRequest,            "@@:@@@" );
 
             registerClass();
         }
 
-        static void setState (id self, URLConnectionState* state)  { object_setInstanceVariable (self, "state", state); }
-        static URLConnectionState* getState (id self)              { return getIvar<URLConnectionState*> (self, "state"); }
+        static void setState( id self, URLConnectionState* state )  { object_setInstanceVariable( self, "state", state ); }
+        static URLConnectionState* getState( id self )              { return getIvar<URLConnectionState*>( self, "state" ); }
 
-    private:
-        static void didReceiveResponse (id self, SEL, NSURLConnection*, NSURLResponse* response)
+private:
+        static void didReceiveResponse( id self, SEL, NSURLConnection*, NSURLResponse* response )
         {
-            getState (self)->didReceiveResponse (response);
+            getState( self )->didReceiveResponse( response );
         }
 
-        static void didFailWithError (id self, SEL, NSURLConnection*, NSError* error)
+        static void didFailWithError( id self, SEL, NSURLConnection*, NSError* error )
         {
-            getState (self)->didFailWithError (error);
+            getState( self )->didFailWithError( error );
         }
 
-        static void didReceiveData (id self, SEL, NSURLConnection*, NSData* newData)
+        static void didReceiveData( id self, SEL, NSURLConnection*, NSData* newData )
         {
-            getState (self)->didReceiveData (newData);
+            getState( self )->didReceiveData( newData );
         }
 
-        static NSURLRequest* willSendRequest (id self, SEL, NSURLConnection*, NSURLRequest* request, NSURLResponse* response)
+        static NSURLRequest* willSendRequest( id self, SEL, NSURLConnection*, NSURLRequest* request, NSURLResponse* response )
         {
-            return getState (self)->willSendRequest (request, response);
+            return getState( self )->willSendRequest( request, response );
         }
 
-        static void connectionDidSendBodyData (id self, SEL, NSURLConnection*, NSInteger, NSInteger totalBytesWritten, NSInteger totalBytesExpected)
+        static void connectionDidSendBodyData( id self, SEL, NSURLConnection*, NSInteger, NSInteger totalBytesWritten, NSInteger totalBytesExpected )
         {
-            getState (self)->didSendBodyData (totalBytesWritten, totalBytesExpected);
+            getState( self )->didSendBodyData( totalBytesWritten, totalBytesExpected );
         }
 
-        static void connectionDidFinishLoading (id self, SEL, NSURLConnection*)
+        static void connectionDidFinishLoading( id self, SEL, NSURLConnection* )
         {
-            getState (self)->finishedLoading();
+            getState( self )->finishedLoading();
         }
     };
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (URLConnectionState)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR( URLConnectionState )
 };
 
-
 //==============================================================================
-class WebInputStream  : public InputStream
+class WebInputStream: public InputStream
 {
 public:
-    WebInputStream (const String& address_, bool isPost_, const MemoryBlock& postData_,
-                    URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext,
-                    const String& headers_, int timeOutMs_, StringPairArray* responseHeaders,
-                    const int numRedirectsToFollow_)
-      : statusCode (0), address (address_), headers (headers_), postData (postData_), position (0),
-        finished (false), isPost (isPost_), timeOutMs (timeOutMs_), numRedirectsToFollow (numRedirectsToFollow_)
+    WebInputStream ( const String& address_, bool isPost_, const MemoryBlock& postData_,
+                     URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext,
+                     const String& headers_, int timeOutMs_, StringPairArray* responseHeaders,
+                     const int numRedirectsToFollow_ )
+        : statusCode( 0 ), address( address_ ), headers( headers_ ), postData( postData_ ), position( 0 ),
+        finished( false ), isPost( isPost_ ), timeOutMs( timeOutMs_ ), numRedirectsToFollow( numRedirectsToFollow_ )
     {
-        JUCE_AUTORELEASEPOOL
+        TREECORE_AUTO_RELEASE_POOL
         {
-            createConnection (progressCallback, progressCallbackContext);
+            createConnection( progressCallback, progressCallbackContext );
 
             if (connection != nullptr && connection->headers != nil)
             {
@@ -363,29 +376,29 @@ public:
                     NSEnumerator* enumerator = [connection->headers keyEnumerator];
 
                     while (NSString* key = [enumerator nextObject])
-                        responseHeaders->set (nsStringToJuce (key),
-                                              nsStringToJuce ((NSString*) [connection->headers objectForKey: key]));
+                        responseHeaders->set( toString( key ),
+                                              toString( (NSString*) [connection->headers objectForKey: key] ) );
                 }
             }
         }
     }
 
     //==============================================================================
-    bool isError() const                { return connection == nullptr; }
+    bool isError() const { return connection == nullptr; }
     int64 getTotalLength() override     { return connection == nullptr ? -1 : connection->contentLength; }
     bool isExhausted() override         { return finished; }
     int64 getPosition() override        { return position; }
 
-    int read (void* buffer, int bytesToRead) override
+    int read( void* buffer, int bytesToRead ) override
     {
-        jassert (buffer != nullptr && bytesToRead >= 0);
+        treecore_assert( buffer != nullptr && bytesToRead >= 0 );
 
-        if (finished || isError())
+        if ( finished || isError() )
             return 0;
 
-        JUCE_AUTORELEASEPOOL
+        TREECORE_AUTO_RELEASE_POOL
         {
-            const int bytesRead = connection->read (static_cast<char*> (buffer), bytesToRead);
+            const int bytesRead = connection->read( static_cast<char*>(buffer), bytesToRead );
             position += bytesRead;
 
             if (bytesRead == 0)
@@ -395,7 +408,7 @@ public:
         }
     }
 
-    bool setPosition (int64 wantedPos) override
+    bool setPosition( int64 wantedPos ) override
     {
         if (wantedPos != position)
         {
@@ -404,11 +417,11 @@ public:
             if (wantedPos < position)
             {
                 connection = nullptr;
-                position = 0;
-                createConnection (0, 0);
+                position   = 0;
+                createConnection( 0, 0 );
             }
 
-            skipNextBytes (wantedPos - position);
+            skipNextBytes( wantedPos - position );
         }
 
         return true;
@@ -426,42 +439,44 @@ private:
     const int timeOutMs;
     const int numRedirectsToFollow;
 
-    void createConnection (URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext)
+    void createConnection( URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext )
     {
-        jassert (connection == nullptr);
+        treecore_assert( connection == nullptr );
 
-        NSMutableURLRequest* req = [NSMutableURLRequest  requestWithURL: [NSURL URLWithString: juceStringToNS (address)]
-                                                            cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
-                                                        timeoutInterval: timeOutMs <= 0 ? 60.0 : (timeOutMs / 1000.0)];
+        NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL: [NSURL URLWithString: juceStringToNS( address )]
+                                    cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
+                                    timeoutInterval: timeOutMs <= 0 ? 60.0 : (timeOutMs / 1000.0)];
 
         if (req != nil)
         {
-            [req setHTTPMethod: nsStringLiteral (isPost ? "POST" : "GET")];
+            [req setHTTPMethod : nsStringLiteral( isPost ? "POST" : "GET" )];
             //[req setCachePolicy: NSURLRequestReloadIgnoringLocalAndRemoteCacheData];
 
             StringArray headerLines;
-            headerLines.addLines (headers);
-            headerLines.removeEmptyStrings (true);
+            headerLines.addLines( headers );
+            headerLines.removeEmptyStrings( true );
 
             for (int i = 0; i < headerLines.size(); ++i)
             {
-                const String key (headerLines[i].upToFirstOccurrenceOf (":", false, false).trim());
-                const String value (headerLines[i].fromFirstOccurrenceOf (":", false, false).trim());
+                const String key( headerLines[i].upToFirstOccurrenceOf( ":", false, false ).trim() );
+                const String value( headerLines[i].fromFirstOccurrenceOf( ":", false, false ).trim() );
 
-                if (key.isNotEmpty() && value.isNotEmpty())
-                    [req addValue: juceStringToNS (value) forHTTPHeaderField: juceStringToNS (key)];
+                if ( key.isNotEmpty() && value.isNotEmpty() )
+                    [req addValue : juceStringToNS( value ) forHTTPHeaderField : juceStringToNS( key )];
             }
 
             if (isPost && postData.getSize() > 0)
-                [req setHTTPBody: [NSData dataWithBytes: postData.getData()
-                                                 length: postData.getSize()]];
+                [req setHTTPBody : [NSData dataWithBytes : postData.getData()
+                                    length : postData.getSize()]];
 
-            connection = new URLConnectionState (req, numRedirectsToFollow);
+            connection = new URLConnectionState( req, numRedirectsToFollow );
 
-            if (! connection->start (progressCallback, progressCallbackContext))
+            if ( !connection->start( progressCallback, progressCallbackContext ) )
                 connection = nullptr;
         }
     }
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WebInputStream)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR( WebInputStream )
 };
+
+} // namespace treecore

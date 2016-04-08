@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,24 +23,24 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #ifndef JUCE_PROCESS_H_INCLUDED
 #define JUCE_PROCESS_H_INCLUDED
 
-#include "treecore/BasicNativeHeaders.h"
-#include "treecore/StandardHeader.h"
+#include "treecore/ClassUtils.h"
 #include "treecore/IntTypes.h"
+#include "treecore/PlatformDefs.h"
 
 namespace treecore {
 
 class String;
 class StringArray;
 
-#if defined TREECORE_OS_WINDOWS
-void JUCE_CALLTYPE repeatLastProcessPriority();
-bool JUCE_CALLTYPE isRunningInWine();
+#if TREECORE_OS_WINDOWS
+void TREECORE_STDCALL repeatLastProcessPriority();
+bool TREECORE_STDCALL isRunningInWine();
 #endif
 
 //==============================================================================
@@ -49,82 +49,79 @@ bool JUCE_CALLTYPE isRunningInWine();
     This contains methods for controlling the current application at the
     process-level.
 
-    @see Thread, JUCEApplicationBase
-*/
-class JUCE_API  Process
+    @see Thread
+ */
+class TREECORE_SHARED_API Process
 {
 public:
     //==============================================================================
     enum ProcessPriority
     {
-        LowPriority         = 0,
-        NormalPriority      = 1,
-        HighPriority        = 2,
-        RealtimePriority    = 3
+        LowPriority = 0,
+        NormalPriority   = 1,
+        HighPriority     = 2,
+        RealtimePriority = 3
     };
 
     /** Changes the current process's priority.
 
         @param priority     the process priority, where
                             0=low, 1=normal, 2=high, 3=realtime
-    */
-    static void JUCE_CALLTYPE setPriority (const ProcessPriority priority);
+     */
+    static void TREECORE_STDCALL setPriority( const ProcessPriority priority );
 
     /** Kills the current process immediately.
 
         This is an emergency process terminator that kills the application
         immediately - it's intended only for use only when something goes
         horribly wrong.
-
-        @see JUCEApplicationBase::quit
-    */
-    static void JUCE_CALLTYPE terminate();
+     */
+    static void TREECORE_STDCALL terminate();
 
     /** Raises the current process's privilege level.
 
         Does nothing if this isn't supported by the current OS, or if process
         privilege level is fixed.
-    */
-    static void JUCE_CALLTYPE raisePrivilege();
+     */
+    static void TREECORE_STDCALL raisePrivilege();
 
     /** Lowers the current process's privilege level.
 
         Does nothing if this isn't supported by the current OS, or if process
         privilege level is fixed.
-    */
-    static void JUCE_CALLTYPE lowerPrivilege();
+     */
+    static void TREECORE_STDCALL lowerPrivilege();
 
     //==============================================================================
     /** Returns true if this process is being hosted by a debugger. */
-    static bool JUCE_CALLTYPE isRunningUnderDebugger();
+    static bool TREECORE_STDCALL isRunningUnderDebugger();
 
-    static int32 JUCE_CALLTYPE getProcessID();
+    static int32 TREECORE_STDCALL getProcessID();
     //==============================================================================
     /** Tries to launch the OS's default reader application for a given file or URL. */
-    static bool JUCE_CALLTYPE openDocument (const String& documentURL, const String& parameters);
+    static bool TREECORE_STDCALL openDocument( const String& documentURL, const String& parameters );
 
     /** Tries to launch the OS's default email application to let the user create a message. */
-    static bool JUCE_CALLTYPE openEmailWithAttachments (const String& targetEmailAddress,
-                                                        const String& emailSubject,
-                                                        const String& bodyText,
-                                                        const StringArray& filesToAttach);
+    static bool TREECORE_STDCALL openEmailWithAttachments( const String&      targetEmailAddress,
+                                                           const String&      emailSubject,
+                                                           const String&      bodyText,
+                                                           const StringArray& filesToAttach );
 
-   #if defined TREECORE_OS_WINDOWS || DOXYGEN
-    //==============================================================================
+#if TREECORE_OS_WINDOWS || TREECORE_COMPILER_DOXYGEN
     /** WINDOWS ONLY - This returns the HINSTANCE of the current module.
 
         The return type is a void* to avoid being dependent on windows.h - just cast
         it to a HINSTANCE to use it.
 
-        In a normal JUCE application, this will be automatically set to the module
+        In a normal application, this will be automatically set to the module
         handle of the executable.
 
-        If you've built a DLL and plan to use any JUCE messaging or windowing classes,
+        If you've built a DLL and plan to use any messaging or windowing classes,
         you'll need to make sure you call the setCurrentModuleInstanceHandle()
         to provide the correct module handle in your DllMain() function, because
         the system relies on the correct instance handle when opening windows.
-    */
-    static void* JUCE_CALLTYPE getCurrentModuleInstanceHandle() noexcept;
+     */
+    static void* TREECORE_STDCALL getCurrentModuleInstanceHandle() noexcept;
 
     /** WINDOWS ONLY - Sets a new module handle to be used by the library.
 
@@ -132,19 +129,18 @@ public:
         expects a HINSTANCE value.
 
         @see getCurrentModuleInstanceHandle()
-    */
-    static void JUCE_CALLTYPE setCurrentModuleInstanceHandle (void* newHandle) noexcept;
-   #endif
+     */
+    static void TREECORE_STDCALL setCurrentModuleInstanceHandle( void* newHandle ) noexcept;
+#endif
 
-   #if defined TREECORE_OS_OSX || DOXYGEN
-    //==============================================================================
+#if TREECORE_OS_OSX || TREECORE_COMPILER_DOXYGEN
     /** OSX ONLY - Shows or hides the OSX dock icon for this app. */
-    static void setDockIconVisible (bool isVisible);
-   #endif
+    static void setDockIconVisible( bool isVisible );
+#endif
 
 private:
     Process();
-    TREECORE_DECLARE_NON_COPYABLE (Process)
+    TREECORE_DECLARE_NON_COPYABLE( Process )
 };
 
 }

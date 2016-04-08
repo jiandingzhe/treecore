@@ -41,7 +41,7 @@ namespace treecore {
 
     @see CriticalSection
 */
-class JUCE_API  InterProcessLock
+class TREECORE_SHARED_API  InterProcessLock
 {
 public:
     //==============================================================================

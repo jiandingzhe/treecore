@@ -39,7 +39,7 @@ class String;
 /**
     An IPV4 address.
 */
-class JUCE_API  IPAddress
+class TREECORE_SHARED_API  IPAddress
 {
 public:
     //==============================================================================

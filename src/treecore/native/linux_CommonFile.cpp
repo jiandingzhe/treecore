@@ -26,7 +26,6 @@
   ==============================================================================
 */
 
-#include "treecore/BasicNativeHeaders.h"
 #include "treecore/DirectoryIterator.h"
 #include "treecore/File.h"
 #include "treecore/FileInputStream.h"
@@ -34,6 +33,9 @@
 #include "treecore/StringRef.h"
 
 #include "treecore/native/posix_private.h"
+
+#include <dirent.h>
+#include <fnmatch.h>
 
 namespace treecore {
 
@@ -129,7 +131,7 @@ public:
                 {
                     filenameFound = CharPointer_UTF8 (de->d_name);
 
-                    updateStatInfoForFile (parentDir + filenameFound, isDir, fileSize, modTime, creationTime, isReadOnly);
+                    _update_file_stat_info_ (parentDir + filenameFound, isDir, fileSize, modTime, creationTime, isReadOnly);
 
                     if (isHidden != nullptr)
                         *isHidden = filenameFound.startsWithChar ('.');

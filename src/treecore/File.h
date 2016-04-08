@@ -30,7 +30,6 @@
 #define JUCE_FILE_H_INCLUDED
 
 #include "treecore/Array.h"
-#include "treecore/StandardHeader.h"
 #include "treecore/MathsFunctions.h"
 #include "treecore/Result.h"
 
@@ -55,7 +54,7 @@ class Time;
 
     @see FileInputStream, FileOutputStream
 */
-class JUCE_API  File
+class TREECORE_SHARED_API  File
 {
 public:
     //==============================================================================
@@ -855,7 +854,7 @@ public:
         /** In a plugin, this will return the path of the host executable. */
         hostApplicationPath,
 
-       #if defined TREECORE_OS_WINDOWS
+       #if TREECORE_OS_WINDOWS
         /** On a Windows machine, returns the location of the Windows/System32 folder. */
         windowsSystemDirectory,
        #endif
@@ -872,7 +871,7 @@ public:
 
         @see SpecialLocationType
     */
-    static File JUCE_CALLTYPE getSpecialLocation (const SpecialLocationType type);
+    static File TREECORE_STDCALL getSpecialLocation (const SpecialLocationType type);
 
     //==============================================================================
     /** Returns a temporary file in the system's temp directory.
@@ -901,7 +900,7 @@ public:
     /** The system-specific file separator character.
         On Windows, this will be '\', on Mac/Linux, it'll be '/'
     */
-    static const juce_wchar separator;
+    static const treecore_wchar separator;
 
     /** The system-specific file separator character, as a string.
         On Windows, this will be '\', on Mac/Linux, it'll be '/'
@@ -947,7 +946,7 @@ public:
     /** Adds a separator character to the end of a path if it doesn't already have one. */
     static String addTrailingSeparator (const String& path);
 
-   #if defined TREECORE_OS_OSX || defined TREECORE_OS_IOS || DOXYGEN
+   #if TREECORE_OS_OSX || TREECORE_OS_IOS || DOXYGEN
     //==============================================================================
     /** OSX ONLY - Finds the OSType of a file from the its resources. */
     OSType getMacOSType() const;
@@ -956,12 +955,12 @@ public:
     bool isBundle() const;
    #endif
 
-   #if defined TREECORE_OS_OSX || DOXYGEN
+   #if TREECORE_OS_OSX || DOXYGEN
     /** OSX ONLY - Adds this file to the OSX dock */
     void addToDock() const;
    #endif
 
-   #if defined TREECORE_OS_WINDOWS
+   #if TREECORE_OS_WINDOWS
     /** Windows ONLY - Creates a win32 .LNK shortcut file that links to this file. */
     bool createLink (const String& description, const File& linkFileToCreate) const;
    #endif

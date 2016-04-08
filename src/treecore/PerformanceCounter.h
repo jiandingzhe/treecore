@@ -55,7 +55,7 @@ namespace treecore {
     measured and averaged over 50 runs, and the results printed to a file
     every 50 times round the loop.
 */
-class JUCE_API  PerformanceCounter
+class TREECORE_SHARED_API  PerformanceCounter
 {
 public:
     //==============================================================================

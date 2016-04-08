@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,13 +23,12 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #ifndef JUCE_UUID_H_INCLUDED
 #define JUCE_UUID_H_INCLUDED
 
-#include "treecore/Common.h"
 #include "treecore/LeakedObjectDetector.h"
 #include "treecore/MathsFunctions.h"
 
@@ -46,8 +45,8 @@ class String;
     formatted to meet the RFC 4122 version 4 standard.
 
     The class includes methods for saving the ID as a string or as raw binary data.
-*/
-class JUCE_API  Uuid
+ */
+class TREECORE_SHARED_API Uuid
 {
 public:
     //==============================================================================
@@ -58,10 +57,10 @@ public:
     ~Uuid() noexcept;
 
     /** Creates a copy of another UUID. */
-    Uuid (const Uuid&) noexcept;
+    Uuid ( const Uuid& ) noexcept;
 
     /** Copies another UUID. */
-    Uuid& operator= (const Uuid&) noexcept;
+    Uuid& operator = ( const Uuid& ) noexcept;
 
     //==============================================================================
     /** Returns true if the ID is zero. */
@@ -70,8 +69,8 @@ public:
     /** Returns a null Uuid object. */
     static Uuid null() noexcept;
 
-    bool operator== (const Uuid&) const noexcept;
-    bool operator!= (const Uuid&) const noexcept;
+    bool operator == ( const Uuid& ) const noexcept;
+    bool operator != ( const Uuid& ) const noexcept;
 
     //==============================================================================
     /** Returns a stringified version of this UUID.
@@ -80,48 +79,46 @@ public:
         the constructor that takes a string parameter.
 
         @returns a 32 character hex string.
-    */
+     */
     String toString() const;
 
     /** Returns a stringified version of this UUID, separating it into sections with dashes.
         @returns a string in the format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-    */
+     */
     String toDashedString() const;
 
     /** Creates an ID from an encoded string version.
         @see toString
-    */
-    Uuid (const String& uuidString);
+     */
+    Uuid ( const String& uuidString );
 
     /** Copies from a stringified UUID.
         The string passed in should be one that was created with the toString() method.
-    */
-    Uuid& operator= (const String& uuidString);
-
+     */
+    Uuid& operator = ( const String& uuidString );
 
     //==============================================================================
     /** Returns a pointer to the internal binary representation of the ID.
 
         This is an array of 16 bytes. To reconstruct a Uuid from its data, use
         the constructor or operator= method that takes an array of uint8s.
-    */
+     */
     const uint8* getRawData() const noexcept                { return uuid; }
 
     /** Creates a UUID from a 16-byte array.
         @see getRawData
-    */
-    Uuid (const uint8* rawData) noexcept;
+     */
+    Uuid ( const uint8* rawData ) noexcept;
 
     /** Sets this UUID from 16-bytes of raw data. */
-    Uuid& operator= (const uint8* rawData) noexcept;
-
+    Uuid& operator = ( const uint8* rawData ) noexcept;
 
 private:
     //==============================================================================
     uint8 uuid[16];
-    String getHexRegion (int, int) const;
+    String getHexRegion( int, int ) const;
 
-    JUCE_LEAK_DETECTOR (Uuid)
+    TREECORE_LEAK_DETECTOR( Uuid )
 };
 
 }

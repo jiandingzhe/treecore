@@ -4,6 +4,8 @@
 #include "treecore/NamedPipe.h"
 #include "treecore/Time.h"
 
+#include <sys/stat.h>
+
 namespace treecore
 {
 

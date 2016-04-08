@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,12 +23,16 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #include "treecore/Logger.h"
 #include "treecore/Memory.h"
+#include "treecore/StringRef.h"
+#include "treecore/StringArray.h"
 #include "treecore/SystemStats.h"
+#include "treecore/Time.h"
+
 #include "treecore/internal/SystemStats_private.h"
 
 namespace treecore
@@ -41,71 +45,71 @@ ScopedAutoReleasePool::ScopedAutoReleasePool()
 
 ScopedAutoReleasePool::~ScopedAutoReleasePool()
 {
-    [((NSAutoreleasePool*) pool) release];
+    [( (NSAutoreleasePool*) pool )release];
 }
 
 //==============================================================================
-void Logger::outputDebugString (const String& text)
+void Logger::outputDebugString( const String& text )
 {
-    // Would prefer to use std::cerr here, but avoiding it for
-    // the moment, due to clang JIT linkage problems.
-    fputs (text.toRawUTF8(), stderr);
-    fputs ("\n", stderr);
-    fflush (stderr);
+// Would prefer to use std::cerr here, but avoiding it for
+// the moment, due to clang JIT linkage problems.
+    fputs( text.toRawUTF8(), stderr );
+    fputs( "\n",             stderr );
+    fflush( stderr );
 }
 
 //==============================================================================
 namespace SystemStatsHelpers
 {
-   #if defined TREECORE_CPU_X86 && ! JUCE_NO_INLINE_ASM
-    static void doCPUID (uint32& a, uint32& b, uint32& c, uint32& d, uint32 type)
-    {
-        uint32 la = a, lb = b, lc = c, ld = d;
+#if TREECORE_CPU_X86 && !TREECORE_NO_INLINE_ASM
+static void doCPUID( uint32& a, uint32& b, uint32& c, uint32& d, uint32 type )
+{
+    uint32 la = a, lb = b, lc = c, ld = d;
 
-        asm ("mov %%ebx, %%esi \n\t"
-             "cpuid \n\t"
-             "xchg %%esi, %%ebx"
-               : "=a" (la), "=S" (lb), "=c" (lc), "=d" (ld) : "a" (type)
-           #if TREECORE_SIZE_PTR == 8
-                  , "b" (lb), "c" (lc), "d" (ld)
-           #endif
-        );
+    asm ("mov %%ebx, %%esi \n\t"
+         "cpuid \n\t"
+         "xchg %%esi, %%ebx"
+         : "=a" (la), "=S" (lb), "=c" (lc), "=d" (ld) : "a" (type)
+   #    if TREECORE_SIZE_PTR == 8
+         , "b" (lb), "c" (lc), "d" (ld)
+   #    endif
+    );
 
-        a = la; b = lb; c = lc; d = ld;
-    }
-   #endif
+    a = la; b = lb; c = lc; d = ld;
+}
+#endif
 }
 
 //==============================================================================
 void CPUInformation::initialise() noexcept
 {
-   #if defined TREECORE_CPU_X86 && ! JUCE_NO_INLINE_ASM
+#if TREECORE_CPU_X86 && !TREECORE_NO_INLINE_ASM
     uint32 a = 0, b = 0, d = 0, c = 0;
-    SystemStatsHelpers::doCPUID (a, b, c, d, 1);
+    SystemStatsHelpers::doCPUID( a, b, c, d, 1 );
 
-    hasMMX   = (d & (1u << 23)) != 0;
-    hasSSE   = (d & (1u << 25)) != 0;
-    hasSSE2  = (d & (1u << 26)) != 0;
-    has3DNow = (b & (1u << 31)) != 0;
-    hasSSE3  = (c & (1u <<  0)) != 0;
-   #endif
+    hasMMX   = ( d & (1u << 23) ) != 0;
+    hasSSE   = ( d & (1u << 25) ) != 0;
+    hasSSE2  = ( d & (1u << 26) ) != 0;
+    has3DNow = ( b & (1u << 31) ) != 0;
+    hasSSE3  = ( c & (1u <<  0) ) != 0;
+#endif
 
-   #if defined TREECORE_OS_IOS || (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5)
+#if TREECORE_OS_IOS || (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5)
     numCpus = (int) [[NSProcessInfo processInfo] activeProcessorCount];
-   #else
+#else
     numCpus = (int) MPProcessors();
-   #endif
+#endif
 }
 
-#ifdef TREECORE_OS_OSX
+#if TREECORE_OS_OSX
 struct RLimitInitialiser
 {
     RLimitInitialiser()
     {
         rlimit lim;
-        getrlimit (RLIMIT_NOFILE, &lim);
+        getrlimit( RLIMIT_NOFILE, &lim );
         lim.rlim_cur = lim.rlim_max = RLIM_INFINITY;
-        setrlimit (RLIMIT_NOFILE, &lim);
+        setrlimit( RLIMIT_NOFILE, &lim );
     }
 };
 
@@ -113,98 +117,92 @@ static RLimitInitialiser rLimitInitialiser;
 #endif
 
 //==============================================================================
-#ifndef TREECORE_OS_IOS
+#if !TREECORE_OS_IOS
 static String getOSXVersion()
 {
-    JUCE_AUTORELEASEPOOL
+    TREECORE_AUTO_RELEASE_POOL
     {
         NSDictionary* dict = [NSDictionary dictionaryWithContentsOfFile:
-                                    nsStringLiteral ("/System/Library/CoreServices/SystemVersion.plist")];
+                              nsStringLiteral( "/System/Library/CoreServices/SystemVersion.plist" )];
 
-        return nsStringToJuce ([dict objectForKey: nsStringLiteral ("ProductVersion")]);
+        return toString([dict objectForKey: nsStringLiteral( "ProductVersion" )] );
     }
 }
 #endif
 
 SystemStats::OperatingSystemType SystemStats::getOperatingSystemType()
 {
-   #ifdef TREECORE_OS_IOS
+#if TREECORE_OS_IOS
     return iOS;
-   #else
+#else
     StringArray parts;
-    parts.addTokens (getOSXVersion(), ".", StringRef());
+    parts.addTokens( getOSXVersion(), ".", StringRef() );
 
-    jassert (parts[0].getIntValue() == 10);
+    treecore_assert( parts[0].getIntValue() == 10 );
     const int major = parts[1].getIntValue();
-    jassert (major > 2);
+    treecore_assert( major > 2 );
 
     return (OperatingSystemType) (major + MacOSX_10_4 - 4);
-   #endif
+#endif
 }
 
 String SystemStats::getOperatingSystemName()
 {
-   #ifdef TREECORE_OS_IOS
-    return "iOS " + nsStringToJuce ([[UIDevice currentDevice] systemVersion]);
-   #else
+#if TREECORE_OS_IOS
+    return "iOS " + toString([[UIDevice currentDevice] systemVersion] );
+#else
     return "Mac OSX " + getOSXVersion();
-   #endif
+#endif
 }
 
 String SystemStats::getDeviceDescription()
 {
-   #ifdef TREECORE_OS_IOS
-    return nsStringToJuce ([[UIDevice currentDevice] model]);
-   #else
+#if TREECORE_OS_IOS
+    return toString([[UIDevice currentDevice] model] );
+#else
     return String();
-   #endif
+#endif
 }
 
 bool SystemStats::isOperatingSystem64Bit()
 {
-   #ifdef TREECORE_OS_IOS
-    return false;
-   #elif TREECORE_SIZE_PTR == 8
-    return true;
-   #else
-    return getOperatingSystemType() >= MacOSX_10_6;
-   #endif
+    return TREECORE_SIZE_PTR == 8;
 }
 
 int SystemStats::getMemorySizeInMegabytes()
 {
     uint64 mem = 0;
-    size_t memSize = sizeof (mem);
+    size_t memSize = sizeof(mem);
     int mib[] = { CTL_HW, HW_MEMSIZE };
-    sysctl (mib, 2, &mem, &memSize, 0, 0);
-    return (int) (mem / (1024 * 1024));
+    sysctl( mib, 2, &mem, &memSize, 0, 0 );
+    return (int) ( mem / (1024 * 1024) );
 }
 
 String SystemStats::getCpuVendor()
 {
-   #if defined TREECORE_CPU_X86 && ! JUCE_NO_INLINE_ASM
+#if TREECORE_CPU_X86 && !TREECORE_NO_INLINE_ASM
     uint32 dummy = 0;
     uint32 vendor[4] = { 0 };
 
-    SystemStatsHelpers::doCPUID (dummy, vendor[0], vendor[2], vendor[1], 0);
+    SystemStatsHelpers::doCPUID( dummy, vendor[0], vendor[2], vendor[1], 0 );
 
-    return String (reinterpret_cast <const char*> (vendor), 12);
-   #else
+    return String( reinterpret_cast<const char*>(vendor), 12 );
+#else
     return String();
-   #endif
+#endif
 }
 
 int SystemStats::getCpuSpeedInMegaherz()
 {
-    uint64 speedHz = 0;
-    size_t speedSize = sizeof (speedHz);
+    uint64 speedHz   = 0;
+    size_t speedSize = sizeof(speedHz);
     int mib[] = { CTL_HW, HW_CPU_FREQ };
-    sysctl (mib, 2, &speedHz, &speedSize, 0, 0);
+    sysctl( mib, 2, &speedHz, &speedSize, 0, 0 );
 
-   #ifdef TREECORE_ENDIAN_BIG
+#if TREECORE_ENDIAN_BIG
     if (speedSize == 4)
         speedHz >>= 32;
-   #endif
+#endif
 
     return (int) (speedHz / 1000000);
 }
@@ -212,47 +210,47 @@ int SystemStats::getCpuSpeedInMegaherz()
 //==============================================================================
 String SystemStats::getLogonName()
 {
-    return nsStringToJuce (NSUserName());
+    return toString( NSUserName() );
 }
 
 String SystemStats::getFullUserName()
 {
-    return nsStringToJuce (NSFullUserName());
+    return toString( NSFullUserName() );
 }
 
 String SystemStats::getComputerName()
 {
     char name [256] = { 0 };
-    if (gethostname (name, sizeof (name) - 1) == 0)
-        return String (name).upToLastOccurrenceOf (".local", false, true);
+    if (gethostname( name, sizeof(name) - 1 ) == 0)
+        return String( name ).upToLastOccurrenceOf( ".local", false, true );
 
     return String();
 }
 
-static String getLocaleValue (CFStringRef key)
+static String getLocaleValue( CFStringRef key )
 {
     CFLocaleRef cfLocale = CFLocaleCopyCurrent();
-    const String result (String::fromCFString ((CFStringRef) CFLocaleGetValue (cfLocale, key)));
-    CFRelease (cfLocale);
+    const String result( toString( (CFStringRef) CFLocaleGetValue( cfLocale, key ) ) );
+    CFRelease( cfLocale );
     return result;
 }
 
-String SystemStats::getUserLanguage()   { return getLocaleValue (kCFLocaleLanguageCode); }
-String SystemStats::getUserRegion()     { return getLocaleValue (kCFLocaleCountryCode); }
+String SystemStats::getUserLanguage()   { return getLocaleValue( kCFLocaleLanguageCode ); }
+String SystemStats::getUserRegion()     { return getLocaleValue( kCFLocaleCountryCode ); }
 
 String SystemStats::getDisplayLanguage()
 {
     CFArrayRef cfPrefLangs = CFLocaleCopyPreferredLanguages();
-    const String result (String::fromCFString ((CFStringRef) CFArrayGetValueAtIndex (cfPrefLangs, 0)));
-    CFRelease (cfPrefLangs);
+    const String result( toString( (CFStringRef) CFArrayGetValueAtIndex( cfPrefLangs, 0 ) ) );
+    CFRelease( cfPrefLangs );
     return result;
 }
 
 //==============================================================================
 /*  NB: these are kept outside the HiResCounterInfo struct and initialised to 1 to avoid
-    division-by-zero errors if some other static constructor calls us before this file's
-    static constructors have had a chance to fill them in correctly..
-*/
+   division-by-zero errors if some other static constructor calls us before this file's
+   static constructors have had a chance to fill them in correctly..
+ */
 static uint64 hiResCounterNumerator = 0, hiResCounterDenominator = 1;
 
 class HiResCounterInfo
@@ -261,7 +259,7 @@ public:
     HiResCounterInfo()
     {
         mach_timebase_info_data_t timebase;
-        (void) mach_timebase_info (&timebase);
+        (void) mach_timebase_info( &timebase );
 
         if (timebase.numer % 1000000 == 0)
         {
@@ -280,7 +278,7 @@ public:
 
     uint32 millisecondsSinceStartup() const noexcept
     {
-        return (uint32) ((mach_absolute_time() * hiResCounterNumerator) / hiResCounterDenominator);
+        return (uint32) ( (mach_absolute_time() * hiResCounterNumerator) / hiResCounterDenominator );
     }
 
     double getMillisecondCounterHiRes() const noexcept
@@ -296,14 +294,14 @@ private:
 
 static HiResCounterInfo hiResCounterInfo;
 
-uint32 juce_millisecondsSinceStartup() noexcept         { return hiResCounterInfo.millisecondsSinceStartup(); }
+uint32 _milli_seconds_since_startup_() noexcept         { return hiResCounterInfo.millisecondsSinceStartup(); }
 double Time::getMillisecondCounterHiRes() noexcept      { return hiResCounterInfo.getMillisecondCounterHiRes(); }
-int64  Time::getHighResolutionTicksPerSecond() noexcept { return hiResCounterInfo.highResTimerFrequency; }
-int64  Time::getHighResolutionTicks() noexcept          { return (int64) mach_absolute_time(); }
+int64 Time::getHighResolutionTicksPerSecond() noexcept { return hiResCounterInfo.highResTimerFrequency; }
+int64 Time::getHighResolutionTicks() noexcept          { return (int64) mach_absolute_time(); }
 
 bool Time::setSystemTimeToThisTime() const
 {
-    jassertfalse;
+    treecore_assert_false;
     return false;
 }
 

@@ -2,8 +2,6 @@
 #define TREECORE_NATIVE_WIN32_HIGH_RESOLUTION_TIMER_H
 
 #include "treecore/HighResolutionTimer.h"
-#include "treecore/StandardHeader.h"
-#include "treecore/BasicNativeHeaders.h"
 
 namespace treecore
 {

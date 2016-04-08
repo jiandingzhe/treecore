@@ -54,7 +54,7 @@ class ThreadPoolThread;
 
     @see ThreadPool, Thread
 */
-class JUCE_API  ThreadPoolJob
+class TREECORE_SHARED_API  ThreadPoolJob
 {
 public:
     //==============================================================================
@@ -153,7 +153,7 @@ private:
 
     @see ThreadPoolJob, Thread
 */
-class JUCE_API  ThreadPool
+class TREECORE_SHARED_API  ThreadPool
 {
 public:
     //==============================================================================
@@ -185,7 +185,7 @@ public:
         for some kind of operation.
         @see ThreadPool::removeAllJobs
     */
-    class JUCE_API  JobSelector
+    class TREECORE_SHARED_API  JobSelector
     {
     public:
         virtual ~JobSelector() {}

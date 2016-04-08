@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,16 +23,16 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #ifndef JUCE_OUTPUTSTREAM_H_INCLUDED
 #define JUCE_OUTPUTSTREAM_H_INCLUDED
 
-#include "treecore/String.h"
+#include "treecore/ClassUtils.h"
 #include "treecore/LeakedObjectDetector.h"
+#include "treecore/String.h"
 
-//==============================================================================
 namespace treecore {
 
 class File;
@@ -47,8 +47,8 @@ class NewLine;
     some or all of the virtual functions to implement their behaviour.
 
     @see InputStream, MemoryOutputStream, FileOutputStream
-*/
-class JUCE_API  OutputStream
+ */
+class TREECORE_SHARED_API OutputStream
 {
 protected:
     //==============================================================================
@@ -59,7 +59,7 @@ public:
 
         Some subclasses might want to do things like call flush() during their
         destructors.
-    */
+     */
     virtual ~OutputStream();
 
     //==============================================================================
@@ -73,13 +73,13 @@ public:
         false if it fails to work.
 
         @see getPosition
-    */
-    virtual bool setPosition (int64 newPosition) = 0;
+     */
+    virtual bool setPosition( int64 newPosition ) = 0;
 
     /** Returns the stream's current position.
 
         @see setPosition
-    */
+     */
     virtual int64 getPosition() = 0;
 
     //==============================================================================
@@ -92,94 +92,94 @@ public:
         @param dataToWrite      the target buffer to receive the data. This must not be null.
         @param numberOfBytes    the number of bytes to write.
         @returns false if the write operation fails for some reason
-    */
-    virtual bool write (const void* dataToWrite,
-                        size_t numberOfBytes) = 0;
+     */
+    virtual bool write( const void* dataToWrite,
+                        size_t      numberOfBytes ) = 0;
 
     //==============================================================================
     /** Writes a single byte to the stream.
         @returns false if the write operation fails for some reason
         @see InputStream::readByte
-    */
-    virtual bool writeByte (char byte);
+     */
+    virtual bool writeByte( char byte );
 
     /** Writes a boolean to the stream as a single byte.
         This is encoded as a binary byte (not as text) with a value of 1 or 0.
         @returns false if the write operation fails for some reason
         @see InputStream::readBool
-    */
-    virtual bool writeBool (bool boolValue);
+     */
+    virtual bool writeBool( bool boolValue );
 
     /** Writes a 16-bit integer to the stream in a little-endian byte order.
         This will write two bytes to the stream: (value & 0xff), then (value >> 8).
         @returns false if the write operation fails for some reason
         @see InputStream::readShort
-    */
-    virtual bool writeShort (short value);
+     */
+    virtual bool writeShort( short value );
 
     /** Writes a 16-bit integer to the stream in a big-endian byte order.
         This will write two bytes to the stream: (value >> 8), then (value & 0xff).
         @returns false if the write operation fails for some reason
         @see InputStream::readShortBigEndian
-    */
-    virtual bool writeShortBigEndian (short value);
+     */
+    virtual bool writeShortBigEndian( short value );
 
     /** Writes a 32-bit integer to the stream in a little-endian byte order.
         @returns false if the write operation fails for some reason
         @see InputStream::readInt
-    */
-    virtual bool writeInt (int value);
+     */
+    virtual bool writeInt( int value );
 
     /** Writes a 32-bit integer to the stream in a big-endian byte order.
         @returns false if the write operation fails for some reason
         @see InputStream::readIntBigEndian
-    */
-    virtual bool writeIntBigEndian (int value);
+     */
+    virtual bool writeIntBigEndian( int value );
 
     /** Writes a 64-bit integer to the stream in a little-endian byte order.
         @returns false if the write operation fails for some reason
         @see InputStream::readInt64
-    */
-    virtual bool writeInt64 (int64 value);
+     */
+    virtual bool writeInt64( int64 value );
 
     /** Writes a 64-bit integer to the stream in a big-endian byte order.
         @returns false if the write operation fails for some reason
         @see InputStream::readInt64BigEndian
-    */
-    virtual bool writeInt64BigEndian (int64 value);
+     */
+    virtual bool writeInt64BigEndian( int64 value );
 
     /** Writes a 32-bit floating point value to the stream in a binary format.
         The binary 32-bit encoding of the float is written as a little-endian int.
         @returns false if the write operation fails for some reason
         @see InputStream::readFloat
-    */
-    virtual bool writeFloat (float value);
+     */
+    virtual bool writeFloat( float value );
 
     /** Writes a 32-bit floating point value to the stream in a binary format.
         The binary 32-bit encoding of the float is written as a big-endian int.
         @returns false if the write operation fails for some reason
         @see InputStream::readFloatBigEndian
-    */
-    virtual bool writeFloatBigEndian (float value);
+     */
+    virtual bool writeFloatBigEndian( float value );
 
     /** Writes a 64-bit floating point value to the stream in a binary format.
         The eight raw bytes of the double value are written out as a little-endian 64-bit int.
         @returns false if the write operation fails for some reason
         @see InputStream::readDouble
-    */
-    virtual bool writeDouble (double value);
+     */
+    virtual bool writeDouble( double value );
 
     /** Writes a 64-bit floating point value to the stream in a binary format.
         The eight raw bytes of the double value are written out as a big-endian 64-bit int.
         @see InputStream::readDoubleBigEndian
         @returns false if the write operation fails for some reason
-    */
-    virtual bool writeDoubleBigEndian (double value);
+     */
+    virtual bool writeDoubleBigEndian( double value );
 
     /** Writes a byte to the output stream a given number of times.
         @returns false if the write operation fails for some reason
-    */
-    virtual bool writeRepeatedByte (uint8 byte, size_t numTimesToRepeat);
+     */
+    virtual bool writeRepeatedByte( uint8 byte, size_t numTimesToRepeat );
 
     /** Writes a condensed binary encoding of a 32-bit integer.
 
@@ -191,8 +191,8 @@ public:
 
         @returns false if the write operation fails for some reason
         @see InputStream::readCompressedInt
-    */
-    virtual bool writeCompressedInt (int value);
+     */
+    virtual bool writeCompressedInt( int value );
 
     /** Stores a string in the stream in a binary format.
 
@@ -206,8 +206,8 @@ public:
 
         @returns false if the write operation fails for some reason
         @see InputStream::readString, writeText, operator<<
-    */
-    virtual bool writeString (const String& text);
+     */
+    virtual bool writeString( const String& text );
 
     /** Writes a string of text to the stream.
 
@@ -217,10 +217,10 @@ public:
 
         The method also replaces '\\n' characters in the text with '\\r\\n'.
         @returns false if the write operation fails for some reason
-    */
-    virtual bool writeText (const String& text,
-                            bool asUTF16,
-                            bool writeUTF16ByteOrderMark);
+     */
+    virtual bool writeText( const String& text,
+                            bool          asUTF16,
+                            bool          writeUTF16ByteOrderMark );
 
     /** Reads data from an input stream and writes it to this stream.
 
@@ -229,15 +229,15 @@ public:
                                     less than zero, it will keep reading until the input
                                     is exhausted)
         @returns the number of bytes written
-    */
-    virtual int64 writeFromInputStream (InputStream& source, int64 maxNumBytesToWrite);
+     */
+    virtual int64 writeFromInputStream( InputStream& source, int64 maxNumBytesToWrite );
 
     //==============================================================================
     /** Sets the string that will be written to the stream when the writeNewLine()
         method is called.
         By default this will be set the value of NewLine::getDefault().
-    */
-    void setNewLineString (const String& newLineString);
+     */
+    void setNewLineString( const String& newLineString );
 
     /** Returns the current new-line string that was set by setNewLineString(). */
     const String& getNewLineString() const noexcept         { return newLineString; }
@@ -246,33 +246,33 @@ private:
     //==============================================================================
     String newLineString;
 
-    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OutputStream)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR( OutputStream )
 };
 
 //==============================================================================
 /** Writes a number to a stream as 8-bit characters in the default system encoding. */
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, int number);
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator << ( OutputStream& stream, int number );
 
 /** Writes a number to a stream as 8-bit characters in the default system encoding. */
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, int64 number);
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator << ( OutputStream& stream, int64 number );
 
 /** Writes a number to a stream as 8-bit characters in the default system encoding. */
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, double number);
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator << ( OutputStream& stream, double number );
 
 /** Writes a character to a stream. */
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, char character);
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator << ( OutputStream& stream, char character );
 
 /** Writes a null-terminated text string to a stream. */
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const char* text);
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator << ( OutputStream& stream, const char* text );
 
 /** Writes a block of data from a MemoryBlock to a stream. */
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const MemoryBlock& data);
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator << ( OutputStream& stream, const MemoryBlock& data );
 
 /** Writes the contents of a file to a stream. */
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const File& fileToRead);
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator << ( OutputStream& stream, const File& fileToRead );
 
 /** Writes the complete contents of an input stream to an output stream. */
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, InputStream& streamToRead);
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator << ( OutputStream& stream, InputStream& streamToRead );
 
 /** Writes a new-line to a stream.
     You can use the predefined symbol 'newLine' to invoke this, e.g.
@@ -280,8 +280,8 @@ JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, InputStre
     myOutputStream << "Hello World" << newLine << newLine;
     @endcode
     @see OutputStream::setNewLineString
-*/
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const NewLine&);
+ */
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator << ( OutputStream& stream, const NewLine& );
 
 }
 

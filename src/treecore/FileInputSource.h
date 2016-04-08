@@ -40,7 +40,7 @@ namespace treecore {
 
     @see InputSource
 */
-class JUCE_API  FileInputSource     : public InputSource
+class TREECORE_SHARED_API  FileInputSource     : public InputSource
 {
 public:
     //==============================================================================

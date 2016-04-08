@@ -231,7 +231,7 @@ void WebInputStream::close()
 void WebInputStream::createConnection(URL::OpenStreamProgressCallback* progressCallback,
                         void* progressCallbackContext)
 {
-    static HINTERNET sessionHandle = InternetOpen (_T("juce"), INTERNET_OPEN_TYPE_PRECONFIG, 0, 0, 0);
+    static HINTERNET sessionHandle = InternetOpen (_T("treecore"), INTERNET_OPEN_TYPE_PRECONFIG, 0, 0, 0);
 
     close();
 
@@ -378,7 +378,7 @@ struct GetAdaptersInfoHelper
     bool callGetAdaptersInfo()
     {
         DynamicLibrary dll ("iphlpapi.dll");
-        JUCE_LOAD_WINAPI_FUNCTION (dll, GetAdaptersInfo, getAdaptersInfo, DWORD, (PIP_ADAPTER_INFO, PULONG))
+        TREECORE_LOAD_WINAPI_FUNCTION (dll, GetAdaptersInfo, getAdaptersInfo, DWORD, (PIP_ADAPTER_INFO, PULONG))
 
         if (getAdaptersInfo == nullptr)
             return false;
@@ -418,7 +418,7 @@ namespace MACAddressHelpers
     static void getViaNetBios(Array<MacAddress>& result)
     {
         DynamicLibrary dll ("netapi32.dll");
-        JUCE_LOAD_WINAPI_FUNCTION (dll, Netbios, NetbiosCall, UCHAR, (PNCB))
+        TREECORE_LOAD_WINAPI_FUNCTION (dll, Netbios, NetbiosCall, UCHAR, (PNCB))
 
         if (NetbiosCall != 0)
         {
@@ -489,13 +489,13 @@ void IPAddress::findAllAddresses (Array<IPAddress>& result)
 }
 
 //==============================================================================
-bool JUCE_CALLTYPE Process::openEmailWithAttachments (const String& targetEmailAddress,
+bool TREECORE_STDCALL Process::openEmailWithAttachments (const String& targetEmailAddress,
                                                       const String& emailSubject,
                                                       const String& bodyText,
                                                       const StringArray& filesToAttach)
 {
     DynamicLibrary dll ("MAPI32.dll");
-    JUCE_LOAD_WINAPI_FUNCTION (dll, MAPISendMail, mapiSendMail,
+    TREECORE_LOAD_WINAPI_FUNCTION (dll, MAPISendMail, mapiSendMail,
                                ULONG, (LHANDLE, ULONG, lpMapiMessage, ::FLAGS, ULONG))
 
     if (mapiSendMail == nullptr)

@@ -42,7 +42,7 @@ namespace treecore {
 
     @see WildcardFileFilter, DirectoryContentsList, FileListComponent, FileBrowserComponent
 */
-class JUCE_API  FileFilter
+class TREECORE_SHARED_API  FileFilter
 {
 public:
     //==============================================================================

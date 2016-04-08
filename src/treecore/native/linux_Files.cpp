@@ -30,9 +30,11 @@
 #include "treecore/Process.h"
 #include "treecore/StringArray.h"
 #include "treecore/StringRef.h"
-//#include "treecore/URL.h"
 
 #include "treecore/native/posix_private.h"
+
+#include <pwd.h>
+#include <sys/types.h>
 
 namespace treecore {
 
@@ -76,7 +78,7 @@ bool File::isOnHardDisk() const
 
 bool File::isOnRemovableDrive() const
 {
-    jassertfalse; // xxx not implemented for linux!
+    treecore_assert_false; // xxx not implemented for linux!
     return false;
 }
 
@@ -160,16 +162,16 @@ File File::getSpecialLocation (const SpecialLocationType type)
 
         case currentExecutableFile:
         case currentApplicationFile:
-            return juce_getExecutableFile();
+            return _get_executable_file_();
 
         case hostApplicationPath:
         {
             const File f ("/proc/self/exe");
-            return f.isLink() ? f.getLinkedTarget() : juce_getExecutableFile();
+            return f.isLink() ? f.getLinkedTarget() : _get_executable_file_();
         }
 
         default:
-            jassertfalse; // unknown type?
+            treecore_assert_false; // unknown type?
             break;
     }
 
@@ -197,9 +199,9 @@ bool File::moveToTrash() const
 //==============================================================================
 static bool isFileExecutable (const String& filename)
 {
-    juce_statStruct info;
+    _StatStruct_ info;
 
-    return juce_stat (filename, info)
+    return _stat_ (filename, info)
             && S_ISREG (info.st_mode)
             && access (filename.toUTF8(), X_OK) == 0;
 }

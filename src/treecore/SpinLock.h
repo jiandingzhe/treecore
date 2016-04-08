@@ -30,8 +30,8 @@
 #define JUCE_SPINLOCK_H_INCLUDED
 
 #include "treecore/AtomicFunc.h"
+#include "treecore/DebugUtils.h"
 #include "treecore/ScopedLock.h"
-#include "treecore/StandardHeader.h"
 
 namespace treecore {
 
@@ -48,7 +48,7 @@ namespace treecore {
 
     @see CriticalSection
 */
-class JUCE_API  SpinLock
+class TREECORE_SHARED_API  SpinLock
 {
 public:
     inline SpinLock() noexcept {}
@@ -74,7 +74,7 @@ public:
     /** Releases the lock. */
     inline void exit() const noexcept
     {
-        jassert (treecore::atomic_load(&lock) == 1); // Agh! Releasing a lock that isn't currently held!
+        treecore_assert (treecore::atomic_load(&lock) == 1); // Agh! Releasing a lock that isn't currently held!
         lock = 0;
     }
 

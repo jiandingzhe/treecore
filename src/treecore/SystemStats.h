@@ -29,7 +29,7 @@
 #ifndef JUCE_SYSTEMSTATS_H_INCLUDED
 #define JUCE_SYSTEMSTATS_H_INCLUDED
 
-#include "treecore/StandardHeader.h"
+#include "treecore/ClassUtils.h"
 #include "treecore/String.h"
 
 namespace treecore {
@@ -38,14 +38,9 @@ namespace treecore {
 /**
     Contains methods for finding out about the current hardware and OS configuration.
 */
-class JUCE_API  SystemStats
+class TREECORE_SHARED_API  SystemStats
 {
 public:
-    //==============================================================================
-    /** Returns the current version of JUCE,
-        See also the JUCE_VERSION, JUCE_MAJOR_VERSION and JUCE_MINOR_VERSION macros.
-    */
-    static String getJUCEVersion();
 
     //==============================================================================
     /** The set of possible results of the getOperatingSystemType() method. */

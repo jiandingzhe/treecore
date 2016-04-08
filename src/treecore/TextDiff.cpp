@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,8 +23,8 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #include "treecore/String.h"
 #include "treecore/TextDiff.h"
@@ -37,86 +37,86 @@ struct TextDiffHelpers
 
     struct StringRegion
     {
-        StringRegion (const String& s) noexcept
-            : text (s.getCharPointer()), start (0), length (s.length()) {}
+        StringRegion ( const String& s ) noexcept
+            : text( s.getCharPointer() ), start( 0 ), length( s.length() ) {}
 
-        StringRegion (const String::CharPointerType t, int s, int len)  noexcept
-            : text (t), start (s), length (len) {}
+        StringRegion ( const String::CharPointerType t, int s, int len )  noexcept
+            : text( t ), start( s ), length( len ) {}
 
         String::CharPointerType text;
         int start, length;
     };
 
-    static void addInsertion (TextDiff& td, const String::CharPointerType text, int index, int length)
+    static void addInsertion( TextDiff& td, const String::CharPointerType text, int index, int length )
     {
         TextDiff::Change c;
-        c.insertedText = String (text, (size_t) length);
-        c.start = index;
+        c.insertedText = String( text, (size_t) length );
+        c.start  = index;
         c.length = length;
-        td.changes.add (c);
+        td.changes.add( c );
     }
 
-    static void addDeletion (TextDiff& td, int index, int length)
+    static void addDeletion( TextDiff& td, int index, int length )
     {
         TextDiff::Change c;
-        c.start = index;
+        c.start  = index;
         c.length = length;
-        td.changes.add (c);
+        td.changes.add( c );
     }
 
-    static void diffSkippingCommonStart (TextDiff& td, const StringRegion& a, const StringRegion& b)
+    static void diffSkippingCommonStart( TextDiff& td, const StringRegion& a, const StringRegion& b )
     {
-        String::CharPointerType sa (a.text);
-        String::CharPointerType sb (b.text);
-        const int maxLen = jmax (a.length, b.length);
+        String::CharPointerType sa( a.text );
+        String::CharPointerType sb( b.text );
+        const int maxLen = jmax( a.length, b.length );
 
         for (int i = 0; i < maxLen; ++i, ++sa, ++sb)
         {
             if (*sa != *sb)
             {
-                diffRecursively (td, StringRegion (sa, a.start + i, a.length - i),
-                                     StringRegion (sb, b.start + i, b.length - i));
+                diffRecursively( td, StringRegion( sa, a.start + i, a.length - i ),
+                                 StringRegion( sb, b.start + i, b.length - i ) );
                 break;
             }
         }
     }
 
-    static void diffRecursively (TextDiff& td, const StringRegion& a, const StringRegion& b)
+    static void diffRecursively( TextDiff& td, const StringRegion& a, const StringRegion& b )
     {
         int indexA, indexB;
-        const int len = findLongestCommonSubstring (a.text, a.length,
+        const int len = findLongestCommonSubstring( a.text, a.length,
                                                     b.text, b.length,
-                                                    indexA, indexB);
+                                                    indexA, indexB );
 
         if (len >= minLengthToMatch)
         {
             if (indexA > 0 && indexB > 0)
-                diffSkippingCommonStart (td, StringRegion (a.text, a.start, indexA),
-                                             StringRegion (b.text, b.start, indexB));
+                diffSkippingCommonStart( td, StringRegion( a.text, a.start, indexA ),
+                                         StringRegion( b.text, b.start, indexB ) );
             else if (indexA > 0)
-                addDeletion (td, b.start, indexA);
+                addDeletion( td, b.start, indexA );
             else if (indexB > 0)
-                addInsertion (td, b.text, b.start, indexB);
+                addInsertion( td, b.text, b.start, indexB );
 
-            diffRecursively (td, StringRegion (a.text + indexA + len, a.start + indexA + len, a.length - indexA - len),
-                                 StringRegion (b.text + indexB + len, b.start + indexB + len, b.length - indexB - len));
+            diffRecursively( td, StringRegion( a.text + indexA + len, a.start + indexA + len, a.length - indexA - len ),
+                             StringRegion( b.text + indexB + len, b.start + indexB + len, b.length - indexB - len ) );
         }
         else
         {
-            if (a.length > 0)   addDeletion (td, b.start, a.length);
-            if (b.length > 0)   addInsertion (td, b.text, b.start, b.length);
+            if (a.length > 0)   addDeletion( td, b.start, a.length );
+            if (b.length > 0)   addInsertion( td, b.text, b.start, b.length );
         }
     }
 
-    static int findLongestCommonSubstring (String::CharPointerType a, const int lenA,
+    static int findLongestCommonSubstring( String::CharPointerType a, const int lenA,
                                            const String::CharPointerType b, const int lenB,
-                                           int& indexInA, int& indexInB)
+                                           int& indexInA, int& indexInB )
     {
         if (lenA == 0 || lenB == 0)
             return 0;
 
         HeapBlock<int> lines;
-        lines.calloc (2 + 2 * (size_t) lenB);
+        lines.calloc( 2 + 2 * (size_t) lenB );
 
         int* l0 = lines;
         int* l1 = l0 + lenB + 1;
@@ -127,12 +127,12 @@ struct TextDiffHelpers
 
         for (int i = 0; i < lenA; ++i)
         {
-            const juce_wchar ca = a.getAndAdvance();
-            String::CharPointerType b2 (b);
+            const treecore_wchar ca = a.getAndAdvance();
+            String::CharPointerType b2( b );
 
             for (int j = 0; j < lenB; ++j)
             {
-                if (ca != b2.getAndAdvance())
+                if ( ca != b2.getAndAdvance() )
                 {
                     l1[j + 1] = 0;
                 }
@@ -145,8 +145,8 @@ struct TextDiffHelpers
                     {
                         loopsWithoutImprovement = 0;
                         bestLength = len;
-                        indexInA = i;
-                        indexInB = j;
+                        indexInA   = i;
+                        indexInB   = j;
                     }
                 }
             }
@@ -154,7 +154,7 @@ struct TextDiffHelpers
             if (++loopsWithoutImprovement > 100)
                 break;
 
-            std::swap (l0, l1);
+            std::swap( l0, l1 );
         }
 
         indexInA -= bestLength - 1;
@@ -163,15 +163,15 @@ struct TextDiffHelpers
     }
 };
 
-TextDiff::TextDiff (const String& original, const String& target)
+TextDiff::TextDiff ( const String& original, const String& target )
 {
-    TextDiffHelpers::diffSkippingCommonStart (*this, original, target);
+    TextDiffHelpers::diffSkippingCommonStart( *this, original, target );
 }
 
-String TextDiff::appliedTo (String text) const
+String TextDiff::appliedTo( String text ) const
 {
     for (int i = 0; i < changes.size(); ++i)
-        text = changes[i].appliedTo (text);
+        text = changes[i].appliedTo( text );
 
     return text;
 }
@@ -181,74 +181,10 @@ bool TextDiff::Change::isDeletion() const noexcept
     return insertedText.isEmpty();
 }
 
-String TextDiff::Change::appliedTo (const String& text) const noexcept
+String TextDiff::Change::appliedTo( const String& text ) const noexcept
 {
-    return text.substring (0, start) + (isDeletion() ? text.substring (start + length)
-                                                     : (insertedText + text.substring (start)));
+    return text.substring( 0, start ) + ( isDeletion() ? text.substring( start + length )
+                                          : ( insertedText + text.substring( start ) ) );
 }
 
-//==============================================================================
-//==============================================================================
-#if JUCE_UNIT_TESTS
-
-class DiffTests  : public UnitTest
-{
-public:
-    DiffTests() : UnitTest ("TextDiff class") {}
-
-    static String createString (Random& r)
-    {
-        juce_wchar buffer[50] = { 0 };
-
-        for (int i = r.nextInt (49); --i >= 0;)
-        {
-            if (r.nextInt (10) == 0)
-            {
-                do
-                {
-                    buffer[i] = (juce_wchar) (1 + r.nextInt (0x10ffff - 1));
-                }
-                while (! CharPointer_UTF16::canRepresent (buffer[i]));
-            }
-            else
-                buffer[i] = (juce_wchar) ('a' + r.nextInt (3));
-        }
-
-        return CharPointer_UTF32 (buffer);
-    }
-
-    void testDiff (const String& a, const String& b)
-    {
-        TextDiff diff (a, b);
-        const String result (diff.appliedTo (a));
-        expectEquals (result, b);
-    }
-
-    void runTest()
-    {
-        beginTest ("TextDiff");
-
-        Random r = getRandom();
-
-        testDiff (String::empty, String::empty);
-        testDiff ("x", String::empty);
-        testDiff (String::empty, "x");
-        testDiff ("x", "x");
-        testDiff ("x", "y");
-        testDiff ("xxx", "x");
-        testDiff ("x", "xxx");
-
-        for (int i = 5000; --i >= 0;)
-        {
-            String s (createString (r));
-            testDiff (s, createString (r));
-            testDiff (s + createString (r), s + createString (r));
-        }
-    }
-};
-
-static DiffTests diffTests;
-
-#endif
-
-}
+} // namespace treecore

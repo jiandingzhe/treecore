@@ -91,25 +91,25 @@ public:
 
         KeyType& key() noexcept
         {
-            jassert(m_impl.entry != nullptr);
+            treecore_assert(m_impl.entry != nullptr);
             return m_impl.entry->item.key;
         }
 
         ValueType& value() noexcept
         {
-            jassert(m_impl.entry != nullptr);
+            treecore_assert(m_impl.entry != nullptr);
             return m_impl.entry->item.values[m_i_value];
         }
 
         Array<ValueType>& values() noexcept
         {
-            jassert(m_impl.entry != nullptr);
+            treecore_assert(m_impl.entry != nullptr);
             return m_impl.entry->item.values;
         }
 
         int numValuesForCurrentKey() const noexcept
         {
-            jassert(m_impl.entry != nullptr);
+            treecore_assert(m_impl.entry != nullptr);
             return m_impl.entry->item.values.size();
         }
 

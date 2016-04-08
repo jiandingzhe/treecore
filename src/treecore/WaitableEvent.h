@@ -29,9 +29,8 @@
 #ifndef JUCE_WAITABLEEVENT_H_INCLUDED
 #define JUCE_WAITABLEEVENT_H_INCLUDED
 
-#include "treecore/BasicNativeHeaders.h"
+#include "treecore/PlatformDefs.h"
 #include "treecore/LeakedObjectDetector.h"
-#include "treecore/StandardHeader.h"
 
 namespace treecore {
 
@@ -43,7 +42,7 @@ namespace treecore {
     calling thread until another thread wakes it up by calling the signal()
     method.
 */
-class JUCE_API  WaitableEvent
+class TREECORE_SHARED_API  WaitableEvent
 {
 public:
     //==============================================================================
@@ -108,7 +107,7 @@ public:
 
 private:
     //==============================================================================
-   #if defined TREECORE_OS_WINDOWS
+   #if TREECORE_OS_WINDOWS
     void* handle;
    #else
     mutable pthread_cond_t condition;

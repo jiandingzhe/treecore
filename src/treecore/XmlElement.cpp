@@ -47,10 +47,10 @@ XmlElement::XmlAttributeNode::XmlAttributeNode (const XmlAttributeNode& other) n
 XmlElement::XmlAttributeNode::XmlAttributeNode (const Identifier& n, const String& v) noexcept
     : name (n), value (v)
 {
-   #if JUCE_DEBUG
+   #if TREECORE_DEBUG
     // this checks whether the attribute name string contains any illegal characters..
     for (String::CharPointerType t (name.getCharPointer()); ! t.isEmpty(); ++t)
-        jassert (t.isLetterOrDigit() || *t == '_' || *t == '-' || *t == ':');
+        treecore_assert (t.isLetterOrDigit() || *t == '_' || *t == '-' || *t == ':');
    #endif
 }
 
@@ -65,10 +65,10 @@ static void sanityCheckTagName (const String& tag)
     (void) tag;
 
     // the tag name mustn't be empty, or it'll look like a text element!
-    jassert (tag.containsNonWhitespaceChars())
+    treecore_assert (tag.containsNonWhitespaceChars())
 
     // The tag can't contain spaces or other characters that would create invalid XML!
-    jassert (! tag.containsAnyOf (" <>/&(){}"));
+    treecore_assert (! tag.containsAnyOf (" <>/&(){}"));
 }
 
 XmlElement::XmlElement (const String& tag)
@@ -134,7 +134,7 @@ XmlElement::XmlElement (XmlElement&& other) noexcept
 
 XmlElement& XmlElement::operator= (XmlElement&& other) noexcept
 {
-    jassert (this != &other); // hopefully the compiler should make this situation impossible!
+    treecore_assert (this != &other); // hopefully the compiler should make this situation impossible!
 
     removeAllAttributes();
     deleteAllChildElements();
@@ -149,10 +149,10 @@ XmlElement& XmlElement::operator= (XmlElement&& other) noexcept
 
 void XmlElement::copyChildrenAndAttributesFrom (const XmlElement& other)
 {
-    jassert (firstChildElement.get() == nullptr);
+    treecore_assert (firstChildElement.get() == nullptr);
     firstChildElement.addCopyOfList (other.firstChildElement);
 
-    jassert (attributes.get() == nullptr);
+    treecore_assert (attributes.get() == nullptr);
     attributes.addCopyOfList (other.attributes);
 }
 
@@ -166,7 +166,7 @@ XmlElement::~XmlElement() noexcept
 namespace XmlOutputFunctions
 {
    #if 0 // (These functions are just used to generate the lookup table used below)
-    bool isLegalXmlCharSlow (const juce_wchar character) noexcept
+    bool isLegalXmlCharSlow (const treecore_wchar character) noexcept
     {
         if ((character >= 'a' && character <= 'z')
              || (character >= 'A' && character <= 'Z')
@@ -177,7 +177,7 @@ namespace XmlOutputFunctions
 
         do
         {
-            if (((juce_wchar) (uint8) *t) == character)
+            if (((treecore_wchar) (uint8) *t) == character)
                 return true;
         }
         while (*++t != 0);
@@ -196,7 +196,7 @@ namespace XmlOutputFunctions
         for (int i = 0; i < 32; ++i)
             s << (int) n[i] << ", ";
 
-        DBG (s);
+        TREECORE_DBG (s);
     }
    #endif
 
@@ -409,7 +409,7 @@ bool XmlElement::hasTagName (StringRef possibleTagName) const noexcept
 
     // XML tags should be case-sensitive, so although this method allows a
     // case-insensitive match to pass, you should try to avoid this.
-    jassert ((! matches) || tagName == possibleTagName);
+    treecore_assert ((! matches) || tagName == possibleTagName);
 
     return matches;
 }
@@ -512,7 +512,7 @@ bool XmlElement::getBoolAttribute (StringRef attributeName, const bool defaultRe
 {
     if (const XmlAttributeNode* att = getAttribute (attributeName))
     {
-        const juce_wchar firstChar = *(att->value.getCharPointer().findEndOfWhitespace());
+        const treecore_wchar firstChar = *(att->value.getCharPointer().findEndOfWhitespace());
 
         return firstChar == '1'
             || firstChar == 't'
@@ -603,7 +603,7 @@ XmlElement* XmlElement::getChildElement (const int index) const noexcept
 
 XmlElement* XmlElement::getChildByName (StringRef childName) const noexcept
 {
-    jassert (! childName.isEmpty());
+    treecore_assert (! childName.isEmpty());
 
     for (XmlElement* child = firstChildElement; child != nullptr; child = child->nextListItem)
         if (child->hasTagName (childName))
@@ -614,7 +614,7 @@ XmlElement* XmlElement::getChildByName (StringRef childName) const noexcept
 
 XmlElement* XmlElement::getChildByAttribute (StringRef attributeName, StringRef attributeValue) const noexcept
 {
-    jassert (! attributeName.isEmpty());
+    treecore_assert (! attributeName.isEmpty());
 
     for (XmlElement* child = firstChildElement; child != nullptr; child = child->nextListItem)
         if (child->compareAttribute (attributeName, attributeValue))
@@ -628,7 +628,7 @@ void XmlElement::addChildElement (XmlElement* const newNode) noexcept
     if (newNode != nullptr)
     {
         // The element being added must not be a child of another node!
-        jassert (newNode->nextListItem == nullptr);
+        treecore_assert (newNode->nextListItem == nullptr);
 
         firstChildElement.append (newNode);
     }
@@ -639,7 +639,7 @@ void XmlElement::insertChildElement (XmlElement* const newNode, int indexToInser
     if (newNode != nullptr)
     {
         // The element being added must not be a child of another node!
-        jassert (newNode->nextListItem == nullptr);
+        treecore_assert (newNode->nextListItem == nullptr);
 
         firstChildElement.insertAtIndex (indexToInsertAt, newNode);
     }
@@ -650,7 +650,7 @@ void XmlElement::prependChildElement (XmlElement* newNode) noexcept
     if (newNode != nullptr)
     {
         // The element being added must not be a child of another node!
-        jassert (newNode->nextListItem == nullptr);
+        treecore_assert (newNode->nextListItem == nullptr);
 
         firstChildElement.insertNext (newNode);
     }
@@ -829,23 +829,23 @@ bool XmlElement::isTextElement() const noexcept
     return tagName.isEmpty();
 }
 
-static const String juce_xmltextContentAttributeName ("text");
+static const String _xml_text_content_attribute_name_ ("text");
 
 const String& XmlElement::getText() const noexcept
 {
-    jassert (isTextElement());  // you're trying to get the text from an element that
+    treecore_assert (isTextElement());  // you're trying to get the text from an element that
                                 // isn't actually a text element.. If this contains text sub-nodes, you
                                 // probably want to use getAllSubText instead.
 
-    return getStringAttribute (juce_xmltextContentAttributeName);
+    return getStringAttribute (_xml_text_content_attribute_name_);
 }
 
 void XmlElement::setText (const String& newText)
 {
     if (isTextElement())
-        setAttribute (juce_xmltextContentAttributeName, newText);
+        setAttribute (_xml_text_content_attribute_name_, newText);
     else
-        jassertfalse; // you can only change the text in a text element, not a normal one.
+        treecore_assert_false; // you can only change the text in a text element, not a normal one.
 }
 
 String XmlElement::getAllSubText() const
@@ -875,7 +875,7 @@ String XmlElement::getChildElementAllSubText (StringRef childTagName, const Stri
 XmlElement* XmlElement::createTextElement (const String& text)
 {
     XmlElement* const e = new XmlElement ((int) 0);
-    e->setAttribute (juce_xmltextContentAttributeName, text);
+    e->setAttribute (_xml_text_content_attribute_name_, text);
     return e;
 }
 

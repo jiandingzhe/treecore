@@ -19,7 +19,7 @@ protected:
         , m_sizeDec( ( 1u << pow2size ) - 1 )
         , m_data(m_sizeDec+1,setToZero)
     {
-        jassert( m_p2size >= 1 );
+        treecore_assert( m_p2size >= 1 );
         checkPowerOfTwo(m_sizeDec + 1);
         //static_assert(IS_TRIVIAL(T),"T must be pod!"); TODO
     }
@@ -55,10 +55,10 @@ public:
     forcedinline IntType realloc(const IntType newP2Size, IntType startPos, IntType writePos, bool const setToZero = true)
     {
         const IntType newSize = ( 1u << newP2Size );
-        jassert( newSize >= ( m_sizeDec + 1 ) );
+        treecore_assert( newSize >= ( m_sizeDec + 1 ) );
 
         IntType const oldSize = getUsedSize(writePos,startPos);
-        jassert(oldSize <= m_sizeDec);
+        treecore_assert(oldSize <= m_sizeDec);
 
         HeapBlock<T> temp(newSize,setToZero);
         for(IntType i = 0; i < oldSize; ++i) {
