@@ -8,6 +8,7 @@ enable_testing()
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/zip_input.zip DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 foreach(test_name
+    t_abstract_fifo
     t_aligned_array
     t_aligned_malloc
     t_array_elem_move
@@ -15,6 +16,7 @@ foreach(test_name
     t_atomic_func_st
     t_atomic_obj_st
     t_dlist
+    t_file
     t_float_utils
     t_fxsave
     t_hash_multi_map
@@ -26,6 +28,7 @@ foreach(test_name
     t_identifier
     t_int_utils
     t_int_type
+
     t_lf_queue_st
     t_mpl
     t_obj_pool
@@ -39,6 +42,7 @@ foreach(test_name
     t_sorted_set
     t_sparse_set
     t_static_array
+    t_string
     t_string_pool
     t_text_diff
     t_thread
