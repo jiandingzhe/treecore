@@ -334,6 +334,18 @@ bool operator!= (const var& v1, const String& v2);
 bool operator== (const var& v1, const char* v2);
 bool operator!= (const var& v1, const char* v2);
 
+template<class traits>
+std::basic_ostream<char, traits>& TREECORE_STDCALL operator << ( std::basic_ostream<char, traits>& stream, const var& value )
+{
+    return stream << value.toString();
+}
+
+template<class traits>
+std::basic_ostream<wchar_t, traits>& TREECORE_STDCALL operator << ( std::basic_ostream<wchar_t, traits>& stream, const var& value )
+{
+    return stream << value.toString().toWideCharPointer();
+}
+
 }
 
 #endif   // JUCE_VARIANT_H_INCLUDED

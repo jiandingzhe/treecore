@@ -80,11 +80,12 @@ public:
     T* generate()
     {
         T* k = nullptr;
-        if unlikely(!m_objects.pop(k))
+        while unlikely(!m_objects.pop(k))
         {
             createSome();
         }
 
+        treecore_assert(k != nullptr);
         new (k) T();
         return k;
     }
@@ -98,11 +99,12 @@ public:
     T* generate(InitType&&... initValues)
     {
         T* k = nullptr;
-        if unlikely(!m_objects.pop(k))
+        while unlikely(!m_objects.pop(k))
         {
             createSome();
         }
 
+        treecore_assert(k != nullptr);
         new (k) T(initValues...);
         return k;
     }
@@ -125,7 +127,6 @@ public:
     void createSome(int numBlock = 1)
     {
         treecore_assert( numBlock>0 );
-
 
         for (int i = 0; i < numBlock; i++)
         {

@@ -15,10 +15,12 @@ foreach(test_name
     t_array_ref
     t_atomic_func_st
     t_atomic_obj_st
+    t_child_process
     t_dlist
     t_file
     t_float_utils
     t_fxsave
+    t_gzip_compressor_output_stream
     t_hash_multi_map
     t_hash_multi_map_move
     t_hash_set
@@ -28,8 +30,9 @@ foreach(test_name
     t_identifier
     t_int_utils
     t_int_type
-
+    t_json
     t_lf_queue_st
+    t_memory_input_output_stream
     t_mpl
     t_obj_pool
     t_option_parser
