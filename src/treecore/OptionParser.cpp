@@ -36,7 +36,7 @@ String _dup_char_( int num_repeat, char content )
     return result;
 }
 
-void _break_desc_lines_( const String& input, size_t line_size, Array<String>& output )
+void _break_desc_lines_( const String& input, int line_size, Array<String>& output )
 {
     StringArray paragraphs;
     paragraphs.addTokens( input, "\n", "" );
@@ -128,7 +128,7 @@ String Option::format_doc( int32 w_line, int32 w_key_left, int32 w_key, int32 w_
     if (w_key_remain < 0)
     {
         fprintf( stderr, "option key exceeds width limit %lu: %d\n%s\n",
-                 unsigned long(w_key), doc_key.length(), doc_key.toRawUTF8() );
+                 static_cast<unsigned long>(w_key), doc_key.length(), doc_key.toRawUTF8() );
         abort();
     }
 
