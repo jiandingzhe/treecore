@@ -3,6 +3,7 @@
 
 #include "treecore/ChildProcess.h"
 #include "treecore/PlatformDefs.h"
+#include <Windows.h>
 
 namespace treecore
 {

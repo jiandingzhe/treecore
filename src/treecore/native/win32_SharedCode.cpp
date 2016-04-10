@@ -39,6 +39,10 @@
 #include "treecore/native/win32_HighResolutionTimer.h"
 #include "treecore/native/win32_InterProcessLock.h"
 
+#include <process.h>
+#include <timeapi.h>
+#include <mmsystem.h>
+
 namespace treecore
 {
 
@@ -79,7 +83,7 @@ bool WaitableEvent::wait( const int timeOutMs ) const noexcept
 }
 
 //==============================================================================
-void TREECORE_SHARED_API _thread_entry_point( void* );
+void TREECORE_SHARED_API _thread_entry_point_( void* );
 
 static unsigned int __stdcall threadEntryProc( void* userData )
 {
@@ -87,7 +91,7 @@ static unsigned int __stdcall threadEntryProc( void* userData )
         AttachThreadInput( GetWindowThreadProcessId( MESSAGE_WINDOW_HANDLE, 0 ),
                            GetCurrentThreadId(), TRUE );
 
-    _thread_entry_point( userData ); // actually userData->ThreadEntryPoint()
+    _thread_entry_point_( userData ); // actually userData->ThreadEntryPoint()
 
     _endthreadex( 0 );
     return 0;
@@ -99,7 +103,7 @@ void Thread::launchThread()
     threadHandle = (void*) _beginthreadex( 0, 0, &threadEntryProc, this, 0, &newThreadId );
     if (threadHandle == 0)
         abort();
-    threadId = (ThreadID) newThreadId;
+    threadId = ThreadID(newThreadId);
 }
 
 void Thread::closeThreadHandle()
@@ -180,7 +184,7 @@ struct SleepEvent
     SleepEvent() noexcept
         : handle( CreateEvent( nullptr, FALSE, FALSE,
                               #if TREECORE_DEBUG
-                               _T( "Sleep Event" ) ) )
+                               L"Sleep Event" ) )
          #else
                                nullptr) )
                               #endif
@@ -250,7 +254,7 @@ void TREECORE_STDCALL Process::setPriority( ProcessPriority prior )
 
 bool TREECORE_STDCALL Process::isRunningUnderDebugger()
 {
-    return IsDebuggerPresent() != FALSE();
+    return IsDebuggerPresent() != FALSE;
 }
 
 static void* currentModuleHandle = nullptr;

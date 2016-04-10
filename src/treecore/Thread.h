@@ -37,6 +37,7 @@
 namespace treecore {
 
 #if TREECORE_OS_WINDOWS
+#include <Windows.h>
 extern HWND MESSAGE_WINDOW_HANDLE;
 #elif TREECORE_OS_LINUX
 extern uint32 MESSAGE_WINDOW_HANDLE;

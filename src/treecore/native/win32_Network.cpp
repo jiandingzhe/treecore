@@ -43,6 +43,10 @@
 #include "treecore/MemoryBlock.h"
 #include "treecore/Process.h"
 
+#include <IPHlpApi.h>
+#include <nb30.h>
+#include <MAPI.h>
+
 namespace treecore
 {
 
@@ -171,7 +175,7 @@ int64 WebInputStream::getTotalLength()
 
 int WebInputStream::read(void* buffer, int bytesToRead)
 {
-    jassert (buffer != nullptr && bytesToRead >= 0);
+    treecore_assert( buffer != nullptr && bytesToRead >= 0 );
     DWORD bytesRead = 0;
 
     if (!(m_impl->finished || isError()))
@@ -231,7 +235,7 @@ void WebInputStream::close()
 void WebInputStream::createConnection(URL::OpenStreamProgressCallback* progressCallback,
                         void* progressCallbackContext)
 {
-    static HINTERNET sessionHandle = InternetOpen (_T("treecore"), INTERNET_OPEN_TYPE_PRECONFIG, 0, 0, 0);
+    static HINTERNET sessionHandle = InternetOpen (L"treecore", INTERNET_OPEN_TYPE_PRECONFIG, 0, 0, 0);
 
     close();
 
@@ -304,7 +308,7 @@ void WebInputStream::applyTimeout(HINTERNET sessionHandle, const DWORD option)
 void WebInputStream::openHTTPConnection(URL_COMPONENTS& uc, URL::OpenStreamProgressCallback* progressCallback,
                             void* progressCallbackContext)
 {
-    const TCHAR* mimeTypes[] = { _T("*/*"), nullptr };
+    const TCHAR* mimeTypes[] = { L"*/*", nullptr };
 
     DWORD flags = INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_NO_COOKIES
                     | INTERNET_FLAG_NO_AUTO_REDIRECT | SECURITY_SET_MASK;
@@ -313,7 +317,7 @@ void WebInputStream::openHTTPConnection(URL_COMPONENTS& uc, URL::OpenStreamProgr
         flags |= INTERNET_FLAG_SECURE;  // (this flag only seems necessary if the OS is running IE6 -
                                         //  IE7 seems to automatically work out when it's https)
 
-    m_impl->request = HttpOpenRequest(m_impl->connection, m_impl->isPost ? _T("POST") : _T("GET"),
+    m_impl->request = HttpOpenRequest(m_impl->connection, m_impl->isPost ? L"POST" : L"GET",
                                 uc.lpszUrlPath, 0, 0, mimeTypes, flags, 0);
 
     if (m_impl->request != 0)

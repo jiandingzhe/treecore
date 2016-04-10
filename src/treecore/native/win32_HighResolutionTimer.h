@@ -3,6 +3,8 @@
 
 #include "treecore/HighResolutionTimer.h"
 
+#include <Windows.h>
+
 namespace treecore
 {
 

@@ -134,9 +134,9 @@ private:
     {
         // Let me know if any of these assertions fail on your system!
        #if TREECORE_NATIVE_WCHAR_IS_UTF8
-        static_assert( sizeof(wchar_t) == 1 );
+        static_assert( sizeof(wchar_t) == 1, "wchar_t is 1 byte" );
        #elif TREECORE_NATIVE_WCHAR_IS_UTF16
-        static_assert( sizeof(wchar_t) == 2 );
+        static_assert( sizeof(wchar_t) == 2, "wchar_t is 2 byte" );
        #elif TREECORE_NATIVE_WCHAR_IS_UTF32
         static_assert( sizeof(wchar_t) == 4, "wchar_t is 4 byte" );
        #else

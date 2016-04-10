@@ -34,6 +34,8 @@
 #include "treecore/internal/SystemStats_private.h"
 #include "treecore/Time.h"
 
+#include <timeapi.h>
+
 namespace treecore
 {
 
@@ -281,7 +283,7 @@ public:
 #if TREECORE_WIN32_TIMER_PERIOD > 0
         const MMRESULT res = timeBeginPeriod( TREECORE_WIN32_TIMER_PERIOD );
         (void) res;
-        jassert( res == TIMERR_NOERROR );
+        treecore_assert( res == TIMERR_NOERROR );
 #endif
 
         LARGE_INTEGER f;

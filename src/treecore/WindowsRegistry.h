@@ -66,7 +66,7 @@ public:
         e.g. "HKEY_CURRENT_USER\Software\foo\bar"
     */
     static String TREECORE_STDCALL getValue (const String& regValuePath,
-                                          const String& defaultValue = String::empty,
+                                          const String& defaultValue = String::empty(),
                                           WoW64Mode mode = WoW64_Default);
 
     /** Reads a binary block from the registry.

@@ -38,8 +38,10 @@
 #include "treecore/TemporaryFile.h"
 #include "treecore/Time.h"
 
-#include <pwd.h>
-
+#if TREECORE_OS_WINDOWS
+#else
+#    include <pwd.h>
+#endif
 namespace treecore {
 
 File::File ( const String& fullPathName )

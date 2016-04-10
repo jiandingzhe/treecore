@@ -181,13 +181,7 @@ public:
         It doesn't matter too much which format you pick, because the toUTF8(), toUTF16() and
         toUTF32() methods let you access the string's content in any of the other formats.
      */
-#if TREECORE_OS_LINUX || TREECORE_OS_ANDROID || TREECORE_OS_OSX || TREECORE_OS_IOS || TREECORE_OS_FREEBSD
     typedef CharPointer_UTF8 CharPointerType;
-#elif TREECORE_OS_WINDOWS
-    typedef CharPointer_UTF16 CharPointerType;
-#else
-#    error do not know how to determine string storage type
-#endif
 
     //==============================================================================
     /** Generates a probably-unique 32-bit hashcode from this string. */

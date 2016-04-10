@@ -5,9 +5,14 @@
 
 #include <cstdint>
 #include <cstdlib>
-#include <unistd.h>
+#include <cstddef>
 
-namespace treecore {
+#if !TREECORE_COMPILER_MSVC
+#    include <unistd.h>
+#endif
+
+namespace treecore 
+{
 
 using std::size_t;
 
@@ -28,7 +33,7 @@ typedef std::uintptr_t pointer_sized_uint;
 
 #if TREECORE_COMPILER_MSVC
 typedef std::intptr_t ssize_t;
-static_assert( sizeof(size_t) == sizeof(ssize_t), "size type validation" )
+static_assert(sizeof(size_t) == sizeof(ssize_t), "size type validation");
 #else
 using ::ssize_t;
 #endif

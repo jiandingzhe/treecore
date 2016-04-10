@@ -31,6 +31,7 @@
 
 #include "treecore/MathsFunctions.h"
 #include "treecore/PlatformDefs.h"
+#include <Windows.h>
 
 namespace treecore
 {
@@ -95,7 +96,7 @@ public:
     HRESULT CoCreateInstance (REFCLSID classUUID, DWORD dwClsContext = CLSCTX_INPROC_SERVER)
     {
         HRESULT hr = ::CoCreateInstance (classUUID, 0, dwClsContext, __uuidof (ComClass), (void**) resetAndGetPointerAddress());
-        jassert (hr != CO_E_NOTINITIALIZED); // You haven't called CoInitialize for the current thread!
+        treecore_assert (hr != CO_E_NOTINITIALIZED); // You haven't called CoInitialize for the current thread!
         return hr;
     }
 

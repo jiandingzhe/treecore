@@ -2,6 +2,7 @@
 #define TREECORE_NATIVE_WIN32_INTER_PROCESS_LOCK_H
 
 #include "treecore/InterProcessLock.h"
+#include <Windows.h>
 
 namespace treecore
 {

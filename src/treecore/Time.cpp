@@ -34,6 +34,8 @@
 #include "treecore/Time.h"
 #include "treecore/String.h"
 
+#include <ctime>
+
 #if TREECORE_OS_WINDOWS
 #    include <sys/timeb.h>
 #elif TREECORE_OS_LINUX || TREECORE_OS_ANDROID

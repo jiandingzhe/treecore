@@ -45,6 +45,10 @@
 #include "treecore/StringRef.h"
 #include "treecore/Time.h"
 
+#include <shellapi.h>
+#include <Shlwapi.h>
+#include <ShlObj.h>
+
 namespace treecore
 {
 
@@ -63,7 +67,7 @@ DWORD getAtts( const String& path )
 
 int64 fileTimeToTime( const FILETIME* const ft )
 {
-    static_assert( sizeof(ULARGE_INTEGER) == sizeof(FILETIME) );      // tell me if this fails!
+    static_assert( sizeof(ULARGE_INTEGER) == sizeof(FILETIME), "fuck!!!" );      // tell me if this fails!
 
     return (int64) ( (reinterpret_cast<const ULARGE_INTEGER*>(ft)->QuadPart - 116444736000000000LL) / 10000 );
 }
@@ -337,7 +341,7 @@ Result FileOutputStream::truncate()
 //==============================================================================
 void MemoryMappedFile::openInternal( const File& file, AccessMode mode )
 {
-    jassert( mode == readOnly || mode == readWrite );
+    treecore_assert( mode == readOnly || mode == readWrite );
 
     if (range.getStart() > 0)
     {
@@ -629,7 +633,7 @@ String File::getVersion() const
         VS_FIXEDFILEINFO* vffi;
         UINT len = 0;
 
-        if ( VerQueryValue( buffer, (LPTSTR) _T( "\\" ), (LPVOID*) &vffi, &len ) )
+        if ( VerQueryValue( buffer, (LPTSTR) L"\\", (LPVOID*) &vffi, &len ) )
         {
             result << (int) HIWORD( vffi->dwFileVersionMS ) << '.'
                    << (int) LOWORD( vffi->dwFileVersionMS ) << '.'

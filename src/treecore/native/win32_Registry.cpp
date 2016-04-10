@@ -230,9 +230,4 @@ bool TREECORE_STDCALL WindowsRegistry::registerFileAssociation(const String& fil
         targetExecutable.getFullPathName() + "," + String(iconResourceNumber)));
 }
 
-// These methods are deprecated:
-String WindowsRegistry::getValueWow64(const String& p, const String& defVal)  { return getValue(p, defVal, WoW64_64bit); }
-bool WindowsRegistry::valueExistsWow64(const String& p)                       { return valueExists(p, WoW64_64bit); }
-bool WindowsRegistry::keyExistsWow64(const String& p)                         { return keyExists(p, WoW64_64bit); }
-
 } // namespace treecore

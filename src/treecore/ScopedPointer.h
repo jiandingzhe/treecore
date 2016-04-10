@@ -86,50 +86,12 @@ public:
         : object( objectToTakePossessionOf )
     {}
 
-    /** Creates a ScopedPointer that takes its pointer from another ScopedPointer.
-
-        Because a pointer can only belong to one ScopedPointer, this transfers
-        the pointer from the other object to this one, and the other object is reset to
-        be a null pointer.
-     */
-    ScopedPointer ( ScopedPointer& objectToTransferFrom ) noexcept
-        : object( objectToTransferFrom.object )
-    {
-        objectToTransferFrom.object = nullptr;
-    }
-
     TREECORE_DECLARE_NON_COPYABLE( ScopedPointer )
 
     /** Destructor.
         This will delete the object that this ScopedPointer currently refers to.
      */
     inline ~ScopedPointer()                 { ContainerDeletePolicy<ObjectType>::destroy( object ); }
-
-    /** Changes this ScopedPointer to point to a new object.
-
-        Because a pointer can only belong to one ScopedPointer, this transfers
-        the pointer from the other object to this one, and the other object is reset to
-        be a null pointer.
-
-        If this ScopedPointer already points to an object, that object
-        will first be deleted.
-     */
-    ScopedPointer& operator = ( ScopedPointer& objectToTransferFrom )
-    {
-        if ( this != objectToTransferFrom.getAddress() )
-        {
-            // Two ScopedPointers should never be able to refer to the same object - if
-            // this happens, you must have done something dodgy!
-            treecore_assert( object == nullptr || object != objectToTransferFrom.object );
-
-            ObjectType* const oldObject = object;
-            object = objectToTransferFrom.object;
-            objectToTransferFrom.object = nullptr;
-            ContainerDeletePolicy<ObjectType>::destroy( oldObject );
-        }
-
-        return *this;
-    }
 
     /** Changes this ScopedPointer to point to a new object.
 

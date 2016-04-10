@@ -29,6 +29,7 @@
 #ifndef JUCE_DYNAMICLIBRARY_H_INCLUDED
 #define JUCE_DYNAMICLIBRARY_H_INCLUDED
 
+#include "treecore/ClassUtils.h"
 #include "treecore/LeakedObjectDetector.h"
 
 namespace treecore {

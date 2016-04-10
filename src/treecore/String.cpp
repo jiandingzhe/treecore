@@ -644,7 +644,7 @@ String& String::operator += ( int64 number )
     char buffer [32];
     char* end   = buffer + numElementsInArray( buffer );
     char* start = NumberToStringConverters::numberToString( end, number );
-    appendCharPointer( CharPointerType( start ), CharPointerType( end ) );
+	appendCharPointer(CharPointerType(start), CharPointerType(end));
     return *this;
 }
 

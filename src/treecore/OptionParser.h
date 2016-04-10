@@ -181,7 +181,7 @@ public:
 protected:
     static bool validate_name( char name );
     static bool validate_name( const String& name );
-    String format_doc( size_t w_line, size_t w_key_left, size_t w_key, size_t w_key_right ) const;
+    String format_doc(int32 w_line, int32 w_key_left, int32 w_key, int32 w_key_right ) const;
     String format_doc_key() const;
 
 protected:
@@ -210,11 +210,11 @@ protected:
     Option* find_option_short( char key );
 
 protected:
-    size_t group_id_seed = 0;
-    HashMap<String, size_t> group_ids;
+    int32 group_id_seed = 0;
+    HashMap<String, int32> group_ids;
     Array<Option*> options;
-    HashMap<char, size_t> options_by_short;
-    HashMap<String, size_t> options_by_long;
+    HashMap<char, int32> options_by_short;
+    HashMap<String, int32> options_by_long;
 };
 
 } // namespace treecore

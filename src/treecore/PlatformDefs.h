@@ -280,4 +280,11 @@
 #    define TREECORE_SELECT_ANY( _arg_ ) _arg_
 #endif
 
+// fuck microsoft
+#if TREECORE_OS_WINDOWS
+#    include <Windows.h>
+#    undef min
+#    undef max
+#endif
+
 #endif   // TREECORE_PLATFORM_DEFS_H

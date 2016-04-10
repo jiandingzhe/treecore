@@ -123,13 +123,13 @@ public:
     /** Returns this identifier's raw string pointer. */
     operator String::CharPointerType() const noexcept
     {
-        return CharPointer_UTF8(m_name);
+        return String(m_name).getCharPointer();
     }
 
     /** Returns this identifier's raw string pointer. */
     String::CharPointerType getCharPointer() const noexcept
     {
-        return CharPointer_UTF8(m_name);
+        return String(m_name).getCharPointer();
     }
 
     /** Returns this identifier as a StringRef. */
