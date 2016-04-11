@@ -108,20 +108,41 @@ target_include_directories(treecore PUBLIC
 add_executable(treecore_bin_builder treecore_bin_builder.cpp)
 target_use_treecore(treecore_bin_builder)
 
+if(TREECORE_EMBEDDED)
+    # as we are embedded, the resource wrapping function need to be specifically designed
+    function(treecore_wrap_resource input_dir class_name)
+        get_target_property(_bin_builder_path_ treecore_bin_builder OUTPUT_NAME)
+        add_custom_command(
+            OUTPUT
+                ${CMAKE_CURRENT_BINARY_DIR}/${class_name}.h
+                ${CMAKE_CURRENT_BINARY_DIR}/${class_name}.cpp
+            COMMAND
+                ${_bin_builder_path_} ${CMAKE_CURRENT_SOURCE_DIR}/${input_dir} ${CMAKE_CURRENT_BINARY_DIR} ${class_name}
+        )
+        add_custom_target(${class_name} ALL
+            DEPENDS
+                treecore_bin_builder
+                ${CMAKE_CURRENT_BINARY_DIR}/${class_name}.h
+                ${CMAKE_CURRENT_BINARY_DIR}/${class_name}.cpp
+        )
+    endfunction()
+endif()
+
 #
 # install
 #
-include(GNUInstallDirs)
-install(TARGETS treecore treecore_bin_builder
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-install(FILES ${CMAKE_BINARY_DIR}/src/treecore/Config.h
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/treecore
-)
-install(DIRECTORY treecore/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/treecore
-    FILES_MATCHING PATTERN "*.h"
-    PATTERN internal EXCLUDE
-)
+if(NOT TREECORE_EMBEDDED)
+    install(TARGETS treecore treecore_bin_builder
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    )
+    install(FILES ${CMAKE_BINARY_DIR}/src/treecore/Config.h
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/treecore
+    )
+    install(DIRECTORY treecore/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/treecore
+        FILES_MATCHING PATTERN "*.h"
+        PATTERN internal EXCLUDE
+    )
+endif()

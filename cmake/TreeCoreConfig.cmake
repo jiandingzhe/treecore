@@ -1,3 +1,10 @@
+# determine whether treecore is embedded
+# by check if treecore's project dir is toplevel project dir
+set(TREECORE_EMBEDDED 0 CACHE INTERNAL "Whether treecore is toplevel project or an embedded subproject.")
+if (NOT (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+    set_property(CACHE TREECORE_EMBEDDED PROPERTY VALUE 1)
+endif()
+
 # set default build type to Debug, in avoid of empty build type
 if(DEFINED CMAKE_BUILD_TYPE AND NOT CMAKE_BUILD_TYPE)
     message(WARNING "CMAKE_BUILD_TYPE has no value, set to Debug")
