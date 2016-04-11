@@ -36,6 +36,7 @@
 #include "treecore/internal/String_private.h"
 
 #include <cstring>
+#include <cstdarg>
 #include <locale>
 
 namespace treecore {

@@ -128,7 +128,7 @@ static inline String formatString( const String& format, const struct tm* const 
 #elif TREECORE_OS_OSX
         const size_t numChars = wcsftime( buffer, bufferSize - 1, format.toUTF32(), tm );
 #else
-#    error don't know what to do
+#    error "don't know what to do"
 #endif
 
         if ( numChars > 0 || format.isEmpty() )

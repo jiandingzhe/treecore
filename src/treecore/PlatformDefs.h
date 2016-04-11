@@ -84,7 +84,7 @@
 #elif TREECORE_COMPILER_GCC || ( ( TREECORE_OS_LINUX || TREECORE_OS_OSX) && TREECORE_COMPILER_ICC )
 #    define TREECORE_COMPILER_ATTR_GCC 1
 #else
-#    error don't know how to treat with compiler-specific attributes
+#    error "don't know how to treat with compiler-specific attributes"
 #endif
 
 #ifndef TREECORE_COMPILER_ATTR_MSVC
@@ -197,7 +197,7 @@
 #    elif TREECORE_COMPILER_ATTR_GCC || TREECORE_COMPILER_ATTR_CLANG
 #        define TREECORE_DEPRECATED_FUNCTION( ... ) __VA_ARGS__ __attribute__( (deprecated) )
 #    else
-#        error don't know how to mark API deprecation in such compiler
+#        error "don't know how to mark API deprecation in such compiler"
 #    endif
 #endif
 

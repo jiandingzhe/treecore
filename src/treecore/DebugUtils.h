@@ -11,7 +11,7 @@
 #        pragma intrinsic (__debugbreak)
 #        define TREECORE_BREAK_DEBUGGER        { __debugbreak(); }
 #    else
-#        error don't know what to do for MSVC without intrinsics support
+#        error "don't know what to do for MSVC without intrinsics support"
 #    endif
 #elif TREECORE_COMPILER_ATTR_GCC || TREECORE_COMPILER_ATTR_CLANG
 #    if TREECORE_NO_INLINE_ASM
