@@ -356,8 +356,7 @@ public:
     /** Parses this string as a 64-bit integer. */
     int64 getIntValue64() const noexcept
     {
-        //TODO ios and osx
-#if TREECORE_OS_LINUX || TREECORE_OS_ANDROID
+#if TREECORE_OS_LINUX || TREECORE_OS_ANDROID || TREECORE_OS_OSX || TREECORE_OS_IOS || TREECORE_OS_FREEBSD
         return atoll( data );
 #elif TREECORE_OS_WINDOWS
         return _atoi64( data );

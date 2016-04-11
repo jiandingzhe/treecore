@@ -152,7 +152,6 @@
 #    define TREECORE_MSVC_INTRIN 0
 #endif
 
-// TODO: fuck it
 #if TREECORE_MSVC_INTRIN
 #    include <intrin.h>
 #endif
