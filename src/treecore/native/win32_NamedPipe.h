@@ -2,6 +2,7 @@
 #define TREECORE_WIN32_NAMED_PIPE_H
 
 #include "treecore/NamedPipe.h"
+#include <Windows.h>
 
 namespace treecore
 {

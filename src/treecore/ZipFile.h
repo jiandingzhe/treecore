@@ -49,7 +49,7 @@ class InputSource;
     This can enumerate the items in a ZIP file and can create suitable stream objects
     to read each one.
 */
-class JUCE_API  ZipFile: public RefCountObject
+class TREECORE_SHARED_API  ZipFile: public RefCountObject
 {
 public:
     /** Creates a ZipFile based for a file. */
@@ -206,7 +206,7 @@ public:
             will be stored for this file.
         */
         void addFile (const File& fileToAdd, int compressionLevel,
-                      const String& storedPathName = String::empty);
+                      const String& storedPathName = String::empty());
 
         /** Adds a file while should be added to the archive.
 
@@ -251,7 +251,7 @@ private:
     ScopedPointer <InputStream> streamToDelete;
     ScopedPointer <InputSource> inputSource;
 
-   #if JUCE_DEBUG
+   #if TREECORE_DEBUG
     struct OpenStreamCounter
     {
         OpenStreamCounter() : numOpenStreams (0) {}

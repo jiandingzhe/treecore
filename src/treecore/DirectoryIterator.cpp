@@ -44,8 +44,8 @@ DirectoryIterator::DirectoryIterator (const File& directory, bool recursive,
     hasBeenAdvanced (false)
 {
     // you have to specify the type of files you're looking for!
-    jassert ((type & (File::findFiles | File::findDirectories)) != 0);
-    jassert (type > 0 && type <= 7);
+    treecore_assert ((type & (File::findFiles | File::findDirectories)) != 0);
+    treecore_assert (type > 0 && type <= 7);
 }
 
 DirectoryIterator::~DirectoryIterator()
@@ -144,7 +144,7 @@ const File& DirectoryIterator::getFile() const
         return subIterator->getFile();
 
     // You need to call DirectoryIterator::next() before asking it for the file that it found!
-    jassert (hasBeenAdvanced);
+    treecore_assert (hasBeenAdvanced);
 
     return currentFile;
 }

@@ -45,7 +45,7 @@ namespace treecore
 
     @see DatagramSocket, InterprocessConnection, InterprocessConnectionServer
 */
-class JUCE_API  StreamingSocket
+class TREECORE_SHARED_API  StreamingSocket
 {
 public:
     //==============================================================================
@@ -194,7 +194,7 @@ private:
 
     @see StreamingSocket, InterprocessConnection, InterprocessConnectionServer
 */
-class JUCE_API  DatagramSocket
+class TREECORE_SHARED_API  DatagramSocket
 {
 public:
     //==============================================================================

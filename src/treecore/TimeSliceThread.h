@@ -51,7 +51,7 @@ class TimeSliceThread;
 
     @see TimeSliceThread
 */
-class JUCE_API  TimeSliceClient
+class TREECORE_SHARED_API  TimeSliceClient
 {
 public:
     /** Destructor. */
@@ -88,7 +88,7 @@ private:
 
     @see TimeSliceClient, Thread
 */
-class JUCE_API  TimeSliceThread   : public Thread
+class TREECORE_SHARED_API  TimeSliceThread   : public Thread
 {
 public:
     //==============================================================================

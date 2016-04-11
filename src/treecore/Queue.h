@@ -1,6 +1,7 @@
 ﻿#ifndef TREECORE_QUEUE_H
 #define TREECORE_QUEUE_H
 
+#include "treecore/ClassUtils.h"
 #include "treecore/QueueBase.h"
 
 namespace treecore
@@ -16,7 +17,7 @@ public:
         , m_readStart( 0 )
         , m_writeStart( 0 )
     {
-        jassert( p2size > 0 ); //p2size至少要为1,也就是说cirbuffer的尺寸最小为2(但只能容纳1个元素)
+        treecore_assert( p2size > 0 ); //p2size至少要为1,也就是说cirbuffer的尺寸最小为2(但只能容纳1个元素)
     }
 
     forcedinline ~Queue(){}
@@ -24,7 +25,7 @@ public:
     template<typename Func> forcedinline bool bound_push( const Func& func )
     {
         const bool k = !isFull();
-        likely_if( k ) func( ( *this )[m_writeStart++] );
+        if likely( k ) func( ( *this )[m_writeStart++] );
         return k;
     }
     forcedinline bool bound_push( const T& obj )
@@ -48,7 +49,7 @@ public:
     template<typename Func> forcedinline bool pop( const Func& func )
     {
         const bool k = !isEmpty();
-        likely_if( k ) func( ( *this )[m_readStart++] );
+        if likely( k ) func( ( *this )[m_readStart++] );
         return k;
     }
     forcedinline bool pop( T& obj )

@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,96 +23,19 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #include "treecore/CharacterFunctions.h"
+
 
 //==============================================================================
 namespace treecore {
 
-#if defined TREECORE_COMPILER_MSVC
- #pragma warning (push)
- #pragma warning (disable: 4514 4996)
-#endif
-
-juce_wchar CharacterFunctions::toUpperCase (const juce_wchar character) noexcept
-{
-    return towupper ((wchar_t) character);
-}
-
-juce_wchar CharacterFunctions::toLowerCase (const juce_wchar character) noexcept
-{
-    return towlower ((wchar_t) character);
-}
-
-bool CharacterFunctions::isUpperCase (const juce_wchar character) noexcept
-{
-   #if defined TREECORE_OS_WINDOWS
-    return iswupper ((wchar_t) character) != 0;
-   #else
-    return toLowerCase (character) != character;
-   #endif
-}
-
-bool CharacterFunctions::isLowerCase (const juce_wchar character) noexcept
-{
-   #if defined TREECORE_OS_WINDOWS
-    return iswlower ((wchar_t) character) != 0;
-   #else
-    return toUpperCase (character) != character;
-   #endif
-}
-
-#if defined TREECORE_COMPILER_MSVC
- #pragma warning (pop)
-#endif
-
 //==============================================================================
-bool CharacterFunctions::isWhitespace (const char character) noexcept
-{
-    return character == ' ' || (character <= 13 && character >= 9);
-}
 
-bool CharacterFunctions::isWhitespace (const juce_wchar character) noexcept
-{
-    return iswspace ((wchar_t) character) != 0;
-}
 
-bool CharacterFunctions::isDigit (const char character) noexcept
-{
-    return (character >= '0' && character <= '9');
-}
-
-bool CharacterFunctions::isDigit (const juce_wchar character) noexcept
-{
-    return iswdigit ((wchar_t) character) != 0;
-}
-
-bool CharacterFunctions::isLetter (const char character) noexcept
-{
-    return (character >= 'a' && character <= 'z')
-        || (character >= 'A' && character <= 'Z');
-}
-
-bool CharacterFunctions::isLetter (const juce_wchar character) noexcept
-{
-    return iswalpha ((wchar_t) character) != 0;
-}
-
-bool CharacterFunctions::isLetterOrDigit (const char character) noexcept
-{
-    return (character >= 'a' && character <= 'z')
-        || (character >= 'A' && character <= 'Z')
-        || (character >= '0' && character <= '9');
-}
-
-bool CharacterFunctions::isLetterOrDigit (const juce_wchar character) noexcept
-{
-    return iswalnum ((wchar_t) character) != 0;
-}
-
-int CharacterFunctions::getHexDigitValue (const juce_wchar digit) noexcept
+int CharacterFunctions::getHexDigitValue( const treecore_wchar digit ) noexcept
 {
     unsigned int d = (unsigned int) digit - '0';
     if (d < (unsigned int) 10)
@@ -129,7 +52,7 @@ int CharacterFunctions::getHexDigitValue (const juce_wchar digit) noexcept
     return -1;
 }
 
-double CharacterFunctions::mulexp10 (const double value, int exponent) noexcept
+double CharacterFunctions::mulexp10( const double value, int exponent ) noexcept
 {
     if (exponent == 0)
         return value;
@@ -144,10 +67,10 @@ double CharacterFunctions::mulexp10 (const double value, int exponent) noexcept
     double result = 1.0, power = 10.0;
     for (int bit = 1; exponent != 0; bit <<= 1)
     {
-        if ((exponent & bit) != 0)
+        if ( (exponent & bit) != 0 )
         {
             exponent ^= bit;
-            result *= power;
+            result   *= power;
             if (exponent == 0)
                 break;
         }

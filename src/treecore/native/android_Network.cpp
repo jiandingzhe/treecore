@@ -1,5 +1,5 @@
 ﻿/*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,57 +23,62 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
+#include "treecore/MacAddress.h"
+#include "treecore/Process.h"
+#include "treecore/URL.h"
+
+#include "treecore/native/android_JNIHelpers.h"
 //==============================================================================
-#define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD) \
- METHOD (constructor, "<init>", "()V") \
- METHOD (toString, "toString", "()Ljava/lang/String;") \
+#define JNI_CLASS_MEMBERS( METHOD, STATICMETHOD, FIELD, STATICFIELD ) \
+    METHOD( constructor, "<init>",   "()V" )                          \
+    METHOD( toString,    "toString", "()Ljava/lang/String;" )         \
 
-DECLARE_JNI_CLASS (StringBuffer, "java/lang/StringBuffer");
+DECLARE_JNI_CLASS( StringBuffer, "java/lang/StringBuffer" );
 #undef JNI_CLASS_MEMBERS
 
 //==============================================================================
-#define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD) \
- METHOD (release, "release", "()V") \
- METHOD (read, "read", "([BI)I") \
- METHOD (getPosition, "getPosition", "()J") \
- METHOD (getTotalLength, "getTotalLength", "()J") \
- METHOD (isExhausted, "isExhausted", "()Z") \
- METHOD (setPosition, "setPosition", "(J)Z") \
+#define JNI_CLASS_MEMBERS( METHOD, STATICMETHOD, FIELD, STATICFIELD ) \
+    METHOD( release,        "release",        "()V" )                 \
+    METHOD( read,           "read",           "([BI)I" )              \
+    METHOD( getPosition,    "getPosition",    "()J" )                 \
+    METHOD( getTotalLength, "getTotalLength", "()J" )                 \
+    METHOD( isExhausted,    "isExhausted",    "()Z" )                 \
+    METHOD( setPosition,    "setPosition",    "(J)Z" )                \
 
-DECLARE_JNI_CLASS (HTTPStream, JUCE_ANDROID_ACTIVITY_CLASSPATH "$HTTPStream");
+DECLARE_JNI_CLASS( HTTPStream, TREECORE_ANDROID_ACTIVITY_CLASSPATH "$HTTPStream" );
 #undef JNI_CLASS_MEMBERS
 
+namespace treecore
+{
 
 //==============================================================================
-void MACAddress::findAllAddresses (Array<MACAddress>& result)
+void MacAddress::findAllAddresses( Array<MacAddress>& result )
 {
     // TODO
 }
 
-
-JUCE_API bool JUCE_CALLTYPE Process::openEmailWithAttachments (const String& targetEmailAddress,
-                                                               const String& emailSubject,
-                                                               const String& bodyText,
-                                                               const StringArray& filesToAttach)
+TREECORE_SHARED_API bool TREECORE_STDCALL Process::openEmailWithAttachments( const String&      targetEmailAddress,
+                                                                             const String&      emailSubject,
+                                                                             const String&      bodyText,
+                                                                             const StringArray& filesToAttach )
 {
     // TODO
     return false;
 }
 
-
 //==============================================================================
-class WebInputStream  : public InputStream
+class WebInputStream: public InputStream
 {
 public:
-    WebInputStream (String address, bool isPost, const MemoryBlock& postData,
-                    URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext,
-                    const String& headers, int timeOutMs, StringPairArray* responseHeaders, const int numRedirectsToFollow)
-        : statusCode (0)
+    WebInputStream ( String address, bool isPost, const MemoryBlock& postData,
+                     URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext,
+                     const String& headers, int timeOutMs, StringPairArray* responseHeaders, const int numRedirectsToFollow )
+        : statusCode( 0 )
     {
-        if (! address.contains ("://"))
+        if ( !address.contains( "://" ) )
             address = "http://" + address;
 
         JNIEnv* env = getEnv();
@@ -82,46 +87,46 @@ public:
 
         if (postData.getSize() > 0)
         {
-            postDataArray = env->NewByteArray (postData.getSize());
-            env->SetByteArrayRegion (postDataArray, 0, postData.getSize(), (const jbyte*) postData.getData());
+            postDataArray = env->NewByteArray( postData.getSize() );
+            env->SetByteArrayRegion( postDataArray, 0, postData.getSize(), (const jbyte*) postData.getData() );
         }
 
-        LocalRef<jobject> responseHeaderBuffer (env->NewObject (StringBuffer, StringBuffer.constructor));
+        LocalRef<jobject> responseHeaderBuffer( env->NewObject( StringBuffer, StringBuffer.constructor ) );
 
         // Annoyingly, the android HTTP functions will choke on this call if you try to do it on the message
         // thread. You'll need to move your networking code to a background thread to keep it happy..
-        jassert (Thread::getCurrentThread() != nullptr);
+        jassert( Thread::getCurrentThread() != nullptr );
 
-        jintArray statusCodeArray = env->NewIntArray (1);
-        jassert (statusCodeArray != 0);
+        jintArray statusCodeArray = env->NewIntArray( 1 );
+        jassert( statusCodeArray != 0 );
 
-        stream = GlobalRef (env->CallStaticObjectMethod (JuceAppActivity,
-                                                         JuceAppActivity.createHTTPStream,
-                                                         javaString (address).get(),
+        stream = GlobalRef( env->CallStaticObjectMethod( TreecoreAppActivity,
+                                                         TreecoreAppActivity.createHTTPStream,
+                                                         javaString( address ).get(),
                                                          (jboolean) isPost,
                                                          postDataArray,
-                                                         javaString (headers).get(),
+                                                         javaString( headers ).get(),
                                                          (jint) timeOutMs,
                                                          statusCodeArray,
                                                          responseHeaderBuffer.get(),
-                                                         (jint) numRedirectsToFollow));
+                                                         (jint) numRedirectsToFollow ) );
 
-        jint* const statusCodeElements = env->GetIntArrayElements (statusCodeArray, 0);
+        jint* const statusCodeElements = env->GetIntArrayElements( statusCodeArray, 0 );
         statusCode = statusCodeElements[0];
-        env->ReleaseIntArrayElements (statusCodeArray, statusCodeElements, 0);
-        env->DeleteLocalRef (statusCodeArray);
+        env->ReleaseIntArrayElements( statusCodeArray, statusCodeElements, 0 );
+        env->DeleteLocalRef( statusCodeArray );
 
         if (postDataArray != 0)
-            env->DeleteLocalRef (postDataArray);
+            env->DeleteLocalRef( postDataArray );
 
         if (stream != 0)
         {
             StringArray headerLines;
 
             {
-                LocalRef<jstring> headersString ((jstring) env->CallObjectMethod (responseHeaderBuffer.get(),
-                                                                                  StringBuffer.toString));
-                headerLines.addLines (juceString (env, headersString));
+                LocalRef<jstring> headersString( (jstring) env->CallObjectMethod( responseHeaderBuffer.get(),
+                                                                                  StringBuffer.toString ) );
+                headerLines.addLines( juceString( env, headersString ) );
             }
 
             if (responseHeaders != 0)
@@ -129,11 +134,11 @@ public:
                 for (int i = 0; i < headerLines.size(); ++i)
                 {
                     const String& header = headerLines[i];
-                    const String key (header.upToFirstOccurrenceOf (": ", false, false));
-                    const String value (header.fromFirstOccurrenceOf (": ", false, false));
-                    const String previousValue ((*responseHeaders) [key]);
+                    const String key( header.upToFirstOccurrenceOf( ": ", false, false ) );
+                    const String value( header.fromFirstOccurrenceOf( ": ", false, false ) );
+                    const String previousValue( (*responseHeaders) [key] );
 
-                    responseHeaders->set (key, previousValue.isEmpty() ? value : (previousValue + "," + value));
+                    responseHeaders->set( key, previousValue.isEmpty() ? value : (previousValue + "," + value) );
                 }
             }
         }
@@ -142,34 +147,34 @@ public:
     ~WebInputStream()
     {
         if (stream != 0)
-            stream.callVoidMethod (HTTPStream.release);
+            stream.callVoidMethod( HTTPStream.release );
     }
 
     //==============================================================================
-    bool isError() const                         { return stream == nullptr; }
+    bool isError() const { return stream == nullptr; }
 
-    bool isExhausted() override                  { return stream != nullptr && stream.callBooleanMethod (HTTPStream.isExhausted); }
-    int64 getTotalLength() override              { return stream != nullptr ? stream.callLongMethod (HTTPStream.getTotalLength) : 0; }
-    int64 getPosition() override                 { return stream != nullptr ? stream.callLongMethod (HTTPStream.getPosition) : 0; }
-    bool setPosition (int64 wantedPos) override  { return stream != nullptr && stream.callBooleanMethod (HTTPStream.setPosition, (jlong) wantedPos); }
+    bool isExhausted() override                  { return stream != nullptr && stream.callBooleanMethod( HTTPStream.isExhausted ); }
+    int64 getTotalLength() override              { return stream != nullptr ? stream.callLongMethod( HTTPStream.getTotalLength ) : 0; }
+    int64 getPosition() override                 { return stream != nullptr ? stream.callLongMethod( HTTPStream.getPosition ) : 0; }
+    bool setPosition( int64 wantedPos ) override  { return stream != nullptr && stream.callBooleanMethod( HTTPStream.setPosition, (jlong) wantedPos ); }
 
-    int read (void* buffer, int bytesToRead) override
+    int read( void* buffer, int bytesToRead ) override
     {
-        jassert (buffer != nullptr && bytesToRead >= 0);
+        jassert( buffer != nullptr && bytesToRead >= 0 );
 
         if (stream == nullptr)
             return 0;
 
         JNIEnv* env = getEnv();
 
-        jbyteArray javaArray = env->NewByteArray (bytesToRead);
+        jbyteArray javaArray = env->NewByteArray( bytesToRead );
 
-        int numBytes = stream.callIntMethod (HTTPStream.read, javaArray, (jint) bytesToRead);
+        int numBytes = stream.callIntMethod( HTTPStream.read, javaArray, (jint) bytesToRead );
 
         if (numBytes > 0)
-            env->GetByteArrayRegion (javaArray, 0, numBytes, static_cast<jbyte*> (buffer));
+            env->GetByteArrayRegion( javaArray, 0, numBytes, static_cast<jbyte*>(buffer) );
 
-        env->DeleteLocalRef (javaArray);
+        env->DeleteLocalRef( javaArray );
         return numBytes;
     }
 
@@ -178,5 +183,7 @@ public:
     int statusCode;
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WebInputStream)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR( WebInputStream )
 };
+
+} // namespace treecore

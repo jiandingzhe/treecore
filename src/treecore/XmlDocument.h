@@ -32,7 +32,6 @@
 #include "treecore/Common.h"
 #include "treecore/InputSource.h"
 #include "treecore/ScopedPointer.h"
-#include "treecore/StandardHeader.h"
 #include "treecore/StringArray.h"
 
 namespace treecore {
@@ -76,7 +75,7 @@ class XmlElement;
 
     @see XmlElement
 */
-class JUCE_API  XmlDocument
+class TREECORE_SHARED_API  XmlDocument
 {
 public:
     //==============================================================================
@@ -173,7 +172,7 @@ private:
     bool parseHeader();
     bool parseDTD();
     void skipNextWhiteSpace();
-    juce_wchar readNextChar() noexcept;
+    treecore_wchar readNextChar() noexcept;
     XmlElement* readNextElement (bool alsoParseSubElements);
     void readChildElements (XmlElement&);
     void readQuotedString (String&);

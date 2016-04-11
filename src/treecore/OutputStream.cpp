@@ -38,7 +38,7 @@
 
 namespace treecore {
 
-#if JUCE_DEBUG
+#if TREECORE_DEBUG
 
 struct DanglingStreamChecker
 {
@@ -52,7 +52,7 @@ struct DanglingStreamChecker
             to disk properly, which could result in corrupted data and other similar
             nastiness..
         */
-        jassert (activeStreams.size() == 0);
+        treecore_assert (activeStreams.size() == 0);
     }
 
     Array<void*, 0, CriticalSection> activeStreams;
@@ -65,14 +65,14 @@ static DanglingStreamChecker danglingStreamChecker;
 OutputStream::OutputStream()
     : newLineString (NewLine::getDefault())
 {
-   #if JUCE_DEBUG
+   #if TREECORE_DEBUG
     danglingStreamChecker.activeStreams.add (this);
    #endif
 }
 
 OutputStream::~OutputStream()
 {
-   #if JUCE_DEBUG
+   #if TREECORE_DEBUG
     danglingStreamChecker.activeStreams.removeFirstMatchingValue (this);
    #endif
 }
@@ -202,7 +202,7 @@ bool OutputStream::writeText (const String& text, const bool asUTF16,
 
         for (;;)
         {
-            const juce_wchar c = src.getAndAdvance();
+            const treecore_wchar c = src.getAndAdvance();
 
             if (c == 0)
                 break;
@@ -295,36 +295,36 @@ static void writeIntToStream (OutputStream& stream, IntegerType number)
     stream.write (start, (size_t) (end - start - 1));
 }
 
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const int number)
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator<< (OutputStream& stream, const int number)
 {
     writeIntToStream (stream, number);
     return stream;
 }
 
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const int64 number)
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator<< (OutputStream& stream, const int64 number)
 {
     writeIntToStream (stream, number);
     return stream;
 }
 
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const double number)
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator<< (OutputStream& stream, const double number)
 {
     return stream << String (number);
 }
 
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const char character)
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator<< (OutputStream& stream, const char character)
 {
     stream.writeByte (character);
     return stream;
 }
 
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const char* const text)
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator<< (OutputStream& stream, const char* const text)
 {
     stream.write (text, strlen (text));
     return stream;
 }
 
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const MemoryBlock& data)
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator<< (OutputStream& stream, const MemoryBlock& data)
 {
     if (data.getSize() > 0)
         stream.write (data.getData(), data.getSize());
@@ -332,7 +332,7 @@ JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const Mem
     return stream;
 }
 
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const File& fileToRead)
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator<< (OutputStream& stream, const File& fileToRead)
 {
     FileInputStream in (fileToRead);
 
@@ -342,13 +342,13 @@ JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const Fil
     return stream;
 }
 
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, InputStream& streamToRead)
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator<< (OutputStream& stream, InputStream& streamToRead)
 {
     stream.writeFromInputStream (streamToRead, -1);
     return stream;
 }
 
-JUCE_API OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const NewLine&)
+TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator<< (OutputStream& stream, const NewLine&)
 {
     return stream << stream.getNewLineString();
 }

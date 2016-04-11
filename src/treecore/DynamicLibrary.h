@@ -29,13 +29,14 @@
 #ifndef JUCE_DYNAMICLIBRARY_H_INCLUDED
 #define JUCE_DYNAMICLIBRARY_H_INCLUDED
 
+#include "treecore/ClassUtils.h"
 #include "treecore/LeakedObjectDetector.h"
 
 namespace treecore {
 
 class String;
 
-#if defined TREECORE_OS_WINDOWS
+#if TREECORE_OS_WINDOWS
 void* getUser32Function(const char* functionName);
 #endif
 
@@ -46,7 +47,7 @@ void* getUser32Function(const char* functionName);
     Since the DLL is freed when this object is deleted, it's handy for managing
     library lifetimes using RAII.
 */
-class JUCE_API  DynamicLibrary
+class TREECORE_SHARED_API  DynamicLibrary
 {
 public:
     /** Creates an unopened DynamicLibrary object.

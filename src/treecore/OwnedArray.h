@@ -144,16 +144,16 @@ public:
     inline PointerType& operator[] (const int index) noexcept
     {
         const ScopedLockType lock (getLock());
-        jassert(isPositiveAndBelow(index, numUsed));
-        jassert(data.elements != nullptr);
+        treecore_assert(isPositiveAndBelow(index, numUsed));
+        treecore_assert(data.elements != nullptr);
         return data.elements [index];
     }
 
     inline PointerType const& operator[] (const int index) const noexcept
     {
         const ScopedLockType lock (getLock());
-        jassert(isPositiveAndBelow (index, numUsed));
-        jassert(data.elements != nullptr);
+        treecore_assert(isPositiveAndBelow (index, numUsed));
+        treecore_assert(data.elements != nullptr);
         return data.elements [index];
     }
 
@@ -165,16 +165,16 @@ public:
     inline PointerType getFirst() noexcept
     {
         const ScopedLockType lock (getLock());
-        jassert(data.elements != nullptr);
-        jassert(numUsed > 0);
+        treecore_assert(data.elements != nullptr);
+        treecore_assert(numUsed > 0);
         return data.elements[0];
     }
 
     inline PointerType const getFirst() const noexcept
     {
         const ScopedLockType lock (getLock());
-        jassert(data.elements != nullptr);
-        jassert(numUsed > 0);
+        treecore_assert(data.elements != nullptr);
+        treecore_assert(numUsed > 0);
         return data.elements[0];
     }
 
@@ -204,16 +204,16 @@ public:
     inline PointerType getLast() noexcept
     {
         const ScopedLockType lock (getLock());
-        jassert(data.elements != nullptr);
-        jassert(numUsed > 0);
+        treecore_assert(data.elements != nullptr);
+        treecore_assert(numUsed > 0);
         return data.elements[numUsed-1];
     }
 
     inline PointerType const getLast() const noexcept
     {
         const ScopedLockType lock (getLock());
-        jassert(data.elements != nullptr);
-        jassert(numUsed > 0);
+        treecore_assert(data.elements != nullptr);
+        treecore_assert(numUsed > 0);
         return data.elements[numUsed-1];
     }
 
@@ -264,13 +264,13 @@ public:
     */
     inline PointerType* end() noexcept
     {
-        jassert(data.elements != nullptr);
+        treecore_assert(data.elements != nullptr);
         return data.elements + numUsed;
     }
 
     inline PointerType const* end() const noexcept
     {
-        jassert(data.elements != nullptr);
+        treecore_assert(data.elements != nullptr);
         return data.elements + numUsed;
     }
 
@@ -328,7 +328,7 @@ public:
     {
         const ScopedLockType lock (getLock());
         data.ensureAllocatedSize (numUsed + 1);
-        jassert (data.elements != nullptr);
+        treecore_assert (data.elements != nullptr);
         data.elements [numUsed++] = newObject;
         return newObject;
     }
@@ -362,7 +362,7 @@ public:
             indexToInsertAt = numUsed;
 
         data.ensureAllocatedSize (numUsed + 1);
-        jassert (data.elements != nullptr);
+        treecore_assert (data.elements != nullptr);
 
         ObjectClass** const e = data.elements + indexToInsertAt;
         const int numToMove = numUsed - indexToInsertAt;
@@ -492,7 +492,7 @@ public:
         }
         else
         {
-            jassertfalse; // you're trying to set an object at a negative index, which doesn't have
+            treecore_assert_false; // you're trying to set an object at a negative index, which doesn't have
                           // any effect - but since the object is not being added, it may be leaking..
         }
 
@@ -518,7 +518,7 @@ public:
 
         if (startIndex < 0)
         {
-            jassertfalse;
+            treecore_assert_false;
             startIndex = 0;
         }
 
@@ -526,7 +526,7 @@ public:
             numElementsToAdd = arrayToAddFrom.size() - startIndex;
 
         data.ensureAllocatedSize (numUsed + numElementsToAdd);
-        jassert (numElementsToAdd <= 0 || data.elements != nullptr);
+        treecore_assert (numElementsToAdd <= 0 || data.elements != nullptr);
 
         while (--numElementsToAdd >= 0)
         {
@@ -559,7 +559,7 @@ public:
 
         if (startIndex < 0)
         {
-            jassertfalse;
+            treecore_assert_false;
             startIndex = 0;
         }
 
@@ -567,7 +567,7 @@ public:
             numElementsToAdd = arrayToAddFrom.size() - startIndex;
 
         data.ensureAllocatedSize (numUsed + numElementsToAdd);
-        jassert (numElementsToAdd <= 0 || data.elements != nullptr);
+        treecore_assert (numElementsToAdd <= 0 || data.elements != nullptr);
 
         while (--numElementsToAdd >= 0)
             data.elements [numUsed++] = createCopyIfNotNull(arrayToAddFrom[startIndex++]);
@@ -935,14 +935,6 @@ public:
 
     /** Returns the type of scoped lock to use for locking this array */
     typedef typename TypeOfCriticalSectionToUse::ScopedLockType ScopedLockType;
-
-
-    //==============================================================================
-   #ifndef DOXYGEN
-    // Note that the swapWithArray method has been replaced by a more flexible templated version,
-    // and renamed "swapWith" to be more consistent with the names used in other classes.
-    JUCE_DEPRECATED_WITH_BODY (void swapWithArray (OwnedArray& other) noexcept, { swapWith (other); })
-   #endif
 
 private:
     //==============================================================================

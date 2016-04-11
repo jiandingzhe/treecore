@@ -26,12 +26,11 @@
   ==============================================================================
 */
 
-#ifndef JUCE_CRITICALSECTION_H_INCLUDED
-#define JUCE_CRITICALSECTION_H_INCLUDED
+#ifndef TREECORE_CRITICAL_SECTION_H
+#define TREECORE_CRITICAL_SECTION_H
 
-#include "treecore/Config.h"
 #include "treecore/MathsFunctions.h"
-#include "treecore/StandardHeader.h"
+#include "treecore/PlatformDefs.h"
 #include "treecore/ScopedLock.h"
 
 namespace treecore {
@@ -50,7 +49,7 @@ namespace treecore {
 
     @see ScopedLock, ScopedTryLock, ScopedUnlock, SpinLock, ReadWriteLock, Thread, InterProcessLock
 */
-class JUCE_API  CriticalSection
+class TREECORE_SHARED_API  CriticalSection
 {
 public:
     //==============================================================================
@@ -112,8 +111,8 @@ public:
 
 private:
     //==============================================================================
-#ifdef TREECORE_OS_WINDOWS
-    // To avoid including windows.h in the public JUCE headers, we'll just allocate
+#if TREECORE_OS_WINDOWS
+    // To avoid including windows.h in the public headers, we'll just allocate
     // a block of memory here that's big enough to be used internally as a windows
     // CRITICAL_SECTION structure.
 #  if TREECORE_SIZE_PTR == 8
@@ -237,4 +236,4 @@ typedef CriticalSection::ScopedTryLockType  ScopedTryLock;
 
 }
 
-#endif   // JUCE_CRITICALSECTION_H_INCLUDED
+#endif   // TREECORE_CRITICAL_SECTION_H

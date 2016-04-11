@@ -54,7 +54,7 @@ MemoryBlock::MemoryBlock (const MemoryBlock& other)
 {
     if (size > 0)
     {
-        jassert (other.data != nullptr);
+        treecore_assert (other.data != nullptr);
         data.malloc (size);
         memcpy (data, other.data, size);
     }
@@ -63,11 +63,11 @@ MemoryBlock::MemoryBlock (const MemoryBlock& other)
 MemoryBlock::MemoryBlock (const void* const dataToInitialiseFrom, const size_t sizeInBytes)
     : size (sizeInBytes)
 {
-    jassert (((ssize_t) sizeInBytes) >= 0);
+    treecore_assert (((ssize_t) sizeInBytes) >= 0);
 
     if (size > 0)
     {
-        jassert (dataToInitialiseFrom != nullptr); // non-zero size, but a zero pointer passed-in?
+        treecore_assert (dataToInitialiseFrom != nullptr); // non-zero size, but a zero pointer passed-in?
 
         data.malloc (size);
 
@@ -178,7 +178,7 @@ void MemoryBlock::append (const void* const srcData, const size_t numBytes)
 {
     if (numBytes > 0)
     {
-        jassert (srcData != nullptr); // this must not be null!
+        treecore_assert (srcData != nullptr); // this must not be null!
         const size_t oldSize = size;
         setSize (size + numBytes);
         memcpy (data + oldSize, srcData, numBytes);
@@ -189,7 +189,7 @@ void MemoryBlock::replaceWith (const void* const srcData, const size_t numBytes)
 {
     if (numBytes > 0)
     {
-        jassert (srcData != nullptr); // this must not be null!
+        treecore_assert (srcData != nullptr); // this must not be null!
         setSize (numBytes);
         memcpy (data, srcData, numBytes);
     }
@@ -199,7 +199,7 @@ void MemoryBlock::insert (const void* const srcData, const size_t numBytes, size
 {
     if (numBytes > 0)
     {
-        jassert (srcData != nullptr); // this must not be null!
+        treecore_assert (srcData != nullptr); // this must not be null!
         insertPosition = jmin (size, insertPosition);
         const size_t trailingDataSize = size - insertPosition;
         setSize (size + numBytes, false);
@@ -340,7 +340,7 @@ void MemoryBlock::loadFromHexString (StringRef hex)
 
             for (;;)
             {
-                const juce_wchar c = t.getAndAdvance();
+                const treecore_wchar c = t.getAndAdvance();
 
                 if (c >= '0' && c <= '9')    { byte |= c - '0';        break; }
                 if (c >= 'a' && c <= 'z')    { byte |= c - ('a' - 10); break; }
@@ -374,7 +374,7 @@ String MemoryBlock::toBase64Encoding() const
     d.write ('.');
 
     for (size_t i = 0; i < numChars; ++i)
-        d.write ((juce_wchar) (uint8) base64EncodingTable [getBitRange (i * 6, 6)]);
+        d.write ((treecore_wchar) (uint8) base64EncodingTable [getBitRange (i * 6, 6)]);
 
     d.writeNull();
     return destString;
@@ -389,7 +389,7 @@ static const char base64DecodingTable[] =
 
 bool MemoryBlock::fromBase64Encoding (StringRef s)
 {
-    String::CharPointerType dot (CharacterFunctions::find (s.text, (juce_wchar) '.'));
+    String::CharPointerType dot (CharacterFunctions::find (s.text, (treecore_wchar) '.'));
 
     if (dot.isEmpty())
         return false;

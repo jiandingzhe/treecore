@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,18 +23,21 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
-#ifndef JUCE_LEAKEDOBJECTDETECTOR_H_INCLUDED
-#define JUCE_LEAKEDOBJECTDETECTOR_H_INCLUDED
+#ifndef TREECORE_LEAKED_OBJECT_DETECTOR_H
+#define TREECORE_LEAKED_OBJECT_DETECTOR_H
 
 #include "treecore/AtomicFunc.h"
+#include "treecore/DebugUtils.h"
 #include "treecore/Logger.h"
-#include "treecore/StandardHeader.h"
 #include "treecore/String.h"
 
-//==============================================================================
+#if TREECORE_DEBUG && !defined TREECORE_CHECK_MEMORY_LEAKS
+#    define TREECORE_CHECK_MEMORY_LEAKS 1
+#endif
+
 namespace treecore {
 
 /**
@@ -45,30 +48,30 @@ namespace treecore {
     active, so that when the app is shutdown and the static destructors are called,
     it can check whether there are any left-over instances that may have been leaked.
 
-    To use it, use the JUCE_LEAK_DETECTOR macro as a simple way to put one in your
-    class declaration. Have a look through the juce codebase for examples, it's used
+    To use it, use the TREECORE_LEAK_DETECTOR macro as a simple way to put one in your
+    class declaration. Have a look through the codebase for examples, it's used
     in most of the classes.
-*/
-template <class OwnerClass>
+ */
+template<class OwnerClass>
 class LeakedObjectDetector
 {
 public:
     //==============================================================================
     LeakedObjectDetector() noexcept
     {
-        treecore::atomic_fetch_add(&getCounter().numObjects, 1);
+        treecore::atomic_fetch_add( &getCounter().numObjects, 1 );
     }
 
-    LeakedObjectDetector (const LeakedObjectDetector&) noexcept
+    LeakedObjectDetector ( const LeakedObjectDetector& ) noexcept
     {
-        treecore::atomic_fetch_add(&getCounter().numObjects, 1);
+        treecore::atomic_fetch_add( &getCounter().numObjects, 1 );
     }
 
     ~LeakedObjectDetector()
     {
-        if (treecore::atomic_sub_fetch(&getCounter().numObjects, 1) < 0)
+        if (treecore::atomic_sub_fetch( &getCounter().numObjects, 1 ) < 0)
         {
-            DBG ("*** Dangling pointer deletion! Class: " << getLeakedObjectClassName());
+            TREECORE_DBG( "*** Dangling pointer deletion! Class: " << getLeakedObjectClassName() );
 
             /** If you hit this, then you've managed to delete more instances of this class than you've
                 created.. That indicates that you're deleting some dangling pointers.
@@ -80,8 +83,8 @@ public:
                 Most errors like this are caused by using old-fashioned, non-RAII techniques for
                 your object management. Tut, tut. Always, always use ScopedPointers, OwnedArrays,
                 ReferenceCountedObjects, etc, and avoid the 'delete' operator at all costs!
-            */
-            jassertfalse;
+             */
+            treecore_assert_false;
         }
     }
 
@@ -89,15 +92,15 @@ private:
     //==============================================================================
     class LeakCounter
     {
-    public:
+public:
         LeakCounter() noexcept {}
 
         ~LeakCounter()
         {
-            int n_obj = treecore::atomic_load(&numObjects);
+            int n_obj = treecore::atomic_load( &numObjects );
             if (n_obj > 0)
             {
-                DBG ("*** Leaked objects detected: " << n_obj << " instance(s) of class " << getLeakedObjectClassName());
+                TREECORE_DBG( "*** Leaked objects detected: " << n_obj << " instance(s) of class " << getLeakedObjectClassName() );
 
                 /** If you hit this, then you've leaked one or more objects of the type specified by
                     the 'OwnerClass' template parameter - the name should have been printed by the line above.
@@ -105,8 +108,8 @@ private:
                     If you're leaking, it's probably because you're using old-fashioned, non-RAII techniques for
                     your object management. Tut, tut. Always, always use ScopedPointers, OwnedArrays,
                     ReferenceCountedObjects, etc, and avoid the 'delete' operator at all costs!
-                */
-                jassertfalse;
+                 */
+                treecore_assert_false;
             }
         }
 
@@ -126,36 +129,35 @@ private:
 };
 
 //==============================================================================
-#if DOXYGEN || ! defined (JUCE_LEAK_DETECTOR)
- #if (DOXYGEN || JUCE_CHECK_MEMORY_LEAKS)
-  /** This macro lets you embed a leak-detecting object inside a class.
 
-      To use it, simply declare a JUCE_LEAK_DETECTOR(YourClassName) inside a private section
-      of the class declaration. E.g.
+#if (TREECORE_COMPILER_DOXYGEN || TREECORE_CHECK_MEMORY_LEAKS)
+/** This macro lets you embed a leak-detecting object inside a class.
 
-      @code
-      class MyClass
-      {
-      public:
-          MyClass();
-          void blahBlah();
+   To use it, simply declare a TREECORE_LEAK_DETECTOR(YourClassName) inside a private section
+   of the class declaration. E.g.
 
-      private:
-          JUCE_LEAK_DETECTOR (MyClass)
-      };
-      @endcode
+   @code
+   class MyClass
+   {
+   public:
+    MyClass();
+    void blahBlah();
 
-      @see JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR, LeakedObjectDetector
-  */
-  #define JUCE_LEAK_DETECTOR(OwnerClass) \
-        friend class treecore::LeakedObjectDetector<OwnerClass>; \
-        static const char* getLeakedObjectClassName() noexcept { return #OwnerClass; } \
-        treecore::LeakedObjectDetector<OwnerClass> JUCE_JOIN_MACRO (leakDetector, __LINE__);
- #else
-  #define JUCE_LEAK_DETECTOR(OwnerClass)
- #endif
+   private:
+    TREECORE_LEAK_DETECTOR (MyClass)
+   };
+   @endcode
+
+   @see TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR, LeakedObjectDetector
+ */
+#    define TREECORE_LEAK_DETECTOR( OwnerClass )                                  \
+    friend class treecore::LeakedObjectDetector<OwnerClass>;                      \
+    static const char* getLeakedObjectClassName() noexcept{ return #OwnerClass; } \
+    treecore::LeakedObjectDetector<OwnerClass> TREECORE_STRINGIFY_JOIN( leakDetector, __LINE__ );
+#else
+#    define TREECORE_LEAK_DETECTOR( OwnerClass )
 #endif
 
 }
 
-#endif   // JUCE_LEAKEDOBJECTDETECTOR_H_INCLUDED
+#endif   // TREECORE_LEAKED_OBJECT_DETECTOR_H

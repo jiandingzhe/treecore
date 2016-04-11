@@ -50,7 +50,7 @@ namespace treecore {
     also cuts down on storage if you're using many copies of the same string.
 */
 
-class JUCE_API StringPool: public RefCountObject, public RefCountSingleton<StringPool>
+class TREECORE_SHARED_API StringPool: public RefCountObject, public RefCountSingleton<StringPool>
 {
     friend class ::TestFramework;
 

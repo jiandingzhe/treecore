@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,14 +23,14 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #ifndef JUCE_MEMORYMAPPEDFILE_H_INCLUDED
 #define JUCE_MEMORYMAPPEDFILE_H_INCLUDED
 
-#include "treecore/StandardHeader.h"
 #include "treecore/MathsFunctions.h"
+#include "treecore/PlatformDefs.h"
 #include "treecore/Range.h"
 
 //==============================================================================
@@ -40,8 +40,8 @@ class File;
 
 /**
     Maps a file into virtual memory for easy reading and/or writing.
-*/
-class JUCE_API  MemoryMappedFile
+ */
+class TREECORE_SHARED_API MemoryMappedFile
 {
 public:
     /** The read/write flags used when opening a memory mapped file. */
@@ -63,8 +63,8 @@ public:
         will lazily pull the data into memory when blocks are accessed.
 
         If the file can't be opened for some reason, the getData() method will return a null pointer.
-    */
-    MemoryMappedFile (const File& file, AccessMode mode);
+     */
+    MemoryMappedFile ( const File& file, AccessMode mode );
 
     /** Opens a section of a file and maps it to an area of virtual memory.
 
@@ -81,22 +81,22 @@ public:
         NOTE: the start of the actual range used may be rounded-down to a multiple of the OS's page-size,
         so do not assume that the mapped memory will begin at exactly the position you requested - always
         use getRange() to check the actual range that is being used.
-    */
-    MemoryMappedFile (const File& file,
-                      const Range<int64>& fileRange,
-                      AccessMode mode);
+     */
+    MemoryMappedFile ( const File&         file,
+                       const Range<int64>& fileRange,
+                       AccessMode          mode );
 
     /** Destructor. */
     ~MemoryMappedFile();
 
     /** Returns the address at which this file has been mapped, or a null pointer if
         the file couldn't be successfully mapped.
-    */
+     */
     void* getData() const noexcept              { return address; }
 
     /** Returns the number of bytes of data that are available for reading or writing.
         This will normally be the size of the file.
-    */
+     */
     size_t getSize() const noexcept             { return (size_t) range.getLength(); }
 
     /** Returns the section of the file at which the mapped memory represents. */
@@ -107,15 +107,15 @@ private:
     void* address;
     Range<int64> range;
 
-   #if defined TREECORE_OS_WINDOWS
+   #if TREECORE_OS_WINDOWS
     void* fileHandle;
    #else
     int fileHandle;
    #endif
 
-    void openInternal (const File&, AccessMode);
+    void openInternal( const File &, AccessMode );
 
-    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MemoryMappedFile)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR( MemoryMappedFile )
 };
 
 }

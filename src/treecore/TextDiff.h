@@ -43,7 +43,7 @@ class String;
     each change can be either an insertion or a deletion. When applied in order
     to the original string, these changes will convert it to the target string.
 */
-class JUCE_API TextDiff
+class TREECORE_SHARED_API TextDiff
 {
 public:
     /** Creates a set of diffs for converting the original string into the target. */

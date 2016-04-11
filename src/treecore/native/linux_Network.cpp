@@ -32,6 +32,8 @@
 #include "treecore/WebInputStream.h"
 
 #include <ifaddrs.h>
+#include <linux/if.h>
+#include <sys/ioctl.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -70,12 +72,12 @@ void MacAddress::findAllAddresses (Array<MacAddress>& result)
 }
 
 
-bool JUCE_CALLTYPE Process::openEmailWithAttachments (const String& /* targetEmailAddress */,
+bool TREECORE_STDCALL Process::openEmailWithAttachments (const String& /* targetEmailAddress */,
                                                       const String& /* emailSubject */,
                                                       const String& /* bodyText */,
                                                       const StringArray& /* filesToAttach */)
 {
-    jassertfalse;    // xxx todo
+    treecore_assert_false;    // xxx todo
     return false;
 }
 

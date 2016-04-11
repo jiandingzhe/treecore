@@ -117,7 +117,7 @@ void StringArray::addArray (const StringArray& otherArray, int startIndex, int n
 {
     if (startIndex < 0)
     {
-        jassertfalse;
+        treecore_assert_false;
         startIndex = 0;
     }
 

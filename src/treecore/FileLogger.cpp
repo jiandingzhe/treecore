@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,8 +23,8 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #include "treecore/FileLogger.h"
 #include "treecore/FileInputStream.h"
@@ -35,38 +35,38 @@
 
 namespace treecore {
 
-FileLogger::FileLogger (const File& file,
-                        const String& welcomeMessage,
-                        const int64 maxInitialFileSizeBytes)
-    : logFile (file)
+FileLogger::FileLogger ( const File&   file,
+                         const String& welcomeMessage,
+                         const int64   maxInitialFileSizeBytes )
+    : logFile( file )
 {
     if (maxInitialFileSizeBytes >= 0)
-        trimFileSize (maxInitialFileSizeBytes);
+        trimFileSize( maxInitialFileSizeBytes );
 
-    if (! file.exists())
+    if ( !file.exists() )
         file.create();  // (to create the parent directories)
 
     String welcome;
     welcome << newLine
             << "**********************************************************" << newLine
             << welcomeMessage << newLine
-            << "Log started: " << Time::getCurrentTime().toString (true, true) << newLine;
+            << "Log started: " << Time::getCurrentTime().toString( true, true ) << newLine;
 
-    FileLogger::logMessage (welcome);
+    FileLogger::logMessage( welcome );
 }
 
 FileLogger::~FileLogger() {}
 
 //==============================================================================
-void FileLogger::logMessage (const String& message)
+void FileLogger::logMessage( const String& message )
 {
-    const ScopedLock sl (logLock);
-    DBG (message);
-    FileOutputStream out (logFile, 256);
+    const ScopedLock sl( logLock );
+    TREECORE_DBG( message );
+    FileOutputStream out( logFile, 256 );
     out << message << newLine;
 }
 
-void FileLogger::trimFileSize (int64 maxFileSizeBytes) const
+void FileLogger::trimFileSize( int64 maxFileSizeBytes ) const
 {
     if (maxFileSizeBytes <= 0)
     {
@@ -78,18 +78,18 @@ void FileLogger::trimFileSize (int64 maxFileSizeBytes) const
 
         if (fileSize > maxFileSizeBytes)
         {
-            TemporaryFile tempFile (logFile);
+            TemporaryFile tempFile( logFile );
 
             {
-                FileOutputStream out (tempFile.getFile());
-                FileInputStream in (logFile);
+                FileOutputStream out( tempFile.getFile() );
+                FileInputStream in( logFile );
 
-                if (! (out.openedOk() && in.openedOk()))
+                if ( !( out.openedOk() && in.openedOk() ) )
                     return;
 
-                in.setPosition (fileSize - maxFileSizeBytes);
+                in.setPosition( fileSize - maxFileSizeBytes );
 
-                for (;;)
+                for (;; )
                 {
                     const char c = in.readByte();
                     if (c == 0)
@@ -102,7 +102,7 @@ void FileLogger::trimFileSize (int64 maxFileSizeBytes) const
                     }
                 }
 
-                out.writeFromInputStream (in, -1);
+                out.writeFromInputStream( in, -1 );
             }
 
             tempFile.overwriteTargetFileWithTemporary();
@@ -114,33 +114,33 @@ void FileLogger::trimFileSize (int64 maxFileSizeBytes) const
 File FileLogger::getSystemLogFileFolder()
 {
     //TODO: should IOS also use this?
-#ifdef TREECORE_OS_OSX
-    return File ("~/Library/Logs");
+#if TREECORE_OS_OSX
+    return File( "~/Library/Logs" );
 #else
-    return File::getSpecialLocation (File::userApplicationDataDirectory);
+    return File::getSpecialLocation( File::userApplicationDataDirectory );
 #endif
 }
 
-FileLogger* FileLogger::createDefaultAppLogger (const String& logFileSubDirectoryName,
+FileLogger* FileLogger::createDefaultAppLogger( const String& logFileSubDirectoryName,
                                                 const String& logFileName,
                                                 const String& welcomeMessage,
-                                                const int64 maxInitialFileSizeBytes)
+                                                const int64   maxInitialFileSizeBytes )
 {
-    return new FileLogger (getSystemLogFileFolder().getChildFile (logFileSubDirectoryName)
-                                                   .getChildFile (logFileName),
-                           welcomeMessage, maxInitialFileSizeBytes);
+    return new FileLogger( getSystemLogFileFolder().getChildFile( logFileSubDirectoryName )
+                           .getChildFile( logFileName ),
+                           welcomeMessage, maxInitialFileSizeBytes );
 }
 
-FileLogger* FileLogger::createDateStampedLogger (const String& logFileSubDirectoryName,
+FileLogger* FileLogger::createDateStampedLogger( const String& logFileSubDirectoryName,
                                                  const String& logFileNameRoot,
                                                  const String& logFileNameSuffix,
-                                                 const String& welcomeMessage)
+                                                 const String& welcomeMessage )
 {
-    return new FileLogger (getSystemLogFileFolder().getChildFile (logFileSubDirectoryName)
-                                                   .getChildFile (logFileNameRoot + Time::getCurrentTime().formatted ("%Y-%m-%d_%H-%M-%S"))
-                                                   .withFileExtension (logFileNameSuffix)
-                                                   .getNonexistentSibling(),
-                           welcomeMessage, 0);
+    return new FileLogger( getSystemLogFileFolder().getChildFile( logFileSubDirectoryName )
+                           .getChildFile( logFileNameRoot + Time::getCurrentTime().formatted( "%Y-%m-%d_%H-%M-%S" ) )
+                           .withFileExtension( logFileNameSuffix )
+                           .getNonexistentSibling(),
+                           welcomeMessage, 0 );
 }
 
 }

@@ -55,7 +55,7 @@ namespace treecore {
 
     @see ScopedReadLock, ScopedWriteLock, CriticalSection
 */
-class JUCE_API  ReadWriteLock
+class TREECORE_SHARED_API  ReadWriteLock
 {
 public:
     //==============================================================================

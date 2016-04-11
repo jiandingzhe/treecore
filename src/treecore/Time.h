@@ -42,7 +42,7 @@ namespace treecore {
 
     @see RelativeTime
 */
-class JUCE_API  Time
+class TREECORE_SHARED_API  Time
 {
 public:
     //==============================================================================
@@ -105,7 +105,7 @@ public:
 
         @see currentTimeMillis
     */
-    static Time JUCE_CALLTYPE getCurrentTime() noexcept;
+    static Time TREECORE_STDCALL getCurrentTime() noexcept;
 
     /** Returns the time as a number of milliseconds.
 
@@ -382,27 +382,27 @@ private:
 
 //==============================================================================
 /** Adds a RelativeTime to a Time. */
-JUCE_API Time operator+ (Time time, RelativeTime delta) noexcept;
+TREECORE_SHARED_API Time operator+ (Time time, RelativeTime delta) noexcept;
 /** Adds a RelativeTime to a Time. */
-JUCE_API Time operator+ (RelativeTime delta, Time time) noexcept;
+TREECORE_SHARED_API Time operator+ (RelativeTime delta, Time time) noexcept;
 
 /** Subtracts a RelativeTime from a Time. */
-JUCE_API Time operator- (Time time, RelativeTime delta) noexcept;
+TREECORE_SHARED_API Time operator- (Time time, RelativeTime delta) noexcept;
 /** Returns the relative time difference between two times. */
-JUCE_API const RelativeTime operator- (Time time1, Time time2) noexcept;
+TREECORE_SHARED_API const RelativeTime operator- (Time time1, Time time2) noexcept;
 
 /** Compares two Time objects. */
-JUCE_API bool operator== (Time time1, Time time2) noexcept;
+TREECORE_SHARED_API bool operator== (Time time1, Time time2) noexcept;
 /** Compares two Time objects. */
-JUCE_API bool operator!= (Time time1, Time time2) noexcept;
+TREECORE_SHARED_API bool operator!= (Time time1, Time time2) noexcept;
 /** Compares two Time objects. */
-JUCE_API bool operator<  (Time time1, Time time2) noexcept;
+TREECORE_SHARED_API bool operator<  (Time time1, Time time2) noexcept;
 /** Compares two Time objects. */
-JUCE_API bool operator<= (Time time1, Time time2) noexcept;
+TREECORE_SHARED_API bool operator<= (Time time1, Time time2) noexcept;
 /** Compares two Time objects. */
-JUCE_API bool operator>  (Time time1, Time time2) noexcept;
+TREECORE_SHARED_API bool operator>  (Time time1, Time time2) noexcept;
 /** Compares two Time objects. */
-JUCE_API bool operator>= (Time time1, Time time2) noexcept;
+TREECORE_SHARED_API bool operator>= (Time time1, Time time2) noexcept;
 
 }
 

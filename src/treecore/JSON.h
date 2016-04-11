@@ -30,7 +30,6 @@
 #define JUCE_JSON_H_INCLUDED
 
 #include "treecore/Array.h"
-#include "treecore/StandardHeader.h"
 #include "treecore/String.h"
 
 namespace treecore {
@@ -52,7 +51,7 @@ class var;
 
     @see var
 */
-class JUCE_API  JSON
+class TREECORE_SHARED_API  JSON
 {
 public:
     //==============================================================================
@@ -149,7 +148,7 @@ class JSONParser
 public:
     static Result parseObjectOrArray (String::CharPointerType t, var& result);
 
-    static Result parseString (const juce_wchar quoteChar, String::CharPointerType& t, var& result);
+    static Result parseString (const treecore_wchar quoteChar, String::CharPointerType& t, var& result);
 
     static Result parseAny (String::CharPointerType& t, var& result);
 

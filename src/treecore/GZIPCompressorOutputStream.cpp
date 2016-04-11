@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,8 +23,8 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #include "treecore/GZIPCompressorOutputStream.h"
 extern "C"
@@ -32,51 +32,50 @@ extern "C"
 #include "zlib.h"
 }
 
-
 namespace treecore {
 
 class GZIPCompressorOutputStream::GZIPCompressorHelper
 {
 public:
-    GZIPCompressorHelper (const int compressionLevel, const int windowBits)
-        : compLevel ((compressionLevel < 1 || compressionLevel > 9) ? -1 : compressionLevel),
-          isFirstDeflate (true),
-          streamIsValid (false),
-          finished (false)
+    GZIPCompressorHelper ( const int compressionLevel, const int windowBits )
+        : compLevel( (compressionLevel < 1 || compressionLevel > 9) ? -1 : compressionLevel ),
+        isFirstDeflate( true ),
+        streamIsValid( false ),
+        finished( false )
     {
-        zerostruct (stream);
+        zerostruct( stream );
 
-        streamIsValid = (deflateInit2 (&stream, compLevel, Z_DEFLATED,
+        streamIsValid = (deflateInit2( &stream, compLevel, Z_DEFLATED,
                                        windowBits != 0 ? windowBits : MAX_WBITS,
-                                       8, strategy) == Z_OK);
+                                       8, strategy ) == Z_OK);
     }
 
     ~GZIPCompressorHelper()
     {
         if (streamIsValid)
-            deflateEnd (&stream);
+            deflateEnd( &stream );
     }
 
-    bool write (const uint8* data, size_t dataSize, OutputStream& out)
+    bool write( const uint8* data, size_t dataSize, OutputStream& out )
     {
         // When you call flush() on a gzip stream, the stream is closed, and you can
         // no longer continue to write data to it!
-        jassert (! finished);
+        treecore_assert( !finished );
 
         while (dataSize > 0)
-            if (! doNextBlock (data, dataSize, out, Z_NO_FLUSH))
+            if ( !doNextBlock( data, dataSize, out, Z_NO_FLUSH ) )
                 return false;
 
         return true;
     }
 
-    void finish (OutputStream& out)
+    void finish( OutputStream& out )
     {
         const uint8* data = nullptr;
-        size_t dataSize = 0;
+        size_t dataSize   = 0;
 
-        while (! finished)
-            doNextBlock (data, dataSize, out, Z_FINISH);
+        while (!finished)
+            doNextBlock( data, dataSize, out, Z_FINISH );
     }
 
 private:
@@ -87,52 +86,51 @@ private:
     bool isFirstDeflate, streamIsValid, finished;
     Bytef buffer[32768];
 
-    bool doNextBlock (const uint8*& data, size_t& dataSize, OutputStream& out, const int flushMode)
+    bool doNextBlock( const uint8*& data, size_t& dataSize, OutputStream& out, const int flushMode )
     {
         if (streamIsValid)
         {
-            stream.next_in   = const_cast <uint8*> (data);
+            stream.next_in   = const_cast<uint8*>(data);
             stream.next_out  = buffer;
             stream.avail_in  = (uInt) dataSize;
-            stream.avail_out = (uInt) sizeof (buffer);
+            stream.avail_out = (uInt) sizeof(buffer);
 
-            const int result = isFirstDeflate ? deflateParams (&stream, compLevel, strategy)
-                                              : deflate (&stream, flushMode);
+            const int result = isFirstDeflate ? deflateParams( &stream, compLevel, strategy )
+                               : deflate( &stream, flushMode );
             isFirstDeflate = false;
 
             switch (result)
             {
-                case Z_STREAM_END:
-                    finished = true;
-                    // Deliberate fall-through..
-                case Z_OK:
-                {
-                    data += dataSize - stream.avail_in;
-                    dataSize = stream.avail_in;
-                    const ssize_t bytesDone = (ssize_t) sizeof (buffer) - (ssize_t) stream.avail_out;
-                    return bytesDone <= 0 || out.write (buffer, (size_t) bytesDone);
-                }
+            case Z_STREAM_END:
+                finished = true;
+            // Deliberate fall-through..
+            case Z_OK:
+            {
+                data += dataSize - stream.avail_in;
+                dataSize = stream.avail_in;
+                const ssize_t bytesDone = (ssize_t) sizeof(buffer) - (ssize_t) stream.avail_out;
+                return bytesDone <= 0 || out.write( buffer, (size_t) bytesDone );
+            }
 
-                default:
-                    break;
+            default:
+                break;
             }
         }
 
         return false;
     }
 
-    TREECORE_DECLARE_NON_COPYABLE (GZIPCompressorHelper)
+    TREECORE_DECLARE_NON_COPYABLE( GZIPCompressorHelper )
 };
 
-//===========TREECORE_DECLARE_NON_COPYABLE==========================================
-GZIPCompressorOutputStream::GZIPCompressorOutputStream (OutputStream* const out,
-                                                        const int compressionLevel,
-                                                        const bool deleteDestStream,
-                                                        const int windowBits)
-    : destStream (out, deleteDestStream),
-      helper (new GZIPCompressorHelper (compressionLevel, windowBits))
+GZIPCompressorOutputStream::GZIPCompressorOutputStream ( OutputStream* const out,
+                                                         const int           compressionLevel,
+                                                         const bool          deleteDestStream,
+                                                         const int           windowBits )
+    : destStream( out, deleteDestStream )
+    , helper( new GZIPCompressorHelper( compressionLevel, windowBits ) )
 {
-    jassert (out != nullptr);
+    treecore_assert( out != nullptr );
 }
 
 GZIPCompressorOutputStream::~GZIPCompressorOutputStream()
@@ -142,15 +140,15 @@ GZIPCompressorOutputStream::~GZIPCompressorOutputStream()
 
 void GZIPCompressorOutputStream::flush()
 {
-    helper->finish (*destStream);
+    helper->finish( *destStream );
     destStream->flush();
 }
 
-bool GZIPCompressorOutputStream::write (const void* destBuffer, size_t howMany)
+bool GZIPCompressorOutputStream::write( const void* destBuffer, size_t howMany )
 {
-    jassert (destBuffer != nullptr && (ssize_t) howMany >= 0);
+    treecore_assert( destBuffer != nullptr && (ssize_t) howMany >= 0 );
 
-    return helper->write (static_cast <const uint8*> (destBuffer), howMany, *destStream);
+    return helper->write( static_cast<const uint8*>(destBuffer), howMany, *destStream );
 }
 
 int64 GZIPCompressorOutputStream::getPosition()
@@ -158,64 +156,10 @@ int64 GZIPCompressorOutputStream::getPosition()
     return destStream->getPosition();
 }
 
-bool GZIPCompressorOutputStream::setPosition (int64 /*newPosition*/)
+bool GZIPCompressorOutputStream::setPosition( int64 /*newPosition*/ )
 {
-    jassertfalse; // can't do it!
+    treecore_assert_false; // can't do it!
     return false;
 }
 
-//==============================================================================
-#if JUCE_UNIT_TESTS
-
-class GZIPTests  : public UnitTest
-{
-public:
-    GZIPTests()   : UnitTest ("GZIP") {}
-
-    void runTest()
-    {
-        beginTest ("GZIP");
-        Random rng = getRandom();
-
-        for (int i = 100; --i >= 0;)
-        {
-            MemoryOutputStream original, compressed, uncompressed;
-
-            {
-                GZIPCompressorOutputStream zipper (&compressed, rng.nextInt (10), false);
-
-                for (int j = rng.nextInt (100); --j >= 0;)
-                {
-                    MemoryBlock data ((unsigned int) (rng.nextInt (2000) + 1));
-
-                    for (int k = (int) data.getSize(); --k >= 0;)
-                        data[k] = (char) rng.nextInt (255);
-
-                    original << data;
-                    zipper   << data;
-                }
-            }
-
-            {
-                MemoryInputStream compressedInput (compressed.getData(), compressed.getDataSize(), false);
-                GZIPDecompressorInputStream unzipper (compressedInput);
-
-                uncompressed << unzipper;
-            }
-
-            expectEquals ((int) uncompressed.getDataSize(),
-                          (int) original.getDataSize());
-
-            if (original.getDataSize() == uncompressed.getDataSize())
-                expect (memcmp (uncompressed.getData(),
-                                original.getData(),
-                                original.getDataSize()) == 0);
-        }
-    }
-};
-
-static GZIPTests gzipTests;
-
-#endif
-
-}
+} // namespace treecore

@@ -27,11 +27,17 @@
 */
 
 #include "treecore/String.h"
+#include "treecore/StringCast.h"
+
+class CFStringRef;
+class CFString;
+class CFRange;
 
 namespace treecore
 {
 
-String String::fromCFString (CFStringRef cfString)
+template<>
+String toString<CFStringRef> (CFStringRef cfString)
 {
     if (cfString == 0)
         return String();
@@ -44,18 +50,20 @@ String String::fromCFString (CFStringRef cfString)
     return String (CharPointer_UTF16 ((const CharPointer_UTF16::CharType*) u.getData()));
 }
 
-CFStringRef String::toCFString() const
+template<>
+bool fromString<CFString>(const String& string, CFStringRef& result)
 {
-    CharPointer_UTF16 utf16 (toUTF16());
-    return CFStringCreateWithCharacters (kCFAllocatorDefault, (const UniChar*) utf16.getAddress(), (CFIndex) utf16.length());
+    CharPointer_UTF16 utf16 (string.toUTF16());
+    result = CFStringCreateWithCharacters (kCFAllocatorDefault, (const UniChar*) utf16.getAddress(), (CFIndex) utf16.length());
+    return true;
 }
 
 String String::convertToPrecomposedUnicode() const
 {
-   #ifdef TREECORE_OS_IOS
-    JUCE_AUTORELEASEPOOL
+   #if TREECORE_OS_IOS
+    TREECORE_AUTO_RELEASE_POOL
     {
-        return nsStringToJuce ([juceStringToNS (*this) precomposedStringWithCanonicalMapping]);
+        return nsStringToTreecore ([treecoreStringToNS (*this) precomposedStringWithCanonicalMapping]);
     }
    #else
     UnicodeMapping map;

@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,14 +23,13 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #ifndef JUCE_FILE_H_INCLUDED
 #define JUCE_FILE_H_INCLUDED
 
 #include "treecore/Array.h"
-#include "treecore/StandardHeader.h"
 #include "treecore/MathsFunctions.h"
 #include "treecore/Result.h"
 
@@ -54,8 +53,8 @@ class Time;
     output stream.
 
     @see FileInputStream, FileOutputStream
-*/
-class JUCE_API  File
+ */
+class TREECORE_SHARED_API File
 {
 public:
     //==============================================================================
@@ -66,7 +65,7 @@ public:
         true.
 
         You can use its operator= method to point it at a proper file.
-    */
+     */
     File() noexcept  {}
 
     /** Creates a file from an absolute path.
@@ -78,11 +77,11 @@ public:
 
         On the Mac/Linux, the path can include "~" notation for referring to
         user home directories.
-    */
-    File (const String& absolutePath);
+     */
+    File ( const String& absolutePath );
 
     /** Creates a copy of another file object. */
-    File (const File&);
+    File ( const File& );
 
     /** Destructor. */
     ~File() noexcept  {}
@@ -96,14 +95,14 @@ public:
 
         On the Mac/Linux, the path can include "~" notation for referring to
         user home directories.
-    */
-    File& operator= (const String& newAbsolutePath);
+     */
+    File& operator = ( const String& newAbsolutePath );
 
     /** Copies from another file object. */
-    File& operator= (const File& otherFile);
+    File& operator = ( const File& otherFile );
 
-    File (File&&) noexcept;
-    File& operator= (File&&) noexcept;
+    File ( File&& ) noexcept;
+    File& operator = ( File&& ) noexcept;
 
     //==============================================================================
     /** This static constant is used for referring to an 'invalid' file. */
@@ -114,7 +113,7 @@ public:
 
         @returns    true if the file exists, either as a file or a directory.
         @see existsAsFile, isDirectory
-    */
+     */
     bool exists() const;
 
     /** Checks whether the file exists and is a file rather than a directory.
@@ -122,7 +121,7 @@ public:
         @returns    true only if this is a real file, false if it's a directory
                     or doesn't exist
         @see exists, isDirectory
-    */
+     */
     bool existsAsFile() const;
 
     /** Checks whether the file is a directory that exists.
@@ -130,21 +129,21 @@ public:
         @returns    true only if the file is a directory which actually exists, so
                     false if it's a file or doesn't exist at all
         @see exists, existsAsFile
-    */
+     */
     bool isDirectory() const;
 
     /** Returns the size of the file in bytes.
 
         @returns    the number of bytes in the file, or 0 if it doesn't exist.
-    */
+     */
     int64 getSize() const;
 
     /** Utility function to convert a file size in bytes to a neat string description.
 
         So for example 100 would return "100 bytes", 2000 would return "2 KB",
         2000000 would produce "2 MB", etc.
-    */
-    static String descriptionOfSizeInBytes (int64 bytes);
+     */
+    static String descriptionOfSizeInBytes( int64 bytes );
 
     //==============================================================================
     /** Returns the complete, absolute path of this file.
@@ -157,7 +156,7 @@ public:
         getFileNameWithoutExtension().
 
         @see getFileName, getRelativePathFrom
-    */
+     */
     const String& getFullPathName() const noexcept          { return fullPath; }
 
     /** Returns the last section of the pathname.
@@ -172,7 +171,7 @@ public:
         "/moose/.fish", it'll return ".fish"
 
         @see getFullPathName, getFileNameWithoutExtension
-    */
+     */
     String getFileName() const;
 
     /** Creates a relative path that refers to a file relatively to a given directory.
@@ -189,8 +188,8 @@ public:
                                         a directory, its parent directory will be used instead.
                                         If it doesn't exist, it's assumed to be a directory.
         @see getChildFile, isAbsolutePath
-    */
-    String getRelativePathFrom (const File& directoryToBeRelativeTo) const;
+     */
+    String getRelativePathFrom( const File& directoryToBeRelativeTo ) const;
 
     //==============================================================================
     /** Returns the file's extension.
@@ -200,7 +199,7 @@ public:
         e.g. "/moose/fish/foo.txt" would return ".txt"
 
         @see hasFileExtension, withFileExtension, getFileNameWithoutExtension
-    */
+     */
     String getFileExtension() const;
 
     /** Checks whether the file has a given extension.
@@ -213,8 +212,8 @@ public:
                                 true if the file has any of those three extensions.
 
         @see getFileExtension, withFileExtension, getFileNameWithoutExtension
-    */
-    bool hasFileExtension (StringRef extensionToTest) const;
+     */
+    bool hasFileExtension( StringRef extensionToTest ) const;
 
     /** Returns a version of this file with a different file extension.
 
@@ -225,15 +224,15 @@ public:
                                 pass an empty string into this function.
 
         @see getFileName, getFileExtension, hasFileExtension, getFileNameWithoutExtension
-    */
-    File withFileExtension (StringRef newExtension) const;
+     */
+    File withFileExtension( StringRef newExtension ) const;
 
     /** Returns the last part of the filename, without its file extension.
 
         e.g. for "/moose/fish/foo.txt" this will return "foo".
 
         @see getFileName, getFileExtension, hasFileExtension, withFileExtension
-    */
+     */
     String getFileNameWithoutExtension() const;
 
     //==============================================================================
@@ -241,14 +240,14 @@ public:
 
         This is based on the filename. Obviously it's possible, although unlikely, that
         two files will have the same hash-code.
-    */
+     */
     int hashCode() const;
 
     /** Returns a 64-bit hash-code that identifies this file.
 
         This is based on the filename. Obviously it's possible, although unlikely, that
         two files will have the same hash-code.
-    */
+     */
     int64 hashCode64() const;
 
     //==============================================================================
@@ -265,22 +264,22 @@ public:
             File ("/moose/fish").getChildFile ("/foo.txt") will produce "/foo.txt"
 
         @see getSiblingFile, getParentDirectory, getRelativePathFrom, isAChildOf
-    */
-    File getChildFile (StringRef relativeOrAbsolutePath) const;
+     */
+    File getChildFile( StringRef relativeOrAbsolutePath ) const;
 
     /** Returns a file which is in the same directory as this one.
 
         This is equivalent to getParentDirectory().getChildFile (name).
 
         @see getChildFile, getParentDirectory
-    */
-    File getSiblingFile (StringRef siblingFileName) const;
+     */
+    File getSiblingFile( StringRef siblingFileName ) const;
 
     //==============================================================================
     /** Returns the directory that contains this file or directory.
 
         e.g. for "/moose/fish/foo.txt" this will return "/moose/fish".
-    */
+     */
     File getParentDirectory() const;
 
     /** Checks whether a file is somewhere inside a directory.
@@ -291,8 +290,8 @@ public:
 
         e.g. File ("/moose/fish/foo.txt").isAChildOf ("/moose") is true.
              File ("/moose/fish/foo.txt").isAChildOf ("/moose/fish") is also true.
-    */
-    bool isAChildOf (const File& potentialParentDirectory) const;
+     */
+    bool isAChildOf( const File& potentialParentDirectory ) const;
 
     //==============================================================================
     /** Chooses a filename relative to this one that doesn't already exist.
@@ -311,10 +310,10 @@ public:
         @param putNumbersInBrackets     if true, this will create filenames in the
                                         format "prefix(number)suffix", if false, it will leave the
                                         brackets out.
-    */
-    File getNonexistentChildFile (const String& prefix,
+     */
+    File getNonexistentChildFile( const String& prefix,
                                   const String& suffix,
-                                  bool putNumbersInBrackets = true) const;
+                                  bool          putNumbersInBrackets = true ) const;
 
     /** Chooses a filename for a sibling file to this one that doesn't already exist.
 
@@ -324,18 +323,18 @@ public:
 
         @param putNumbersInBrackets     whether to add brackets around the numbers that
                                         get appended to the new filename.
-    */
-    File getNonexistentSibling (bool putNumbersInBrackets = true) const;
+     */
+    File getNonexistentSibling( bool putNumbersInBrackets = true ) const;
 
     //==============================================================================
     /** Compares the pathnames for two files. */
-    bool operator== (const File&) const;
+    bool operator == ( const File& ) const;
     /** Compares the pathnames for two files. */
-    bool operator!= (const File&) const;
+    bool operator != ( const File& ) const;
     /** Compares the pathnames for two files. */
-    bool operator< (const File&) const;
+    bool operator < ( const File& ) const;
     /** Compares the pathnames for two files. */
-    bool operator> (const File&) const;
+    bool operator > ( const File& ) const;
 
     //==============================================================================
     /** Checks whether a file can be created or written to.
@@ -344,7 +343,7 @@ public:
                     doesn't already exist, this will check its parent directory to
                     see if writing is allowed.
         @see setReadOnly
-    */
+     */
     bool hasWriteAccess() const;
 
     /** Changes the write-permission of a file or directory.
@@ -355,13 +354,13 @@ public:
                                     of all files
         @returns    true if it manages to change the file's permissions.
         @see hasWriteAccess
-    */
-    bool setReadOnly (bool shouldBeReadOnly,
-                      bool applyRecursively = false) const;
+     */
+    bool setReadOnly( bool shouldBeReadOnly,
+                      bool applyRecursively = false ) const;
 
     /** Returns true if this file is a hidden or system file.
         The criteria for deciding whether a file is hidden are platform-dependent.
-    */
+     */
     bool isHidden() const;
 
     /** Returns true if this file is a link or alias that can be followed using getLinkedTarget(). */
@@ -369,7 +368,7 @@ public:
 
     /** If this file is a link or alias, this returns the file that it points to.
         If the file isn't actually link, it'll just return itself.
-    */
+     */
     File getLinkedTarget() const;
 
     /** Returns a unique identifier for the file, if one is available.
@@ -377,7 +376,7 @@ public:
         Depending on the OS and file-system, this may be a unix inode number or
         a win32 file identifier, or 0 if it fails to find one. The number will
         be unique on the filesystem, but not globally.
-    */
+     */
     uint64 getFileIdentifier() const;
 
     //==============================================================================
@@ -385,21 +384,21 @@ public:
 
         @returns    the time, or an invalid time if the file doesn't exist.
         @see setLastModificationTime, getLastAccessTime, getCreationTime
-    */
+     */
     Time getLastModificationTime() const;
 
     /** Returns the last time this file was accessed.
 
         @returns    the time, or an invalid time if the file doesn't exist.
         @see setLastAccessTime, getLastModificationTime, getCreationTime
-    */
+     */
     Time getLastAccessTime() const;
 
     /** Returns the time that this file was created.
 
         @returns    the time, or an invalid time if the file doesn't exist.
         @see getLastModificationTime, getLastAccessTime
-    */
+     */
     Time getCreationTime() const;
 
     /** Changes the modification time for this file.
@@ -407,31 +406,31 @@ public:
         @param newTime  the time to apply to the file
         @returns true if it manages to change the file's time.
         @see getLastModificationTime, setLastAccessTime, setCreationTime
-    */
-    bool setLastModificationTime (Time newTime) const;
+     */
+    bool setLastModificationTime( Time newTime ) const;
 
     /** Changes the last-access time for this file.
 
         @param newTime  the time to apply to the file
         @returns true if it manages to change the file's time.
         @see getLastAccessTime, setLastModificationTime, setCreationTime
-    */
-    bool setLastAccessTime (Time newTime) const;
+     */
+    bool setLastAccessTime( Time newTime ) const;
 
     /** Changes the creation date for this file.
 
         @param newTime  the time to apply to the file
         @returns true if it manages to change the file's time.
         @see getCreationTime, setLastModificationTime, setLastAccessTime
-    */
-    bool setCreationTime (Time newTime) const;
+     */
+    bool setCreationTime( Time newTime ) const;
 
     /** If possible, this will try to create a version string for the given file.
 
         The OS may be able to look at the file and give a version for it - e.g. with
         executables, bundles, dlls, etc. If no version is available, this will
         return an empty string.
-    */
+     */
     String getVersion() const;
 
     //==============================================================================
@@ -444,7 +443,7 @@ public:
 
         @returns    true if the file has been created (or if it already existed).
         @see createDirectory
-    */
+     */
     Result create() const;
 
     /** Creates a new directory for this filename.
@@ -455,7 +454,7 @@ public:
         @returns    a result to indicate whether the directory was created successfully, or
                     an error message if it failed.
         @see create
-    */
+     */
     Result createDirectory() const;
 
     /** Deletes a file.
@@ -466,7 +465,7 @@ public:
         @returns    true if the file has been successfully deleted (or if it didn't exist to
                     begin with).
         @see deleteRecursively
-    */
+     */
     bool deleteFile() const;
 
     /** Deletes a file or directory and all its subdirectories.
@@ -477,7 +476,7 @@ public:
         @returns    true if the file and all its subfolders have been successfully deleted
                     (or if it didn't exist to begin with).
         @see deleteFile
-    */
+     */
     bool deleteRecursively() const;
 
     /** Moves this file or folder to the trash.
@@ -485,7 +484,7 @@ public:
         @returns true if the operation succeeded. It could fail if the trash is full, or
                  if the file is write-protected, so you should check the return value
                  and act appropriately.
-    */
+     */
     bool moveToTrash() const;
 
     /** Moves or renames a file.
@@ -498,8 +497,8 @@ public:
         filename that you want the new file to have.
 
         @returns    true if the operation succeeds
-    */
-    bool moveFileTo (const File& targetLocation) const;
+     */
+    bool moveFileTo( const File& targetLocation ) const;
 
     /** Copies a file.
 
@@ -508,8 +507,8 @@ public:
         will fail if this can't be done.
 
         @returns    true if the operation succeeds
-    */
-    bool copyFileTo (const File& targetLocation) const;
+     */
+    bool copyFileTo( const File& targetLocation ) const;
 
     /** Copies a directory.
 
@@ -523,18 +522,18 @@ public:
                                into which the new one should be placed, so there must be enough
                                write privileges to create it if it doesn't exist. Any files inside
                                it will be overwritten by similarly named ones that are copied.
-    */
-    bool copyDirectoryTo (const File& newDirectory) const;
+     */
+    bool copyDirectoryTo( const File& newDirectory ) const;
 
     //==============================================================================
     /** Used in file searching, to specify whether to return files, directories, or both.
-    */
+     */
     enum TypesOfFileToFind
     {
-        findDirectories             = 1,    /**< Use this flag to indicate that you want to find directories. */
-        findFiles                   = 2,    /**< Use this flag to indicate that you want to find files. */
-        findFilesAndDirectories     = 3,    /**< Use this flag to indicate that you want to find both files and directories. */
-        ignoreHiddenFiles           = 4     /**< Add this flag to avoid returning any hidden files in the results. */
+        findDirectories = 1,                /**< Use this flag to indicate that you want to find directories. */
+        findFiles = 2,                      /**< Use this flag to indicate that you want to find files. */
+        findFilesAndDirectories = 3,        /**< Use this flag to indicate that you want to find both files and directories. */
+        ignoreHiddenFiles = 4               /**< Add this flag to avoid returning any hidden files in the results. */
     };
 
     /** Searches inside a directory for files matching a wildcard pattern.
@@ -553,11 +552,11 @@ public:
         @returns                        the number of results that have been found
 
         @see getNumberOfChildFiles, DirectoryIterator
-    */
-    int findChildFiles (Array<File>& results,
-                        int whatToLookFor,
-                        bool searchRecursively,
-                        const String& wildCardPattern = "*") const;
+     */
+    int findChildFiles( Array<File>&  results,
+                        int           whatToLookFor,
+                        bool          searchRecursively,
+                        const String& wildCardPattern = "*" ) const;
 
     /** Searches inside a directory and counts how many files match a wildcard pattern.
 
@@ -574,13 +573,13 @@ public:
         @param wildCardPattern  the filename pattern to search for, e.g. "*.txt"
         @returns                the number of matches found
         @see findChildFiles, DirectoryIterator
-    */
-    int getNumberOfChildFiles (int whatToLookFor,
-                               const String& wildCardPattern = "*") const;
+     */
+    int getNumberOfChildFiles( int           whatToLookFor,
+                               const String& wildCardPattern = "*" ) const;
 
     /** Returns true if this file is a directory that contains one or more subdirectories.
         @see isDirectory, findChildFiles
-    */
+     */
     bool containsSubDirectories() const;
 
     //==============================================================================
@@ -589,7 +588,7 @@ public:
         @returns    a stream that will read from this file (initially positioned at the
                     start of the file), or nullptr if the file can't be opened for some reason
         @see createOutputStream, loadFileAsData
-    */
+     */
     FileInputStream* createInputStream() const;
 
     /** Creates a stream to write to this file.
@@ -601,8 +600,8 @@ public:
         @returns    a stream that will write to this file (initially positioned at the
                     end of the file), or nullptr if the file can't be opened for some reason
         @see createInputStream, appendData, appendText
-    */
-    FileOutputStream* createOutputStream (size_t bufferSize = 0x8000) const;
+     */
+    FileOutputStream* createOutputStream( size_t bufferSize = 0x8000 ) const;
 
     //==============================================================================
     /** Loads a file's contents into memory as a block of binary data.
@@ -614,8 +613,8 @@ public:
                         that if the memory block might already contain some data, you
                         might want to clear it first
         @returns        true if the file could all be read into memory
-    */
-    bool loadFileAsData (MemoryBlock& result) const;
+     */
+    bool loadFileAsData( MemoryBlock& result ) const;
 
     /** Reads a file into memory as a string.
 
@@ -623,13 +622,13 @@ public:
 
         This makes use of InputStream::readEntireStreamAsString, which can
         read either UTF-16 or UTF-8 file formats.
-    */
+     */
     String loadFileAsString() const;
 
     /** Reads the contents of this file as text and splits it into lines, which are
         appended to the given StringArray.
-    */
-    void readLines (StringArray& destLines) const;
+     */
+    void readLines( StringArray& destLines ) const;
 
     //==============================================================================
     /** Appends a block of binary data to the end of the file.
@@ -637,9 +636,9 @@ public:
         This will try to write the given buffer to the end of the file.
 
         @returns false if it can't write to the file for some reason
-    */
-    bool appendData (const void* dataToAppend,
-                     size_t numberOfBytes) const;
+     */
+    bool appendData( const void* dataToAppend,
+                     size_t      numberOfBytes ) const;
 
     /** Replaces this file's contents with a given block of data.
 
@@ -654,9 +653,9 @@ public:
         Returns true if the operation succeeds, or false if it fails.
 
         @see appendText
-    */
-    bool replaceWithData (const void* dataToWrite,
-                          size_t numberOfBytes) const;
+     */
+    bool replaceWithData( const void* dataToWrite,
+                          size_t      numberOfBytes ) const;
 
     /** Appends a string to the end of the file.
 
@@ -669,10 +668,10 @@ public:
         Any single \\n characters in the string are replaced with \\r\\n before it is written.
 
         @see replaceWithText
-    */
-    bool appendText (const String& textToAppend,
-                     bool asUnicode = false,
-                     bool writeUnicodeHeaderBytes = false) const;
+     */
+    bool appendText( const String& textToAppend,
+                     bool          asUnicode = false,
+                     bool          writeUnicodeHeaderBytes = false ) const;
 
     /** Replaces this file's contents with a given text string.
 
@@ -689,15 +688,15 @@ public:
         Returns true if the operation succeeds, or false if it fails.
 
         @see appendText
-    */
-    bool replaceWithText (const String& textToWrite,
-                          bool asUnicode = false,
-                          bool writeUnicodeHeaderBytes = false) const;
+     */
+    bool replaceWithText( const String& textToWrite,
+                          bool          asUnicode = false,
+                          bool          writeUnicodeHeaderBytes = false ) const;
 
     /** Attempts to scan the contents of this file and compare it to another file, returning
         true if this is possible and they match byte-for-byte.
-    */
-    bool hasIdenticalContentTo (const File& other) const;
+     */
+    bool hasIdenticalContentTo( const File& other ) const;
 
     //==============================================================================
     /** Creates a set of files to represent each file root.
@@ -705,31 +704,31 @@ public:
         e.g. on Windows this will create files for "c:\", "d:\" etc according
         to which ones are available. On the Mac/Linux, this will probably
         just add a single entry for "/".
-    */
-    static void findFileSystemRoots (Array<File>& results);
+     */
+    static void findFileSystemRoots( Array<File>& results );
 
     /** Finds the name of the drive on which this file lives.
         @returns the volume label of the drive, or an empty string if this isn't possible
-    */
+     */
     String getVolumeLabel() const;
 
     /** Returns the serial number of the volume on which this file lives.
         @returns the serial number, or zero if there's a problem doing this
-    */
+     */
     int getVolumeSerialNumber() const;
 
     /** Returns the number of bytes free on the drive that this file lives on.
 
         @returns the number of bytes free, or 0 if there's a problem finding this out
         @see getVolumeTotalSize
-    */
+     */
     int64 getBytesFreeOnVolume() const;
 
     /** Returns the total size of the drive that contains this file.
 
         @returns the total number of bytes that the volume can hold
         @see getBytesFreeOnVolume
-    */
+     */
     int64 getVolumeTotalSize() const;
 
     /** Returns true if this file is on a CD or DVD drive. */
@@ -739,13 +738,13 @@ public:
 
         This will fail if it's a network drive, but will still be true for
         removable hard-disks.
-    */
+     */
     bool isOnHardDisk() const;
 
     /** Returns true if this file is on a removable disk drive.
 
         This might be a usb-drive, a CD-rom, or maybe a network drive.
-    */
+     */
     bool isOnRemovableDrive() const;
 
     //==============================================================================
@@ -759,17 +758,17 @@ public:
         - if it's a folder, it will be opened in Explorer, Finder, or equivalent.
 
         @see revealToUser
-    */
-    bool startAsProcess (const String& parameters = String()) const;
+     */
+    bool startAsProcess( const String& parameters = String() ) const;
 
     /** Opens Finder, Explorer, or whatever the OS uses, to show the user this file's location.
         @see startAsProcess
-    */
+     */
     void revealToUser() const;
 
     //==============================================================================
     /** A set of types of location that can be passed to the getSpecialLocation() method.
-    */
+     */
     enum SpecialLocationType
     {
         /** The user's home folder. This is the same as using File ("~"). */
@@ -778,7 +777,7 @@ public:
         /** The user's default documents folder. On Windows, this might be the user's
             "My Documents" folder. On the Mac it'll be their "Documents" folder. Linux
             doesn't tend to have one of these, so it might just return their home folder.
-        */
+         */
         userDocumentsDirectory,
 
         /** The folder that contains the user's desktop objects. */
@@ -797,7 +796,7 @@ public:
             On Windows, this might be "\Documents and Settings\username\Application Data".
             On the Mac, it might be "~/Library". If you're going to store your settings in here,
             always create your own sub-folder to put them in, to avoid making a mess.
-        */
+         */
         userApplicationDataDirectory,
 
         /** An equivalent of the userApplicationDataDirectory folder that is shared by all users
@@ -807,19 +806,19 @@ public:
             "\Documents and Settings\All Users\Application Data".
 
             Depending on the setup, this folder may be read-only.
-        */
+         */
         commonApplicationDataDirectory,
 
         /** A place to put documents which are shared by all users of the machine.
             On Windows this may be somewhere like "C:\Users\Public\Documents", on OSX it
             will be something like "/Users/Shared". Other OSes may have no such concept
             though, so be careful.
-        */
+         */
         commonDocumentsDirectory,
 
         /** The folder that should be used for temporary files.
             Always delete them when you're finished, to keep the user's computer tidy!
-        */
+         */
         tempDirectory,
 
         /** Returns this application's executable file.
@@ -832,7 +831,7 @@ public:
 
             See also invokedExecutableFile, which is similar, but if the exe was launched from a
             file link, invokedExecutableFile will return the name of the link.
-        */
+         */
         currentExecutableFile,
 
         /** Returns this application's location.
@@ -842,20 +841,20 @@ public:
 
             On the mac this will return the package folder (if it's in one), not the unix binary
             that's inside it - compare with currentExecutableFile.
-        */
+         */
         currentApplicationFile,
 
         /** Returns the file that was invoked to launch this executable.
             This may differ from currentExecutableFile if the app was started from e.g. a link - this
             will return the name of the link that was used, whereas currentExecutableFile will return
             the actual location of the target executable.
-        */
+         */
         invokedExecutableFile,
 
         /** In a plugin, this will return the path of the host executable. */
         hostApplicationPath,
 
-       #if defined TREECORE_OS_WINDOWS
+       #if TREECORE_OS_WINDOWS
         /** On a Windows machine, returns the location of the Windows/System32 folder. */
         windowsSystemDirectory,
        #endif
@@ -863,7 +862,7 @@ public:
         /** The directory in which applications normally get installed.
             So on windows, this would be something like "c:\program files", on the
             Mac "/Applications", or "/usr" on linux.
-        */
+         */
         globalApplicationsDirectory
     };
 
@@ -871,21 +870,20 @@ public:
         documents folder.
 
         @see SpecialLocationType
-    */
-    static File JUCE_CALLTYPE getSpecialLocation (const SpecialLocationType type);
+     */
+    static File TREECORE_STDCALL getSpecialLocation( const SpecialLocationType type );
 
     //==============================================================================
     /** Returns a temporary file in the system's temp directory.
         This will try to return the name of a non-existent temp file.
         To get the temp folder, you can use getSpecialLocation (File::tempDirectory).
-    */
-    static File createTempFile (StringRef fileNameEnding);
-
+     */
+    static File createTempFile( StringRef fileNameEnding );
 
     //==============================================================================
     /** Returns the current working directory.
         @see setAsCurrentWorkingDirectory
-    */
+     */
     static File getCurrentWorkingDirectory();
 
     /** Sets the current working directory to be this file.
@@ -894,18 +892,18 @@ public:
 
         @returns true if the current directory has been changed.
         @see getCurrentWorkingDirectory
-    */
+     */
     bool setAsCurrentWorkingDirectory() const;
 
     //==============================================================================
     /** The system-specific file separator character.
         On Windows, this will be '\', on Mac/Linux, it'll be '/'
-    */
-    static const juce_wchar separator;
+     */
+    static const treecore_wchar separator;
 
     /** The system-specific file separator character, as a string.
         On Windows, this will be '\', on Mac/Linux, it'll be '/'
-    */
+     */
     static const String separatorString;
 
     //==============================================================================
@@ -919,8 +917,8 @@ public:
         createLegalPathName() for that.
 
         @see createLegalPathName
-    */
-    static String createLegalFileName (const String& fileNameToFix);
+     */
+    static String createLegalFileName( const String& fileNameToFix );
 
     /** Returns a version of a path with any illegal characters removed.
 
@@ -928,26 +926,26 @@ public:
         be used on a complete pathname.
 
         @see createLegalFileName
-    */
-    static String createLegalPathName (const String& pathNameToFix);
+     */
+    static String createLegalPathName( const String& pathNameToFix );
 
     /** Indicates whether filenames are case-sensitive on the current operating system. */
     static bool areFileNamesCaseSensitive();
 
     /** Returns true if the string seems to be a fully-specified absolute path. */
-    static bool isAbsolutePath (StringRef path);
+    static bool isAbsolutePath( StringRef path );
 
     /** Creates a file that simply contains this string, without doing the sanity-checking
         that the normal constructors do.
 
         Best to avoid this unless you really know what you're doing.
-    */
-    static File createFileWithoutCheckingPath (const String& absolutePath) noexcept;
+     */
+    static File createFileWithoutCheckingPath( const String& absolutePath ) noexcept;
 
     /** Adds a separator character to the end of a path if it doesn't already have one. */
-    static String addTrailingSeparator (const String& path);
+    static String addTrailingSeparator( const String& path );
 
-   #if defined TREECORE_OS_OSX || defined TREECORE_OS_IOS || DOXYGEN
+   #if TREECORE_OS_OSX || TREECORE_OS_IOS || DOXYGEN
     //==============================================================================
     /** OSX ONLY - Finds the OSType of a file from the its resources. */
     OSType getMacOSType() const;
@@ -956,31 +954,43 @@ public:
     bool isBundle() const;
    #endif
 
-   #if defined TREECORE_OS_OSX || DOXYGEN
+   #if TREECORE_OS_OSX || DOXYGEN
     /** OSX ONLY - Adds this file to the OSX dock */
     void addToDock() const;
    #endif
 
-   #if defined TREECORE_OS_WINDOWS
+   #if TREECORE_OS_WINDOWS
     /** Windows ONLY - Creates a win32 .LNK shortcut file that links to this file. */
-    bool createLink (const String& description, const File& linkFileToCreate) const;
+    bool createLink( const String& description, const File& linkFileToCreate ) const;
    #endif
 
 private:
     //==============================================================================
     String fullPath;
 
-    static String parseAbsolutePath (const String&);
+    static String parseAbsolutePath( const String& );
     String getPathUpToLastSlash() const;
 
-    Result createDirectoryInternal (const String&) const;
-    bool copyInternal (const File&) const;
-    bool moveInternal (const File&) const;
-    bool setFileTimesInternal (int64 m, int64 a, int64 c) const;
-    void getFileTimesInternal (int64& m, int64& a, int64& c) const;
-    bool setFileReadOnlyInternal (bool) const;
+    Result createDirectoryInternal( const String& ) const;
+    bool copyInternal( const File& ) const;
+    bool moveInternal( const File& ) const;
+    bool setFileTimesInternal( int64 m, int64 a, int64 c ) const;
+    void getFileTimesInternal( int64& m, int64& a, int64& c ) const;
+    bool setFileReadOnlyInternal( bool ) const;
 };
 
+template<class traits>
+std::basic_ostream<char, traits>& TREECORE_STDCALL operator << ( std::basic_ostream<char, traits>& stream, const File& fileToWrite )
+{
+    return stream << fileToWrite.getFullPathName().toRawUTF8();
 }
+
+template<class traits>
+std::basic_ostream<wchar_t, traits>& TREECORE_STDCALL operator << ( std::basic_ostream<wchar_t, traits>& stream, const File& fileToWrite )
+{
+    return stream << fileToWrite.getFullPathName().toWideCharPointer();
+}
+
+} // namespace treecore
 
 #endif   // JUCE_FILE_H_INCLUDED

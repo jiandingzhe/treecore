@@ -38,7 +38,7 @@ class String;
 /**
     Represents a MAC network card adapter address ID.
 */
-class JUCE_API  MacAddress
+class TREECORE_SHARED_API  MacAddress
 {
 public:
     //==============================================================================

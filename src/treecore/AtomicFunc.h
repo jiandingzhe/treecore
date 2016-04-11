@@ -1,10 +1,12 @@
 #ifndef TREECORE_ATOMIC_FUNC_H
 #define TREECORE_ATOMIC_FUNC_H
 
-#ifdef __GNUC__
-#  include "treecore/Atomic/gcc.h"
-#elif defined _MSC_VER
+#include "treecore/PlatformDefs.h"
+
+#if TREECORE_COMPILER_ATTR_MSVC
 #  include "treecore/Atomic/msvc.h"
+#elif TREECORE_COMPILER_ATTR_GCC || TREECORE_COMPILER_ATTR_CLANG
+#  include "treecore/Atomic/gcc.h"
 #else
 #  error "atomic support is not implemented"
 #endif

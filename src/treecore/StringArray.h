@@ -42,7 +42,7 @@ namespace treecore {
 
     @see Array String
 */
-class JUCE_API  StringArray
+class TREECORE_SHARED_API  StringArray
 {
 public:
     //==============================================================================
@@ -151,7 +151,7 @@ public:
         if (0 <= index && index < strings.size())
             return strings[index];
         else
-            return String::empty;
+            return String::empty();
     }
 
     /** Returns a pointer to the first String in the array.
@@ -478,7 +478,7 @@ public:
     Array<String> strings;
 
 private:
-    JUCE_LEAK_DETECTOR (StringArray)
+    TREECORE_LEAK_DETECTOR (StringArray)
 };
 
 }

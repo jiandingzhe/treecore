@@ -30,11 +30,11 @@
 #define JUCE_ARRAY_H_INCLUDED
 
 #include "treecore/ArrayAllocationBase.h"
+#include "treecore/DebugUtils.h"
 #include "treecore/DummyCriticalSection.h"
 #include "treecore/ElementComparator.h"
 #include "treecore/MathsFunctions.h"
 #include "treecore/RefCountObject.h"
-#include "treecore/StandardHeader.h"
 
 class TestFramework;
 
@@ -242,16 +242,16 @@ public:
     ElementType& operator [] ( const int index ) noexcept
     {
         _LOCK_THIS_OBJ_;
-        jassert( isPositiveAndBelow( index, numUsed ) );
-        jassert( data.elements != nullptr );
+        treecore_assert( isPositiveAndBelow( index, numUsed ) );
+        treecore_assert( data.elements != nullptr );
         return data.elements [index];
     }
 
     const ElementType& operator [] ( const int index ) const noexcept
     {
         _LOCK_THIS_OBJ_;
-        jassert( isPositiveAndBelow( index, numUsed ) );
-        jassert( data.elements != nullptr );
+        treecore_assert( isPositiveAndBelow( index, numUsed ) );
+        treecore_assert( data.elements != nullptr );
         return data.elements [index];
     }
 
@@ -282,16 +282,16 @@ public:
     inline ElementType& getFirst() noexcept
     {
         const ScopedLockType lock( getLock() );
-        jassert( numUsed > 0 );
-        jassert( data.elements != nullptr );
+        treecore_assert( numUsed > 0 );
+        treecore_assert( data.elements != nullptr );
         return data.elements[0];
     }
 
     inline const ElementType& getFirst() const noexcept
     {
         const ScopedLockType lock( getLock() );
-        jassert( numUsed > 0 );
-        jassert( data.elements != nullptr );
+        treecore_assert( numUsed > 0 );
+        treecore_assert( data.elements != nullptr );
         return data.elements[0];
     }
 
@@ -305,16 +305,16 @@ public:
     inline ElementType& getLast() noexcept
     {
         const ScopedLockType lock( getLock() );
-        jassert( numUsed > 0 );
-        jassert( data.elements != nullptr );
+        treecore_assert( numUsed > 0 );
+        treecore_assert( data.elements != nullptr );
         return data.elements[numUsed - 1];
     }
 
     inline const ElementType& getLast() const noexcept
     {
         const ScopedLockType lock( getLock() );
-        jassert( numUsed > 0 );
-        jassert( data.elements != nullptr );
+        treecore_assert( numUsed > 0 );
+        treecore_assert( data.elements != nullptr );
         return data.elements[numUsed - 1];
     }
 
@@ -358,7 +358,7 @@ public:
      */
     inline ElementType* end() noexcept
     {
-#if JUCE_DEBUG
+#if TREECORE_DEBUG
         if (data.elements == nullptr || numUsed <= 0) // (to keep static analysers happy)
             return data.elements;
 #endif
@@ -367,7 +367,7 @@ public:
 
     inline const ElementType* end() const noexcept
     {
-#if JUCE_DEBUG
+#if TREECORE_DEBUG
         if (data.elements == nullptr || numUsed <= 0) // (to keep static analysers happy)
             return data.elements;
 #endif
@@ -457,7 +457,7 @@ public:
     {
         _LOCK_THIS_OBJ_;
         data.ensureAllocatedSize( numUsed + 1 );
-        jassert( data.elements != nullptr );
+        treecore_assert( data.elements != nullptr );
 
         if ( isPositiveAndBelow( indexToInsertAt, numUsed ) )
         {
@@ -480,7 +480,7 @@ public:
     {
         _LOCK_THIS_OBJ_;
         data.ensureAllocatedSize( numUsed + 1 );
-        jassert( data.elements != nullptr );
+        treecore_assert( data.elements != nullptr );
 
         if ( isPositiveAndBelow( indexToInsertAt, numUsed ) )
         {
@@ -605,12 +605,12 @@ public:
      */
     void setOrAppend( const int indexToChange, const ElementType& newValue )
     {
-        jassert( indexToChange >= 0 );
+        treecore_assert( indexToChange >= 0 );
         _LOCK_THIS_OBJ_;
 
         if ( isPositiveAndBelow( indexToChange, numUsed ) )
         {
-            jassert( data.elements != nullptr );
+            treecore_assert( data.elements != nullptr );
             data.elements [indexToChange] = newValue;
         }
         else if (indexToChange >= 0)
@@ -695,7 +695,7 @@ public:
 
             if (startIndex < 0)
             {
-                jassertfalse;
+                treecore_assert_false;
                 startIndex = 0;
             }
 
@@ -729,7 +729,7 @@ public:
      */
     void resize( const int targetNumItems )
     {
-        jassert( targetNumItems >= 0 );
+        treecore_assert( targetNumItems >= 0 );
 
         const int numToAdd = targetNumItems - numUsed;
         if (numToAdd > 0)
@@ -830,7 +830,7 @@ public:
 
         if ( isPositiveAndBelow( indexToRemove, numUsed ) )
         {
-            jassert( data.elements != nullptr );
+            treecore_assert( data.elements != nullptr );
             ElementType removed( data.elements[indexToRemove] );
             removeInternal( indexToRemove );
             return removed;
@@ -1125,13 +1125,6 @@ public:
 
     /** Returns the type of scoped lock to use for locking this array */
     typedef typename TypeOfCriticalSectionToUse::ScopedLockType ScopedLockType;
-
-    //==============================================================================
-#ifndef DOXYGEN
-    // Note that the swapWithArray method has been replaced by a more flexible templated version,
-    // and renamed "swapWith" to be more consistent with the names used in other classes.
-    JUCE_DEPRECATED_WITH_BODY( void swapWithArray( Array& other ) noexcept, { swapWith( other ); } )
-#endif
 
 private:
     //==============================================================================

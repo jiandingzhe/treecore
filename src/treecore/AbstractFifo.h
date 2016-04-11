@@ -30,6 +30,7 @@
 #define JUCE_ABSTRACTFIFO_H_INCLUDED
 
 #include "treecore/AtomicObject.h"
+#include "treecore/ClassUtils.h"
 #include "treecore/LeakedObjectDetector.h"
 
 namespace treecore
@@ -90,7 +91,7 @@ namespace treecore
     };
     @endcode
 */
-class JUCE_API  AbstractFifo
+class TREECORE_SHARED_API  AbstractFifo
 {
 public:
     //==============================================================================

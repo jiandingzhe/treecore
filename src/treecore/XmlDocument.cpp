@@ -82,13 +82,13 @@ void XmlDocument::setEmptyTextElementsIgnored (const bool shouldBeIgnored) noexc
 
 namespace XmlIdentifierChars
 {
-    static bool isIdentifierCharSlow (const juce_wchar c) noexcept
+    static bool isIdentifierCharSlow (const treecore_wchar c) noexcept
     {
         return CharacterFunctions::isLetterOrDigit (c)
                  || c == '_' || c == '-' || c == ':' || c == '.';
     }
 
-    static bool isIdentifierChar (const juce_wchar c) noexcept
+    static bool isIdentifierChar (const treecore_wchar c) noexcept
     {
         static const uint32 legalChars[] = { 0, 0x7ff6000, 0x87fffffe, 0x7fffffe, 0 };
 
@@ -107,7 +107,7 @@ namespace XmlIdentifierChars
         for (int i = 0; i < 8; ++i)
             s << "0x" << String::toHexString ((int) n[i]) << ", ";
 
-        DBG (s);
+        TREECORE_DBG (s);
     }*/
 
     static String::CharPointerType findEndOfToken (String::CharPointerType p)
@@ -176,12 +176,12 @@ String XmlDocument::getFileContents (const String& filename) const
             return in->readEntireStreamAsString();
     }
 
-    return String::empty;
+    return String::empty();
 }
 
-juce_wchar XmlDocument::readNextChar() noexcept
+treecore_wchar XmlDocument::readNextChar() noexcept
 {
-    const juce_wchar c = input.getAndAdvance();
+    const treecore_wchar c = input.getAndAdvance();
 
     if (c == 0)
     {
@@ -236,7 +236,7 @@ bool XmlDocument::parseHeader()
         if (headerEnd.isEmpty())
             return false;
 
-       #if JUCE_DEBUG
+       #if TREECORE_DEBUG
         const String encoding (String (input, headerEnd)
                                  .fromFirstOccurrenceOf ("encoding", false, true)
                                  .fromFirstOccurrenceOf ("=", false, false)
@@ -244,13 +244,13 @@ bool XmlDocument::parseHeader()
                                  .upToFirstOccurrenceOf ("\"", false, false).trim());
 
         /* If you load an XML document with a non-UTF encoding type, it may have been
-           loaded wrongly.. Since all the files are read via the normal juce file streams,
+           loaded wrongly.. Since all the files are read via the normal treecore file streams,
            they're treated as UTF-8, so by the time it gets to the parser, the encoding will
            have been lost. Best plan is to stick to utf-8 or if you have specific files to
            read, use your own code to convert them to a unicode String, and pass that to the
            XML parser.
         */
-        jassert (encoding.isEmpty() || encoding.startsWithIgnoreCase ("utf-"));
+        treecore_assert (encoding.isEmpty() || encoding.startsWithIgnoreCase ("utf-"));
        #endif
 
         input = headerEnd + 2;
@@ -269,7 +269,7 @@ bool XmlDocument::parseDTD()
 
         for (int n = 1; n > 0;)
         {
-            const juce_wchar c = readNextChar();
+            const treecore_wchar c = readNextChar();
 
             if (outOfData)
                 return false;
@@ -339,11 +339,11 @@ void XmlDocument::skipNextWhiteSpace()
 
 void XmlDocument::readQuotedString (String& result)
 {
-    const juce_wchar quote = readNextChar();
+    const treecore_wchar quote = readNextChar();
 
     while (! outOfData)
     {
-        const juce_wchar c = readNextChar();
+        const treecore_wchar c = readNextChar();
 
         if (c == quote)
             break;
@@ -360,7 +360,7 @@ void XmlDocument::readQuotedString (String& result)
 
             for (;;)
             {
-                const juce_wchar character = *input;
+                const treecore_wchar character = *input;
 
                 if (character == quote)
                 {
@@ -421,7 +421,7 @@ XmlElement* XmlDocument::readNextElement (const bool alsoParseSubElements)
         {
             skipNextWhiteSpace();
 
-            const juce_wchar c = *input;
+            const treecore_wchar c = *input;
 
             // empty tag..
             if (c == '/' && input[1] == '>')
@@ -457,7 +457,7 @@ XmlElement* XmlDocument::readNextElement (const bool alsoParseSubElements)
                     {
                         skipNextWhiteSpace();
 
-                        const juce_wchar nextChar = *input;
+                        const treecore_wchar nextChar = *input;
 
                         if (nextChar == '"' || nextChar == '\'')
                         {
@@ -507,12 +507,12 @@ void XmlDocument::readChildElements (XmlElement& parent)
 
         if (*input == '<')
         {
-            const juce_wchar c1 = input[1];
+            const treecore_wchar c1 = input[1];
 
             if (c1 == '/')
             {
                 // our close tag..
-                const int closeTag = input.indexOf ((juce_wchar) '>');
+                const int closeTag = input.indexOf ((treecore_wchar) '>');
 
                 if (closeTag >= 0)
                     input += closeTag + 1;
@@ -527,7 +527,7 @@ void XmlDocument::readChildElements (XmlElement& parent)
 
                 for (;;)
                 {
-                    const juce_wchar c0 = *input;
+                    const treecore_wchar c0 = *input;
 
                     if (c0 == 0)
                     {
@@ -563,7 +563,7 @@ void XmlDocument::readChildElements (XmlElement& parent)
 
             for (;;)
             {
-                const juce_wchar c = *input;
+                const treecore_wchar c = *input;
 
                 if (c == '<')
                 {
@@ -630,7 +630,7 @@ void XmlDocument::readChildElements (XmlElement& parent)
 
                     for (;;)
                     {
-                        const juce_wchar nextChar = *input;
+                        const treecore_wchar nextChar = *input;
 
                         if (nextChar == '<' || nextChar == '&')
                             break;
@@ -736,12 +736,12 @@ void XmlDocument::readEntity (String& result)
             return;
         }
 
-        result << (juce_wchar) charCode;
+        result << (treecore_wchar) charCode;
     }
     else
     {
         const String::CharPointerType entityNameStart (input);
-        const int closingSemiColon = input.indexOf ((juce_wchar) ';');
+        const int closingSemiColon = input.indexOf ((treecore_wchar) ';');
 
         if (closingSemiColon < 0)
         {
@@ -767,13 +767,13 @@ String XmlDocument::expandEntity (const String& ent)
 
     if (ent[0] == '#')
     {
-        const juce_wchar char1 = ent[1];
+        const treecore_wchar char1 = ent[1];
 
         if (char1 == 'x' || char1 == 'X')
-            return String::charToString (static_cast <juce_wchar> (ent.substring (2).getHexValue32()));
+            return String::charToString (static_cast <treecore_wchar> (ent.substring (2).getHexValue32()));
 
         if (char1 >= '0' && char1 <= '9')
-            return String::charToString (static_cast <juce_wchar> (ent.substring (1).getIntValue()));
+            return String::charToString (static_cast <treecore_wchar> (ent.substring (1).getIntValue()));
 
         setLastError ("illegal escape sequence", false);
         return String::charToString ('&');

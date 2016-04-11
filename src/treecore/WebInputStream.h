@@ -1,9 +1,15 @@
 #ifndef TREECORE_WEB_INPUT_STREAM
 #define TREECORE_WEB_INPUT_STREAM
 
+#include "treecore/PlatformDefs.h"
 #include "treecore/URL.h"
 #include "treecore/HashMap.h"
 #include "treecore/InputStream.h"
+
+#if TREECORE_OS_WINDOWS
+#include <WinInet.h>
+#include <WinSock2.h>
+#endif
 
 namespace treecore
 {
@@ -72,7 +78,7 @@ public:
 
 private:
 
-#if defined TREECORE_OS_WINDOWS
+#if TREECORE_OS_WINDOWS
     void close();
     void createConnection(URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext);
     void openConnection(URL_COMPONENTS& uc, HINTERNET sessionHandle, URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext);

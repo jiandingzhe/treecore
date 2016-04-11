@@ -43,7 +43,7 @@ class MemoryBlock;
     This can either be used to refer to a shared block of memory, or can make its
     own internal copy of the data when the MemoryInputStream is created.
 */
-class JUCE_API  MemoryInputStream  : public InputStream
+class TREECORE_SHARED_API  MemoryInputStream  : public InputStream
 {
 public:
     //==============================================================================

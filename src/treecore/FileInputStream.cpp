@@ -30,7 +30,7 @@
 
 namespace treecore {
 
-int64 juce_fileSetPosition (void* handle, int64 pos);
+int64 treecore_fileSetPosition (void* handle, int64 pos);
 
 
 //==============================================================================
@@ -46,7 +46,7 @@ FileInputStream::FileInputStream (const File& f)
 int64 FileInputStream::getTotalLength()
 {
     // You should always check that a stream opened successfully before using it!
-    jassert (openedOk());
+    treecore_assert (openedOk());
 
     return file.getSize();
 }
@@ -54,11 +54,11 @@ int64 FileInputStream::getTotalLength()
 int FileInputStream::read (void* buffer, int bytesToRead)
 {
     // You should always check that a stream opened successfully before using it!
-    jassert (openedOk());
+    treecore_assert (openedOk());
 
     // The buffer should never be null, and a negative size is probably a
     // sign that something is broken!
-    jassert (buffer != nullptr && bytesToRead >= 0);
+    treecore_assert (buffer != nullptr && bytesToRead >= 0);
 
     const size_t num = readInternal (buffer, (size_t) bytesToRead);
     currentPosition += num;
@@ -79,10 +79,10 @@ int64 FileInputStream::getPosition()
 bool FileInputStream::setPosition (int64 pos)
 {
     // You should always check that a stream opened successfully before using it!
-    jassert (openedOk());
+    treecore_assert (openedOk());
 
     if (pos != currentPosition)
-        currentPosition = juce_fileSetPosition (fileHandle, pos);
+        currentPosition = treecore_fileSetPosition (fileHandle, pos);
 
     return currentPosition == pos;
 }

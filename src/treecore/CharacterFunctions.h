@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,53 +23,45 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
-#ifndef JUCE_CHARACTERFUNCTIONS_H_INCLUDED
-#define JUCE_CHARACTERFUNCTIONS_H_INCLUDED
+#ifndef TREECORE_CHARACTER_FUNCTIONS_H
+#define TREECORE_CHARACTER_FUNCTIONS_H
 
 #include "treecore/MathsFunctions.h"
-#include "treecore/StandardHeader.h"
-#include "treecore/Config.h"
+#include "treecore/PlatformDefs.h"
 
-//==============================================================================
-namespace treecore {
+#include <limits>
 
-#if defined TREECORE_OS_WINDOWS && ! DOXYGEN
- #define JUCE_NATIVE_WCHAR_IS_UTF8      0
- #define JUCE_NATIVE_WCHAR_IS_UTF16     1
- #define JUCE_NATIVE_WCHAR_IS_UTF32     0
+#include <cwctype>
+#include <cctype>
+
+namespace treecore
+{
+
+#if TREECORE_OS_WINDOWS
+#    define TREECORE_NATIVE_WCHAR_IS_UTF8      0
+#    define TREECORE_NATIVE_WCHAR_IS_UTF16     1
+#    define TREECORE_NATIVE_WCHAR_IS_UTF32     0
+static_assert( sizeof(wchar_t) == 2, "wchar_t is 16 bit" );
 #else
- /** This macro will be set to 1 if the compiler's native wchar_t is an 8-bit type. */
- #define JUCE_NATIVE_WCHAR_IS_UTF8      0
- /** This macro will be set to 1 if the compiler's native wchar_t is a 16-bit type. */
- #define JUCE_NATIVE_WCHAR_IS_UTF16     0
- /** This macro will be set to 1 if the compiler's native wchar_t is a 32-bit type. */
- #define JUCE_NATIVE_WCHAR_IS_UTF32     1
+/** This macro will be set to 1 if the compiler's native wchar_t is an 8-bit type. */
+#    define TREECORE_NATIVE_WCHAR_IS_UTF8      0
+/** This macro will be set to 1 if the compiler's native wchar_t is a 16-bit type. */
+#    define TREECORE_NATIVE_WCHAR_IS_UTF16     0
+/** This macro will be set to 1 if the compiler's native wchar_t is a 32-bit type. */
+#    define TREECORE_NATIVE_WCHAR_IS_UTF32     1
+static_assert( sizeof(wchar_t) == 4, "wchar_t is 32 bit" );
 #endif
 
-#if JUCE_NATIVE_WCHAR_IS_UTF32 || DOXYGEN
- /** A platform-independent 32-bit unicode character type. */
- typedef wchar_t        juce_wchar;
+///
+/// \brief a platform-independent 32-bit unicode character type
+///
+#if TREECORE_NATIVE_WCHAR_IS_UTF32
+typedef wchar_t treecore_wchar;
 #else
- typedef uint32         juce_wchar;
-#endif
-
-#ifndef DOXYGEN
- /** This macro is deprecated, but preserved for compatibility with old code. */
- #define JUCE_T(stringLiteral)   (L##stringLiteral)
-#endif
-
-#if JUCE_DEFINE_T_MACRO
- /** The 'T' macro is an alternative for using the "L" prefix in front of a string literal.
-
-     This macro is deprecated, but available for compatibility with old code if you set
-     JUCE_DEFINE_T_MACRO = 1. The fastest, most portable and best way to write your string
-     literals is as standard char strings, using escaped utf-8 character sequences for extended
-     characters, rather than trying to store them as wide-char strings.
- */
- #define T(stringLiteral)   JUCE_T(stringLiteral)
+typedef uint32 treecore_wchar;
 #endif
 
 //==============================================================================
@@ -80,89 +72,95 @@ namespace treecore {
     classes, but some of them may be useful to call directly.
 
     @see String, CharPointer_UTF8, CharPointer_UTF16, CharPointer_UTF32
-*/
-class JUCE_API  CharacterFunctions
+ */
+class TREECORE_SHARED_API CharacterFunctions
 {
 public:
     //==============================================================================
     /** Converts a character to upper-case. */
-    static juce_wchar toUpperCase (juce_wchar character) noexcept;
+    static inline treecore_wchar toUpperCase( treecore_wchar character ) noexcept { return treecore_wchar( std::towupper( wint_t( character ) ) ); }
+
     /** Converts a character to lower-case. */
-    static juce_wchar toLowerCase (juce_wchar character) noexcept;
+    static inline treecore_wchar toLowerCase( treecore_wchar character ) noexcept { return treecore_wchar( std::towlower( wint_t( character ) ) ); }
 
     /** Checks whether a unicode character is upper-case. */
-    static bool isUpperCase (juce_wchar character) noexcept;
+    static inline bool isUpperCase( treecore_wchar character ) noexcept { return std::iswupper( wint_t( character ) ) != 0; }
+
     /** Checks whether a unicode character is lower-case. */
-    static bool isLowerCase (juce_wchar character) noexcept;
+    static inline bool isLowerCase( treecore_wchar character ) noexcept { return std::iswlower( wint_t( character ) ) != 0; }
 
     /** Checks whether a character is whitespace. */
-    static bool isWhitespace (char character) noexcept;
+    static inline bool isWhitespace( char character ) noexcept { return std::isspace( character ) != 0; }
+
     /** Checks whether a character is whitespace. */
-    static bool isWhitespace (juce_wchar character) noexcept;
+    static inline bool isWhitespace( treecore_wchar character ) noexcept { return std::iswspace( wint_t( character ) ) != 0; }
 
     /** Checks whether a character is a digit. */
-    static bool isDigit (char character) noexcept;
+    static inline bool isDigit( char character ) noexcept { return std::isdigit( character ) != 0; }
+
     /** Checks whether a character is a digit. */
-    static bool isDigit (juce_wchar character) noexcept;
+    static inline bool isDigit( treecore_wchar character ) noexcept { return std::iswdigit( wint_t( character ) ) != 0; }
 
     /** Checks whether a character is alphabetic. */
-    static bool isLetter (char character) noexcept;
+    static inline bool isLetter( char character ) noexcept { return std::isalpha( character ) != 0; }
+
     /** Checks whether a character is alphabetic. */
-    static bool isLetter (juce_wchar character) noexcept;
+    static inline bool isLetter( treecore_wchar character ) noexcept { return std::iswalpha( wint_t( character ) ) != 0; }
 
     /** Checks whether a character is alphabetic or numeric. */
-    static bool isLetterOrDigit (char character) noexcept;
+    static inline bool isLetterOrDigit( char character ) noexcept { return std::isalnum( character ) != 0; }
+
     /** Checks whether a character is alphabetic or numeric. */
-    static bool isLetterOrDigit (juce_wchar character) noexcept;
+    static inline bool isLetterOrDigit( treecore_wchar character ) noexcept { return std::iswalnum( wint_t( character ) ) != 0; }
 
     /** Returns 0 to 16 for '0' to 'F", or -1 for characters that aren't a legal hex digit. */
-    static int getHexDigitValue (juce_wchar digit) noexcept;
+    static int getHexDigitValue( treecore_wchar digit ) noexcept;
 
     //==============================================================================
     /** Parses a character string to read a floating-point number.
         Note that this will advance the pointer that is passed in, leaving it at
         the end of the number.
-    */
-    template <typename CharPointerType>
-    static double readDoubleValue (CharPointerType& text) noexcept
+     */
+    template<typename CharPointerType>
+    static double readDoubleValue( CharPointerType& text ) noexcept
     {
         double result[3] = { 0 }, accumulator[2] = { 0 };
         int exponentAdjustment[2] = { 0 }, exponentAccumulator[2] = { -1, -1 };
-        int exponent = 0, decPointIndex = 0, digit = 0;
-        int lastDigit = 0, numSignificantDigits = 0;
+        int exponent    = 0, decPointIndex = 0, digit = 0;
+        int lastDigit   = 0, numSignificantDigits = 0;
         bool isNegative = false, digitsFound = false;
         const int maxSignificantDigits = 15 + 2;
 
         text = text.findEndOfWhitespace();
-        juce_wchar c = *text;
+        treecore_wchar c = *text;
 
         switch (c)
         {
-            case '-':   isNegative = true; // fall-through..
-            case '+':   c = *++text;
+        case '-':   isNegative = true;     // fall-through..
+        case '+':   c = *++text;
         }
 
         switch (c)
         {
-            case 'n':
-            case 'N':
-                if ((text[1] == 'a' || text[1] == 'A') && (text[2] == 'n' || text[2] == 'N'))
-                    return std::numeric_limits<double>::quiet_NaN();
-                break;
+        case 'n':
+        case 'N':
+            if ( (text[1] == 'a' || text[1] == 'A') && (text[2] == 'n' || text[2] == 'N') )
+                return std::numeric_limits<double>::quiet_NaN();
+            break;
 
-            case 'i':
-            case 'I':
-                if ((text[1] == 'n' || text[1] == 'N') && (text[2] == 'f' || text[2] == 'F'))
-                    return std::numeric_limits<double>::infinity();
-                break;
+        case 'i':
+        case 'I':
+            if ( (text[1] == 'n' || text[1] == 'N') && (text[2] == 'f' || text[2] == 'F') )
+                return std::numeric_limits<double>::infinity();
+            break;
         }
 
-        for (;;)
+        for (;; )
         {
-            if (text.isDigit())
+            if ( text.isDigit() )
             {
                 lastDigit = digit;
-                digit = (int) text.getAndAdvance() - '0';
+                digit = int(text.getAndAdvance() - '0');
                 digitsFound = true;
 
                 if (decPointIndex != 0)
@@ -183,7 +181,7 @@ public:
                     else
                         exponentAdjustment[0]++;
 
-                    while (text.isDigit())
+                    while ( text.isDigit() )
                     {
                         ++text;
                         if (decPointIndex == 0)
@@ -192,11 +190,11 @@ public:
                 }
                 else
                 {
-                    const double maxAccumulatorValue = (double) ((std::numeric_limits<unsigned int>::max() - 9) / 10);
+                    const double maxAccumulatorValue = double( (std::numeric_limits<unsigned int>::max() - 9) / 10 );
                     if (accumulator [decPointIndex] > maxAccumulatorValue)
                     {
-                        result [decPointIndex] = mulexp10 (result [decPointIndex], exponentAccumulator [decPointIndex])
-                                                    + accumulator [decPointIndex];
+                        result [decPointIndex] = mulexp10( result [decPointIndex], exponentAccumulator [decPointIndex] )
+                                                 + accumulator [decPointIndex];
                         accumulator [decPointIndex] = 0;
                         exponentAccumulator [decPointIndex] = 0;
                     }
@@ -212,7 +210,7 @@ public:
 
                 if (numSignificantDigits > maxSignificantDigits)
                 {
-                    while (text.isDigit())
+                    while ( text.isDigit() )
                         ++text;
                     break;
                 }
@@ -223,61 +221,61 @@ public:
             }
         }
 
-        result[0] = mulexp10 (result[0], exponentAccumulator[0]) + accumulator[0];
+        result[0] = mulexp10( result[0], exponentAccumulator[0] ) + accumulator[0];
 
         if (decPointIndex != 0)
-            result[1] = mulexp10 (result[1], exponentAccumulator[1]) + accumulator[1];
+            result[1] = mulexp10( result[1], exponentAccumulator[1] ) + accumulator[1];
 
         c = *text;
-        if ((c == 'e' || c == 'E') && digitsFound)
+        if ( (c == 'e' || c == 'E') && digitsFound )
         {
             bool negativeExponent = false;
 
             switch (*++text)
             {
-                case '-':   negativeExponent = true; // fall-through..
-                case '+':   ++text;
+            case '-':   negativeExponent = true;     // fall-through..
+            case '+':   ++text;
             }
 
-            while (text.isDigit())
-                exponent = (exponent * 10) + ((int) text.getAndAdvance() - '0');
+            while ( text.isDigit() )
+                exponent = (exponent * 10) + ( int( text.getAndAdvance() ) - '0' );
 
             if (negativeExponent)
                 exponent = -exponent;
         }
 
-        double r = mulexp10 (result[0], exponent + exponentAdjustment[0]);
+        double r = mulexp10( result[0], exponent + exponentAdjustment[0] );
         if (decPointIndex != 0)
-            r += mulexp10 (result[1], exponent - exponentAdjustment[1]);
+            r += mulexp10( result[1], exponent - exponentAdjustment[1] );
 
         return isNegative ? -r : r;
     }
 
     /** Parses a character string, to read a floating-point value. */
-    template <typename CharPointerType>
-    static double getDoubleValue (CharPointerType text) noexcept
+    template<typename CharPointerType>
+    static double getDoubleValue( CharPointerType text ) noexcept
     {
-        return readDoubleValue (text);
+        return readDoubleValue( text );
     }
 
     //==============================================================================
     /** Parses a character string, to read an integer value. */
-    template <typename IntType, typename CharPointerType>
-    static IntType getIntValue (const CharPointerType text) noexcept
+    template<typename IntType, typename CharPointerType>
+    static IntType getIntValue( const CharPointerType text ) noexcept
     {
         IntType v = 0;
-        CharPointerType s (text.findEndOfWhitespace());
+        CharPointerType s( text.findEndOfWhitespace() );
 
         const bool isNeg = *s == '-';
         if (isNeg)
             ++s;
 
-        for (;;)
+        for (;; )
         {
-            const juce_wchar c = s.getAndAdvance();
+            const treecore_wchar c = s.getAndAdvance();
 
             if (c >= '0' && c <= '9')
-                v = v * 10 + (IntType) (c - '0');
+                v = v * 10 + IntType( c - '0' );
             else
                 break;
         }
@@ -285,17 +283,17 @@ public:
         return isNeg ? -v : v;
     }
 
-    template <typename ResultType>
+    template<typename ResultType>
     struct HexParser
     {
-        template <typename CharPointerType>
-        static ResultType parse (CharPointerType t) noexcept
+        template<typename CharPointerType>
+        static ResultType parse( CharPointerType t ) noexcept
         {
             ResultType result = 0;
 
-            while (! t.isEmpty())
+            while ( !t.isEmpty() )
             {
-                const int hexValue = CharacterFunctions::getHexDigitValue (t.getAndAdvance());
+                const int hexValue = CharacterFunctions::getHexDigitValue( t.getAndAdvance() );
 
                 if (hexValue >= 0)
                     result = (result << 4) | hexValue;
@@ -308,8 +306,8 @@ public:
     //==============================================================================
     /** Counts the number of characters in a given string, stopping if the count exceeds
         a specified limit. */
-    template <typename CharPointerType>
-    static size_t lengthUpTo (CharPointerType text, const size_t maxCharsToCount) noexcept
+    template<typename CharPointerType>
+    static size_t lengthUpTo( CharPointerType text, const size_t maxCharsToCount ) noexcept
     {
         size_t len = 0;
 
@@ -321,8 +319,8 @@ public:
 
     /** Counts the number of characters in a given string, stopping if the count exceeds
         a specified end-pointer. */
-    template <typename CharPointerType>
-    static size_t lengthUpTo (CharPointerType start, const CharPointerType end) noexcept
+    template<typename CharPointerType>
+    static size_t lengthUpTo( CharPointerType start, const CharPointerType end ) noexcept
     {
         size_t len = 0;
 
@@ -333,17 +331,17 @@ public:
     }
 
     /** Copies null-terminated characters from one string to another. */
-    template <typename DestCharPointerType, typename SrcCharPointerType>
-    static void copyAll (DestCharPointerType& dest, SrcCharPointerType src) noexcept
+    template<typename DestCharPointerType, typename SrcCharPointerType>
+    static void copyAll( DestCharPointerType& dest, SrcCharPointerType src ) noexcept
     {
-        for (;;)
+        for (;; )
         {
-            const juce_wchar c = src.getAndAdvance();
+            const treecore_wchar c = src.getAndAdvance();
 
             if (c == 0)
                 break;
 
-            dest.write (c);
+            dest.write( c );
         }
 
         dest.writeNull();
@@ -351,56 +349,56 @@ public:
 
     /** Copies characters from one string to another, up to a null terminator
         or a given byte size limit. */
-    template <typename DestCharPointerType, typename SrcCharPointerType>
-    static size_t copyWithDestByteLimit (DestCharPointerType& dest, SrcCharPointerType src, size_t maxBytesToWrite) noexcept
+    template<typename DestCharPointerType, typename SrcCharPointerType>
+    static size_t copyWithDestByteLimit( DestCharPointerType& dest, SrcCharPointerType src, size_t maxBytesToWrite ) noexcept
     {
         typename DestCharPointerType::CharType const* const startAddress = dest.getAddress();
-        ssize_t maxBytes = (ssize_t) maxBytesToWrite;
-        maxBytes -= sizeof (typename DestCharPointerType::CharType); // (allow for a terminating null)
+        ssize_t maxBytes = ssize_t( maxBytesToWrite );
+        maxBytes -= sizeof(typename DestCharPointerType::CharType);  // (allow for a terminating null)
 
-        for (;;)
+        for (;; )
         {
-            const juce_wchar c = src.getAndAdvance();
-            const size_t bytesNeeded = DestCharPointerType::getBytesRequiredFor (c);
+            const treecore_wchar c   = src.getAndAdvance();
+            const size_t bytesNeeded = DestCharPointerType::getBytesRequiredFor( c );
 
             maxBytes -= bytesNeeded;
             if (c == 0 || maxBytes < 0)
                 break;
 
-            dest.write (c);
+            dest.write( c );
         }
 
         dest.writeNull();
 
-        return (size_t) getAddressDifference (dest.getAddress(), startAddress)
-                 + sizeof (typename DestCharPointerType::CharType);
+        return size_t( getAddressDifference( dest.getAddress(), startAddress ) )
+               + sizeof(typename DestCharPointerType::CharType);
     }
 
     /** Copies characters from one string to another, up to a null terminator
         or a given maximum number of characters. */
-    template <typename DestCharPointerType, typename SrcCharPointerType>
-    static void copyWithCharLimit (DestCharPointerType& dest, SrcCharPointerType src, int maxChars) noexcept
+    template<typename DestCharPointerType, typename SrcCharPointerType>
+    static void copyWithCharLimit( DestCharPointerType& dest, SrcCharPointerType src, int maxChars ) noexcept
     {
         while (--maxChars > 0)
         {
-            const juce_wchar c = src.getAndAdvance();
+            const treecore_wchar c = src.getAndAdvance();
             if (c == 0)
                 break;
 
-            dest.write (c);
+            dest.write( c );
         }
 
         dest.writeNull();
     }
 
     /** Compares two null-terminated character strings. */
-    template <typename CharPointerType1, typename CharPointerType2>
-    static int compare (CharPointerType1 s1, CharPointerType2 s2) noexcept
+    template<typename CharPointerType1, typename CharPointerType2>
+    static int compare( CharPointerType1 s1, CharPointerType2 s2 ) noexcept
     {
-        for (;;)
+        for (;; )
         {
-            const int c1 = (int) s1.getAndAdvance();
-            const int c2 = (int) s2.getAndAdvance();
+            const int c1   = int( s1.getAndAdvance() );
+            const int c2   = int( s2.getAndAdvance() );
             const int diff = c1 - c2;
 
             if (diff != 0)  return diff < 0 ? -1 : 1;
@@ -411,13 +409,13 @@ public:
     }
 
     /** Compares two null-terminated character strings, up to a given number of characters. */
-    template <typename CharPointerType1, typename CharPointerType2>
-    static int compareUpTo (CharPointerType1 s1, CharPointerType2 s2, int maxChars) noexcept
+    template<typename CharPointerType1, typename CharPointerType2>
+    static int compareUpTo( CharPointerType1 s1, CharPointerType2 s2, int maxChars ) noexcept
     {
         while (--maxChars >= 0)
         {
-            const int c1 = (int) s1.getAndAdvance();
-            const int c2 = (int) s2.getAndAdvance();
+            const int c1   = int( s1.getAndAdvance() );
+            const int c2   = int( s2.getAndAdvance() );
             const int diff = c1 - c2;
 
             if (diff != 0)  return diff < 0 ? -1 : 1;
@@ -428,38 +426,38 @@ public:
     }
 
     /** Compares two null-terminated character strings, using a case-independant match. */
-    template <typename CharPointerType1, typename CharPointerType2>
-    static int compareIgnoreCase (CharPointerType1 s1, CharPointerType2 s2) noexcept
+    template<typename CharPointerType1, typename CharPointerType2>
+    static int compareIgnoreCase( CharPointerType1 s1, CharPointerType2 s2 ) noexcept
     {
-        for (;;)
+        for (;; )
         {
-            const int c1 = (int) s1.toUpperCase();
-            const int c2 = (int) s2.toUpperCase();
+            const int c1   = int( s1.toUpperCase() );
+            const int c2   = int( s2.toUpperCase() );
             const int diff = c1 - c2;
 
             if (diff != 0)  return diff < 0 ? -1 : 1;
             if (c1 == 0)    break;
 
-             ++s1; ++s2;
+            ++s1; ++s2;
         }
 
         return 0;
     }
 
     /** Compares two null-terminated character strings, using a case-independent match. */
-    template <typename CharPointerType1, typename CharPointerType2>
-    static int compareIgnoreCaseUpTo (CharPointerType1 s1, CharPointerType2 s2, int maxChars) noexcept
+    template<typename CharPointerType1, typename CharPointerType2>
+    static int compareIgnoreCaseUpTo( CharPointerType1 s1, CharPointerType2 s2, int maxChars ) noexcept
     {
         while (--maxChars >= 0)
         {
-            const int c1 = (int) s1.toUpperCase();
-            const int c2 = (int) s2.toUpperCase();
+            const int c1   = int( s1.toUpperCase() );
+            const int c2   = int( s2.toUpperCase() );
             const int diff = c1 - c2;
 
             if (diff != 0)  return diff < 0 ? -1 : 1;
             if (c1 == 0)    break;
 
-             ++s1; ++s2;
+            ++s1; ++s2;
         }
 
         return 0;
@@ -467,16 +465,16 @@ public:
 
     /** Finds the character index of a given substring in another string.
         Returns -1 if the substring is not found.
-    */
-    template <typename CharPointerType1, typename CharPointerType2>
-    static int indexOf (CharPointerType1 textToSearch, const CharPointerType2 substringToLookFor) noexcept
+     */
+    template<typename CharPointerType1, typename CharPointerType2>
+    static int indexOf( CharPointerType1 textToSearch, const CharPointerType2 substringToLookFor ) noexcept
     {
         int index = 0;
-        const int substringLength = (int) substringToLookFor.length();
+        const int substringLength = int( substringToLookFor.length() );
 
-        for (;;)
+        for (;; )
         {
-            if (textToSearch.compareUpTo (substringToLookFor, substringLength) == 0)
+            if (textToSearch.compareUpTo( substringToLookFor, substringLength ) == 0)
                 return index;
 
             if (textToSearch.getAndAdvance() == 0)
@@ -489,14 +487,14 @@ public:
     /** Returns a pointer to the first occurrence of a substring in a string.
         If the substring is not found, this will return a pointer to the string's
         null terminator.
-    */
-    template <typename CharPointerType1, typename CharPointerType2>
-    static CharPointerType1 find (CharPointerType1 textToSearch, const CharPointerType2 substringToLookFor) noexcept
+     */
+    template<typename CharPointerType1, typename CharPointerType2>
+    static CharPointerType1 find( CharPointerType1 textToSearch, const CharPointerType2 substringToLookFor ) noexcept
     {
-        const int substringLength = (int) substringToLookFor.length();
+        const int substringLength = int( substringToLookFor.length() );
 
-        while (textToSearch.compareUpTo (substringToLookFor, substringLength) != 0
-                 && ! textToSearch.isEmpty())
+        while ( textToSearch.compareUpTo( substringToLookFor, substringLength ) != 0
+                && !textToSearch.isEmpty() )
             ++textToSearch;
 
         return textToSearch;
@@ -505,13 +503,13 @@ public:
     /** Returns a pointer to the first occurrence of a substring in a string.
         If the substring is not found, this will return a pointer to the string's
         null terminator.
-    */
-    template <typename CharPointerType>
-    static CharPointerType find (CharPointerType textToSearch, const juce_wchar charToLookFor) noexcept
+     */
+    template<typename CharPointerType>
+    static CharPointerType find( CharPointerType textToSearch, const treecore_wchar charToLookFor ) noexcept
     {
         for (;; ++textToSearch)
         {
-            const juce_wchar c = *textToSearch;
+            const treecore_wchar c = *textToSearch;
 
             if (c == charToLookFor || c == 0)
                 break;
@@ -523,16 +521,16 @@ public:
     /** Finds the character index of a given substring in another string, using
         a case-independent match.
         Returns -1 if the substring is not found.
-    */
-    template <typename CharPointerType1, typename CharPointerType2>
-    static int indexOfIgnoreCase (CharPointerType1 haystack, const CharPointerType2 needle) noexcept
+     */
+    template<typename CharPointerType1, typename CharPointerType2>
+    static int indexOfIgnoreCase( CharPointerType1 haystack, const CharPointerType2 needle ) noexcept
     {
         int index = 0;
-        const int needleLength = (int) needle.length();
+        const int needleLength = int( needle.length() );
 
-        for (;;)
+        for (;; )
         {
-            if (haystack.compareIgnoreCaseUpTo (needle, needleLength) == 0)
+            if (haystack.compareIgnoreCaseUpTo( needle, needleLength ) == 0)
                 return index;
 
             if (haystack.getAndAdvance() == 0)
@@ -544,13 +542,13 @@ public:
 
     /** Finds the character index of a given character in another string.
         Returns -1 if the character is not found.
-    */
-    template <typename Type>
-    static int indexOfChar (Type text, const juce_wchar charToFind) noexcept
+     */
+    template<typename Type>
+    static int indexOfChar( Type text, const treecore_wchar charToFind ) noexcept
     {
         int i = 0;
 
-        while (! text.isEmpty())
+        while ( !text.isEmpty() )
         {
             if (text.getAndAdvance() == charToFind)
                 return i;
@@ -564,14 +562,14 @@ public:
     /** Finds the character index of a given character in another string, using
         a case-independent match.
         Returns -1 if the character is not found.
-    */
-    template <typename Type>
-    static int indexOfCharIgnoreCase (Type text, juce_wchar charToFind) noexcept
+     */
+    template<typename Type>
+    static int indexOfCharIgnoreCase( Type text, treecore_wchar charToFind ) noexcept
     {
-        charToFind = CharacterFunctions::toLowerCase (charToFind);
+        charToFind = CharacterFunctions::toLowerCase( charToFind );
         int i = 0;
 
-        while (! text.isEmpty())
+        while ( !text.isEmpty() )
         {
             if (text.toLowerCase() == charToFind)
                 return i;
@@ -586,11 +584,11 @@ public:
     /** Returns a pointer to the first non-whitespace character in a string.
         If the string contains only whitespace, this will return a pointer
         to its null terminator.
-    */
-    template <typename Type>
-    static Type findEndOfWhitespace (Type text) noexcept
+     */
+    template<typename Type>
+    static Type findEndOfWhitespace( Type text ) noexcept
     {
-        while (text.isWhitespace())
+        while ( text.isWhitespace() )
             ++text;
 
         return text;
@@ -598,23 +596,23 @@ public:
 
     /** Returns a pointer to the first character in the string which is found in
         the breakCharacters string.
-    */
-    template <typename Type, typename BreakType>
-    static Type findEndOfToken (Type text, const BreakType breakCharacters, const Type quoteCharacters)
+     */
+    template<typename Type, typename BreakType>
+    static Type findEndOfToken( Type text, const BreakType breakCharacters, const Type quoteCharacters )
     {
-        juce_wchar currentQuoteChar = 0;
+        treecore_wchar currentQuoteChar = 0;
 
-        while (! text.isEmpty())
+        while ( !text.isEmpty() )
         {
-            const juce_wchar c = text.getAndAdvance();
+            const treecore_wchar c = text.getAndAdvance();
 
-            if (currentQuoteChar == 0 && breakCharacters.indexOf (c) >= 0)
+            if (currentQuoteChar == 0 && breakCharacters.indexOf( c ) >= 0)
             {
                 --text;
                 break;
             }
 
-            if (quoteCharacters.indexOf (c) >= 0)
+            if (quoteCharacters.indexOf( c ) >= 0)
             {
                 if (currentQuoteChar == 0)
                     currentQuoteChar = c;
@@ -627,9 +625,9 @@ public:
     }
 
 private:
-    static double mulexp10 (const double value, int exponent) noexcept;
+    static double mulexp10( const double value, int exponent ) noexcept;
 };
 
 }
 
-#endif   // JUCE_CHARACTERFUNCTIONS_H_INCLUDED
+#endif   // TREECORE_CHARACTER_FUNCTIONS_H

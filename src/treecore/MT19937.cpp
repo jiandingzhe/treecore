@@ -51,14 +51,16 @@
    Any feedback is very welcome.
    http://www.math.hiroshima-u.ac.jp/~m-mat/MT/emt.html
    email: m-mat @ math.sci.hiroshima-u.ac.jp (remove spaces)
-*/
+ */
 
-#if _MSC_VER
-#  define _CRT_RAND_S
-#  include <stdlib.h>
-#  include <process.h>
+#include "treecore/PlatformDefs.h"
+
+#if TREECORE_COMPILER_ATTR_MSVC
+#    define _CRT_RAND_S
+#    include <stdlib.h>
+#    include <process.h>
 #else
-#  include <unistd.h>
+#    include <unistd.h>
 #endif
 
 #include "treecore/MT19937.h"
@@ -88,50 +90,49 @@ uint64 _get_seed_from_time_()
 
 uint64 _get_seed_from_pid_()
 {
-#ifdef TREECORE_OS_WINDOWS
-    uint32 pid = uint32(_getpid());
-    uint32 ppid = uint32(_getpid());
+#if TREECORE_COMPILER_MSVC
+    uint32 pid  = uint32( _getpid() );
+    uint32 ppid = uint32( _getpid() );
 #else
-    uint32 pid = uint32(getpid());
-    uint32 ppid = uint32(getppid());
+    uint32 pid  = uint32( getpid() );
+    uint32 ppid = uint32( getppid() );
 #endif
     uint64 result = pid;
     result <<= 32;
-    result += ppid;
+    result  += ppid;
     return result;
 }
 
-#if defined TREECORE_OS_LINUX || defined TREECORE_OS_OSX
+#if TREECORE_OS_LINUX || TREECORE_OS_OSX
 
-#define DEV_RAND "/dev/random"
-#define DEV_URAND "/dev/urandom"
+#    define DEV_RAND "/dev/random"
+#    define DEV_URAND "/dev/urandom"
 
-void _get_seed_from_device_(const char* device_file, uint64* seeds, size_t len)
+void _get_seed_from_device_( const char* device_file, uint64* seeds, size_t len )
 {
-    FILE* fh = fopen(device_file, "rb");
+    FILE* fh = fopen( device_file, "rb" );
     if (!fh)
     {
-        fprintf(stderr, "ERROR: MT19937 failed to open random device %s: %s\n",
-                device_file, strerror(errno));
+        fprintf( stderr, "ERROR: MT19937 failed to open random device %s: %s\n",
+                 device_file, strerror( errno ) );
         abort();
     }
 
-
-    if (fread(seeds, sizeof(uint64), len, fh) != len)
+    if (fread( seeds, sizeof(uint64), len, fh ) != len)
     {
-        fprintf(stderr, "ERROR: MT19937 failed to read random device %s\n", device_file);
+        fprintf( stderr, "ERROR: MT19937 failed to read random device %s\n", device_file );
         abort();
     }
 }
 #endif
 
-#if defined(_MSC_VER) && _MSC_VER >= 1400
-void _get_seed_from_rand_s_(uint64* seeds, size_t len)
+#if TREECORE_COMPILER_MSVC
+void _get_seed_from_rand_s_( uint64* seeds, size_t len )
 {
     for (size_t i = 0; i < len; i++)
     {
         unsigned int rand_val = -1;
-        rand_s(&rand_val);
+        rand_s( &rand_val );
         seeds[i] = rand_val;
     }
 }
@@ -142,72 +143,72 @@ MT19937::MT19937()
     set_seed();
 }
 
-MT19937::MT19937(uint64 seed)
+MT19937::MT19937( uint64 seed )
 {
-    set_seed(seed);
+    set_seed( seed );
 }
 
-MT19937::MT19937(uint64 *seed_array, size_t len)
+MT19937::MT19937( uint64* seed_array, size_t len )
 {
-    set_seed_array(seed_array, len);
+    set_seed_array( seed_array, len );
 }
 
 void MT19937::set_seed()
 {
-#if defined TREECORE_OS_LINUX || defined TREECORE_OS_OSX || defined TREECORE_OS_ANDROID
-    File path_dev_urand(DEV_URAND);
+#if TREECORE_OS_LINUX || TREECORE_OS_OSX || TREECORE_OS_ANDROID
+    File path_dev_urand( DEV_URAND );
 
-    if (path_dev_urand.existsAsFile())
+    if ( path_dev_urand.existsAsFile() )
     {
         uint64 seeds[4];
-        _get_seed_from_device_(DEV_URAND, seeds, 4);
-        set_seed_array(seeds, 4);
+        _get_seed_from_device_( DEV_URAND, seeds, 4 );
+        set_seed_array( seeds, 4 );
     }
     else
     {
         uint64 seeds[2];
         seeds[0] = _get_seed_from_time_();
         seeds[1] = _get_seed_from_pid_();
-        set_seed_array(seeds, 2);
+        set_seed_array( seeds, 2 );
     }
-#elif defined(_MSC_VER) && _MSC_VER >= 1400
+#elif TREECORE_OS_WINDOWS && TREECORE_COMPILER_MSVC
     uint64 seeds[4];
-    _get_seed_from_rand_s_(seeds, 4);
-    set_seed_array(seeds, 4);
+    _get_seed_from_rand_s_( seeds, 4 );
+    set_seed_array( seeds, 4 );
 #else
     uint64 seeds[2];
     seeds[0] = _get_seed_from_time_();
     seeds[1] = _get_seed_from_pid_();
-    set_seed_array(seeds, 2);
+    set_seed_array( seeds, 2 );
 #endif
 }
 
-void MT19937::set_seed(uint64 seed)
+void MT19937::set_seed( uint64 seed )
 {
     mt[0] = seed;
-    for (mti=1; mti<NN; mti++)
-        mt[mti] =  (6364136223846793005ull * (mt[mti-1] ^ (mt[mti-1] >> 62)) + mti);
+    for (mti = 1; mti < NN; mti++)
+        mt[mti] =  (6364136223846793005ull * ( mt[mti - 1] ^ (mt[mti - 1] >> 62) ) + mti);
 }
 
-void MT19937::set_seed_array(uint64 *seed_array, size_t len)
+void MT19937::set_seed_array( uint64* seed_array, size_t len )
 {
     unsigned int i, j;
     uint64 k;
-    set_seed(19650218ull);
-    i=1; j=0;
+    set_seed( 19650218ull );
+    i = 1; j = 0;
     k = (NN > len ? NN : len);
     for (; k; k--) {
-        mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 62)) * 3935559000370003845ull))
-          + seed_array[j] + j; /* non linear */
+        mt[i] = ( mt[i] ^ ( ( mt[i - 1] ^ (mt[i - 1] >> 62) ) * 3935559000370003845ull ) )
+                + seed_array[j] + j; /* non linear */
         i++; j++;
-        if (i>=NN) { mt[0] = mt[NN-1]; i=1; }
-        if (j>=len) j=0;
+        if (i >= NN) { mt[0] = mt[NN - 1]; i = 1; }
+        if (j >= len) j = 0;
     }
-    for (k=NN-1; k; k--) {
-        mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 62)) * 2862933555777941757ull))
-          - i; /* non linear */
+    for (k = NN - 1; k; k--) {
+        mt[i] = ( mt[i] ^ ( ( mt[i - 1] ^ (mt[i - 1] >> 62) ) * 2862933555777941757ull ) )
+                - i; /* non linear */
         i++;
-        if (i>=NN) { mt[0] = mt[NN-1]; i=1; }
+        if (i >= NN) { mt[0] = mt[NN - 1]; i = 1; }
     }
 
     mt[0] = 1ull << 63; /* MSB is 1; assuring non-zero initial array */
@@ -222,25 +223,25 @@ uint64 MT19937::next_uint64()
 {
     int i;
     uint64 x;
-    static uint64 mag01[2]={0ull, MATRIX_A};
+    static uint64 mag01[2] = {0ull, MATRIX_A};
 
     if (mti >= NN) { /* generate NN words at one time */
 
         /* if init_genrand64() has not been called, */
         /* a default initial seed is used     */
-        if (mti == NN+1)
-            set_seed(5489ull);
+        if (mti == NN + 1)
+            set_seed( 5489ull );
 
-        for (i=0;i<NN-MM;i++) {
-            x = (mt[i]&UM)|(mt[i+1]&LM);
-            mt[i] = mt[i+MM] ^ (x>>1) ^ mag01[int(x & 1ull)];
+        for (i = 0; i < NN - MM; i++) {
+            x = (mt[i] & UM) | (mt[i + 1] & LM);
+            mt[i] = mt[i + MM] ^ (x >> 1) ^ mag01[int(x & 1ull)];
         }
-        for (;i<NN-1;i++) {
-            x = (mt[i]&UM)|(mt[i+1]&LM);
-            mt[i] = mt[i+(MM-NN)] ^ (x>>1) ^ mag01[int(x & 1ull)];
+        for (; i < NN - 1; i++) {
+            x = (mt[i] & UM) | (mt[i + 1] & LM);
+            mt[i] = mt[i + (MM - NN)] ^ (x >> 1) ^ mag01[int(x & 1ull)];
         }
-        x = (mt[NN-1]&UM)|(mt[0]&LM);
-        mt[NN-1] = mt[MM-1] ^ (x>>1) ^ mag01[int(x & 1ull)];
+        x = (mt[NN - 1] & UM) | (mt[0] & LM);
+        mt[NN - 1] = mt[MM - 1] ^ (x >> 1) ^ mag01[int(x & 1ull)];
 
         mti = 0;
     }
@@ -255,12 +256,12 @@ uint64 MT19937::next_uint64()
     return x;
 }
 
-uint64 MT19937::next_uint64_in_range(uint64 upper)
+uint64 MT19937::next_uint64_in_range( uint64 upper )
 {
     uint64 max64 = std::numeric_limits<uint64>::max();
     uint64 raw_upper = max64 - max64 % upper;
 
-    for (;;)
+    for (;; )
     {
         uint64 re = next_uint64();
         if (re < raw_upper)
@@ -272,25 +273,25 @@ uint64 MT19937::next_uint64_in_range(uint64 upper)
 
 int64 MT19937::next_int63()
 {
-    return (int64)(next_uint64() >> 1);
+    return (int64) (next_uint64() >> 1);
 }
 
 double MT19937::next_double_yy()
 {
-    return (next_uint64() >> 11) * (1.0/9007199254740991.0);
+    return (next_uint64() >> 11) * (1.0 / 9007199254740991.0);
 }
 
 double MT19937::next_double_yn()
 {
-    return (next_uint64() >> 11) * (1.0/9007199254740992.0);
+    return (next_uint64() >> 11) * (1.0 / 9007199254740992.0);
 }
 
 double MT19937::next_double_nn()
 {
-    return ((next_uint64() >> 12) + 0.5) * (1.0/4503599627370496.0);
+    return ( (next_uint64() >> 12) + 0.5 ) * (1.0 / 4503599627370496.0);
 }
 
-void MT19937::fill_bits_randomly(uint8* buffer, size_t size)
+void MT19937::fill_bits_randomly( uint8* buffer, size_t size )
 {
     size_t tail_bytes = size % 8;
     size_t head_bytes = size - tail_bytes;
@@ -298,33 +299,33 @@ void MT19937::fill_bits_randomly(uint8* buffer, size_t size)
     for (size_t i = 0; i < head_bytes; i += 8)
     {
         uint64 value = next_uint64();
-        *((uint64*)(buffer + i)) = value;
+        *( (uint64*) (buffer + i) ) = value;
     }
 
     uint64 value = next_uint64();
-    memcpy(buffer + head_bytes, &value, tail_bytes);
+    memcpy( buffer + head_bytes, &value, tail_bytes );
 }
 
-void MT19937::fill_bits_randomly(BigInteger& buffer, int start_bit, int num_bits)
+void MT19937::fill_bits_randomly( BigInteger& buffer, int start_bit, int num_bits )
 {
     // ensure memory allocation
-    buffer.setBit(start_bit + num_bits - 1, true);
+    buffer.setBit( start_bit + num_bits - 1, true );
 
-    while ((start_bit & 31) != 0 && num_bits > 0)
+    while ( (start_bit & 31) != 0 && num_bits > 0 )
     {
-        buffer.setBit(start_bit++, next_bool());
+        buffer.setBit( start_bit++, next_bool() );
         --num_bits;
     }
 
     while (num_bits >= 32)
     {
-        buffer.setBitRangeAsInt(start_bit, 32, uint32(next_uint64()));
+        buffer.setBitRangeAsInt( start_bit, 32, uint32( next_uint64() ) );
         start_bit += 32;
-        num_bits -= 32;
+        num_bits  -= 32;
     }
 
     while (--num_bits >= 0)
-        buffer.setBit(start_bit + num_bits, next_bool());
+        buffer.setBit( start_bit + num_bits, next_bool() );
 }
 
 } // namespace treecore

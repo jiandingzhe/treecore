@@ -29,6 +29,7 @@
 #ifndef JUCE_FILEINPUTSTREAM_H_INCLUDED
 #define JUCE_FILEINPUTSTREAM_H_INCLUDED
 
+#include "treecore/ClassUtils.h"
 #include "treecore/File.h"
 #include "treecore/InputStream.h"
 #include "treecore/Result.h"
@@ -41,7 +42,7 @@ namespace treecore {
 
     @see InputStream, FileOutputStream, File::createInputStream
 */
-class JUCE_API  FileInputStream  : public InputStream
+class TREECORE_SHARED_API  FileInputStream  : public InputStream
 {
 public:
     //==============================================================================

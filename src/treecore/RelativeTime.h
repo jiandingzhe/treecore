@@ -29,7 +29,6 @@
 #ifndef JUCE_RELATIVETIME_H_INCLUDED
 #define JUCE_RELATIVETIME_H_INCLUDED
 
-#include "treecore/StandardHeader.h"
 #include "treecore/String.h"
 #include "treecore/MathsFunctions.h"
 
@@ -43,7 +42,7 @@ namespace treecore {
 
     If you need an absolute time, (i.e. a date + time), see the Time class.
 */
-class JUCE_API  RelativeTime
+class TREECORE_SHARED_API  RelativeTime
 {
 public:
     //==============================================================================

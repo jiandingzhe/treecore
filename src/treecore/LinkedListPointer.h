@@ -29,7 +29,7 @@
 #ifndef JUCE_LINKEDLISTPOINTER_H_INCLUDED
 #define JUCE_LINKEDLISTPOINTER_H_INCLUDED
 
-#include "treecore/StandardHeader.h"
+#include "treecore/PlatformDefs.h"
 
 //==============================================================================
 namespace treecore {
@@ -92,7 +92,7 @@ public:
 
     LinkedListPointer& operator= (LinkedListPointer&& other) noexcept
     {
-        jassert (this != &other); // hopefully the compiler should make this situation impossible!
+        treecore_assert (this != &other); // hopefully the compiler should make this situation impossible!
 
         item = other.item;
         other.item = nullptr;
@@ -187,8 +187,8 @@ public:
     */
     void insertNext (ObjectType* const newItem)
     {
-        jassert (newItem != nullptr);
-        jassert (newItem->nextListItem == nullptr);
+        treecore_assert (newItem != nullptr);
+        treecore_assert (newItem->nextListItem == nullptr);
         newItem->nextListItem = item;
         item = newItem;
     }
@@ -199,7 +199,7 @@ public:
     */
     void insertAtIndex (int index, ObjectType* newItem)
     {
-        jassert (newItem != nullptr);
+        treecore_assert (newItem != nullptr);
         LinkedListPointer* l = this;
 
         while (index != 0 && l->item != nullptr)
@@ -216,8 +216,8 @@ public:
     */
     ObjectType* replaceNext (ObjectType* const newItem) noexcept
     {
-        jassert (newItem != nullptr);
-        jassert (newItem->nextListItem == nullptr);
+        treecore_assert (newItem != nullptr);
+        treecore_assert (newItem->nextListItem == nullptr);
 
         ObjectType* const oldItem = item;
         item = newItem;
@@ -316,7 +316,7 @@ public:
     */
     void copyToArray (ObjectType** destArray) const noexcept
     {
-        jassert (destArray != nullptr);
+        treecore_assert (destArray != nullptr);
 
         for (ObjectType* i = item; i != nullptr; i = i->nextListItem)
             *destArray++ = i;
@@ -345,7 +345,7 @@ public:
             : endOfList (&endOfListPointer)
         {
             // This can only be used to add to the end of a list.
-            jassert (endOfListPointer.item == nullptr);
+            treecore_assert (endOfListPointer.item == nullptr);
         }
 
         /** Appends an item to the list. */

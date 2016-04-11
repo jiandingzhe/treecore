@@ -31,7 +31,6 @@
 
 #include "treecore/ScopedPointer.h"
 #include "treecore/StringArray.h"
-#include "treecore/StandardHeader.h"
 #include "treecore/File.h"
 
 //==============================================================================
@@ -52,7 +51,7 @@ struct ContainerDeletePolicy;
 
     It also provides an estimate of its progress, using a (highly inaccurate!) algorithm.
 */
-class JUCE_API  DirectoryIterator
+class TREECORE_SHARED_API  DirectoryIterator
 {
 public:
     //==============================================================================

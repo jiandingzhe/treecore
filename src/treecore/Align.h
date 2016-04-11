@@ -1,9 +1,9 @@
 #ifndef TREECORE_ALIGN_H
 #define TREECORE_ALIGN_H
 
-#include "treecore/Config.h"
+#include "treecore/PlatformDefs.h"
 
-#if defined TREECORE_COMPILER_MSVC || (defined TREECORE_COMPILER_ICC && defined TREECORE_OS_WINDOWS)
+#if TREECORE_COMPILER_ATTR_MSVC
 #   define TREECORE_ALIGNOF(_type_) __builtin_alignof(_type_) // fuck MSVC which don't allow redefine keyword and don't provide that keyword
 #   define TREECORE_ALN_BEGIN(x) __declspec(align(x))
 #   define TREECORE_ALN_END(x)

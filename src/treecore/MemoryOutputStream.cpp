@@ -52,7 +52,7 @@ MemoryOutputStream::MemoryOutputStream (void* destBuffer, size_t destBufferSize)
   : blockToUse (nullptr), externalData (destBuffer),
     position (0), size (0), availableSize (destBufferSize)
 {
-    jassert (externalData != nullptr); // This must be a valid pointer.
+    treecore_assert (externalData != nullptr); // This must be a valid pointer.
 }
 
 MemoryOutputStream::~MemoryOutputStream()
@@ -85,7 +85,7 @@ void MemoryOutputStream::reset() noexcept
 
 char* MemoryOutputStream::prepareToWrite (size_t numBytes)
 {
-    jassert ((ssize_t) numBytes >= 0);
+    treecore_assert ((ssize_t) numBytes >= 0);
     size_t storageNeeded = position + numBytes;
 
     char* data;
@@ -113,7 +113,7 @@ char* MemoryOutputStream::prepareToWrite (size_t numBytes)
 
 bool MemoryOutputStream::write (const void* const buffer, size_t howMany)
 {
-    jassert (buffer != nullptr);
+    treecore_assert (buffer != nullptr);
 
     if (howMany == 0)
         return true;
@@ -141,7 +141,7 @@ bool MemoryOutputStream::writeRepeatedByte (uint8 byte, size_t howMany)
     return false;
 }
 
-bool MemoryOutputStream::appendUTF8Char (juce_wchar c)
+bool MemoryOutputStream::appendUTF8Char (treecore_wchar c)
 {
     if (char* dest = prepareToWrite (CharPointer_UTF8::getBytesRequiredFor (c)))
     {
@@ -209,7 +209,7 @@ String MemoryOutputStream::toString() const
     return String::createStringFromData (getData(), (int) getDataSize());
 }
 
-OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const MemoryOutputStream& streamToRead)
+OutputStream& TREECORE_STDCALL operator<< (OutputStream& stream, const MemoryOutputStream& streamToRead)
 {
     const size_t dataSize = streamToRead.getDataSize();
 

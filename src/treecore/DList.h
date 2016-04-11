@@ -1,9 +1,8 @@
-#ifndef ztd_dlistnode_h__
-#define ztd_dlistnode_h__
+#ifndef TREECORE_DLIST_H
+#define TREECORE_DLIST_H
 
 #include "treecore/SimdFunc.h"
 #include "treecore/StaticArray.h"
-#include "treecore/StandardHeader.h"
 #include "treecore/LeakedObjectDetector.h"
 
 namespace treecore
@@ -62,8 +61,8 @@ public:
 
     void pushNext( T* obj )
     {
-        jassert( obj != nullptr );
-        jassert( isLinked() || ( !isAvilable() ) ); //你只能向已经连到某条链表中的链表元素连接新元素
+        treecore_assert( obj != nullptr );
+        treecore_assert( isLinked() || ( !isAvilable() ) ); //你只能向已经连到某条链表中的链表元素连接新元素
         MemoryFetch( obj );
         obj->setUnlink();
         DListNode<T>* oldNext = m_next;
@@ -76,8 +75,8 @@ public:
 
     void pushPrev( T* obj )
     {
-        jassert( obj != nullptr );
-        jassert( isLinked()||(!isAvilable()) ); //你只能向已经连到某条链表中的链表元素连接新元素
+        treecore_assert( obj != nullptr );
+        treecore_assert( isLinked()||(!isAvilable()) ); //你只能向已经连到某条链表中的链表元素连接新元素
         MemoryFetch( obj );
         obj->setUnlink();
         DListNode<T>* oldPrev = m_prev;
@@ -90,14 +89,14 @@ public:
 
     T* next() const
     {
-        jassert( isLinked() || ( !isAvilable() ) ); //必须在一条链表里,next才有意义!
+        treecore_assert( isLinked() || ( !isAvilable() ) ); //必须在一条链表里,next才有意义!
         MemoryFetch( m_next );
         return static_cast<T*>(m_next);
     }
 
     T* prev() const
     {
-        jassert( isLinked() || ( !isAvilable() ) ); //必须在一条链表里,next才有意义!
+        treecore_assert( isLinked() || ( !isAvilable() ) ); //必须在一条链表里,next才有意义!
         MemoryFetch( m_prev );
         return static_cast<T*>(m_prev);
     }
@@ -105,9 +104,9 @@ public:
     bool isLinked() const
     {
         const bool k = m_next != this;
-#if JUCE_DEBUG
+#if TREECORE_DEBUG
         if( !k ) {
-            jassert( m_prev == this );
+            treecore_assert( m_prev == this );
         }
 #endif
         return k;
@@ -132,7 +131,7 @@ private:
 
     template <typename T2, int place_holder> friend struct DList;
 
-    JUCE_LEAK_DETECTOR(DListNode);
+    TREECORE_LEAK_DETECTOR(DListNode);
 };
 
 //-------------------------------------------------------------------------------------------------------------------------------
@@ -153,7 +152,7 @@ struct DList {
 
     struct Iter {
         
-        Iter(T* objToBegin):m_obj(objToBegin) { jassert(objToBegin!=nullptr); };
+        Iter(T* objToBegin):m_obj(objToBegin) { treecore_assert(objToBegin!=nullptr); };
         
         Iter(const Iter& other) = default;
         
@@ -169,7 +168,7 @@ struct DList {
         T& operator*( ) const  noexcept{ return *operator->(); }
 
         //* 返回T
-        T* operator->( ) const  noexcept{ jassert( m_obj->isAvilable() ); return static_cast<T*>( m_obj ); }
+        T* operator->( ) const  noexcept{ treecore_assert( m_obj->isAvilable() ); return static_cast<T*>( m_obj ); }
         
         bool operator!( ) const noexcept{ return m_obj->isAvilable(); }
 
@@ -193,7 +192,7 @@ struct DList {
 
         //* 你可以将一整条链表插入到迭代器所指元素的前面
         T* push_prev(DList& k,bool returnTailOfK) noexcept{
-            unlikely_if( k.is_empty() ) return static_cast<T*>( m_obj );
+            if unlikely( k.is_empty() ) return static_cast<T*>( m_obj );
             NodeType*const k_head = k.m_dummy.m_next;
             NodeType*const k_tail = k.m_dummy.m_prev;
             k._set_empty();
@@ -208,7 +207,7 @@ struct DList {
         
         //* 你可以将一整条链表插入到迭代器所指元素的后面,k将被清空
         T* push_next(DList& k,bool returnTailOfK ) noexcept{
-            unlikely_if( k.is_empty() ) return static_cast<T*>( m_obj );
+            if unlikely( k.is_empty() ) return static_cast<T*>( m_obj );
             NodeType*const k_head = k.m_dummy.m_next;
             NodeType*const k_tail = k.m_dummy.m_prev;
             k._set_empty();
@@ -274,7 +273,7 @@ struct DList {
 
     //* 向链表的末尾添加一个节点,如果obj属于另一条链表,则将会先使obj从该条链表中被弹出
     void push_tail( T*const obj ) noexcept {
-        jassert(obj!=nullptr);
+        treecore_assert(obj!=nullptr);
         obj->setUnlink();
         NodeType*const tail = m_dummy.m_prev;
         tail->pushNext( obj );
@@ -283,7 +282,7 @@ struct DList {
     //* 向链表的末尾添加一整条链表,另一条链表将被清空
     template<int other_place_holder>
     void push_tail( DList<T,other_place_holder>& obj ) noexcept {
-        unlikely_if(obj.is_empty()) return;
+        if unlikely(obj.is_empty()) return;
         NodeType*const k_head = obj.m_dummy.m_next;
         NodeType*const k_tail = obj.m_dummy.m_prev;
         obj._set_empty();
@@ -297,7 +296,7 @@ struct DList {
 
     //* 向链表的头部添加一个节点,如果obj属于另一条链表,将会先使obj从该条链表中被弹出
     void push_head( T*const obj ) noexcept {
-        jassert(obj!=nullptr);
+        treecore_assert(obj!=nullptr);
         obj->setUnlink();
         NodeType*const head = m_dummy.m_next;
         head->pushPrev( obj );
@@ -306,7 +305,7 @@ struct DList {
     //* 向链表的头部添加一整条链表,另一条链表将被清空
     template<int other_place_holder>
     void push_head( DList<T,other_place_holder>& obj ) noexcept {
-        unlikely_if(obj.is_empty()) return;
+        if unlikely(obj.is_empty()) return;
         NodeType*const k_head = obj.m_dummy.m_next;
         NodeType*const k_tail = obj.m_dummy.m_prev;
         obj._set_empty();
@@ -366,11 +365,11 @@ struct DList {
     template<typename MaxFunc>
     void sorting(const MaxFunc& doExchangeFun)
     {
-        unlikely_if(is_empty()) return;
+        if unlikely(is_empty()) return;
         DList<T> minList, maxList;
         T* mark = nullptr;
         this->pop_head(mark);
-        jassert(mark != nullptr);
+        treecore_assert(mark != nullptr);
         for (T* k; pop_head(k);) {
             if (doExchangeFun(*k, *mark)) {
                 maxList.push_head(k);
@@ -390,7 +389,7 @@ struct DList {
     template<typename MaxFunc>
     void insertionSortNB(const MaxFunc& doExchangeFun)	//用迭代器做插入排序
     {
-        unlikely_if(is_empty()) return;
+        if unlikely(is_empty()) return;
         Iter forward = this->getHead();		//向前遍历链表，走到头排序完成
         for (++forward; forward!=this->end();) {	//从第二个开始做，检查是否最大
             Iter checker = forward;		//每向前走一个，用来检查已排序链表，查看当前这个是否最大
@@ -402,13 +401,13 @@ struct DList {
     template<typename MaxFunc>
     void mergeWith( DList& otherLsit , const MaxFunc& doExchangeFun )
     {
-        unlikely_if( otherLsit.is_empty() ) return; //如果otherList为空,直接退出即可
+        if unlikely( otherLsit.is_empty() ) return; //如果otherList为空,直接退出即可
         Iter b = otherLsit.begin(); //另一个链表的迭代器
         Iter a = this->begin(); //当前链表的迭代器
-        jassert( !b ); //b在这里不可能是空的,因为如果是空的,在第一步就该return了
+        treecore_assert( !b ); //b在这里不可能是空的,因为如果是空的,在第一步就该return了
         for( ; ( !a ) && ( !b ); ) { //若a或b已经到头,则退出循环,若a为空,则不进循环
-            jassert( !b );
-            jassert( !a );
+            treecore_assert( !b );
+            treecore_assert( !a );
             if( doExchangeFun( *a , *b ) ) {
                 a.push_prev( ( b ).pop_jump_next() );//a不动,b进行pop然后向后走一格
             } else {
@@ -456,4 +455,4 @@ private:
 
 }
 
-#endif // ztd_dlistnode_h__
+#endif // TREECORE_DLIST_H

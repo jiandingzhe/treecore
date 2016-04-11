@@ -29,7 +29,7 @@
 #ifndef JUCE_SCOPEDREADLOCK_H_INCLUDED
 #define JUCE_SCOPEDREADLOCK_H_INCLUDED
 
-#include "treecore/StandardHeader.h"
+#include "treecore/PlatformDefs.h"
 
 namespace treecore {
 
@@ -58,7 +58,7 @@ class ReadWriteLock;
 
     @see ReadWriteLock, ScopedWriteLock
 */
-class JUCE_API  ScopedReadLock
+class TREECORE_SHARED_API  ScopedReadLock
 {
 public:
     //==============================================================================

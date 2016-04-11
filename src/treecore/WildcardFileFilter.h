@@ -45,7 +45,7 @@ namespace treecore {
 
     @see FileFilter, DirectoryContentsList, FileListComponent, FileBrowserComponent
 */
-class JUCE_API  WildcardFileFilter  : public FileFilter
+class TREECORE_SHARED_API  WildcardFileFilter  : public FileFilter
 {
 public:
     //==============================================================================
@@ -84,7 +84,7 @@ private:
     static void parse (const String& pattern, StringArray& result);
     static bool match (const File& file, const StringArray& wildcards);
 
-    JUCE_LEAK_DETECTOR (WildcardFileFilter)
+    TREECORE_LEAK_DETECTOR (WildcardFileFilter)
 };
 
 }

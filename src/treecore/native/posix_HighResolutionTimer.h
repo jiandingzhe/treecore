@@ -1,7 +1,6 @@
 #ifndef TREECORE_NATIVE_POSIX_HIGH_RESOLUTION_TIMER_H
 #define TREECORE_NATIVE_POSIX_HIGH_RESOLUTION_TIMER_H
 
-#include "treecore/BasicNativeHeaders.h"
 #include "treecore/HighResolutionTimer.h"
 #include "treecore/MathsFunctions.h"
 #include "treecore/Thread.h"
@@ -10,34 +9,33 @@ namespace treecore {
 
 struct HighResolutionTimer::Pimpl
 {
-    Pimpl (HighResolutionTimer& t)  : owner (t), thread (0), shouldStop (false)
-    {
-    }
+    Pimpl ( HighResolutionTimer& t ): owner( t ), thread( 0 ), shouldStop( false )
+    {}
 
     ~Pimpl()
     {
-        jassert (thread == 0);
+        treecore_assert( thread == 0 );
     }
 
-    void start (int newPeriod)
+    void start( int newPeriod )
     {
         if (periodMs != newPeriod)
         {
-            if (thread != pthread_self())
+            if ( thread != pthread_self() )
             {
                 stop();
 
-                periodMs = newPeriod;
+                periodMs   = newPeriod;
                 shouldStop = false;
 
-                if (pthread_create (&thread, nullptr, timerThread, this) == 0)
-                    setThreadToRealtime (thread, (uint64) newPeriod);
+                if (pthread_create( &thread, nullptr, timerThread, this ) == 0)
+                    setThreadToRealtime( thread, (uint64) newPeriod );
                 else
-                    jassertfalse;
+                    treecore_assert_false;
             }
             else
             {
-                periodMs = newPeriod;
+                periodMs   = newPeriod;
                 shouldStop = false;
             }
         }
@@ -49,7 +47,7 @@ struct HighResolutionTimer::Pimpl
         {
             shouldStop = true;
 
-            while (thread != 0 && thread != pthread_self())
+            while ( thread != 0 && thread != pthread_self() )
                 Thread::yield();
         }
     }
@@ -61,25 +59,25 @@ private:
     pthread_t thread;
     bool volatile shouldStop;
 
-    static void* timerThread (void* param)
+    static void* timerThread( void* param )
     {
-       #ifdef TREECORE_OS_ANDROID
+#if TREECORE_OS_ANDROID
         const AndroidThreadScope androidEnv;
-       #else
+#else
         int dummy;
-        pthread_setcancelstate (PTHREAD_CANCEL_ENABLE, &dummy);
-       #endif
+        pthread_setcancelstate( PTHREAD_CANCEL_ENABLE, &dummy );
+#endif
 
-        reinterpret_cast<Pimpl*> (param)->timerThread();
+        reinterpret_cast<Pimpl*>(param)->timerThread();
         return nullptr;
     }
 
     void timerThread()
     {
         int lastPeriod = periodMs;
-        Clock clock (lastPeriod);
+        Clock clock( lastPeriod );
 
-        while (! shouldStop)
+        while (!shouldStop)
         {
             clock.wait();
             owner.hiResTimerCallback();
@@ -87,52 +85,51 @@ private:
             if (lastPeriod != periodMs)
             {
                 lastPeriod = periodMs;
-                clock = Clock (lastPeriod);
+                clock = Clock( lastPeriod );
             }
         }
 
         periodMs = 0;
-        thread = 0;
+        thread   = 0;
     }
 
     struct Clock
     {
-#if defined TREECORE_OS_MAC || defined TREECORE_OS_IOS
-        Clock (double millis) noexcept
+#if TREECORE_OS_MAC || TREECORE_OS_IOS
+        Clock ( double millis ) noexcept
         {
             mach_timebase_info_data_t timebase;
-            (void) mach_timebase_info (&timebase);
-            delta = (((uint64_t) (millis * 1000000.0)) * timebase.denom) / timebase.numer;
-            time = mach_absolute_time();
+            (void) mach_timebase_info( &timebase );
+            delta = ( ( (uint64_t) (millis * 1000000.0) ) * timebase.denom ) / timebase.numer;
+            time  = mach_absolute_time();
         }
 
         void wait() noexcept
         {
             time += delta;
-            mach_wait_until (time);
+            mach_wait_until( time );
         }
 
         uint64_t time, delta;
 
-#elif defined TREECORE_OS_ANDROID
-        Clock (double millis) noexcept  : delta ((uint64) (millis * 1000000))
-        {
-        }
+#elif TREECORE_OS_ANDROID
+        Clock ( double millis ) noexcept: delta( (uint64) (millis * 1000000) )
+        {}
 
         void wait() noexcept
         {
             struct timespec t;
             t.tv_sec  = (time_t) (delta / 1000000000);
             t.tv_nsec = (long)   (delta % 1000000000);
-            nanosleep (&t, nullptr);
+            nanosleep( &t, nullptr );
         }
 
         uint64 delta;
 #else
-        Clock (double millis) noexcept  : delta ((uint64) (millis * 1000000))
+        Clock ( double millis ) noexcept: delta( (uint64) (millis * 1000000) )
         {
             struct timespec t;
-            clock_gettime (CLOCK_MONOTONIC, &t);
+            clock_gettime( CLOCK_MONOTONIC, &t );
             time = 1000000000 * (int64) t.tv_sec + t.tv_nsec;
         }
 
@@ -144,37 +141,37 @@ private:
             t.tv_sec  = (time_t) (time / 1000000000);
             t.tv_nsec = (long)   (time % 1000000000);
 
-            clock_nanosleep (CLOCK_MONOTONIC, TIMER_ABSTIME, &t, nullptr);
+            clock_nanosleep( CLOCK_MONOTONIC, TIMER_ABSTIME, &t, nullptr );
         }
 
         uint64 time, delta;
 #endif
     };
 
-    static bool setThreadToRealtime (pthread_t thread, uint64 periodMs)
+    static bool setThreadToRealtime( pthread_t thread, uint64 periodMs )
     {
-#if defined TREECORE_OS_MAC || defined TREECORE_OS_IOS
+#if TREECORE_OS_MAC || TREECORE_OS_IOS
         thread_time_constraint_policy_data_t policy;
-        policy.period      = (uint32_t) (periodMs * 1000000);
+        policy.period = (uint32_t) (periodMs * 1000000);
         policy.computation = 50000;
         policy.constraint  = policy.period;
         policy.preemptible = true;
 
-        return thread_policy_set (pthread_mach_thread_np (thread),
+        return thread_policy_set( pthread_mach_thread_np( thread ),
                                   THREAD_TIME_CONSTRAINT_POLICY,
                                   (thread_policy_t) &policy,
-                                  THREAD_TIME_CONSTRAINT_POLICY_COUNT) == KERN_SUCCESS;
+                                  THREAD_TIME_CONSTRAINT_POLICY_COUNT ) == KERN_SUCCESS;
 
 #else
         (void) periodMs;
         struct sched_param param;
-        param.sched_priority = sched_get_priority_max (SCHED_RR);
-        return pthread_setschedparam (thread, SCHED_RR, &param) == 0;
+        param.sched_priority = sched_get_priority_max( SCHED_RR );
+        return pthread_setschedparam( thread, SCHED_RR, &param ) == 0;
 
 #endif
     }
 
-    TREECORE_DECLARE_NON_COPYABLE (Pimpl)
+    TREECORE_DECLARE_NON_COPYABLE( Pimpl )
 };
 
 }

@@ -47,7 +47,7 @@ class XmlElement;
     This class can be used to launch URLs in browsers, and also to create
     InputStreams that can read from remote http or ftp sources.
 */
-class JUCE_API  URL
+class TREECORE_SHARED_API  URL
 {
 public:
     //==============================================================================
@@ -390,7 +390,7 @@ private:
     void createHeadersAndPostData (String&, MemoryBlock&) const;
     URL withUpload (Upload*) const;
 
-    JUCE_LEAK_DETECTOR (URL)
+    TREECORE_LEAK_DETECTOR (URL)
 };
 
 } // namespace treecore

@@ -10,7 +10,7 @@
 #define STRINGIFY(content) #content
 #define EXPAND_AND_STRINGIFY(input) STRINGIFY(input)
 
-#define OK(arg) ok(arg, EXPAND_AND_STRINGIFY(arg))
+#define OK(...) { auto result = __VA_ARGS__; ok(result, EXPAND_AND_STRINGIFY(__VA_ARGS__)); }
 #define IS(arg1, arg2) is(arg1, arg2, EXPAND_AND_STRINGIFY(arg1) " == " EXPAND_AND_STRINGIFY(arg2))
 #define IS_EPSILON(arg1, arg2) is_epsilon(arg1, arg2, EXPAND_AND_STRINGIFY(arg1) " ~~ " EXPAND_AND_STRINGIFY(arg2))
 #define GT(arg1, arg2) gt(arg1, arg2, EXPAND_AND_STRINGIFY(arg1) " > " EXPAND_AND_STRINGIFY(arg2))

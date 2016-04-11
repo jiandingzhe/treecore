@@ -1,4 +1,4 @@
-treejuce
+treecore
 ========
 
 a reforged JUCE core library with CMake build control and more regular project layout

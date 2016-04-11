@@ -90,7 +90,7 @@ public:
     inline bool isEmpty() const noexcept                { return *data == 0; }
 
     /** Returns the unicode character that this pointer is pointing to. */
-    inline juce_wchar operator*() const noexcept        { return (juce_wchar) (uint8) *data; }
+    inline treecore_wchar operator*() const noexcept        { return (treecore_wchar) (uint8) *data; }
 
     /** Moves this pointer along to the next character in the string. */
     inline CharPointer_ASCII operator++() noexcept
@@ -108,7 +108,7 @@ public:
 
     /** Returns the character that this pointer is currently pointing to, and then
         advances the pointer to point to the next character. */
-    inline juce_wchar getAndAdvance() noexcept  { return (juce_wchar) (uint8) *data++; }
+    inline treecore_wchar getAndAdvance() noexcept  { return (treecore_wchar) (uint8) *data++; }
 
     /** Moves this pointer along to the next character in the string. */
     CharPointer_ASCII operator++ (int) noexcept
@@ -130,9 +130,9 @@ public:
     }
 
     /** Returns the character at a given character index from the start of the string. */
-    inline juce_wchar operator[] (const int characterIndex) const noexcept
+    inline treecore_wchar operator[] (const int characterIndex) const noexcept
     {
-        return (juce_wchar) (unsigned char) data [characterIndex];
+        return (treecore_wchar) (unsigned char) data [characterIndex];
     }
 
     /** Returns a pointer which is moved forwards from this one by the specified number of characters. */
@@ -148,12 +148,12 @@ public:
     }
 
     /** Writes a unicode character to this string, and advances this pointer to point to the next position. */
-    inline void write (const juce_wchar charToWrite) noexcept
+    inline void write (const treecore_wchar charToWrite) noexcept
     {
         *data++ = (char) charToWrite;
     }
 
-    inline void replaceChar (const juce_wchar newChar) noexcept
+    inline void replaceChar (const treecore_wchar newChar) noexcept
     {
         *data = (char) newChar;
     }
@@ -193,7 +193,7 @@ public:
     /** Returns the number of bytes that would be needed to represent the given
         unicode character in this encoding format.
     */
-    static inline size_t getBytesRequiredFor (const juce_wchar) noexcept
+    static inline size_t getBytesRequiredFor (const treecore_wchar) noexcept
     {
         return 1;
     }
@@ -224,7 +224,7 @@ public:
     /** Copies a source string to this pointer, advancing this pointer as it goes. */
     void writeAll (const CharPointer_ASCII src) noexcept
     {
-#if defined TREECORE_COMPILER_MSVC
+#if TREECORE_COMPILER_MSVC
 #  pragma warning(suppress:4996)
 #endif
         strcpy (data, src.data);
@@ -286,9 +286,9 @@ public:
     int compareIgnoreCase (const CharPointer_ASCII other) const
     {
         // TODO: IOS
-#if defined TREECORE_OS_WINDOWS
+#if TREECORE_OS_WINDOWS
         return _stricmp (data, other.data);
-#elif defined TREECORE_OS_LINUX || defined TREECORE_OS_ANDROID || defined TREECORE_OS_OSX
+#elif TREECORE_OS_LINUX || TREECORE_OS_ANDROID || TREECORE_OS_OSX
         return strcasecmp (data, other.data);
 #else
 #  error "unsupported OS"
@@ -310,7 +310,7 @@ public:
     }
 
     /** Returns the character index of a unicode character, or -1 if it isn't found. */
-    int indexOf (const juce_wchar charToFind) const noexcept
+    int indexOf (const treecore_wchar charToFind) const noexcept
     {
         int i = 0;
 
@@ -326,7 +326,7 @@ public:
     }
 
     /** Returns the character index of a unicode character, or -1 if it isn't found. */
-    int indexOf (const juce_wchar charToFind, const bool ignoreCase) const noexcept
+    int indexOf (const treecore_wchar charToFind, const bool ignoreCase) const noexcept
     {
         return ignoreCase ? CharacterFunctions::indexOfCharIgnoreCase (*this, charToFind)
                           : CharacterFunctions::indexOfChar (*this, charToFind);
@@ -341,14 +341,14 @@ public:
     /** Returns true if the first character of this string is a letter or digit. */
     bool isLetterOrDigit() const            { return CharacterFunctions::isLetterOrDigit (*data) != 0; }
     /** Returns true if the first character of this string is upper-case. */
-    bool isUpperCase() const                { return CharacterFunctions::isUpperCase ((juce_wchar) (uint8) *data) != 0; }
+    bool isUpperCase() const                { return CharacterFunctions::isUpperCase ((treecore_wchar) (uint8) *data) != 0; }
     /** Returns true if the first character of this string is lower-case. */
-    bool isLowerCase() const                { return CharacterFunctions::isLowerCase ((juce_wchar) (uint8) *data) != 0; }
+    bool isLowerCase() const                { return CharacterFunctions::isLowerCase ((treecore_wchar) (uint8) *data) != 0; }
 
     /** Returns an upper-case version of the first character of this string. */
-    juce_wchar toUpperCase() const noexcept { return CharacterFunctions::toUpperCase ((juce_wchar) (uint8) *data); }
+    treecore_wchar toUpperCase() const noexcept { return CharacterFunctions::toUpperCase ((treecore_wchar) (uint8) *data); }
     /** Returns a lower-case version of the first character of this string. */
-    juce_wchar toLowerCase() const noexcept { return CharacterFunctions::toLowerCase ((juce_wchar) (uint8) *data); }
+    treecore_wchar toLowerCase() const noexcept { return CharacterFunctions::toLowerCase ((treecore_wchar) (uint8) *data); }
 
     /** Parses this string as a 32-bit integer. */
     int getIntValue32() const noexcept      { return atoi (data); }
@@ -357,9 +357,9 @@ public:
     int64 getIntValue64() const noexcept
     {
         // TODO: OSX and IOS
-#if defined TREECORE_OS_LINUX || defined TREECORE_OS_ANDROID
+#if TREECORE_OS_LINUX || TREECORE_OS_ANDROID
         return atoll (data);
-#elif defined TREECORE_OS_WINDOWS
+#elif TREECORE_OS_WINDOWS
         return _atoi64 (data);
 #else
 #error "unsupported os"
@@ -374,7 +374,7 @@ public:
     CharPointer_ASCII findEndOfWhitespace() const noexcept   { return CharacterFunctions::findEndOfWhitespace (*this); }
 
     /** Returns true if the given unicode character can be represented in this encoding. */
-    static bool canRepresent (juce_wchar character) noexcept
+    static bool canRepresent (treecore_wchar character) noexcept
     {
         return ((unsigned int) character) < (unsigned int) 128;
     }

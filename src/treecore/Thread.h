@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,8 +23,8 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #ifndef JUCE_THREAD_H_INCLUDED
 #define JUCE_THREAD_H_INCLUDED
@@ -36,9 +36,10 @@
 
 namespace treecore {
 
-#if defined TREECORE_OS_WINDOWS
+#if TREECORE_OS_WINDOWS
+#include <Windows.h>
 extern HWND MESSAGE_WINDOW_HANDLE;
-#elif defined TREECORE_OS_LINUX
+#elif TREECORE_OS_LINUX
 extern uint32 MESSAGE_WINDOW_HANDLE;
 #endif
 
@@ -55,8 +56,8 @@ extern uint32 MESSAGE_WINDOW_HANDLE;
 
     @see CriticalSection, WaitableEvent, Process, ThreadWithProgressWindow,
          MessageManagerLock
-*/
-class JUCE_API  Thread
+ */
+class TREECORE_SHARED_API Thread
 {
 public:
     //==============================================================================
@@ -65,8 +66,8 @@ public:
 
         When first created, the thread is not running. Use the startThread()
         method to start it.
-    */
-    explicit Thread (const String& threadName);
+     */
+    explicit Thread ( const String& threadName );
 
     /** Destructor.
 
@@ -74,7 +75,7 @@ public:
         always call stopThread() and make sure your thread has stopped before deleting
         the object. Failing to do so will throw an assertion, and put you firmly into
         undefined behaviour territory.
-    */
+     */
     virtual ~Thread();
 
     //==============================================================================
@@ -85,7 +86,7 @@ public:
         the run() method as soon as possible to avoid being forcibly killed.
 
         @see threadShouldExit, startThread
-    */
+     */
     virtual void run() = 0;
 
     //==============================================================================
@@ -97,7 +98,7 @@ public:
         If this thread is already running, startThread() won't do anything.
 
         @see stopThread
-    */
+     */
     void startThread();
 
     /** Starts the thread with a given priority.
@@ -106,8 +107,8 @@ public:
         If the thread is already running, its priority will be changed.
 
         @see startThread, setPriority
-    */
-    void startThread (int priority);
+     */
+    void startThread( int priority );
 
     /** Attempts to stop the thread running.
 
@@ -128,8 +129,8 @@ public:
         @returns    true if the thread was cleanly stopped before the timeout, or false
                     if it had to be killed by force.
         @see signalThreadShouldExit, threadShouldExit, waitForThreadToExit, isThreadRunning
-    */
-    bool stopThread (int timeOutMilliseconds);
+     */
+    bool stopThread( int timeOutMilliseconds );
 
     //==============================================================================
     /** Returns true if the thread is currently active */
@@ -146,7 +147,7 @@ public:
 
         @see threadShouldExit
         @see waitForThreadToExit
-    */
+     */
     void signalThreadShouldExit();
 
     /** Checks whether the thread has been told to stop running.
@@ -155,8 +156,8 @@ public:
         return from their run() method at the first possible opportunity.
 
         @see signalThreadShouldExit
-    */
-    inline bool threadShouldExit() const                { return shouldExit; }
+     */
+    inline bool threadShouldExit() const { return shouldExit; }
 
     /** Waits for the thread to stop.
 
@@ -165,8 +166,8 @@ public:
         @param timeOutMilliseconds  the time to wait, in milliseconds. If this value
                                     is less than zero, it will wait forever.
         @returns    true if the thread exits, or false if the timeout expires first.
-    */
-    bool waitForThreadToExit (int timeOutMilliseconds) const;
+     */
+    bool waitForThreadToExit( int timeOutMilliseconds ) const;
 
     //==============================================================================
     /** Changes the thread's priority.
@@ -174,8 +175,8 @@ public:
 
         @param priority     the new priority, in the range 0 (lowest) to 10 (highest). A priority
                             of 5 is normal.
-    */
-    bool setPriority (int priority);
+     */
+    bool setPriority( int priority );
 
     /** Changes the priority of the caller thread.
 
@@ -183,8 +184,8 @@ public:
         May return false if for some reason the priority can't be changed.
 
         @see setPriority
-    */
-    static bool setCurrentThreadPriority (int priority);
+     */
+    static bool setCurrentThreadPriority( int priority );
 
     //==============================================================================
     /** Sets the affinity mask for the thread.
@@ -193,21 +194,21 @@ public:
         thread is already running when called, it'll have no effect.
 
         @see setCurrentThreadAffinityMask
-    */
-    void setAffinityMask (uint32 affinityMask);
+     */
+    void setAffinityMask( uint32 affinityMask );
 
     /** Changes the affinity mask for the caller thread.
         This will change the affinity mask for the thread that calls this static method.
         @see setAffinityMask
-    */
-    static void JUCE_CALLTYPE setCurrentThreadAffinityMask (uint32 affinityMask);
+     */
+    static void TREECORE_STDCALL setCurrentThreadAffinityMask( uint32 affinityMask );
 
     //==============================================================================
     // this can be called from any thread that needs to pause..
-    static void JUCE_CALLTYPE sleep (int milliseconds);
+    static void TREECORE_STDCALL sleep( int milliseconds );
 
     /** Yields the calling thread's current time-slot. */
-    static void JUCE_CALLTYPE yield();
+    static void TREECORE_STDCALL yield();
 
     //==============================================================================
     /** Makes the thread wait for a notification.
@@ -218,21 +219,21 @@ public:
         A negative time-out value means that the method will wait indefinitely.
 
         @returns    true if the event has been signalled, false if the timeout expires.
-    */
-    bool wait (int timeOutMilliseconds) const;
+     */
+    bool wait( int timeOutMilliseconds ) const;
 
     /** Wakes up the thread.
 
         If the thread has called the wait() method, this will wake it up.
 
         @see wait
-    */
+     */
     void notify() const;
 
     //==============================================================================
     /** A value type used for thread IDs.
         @see getCurrentThreadId(), getThreadId()
-    */
+     */
     typedef void* ThreadID;
 
     /** Returns an id that identifies the caller thread.
@@ -241,15 +242,15 @@ public:
 
         @returns    a unique identifier that identifies the calling thread.
         @see getThreadId
-    */
-    static ThreadID JUCE_CALLTYPE getCurrentThreadId();
+     */
+    static ThreadID TREECORE_STDCALL getCurrentThreadId();
 
     /** Finds the thread object that is currently running.
 
         Note that the main UI thread (or other non-Juce threads) don't have a Thread
         object associated with them, so this will return 0.
-    */
-    static Thread* JUCE_CALLTYPE getCurrentThread();
+     */
+    static Thread * TREECORE_STDCALL getCurrentThread();
 
     /** Returns the ID of this thread.
 
@@ -259,20 +260,19 @@ public:
         thread's not actually running.
 
         @see getCurrentThreadId
-    */
+     */
     ThreadID getThreadId() const noexcept                           { return threadId; }
 
     /** Returns the name of the thread.
 
         This is the name that gets set in the constructor.
-    */
-    const String& getThreadName() const                             { return threadName; }
+     */
+    const String& getThreadName() const { return threadName; }
 
     /** Changes the name of the caller thread.
         Different OSes may place different length or content limits on this name.
-    */
-    static void JUCE_CALLTYPE setCurrentThreadName (const String& newThreadName);
-
+     */
+    static void TREECORE_STDCALL setCurrentThreadName( const String& newThreadName );
 
 private:
     //==============================================================================
@@ -285,17 +285,17 @@ private:
     uint32 affinityMask;
     bool volatile shouldExit;
 
-   #ifndef DOXYGEN
-    friend void JUCE_API juce_threadEntryPoint (void*);
-   #endif
+#if !TREECORE_COMPILER_DOXYGEN
+    friend void TREECORE_SHARED_API _thread_entry_point_( void* );
+#endif
 
     void launchThread();
     void closeThreadHandle();
     void killThread();
     void threadEntryPoint();
-    static bool setThreadPriority (void*, int);
+    static bool setThreadPriority( void*, int );
 
-    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Thread)
+    TREECORE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR( Thread )
 };
 
 }

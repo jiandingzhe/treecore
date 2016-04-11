@@ -50,7 +50,7 @@ class StringRef;
     Negative values are possible, but the value isn't stored as 2s-complement, so
     be careful if you use negative values and look at the values of individual bits.
 */
-class JUCE_API  BigInteger
+class TREECORE_SHARED_API  BigInteger
 {
 public:
     //==============================================================================
@@ -326,11 +326,11 @@ private:
     void shiftLeft (int bits, int startBit);
     void shiftRight (int bits, int startBit);
 
-    JUCE_LEAK_DETECTOR (BigInteger)
+    TREECORE_LEAK_DETECTOR (BigInteger)
 };
 
 /** Writes a BigInteger to an OutputStream as a UTF8 decimal string. */
-OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const BigInteger& value);
+OutputStream& TREECORE_STDCALL operator<< (OutputStream& stream, const BigInteger& value);
 
 //==============================================================================
 #ifndef DOXYGEN

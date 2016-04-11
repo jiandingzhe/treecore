@@ -26,17 +26,19 @@
   ==============================================================================
 */
 
-#ifndef JUCE_ELEMENTCOMPARATOR_H_INCLUDED
-#define JUCE_ELEMENTCOMPARATOR_H_INCLUDED
+#ifndef TREECORE_ELEMENT_COMPARATOR_H
+#define TREECORE_ELEMENT_COMPARATOR_H
 
-#include "treecore/StandardHeader.h"
+#include "treecore/PlatformDefs.h"
 #include "treecore/MathsFunctions.h"
+
+#include <algorithm>
 
 namespace treecore {
 
 #ifndef DOXYGEN
 
-/** This is an internal helper class which converts a juce ElementComparator style
+/** This is an internal helper class which converts a ElementComparator style
     class (using a "compareElements" method) into a class that's compatible with
     std::sort (i.e. using an operator() to compare the elements)
 */
@@ -131,7 +133,7 @@ static int findInsertIndexInSortedArray (ElementComparator& comparator,
                                          int firstElement,
                                          int lastElement)
 {
-    jassert (firstElement <= lastElement);
+    treecore_assert (firstElement <= lastElement);
 
     (void) comparator;  // if you pass in an object with a static compareElements() method, this
                         // avoids getting warning messages about the parameter being unused
@@ -195,4 +197,4 @@ public:
 
 }
 
-#endif   // JUCE_ELEMENTCOMPARATOR_H_INCLUDED
+#endif   // TREECORE_ELEMENT_COMPARATOR_H

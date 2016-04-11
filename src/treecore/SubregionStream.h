@@ -41,7 +41,7 @@ namespace treecore {
     This lets you take a subsection of a stream and present it as an entire
     stream in its own right.
 */
-class JUCE_API  SubregionStream  : public InputStream
+class TREECORE_SHARED_API  SubregionStream  : public InputStream
 {
 public:
     //==============================================================================

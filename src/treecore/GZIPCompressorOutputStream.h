@@ -46,7 +46,7 @@ namespace treecore {
 
     @see GZIPDecompressorInputStream
 */
-class JUCE_API  GZIPCompressorOutputStream  : public OutputStream
+class TREECORE_SHARED_API  GZIPCompressorOutputStream  : public OutputStream
 {
 public:
     //==============================================================================

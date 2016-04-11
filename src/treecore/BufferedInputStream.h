@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_BUFFEREDINPUTSTREAM_H_INCLUDED
-#define JUCE_BUFFEREDINPUTSTREAM_H_INCLUDED
+#ifndef TREECORE_BUFFERED_INPUT_STREAM_H
+#define TREECORE_BUFFERED_INPUT_STREAM_H
 
 #include "treecore/HeapBlock.h"
 #include "treecore/InputStream.h"
@@ -43,7 +43,7 @@ namespace treecore {
     so that the source stream gets accessed in larger chunk sizes, meaning less
     work for the underlying stream.
 */
-class JUCE_API  BufferedInputStream  : public InputStream
+class TREECORE_SHARED_API  BufferedInputStream  : public InputStream
 {
 public:
     //==============================================================================
@@ -96,4 +96,4 @@ private:
 
 }
 
-#endif   // JUCE_BUFFEREDINPUTSTREAM_H_INCLUDED
+#endif // TREECORE_BUFFERED_INPUT_STREAM_H

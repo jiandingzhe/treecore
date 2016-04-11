@@ -84,7 +84,7 @@ public:
     /** Returns a range with a given start and length. */
     static Range withStartAndLength (const ValueType startValue, const ValueType length) noexcept
     {
-        jassert (length >= ValueType());
+        treecore_assert (length >= ValueType());
         return Range (startValue, startValue + length);
     }
 

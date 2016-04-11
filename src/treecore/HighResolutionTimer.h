@@ -29,8 +29,9 @@
 #ifndef JUCE_HIGHRESOLUTIONTIMER_H_INCLUDED
 #define JUCE_HIGHRESOLUTIONTIMER_H_INCLUDED
 
-#include "treecore/ScopedPointer.h"
+#include "treecore/ClassUtils.h"
 #include "treecore/LeakedObjectDetector.h"
+#include "treecore/ScopedPointer.h"
 
 namespace treecore {
 
@@ -48,7 +49,7 @@ namespace treecore {
 
     @see Timer
 */
-class JUCE_API  HighResolutionTimer
+class TREECORE_SHARED_API  HighResolutionTimer
 {
 protected:
     /** Creates a HighResolutionTimer.

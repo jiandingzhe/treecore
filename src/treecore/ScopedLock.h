@@ -29,7 +29,7 @@
 #ifndef JUCE_SCOPEDLOCK_H_INCLUDED
 #define JUCE_SCOPEDLOCK_H_INCLUDED
 
-#include "treecore/StandardHeader.h"
+#include "treecore/ClassUtils.h"
 
 namespace treecore {
 

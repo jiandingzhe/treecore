@@ -29,7 +29,6 @@
 #ifndef JUCE_INPUTSOURCE_H_INCLUDED
 #define JUCE_INPUTSOURCE_H_INCLUDED
 
-#include "treecore/StandardHeader.h"
 #include "treecore/MathsFunctions.h"
 #include "treecore/LeakedObjectDetector.h"
 
@@ -47,7 +46,7 @@ class String;
 
     @see FileInputSource
 */
-class JUCE_API  InputSource
+class TREECORE_SHARED_API  InputSource
 {
 public:
     //==============================================================================
@@ -79,7 +78,7 @@ public:
 
 private:
     //==============================================================================
-    JUCE_LEAK_DETECTOR (InputSource)
+    TREECORE_LEAK_DETECTOR (InputSource)
 };
 
 }

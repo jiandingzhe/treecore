@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,8 +23,8 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #include "treecore/File.h"
 #include "treecore/LocalisedStrings.h"
@@ -35,30 +35,29 @@
 
 namespace treecore {
 
-LocalisedStrings::LocalisedStrings (const String& fileContents, bool ignoreCase)
+LocalisedStrings::LocalisedStrings ( const String& fileContents, bool ignoreCase )
 {
-    loadFromText (fileContents, ignoreCase);
+    loadFromText( fileContents, ignoreCase );
 }
 
-LocalisedStrings::LocalisedStrings (const File& fileToLoad, bool ignoreCase)
+LocalisedStrings::LocalisedStrings ( const File& fileToLoad, bool ignoreCase )
 {
-    loadFromText (fileToLoad.loadFileAsString(), ignoreCase);
+    loadFromText( fileToLoad.loadFileAsString(), ignoreCase );
 }
 
-LocalisedStrings::LocalisedStrings (const LocalisedStrings& other)
-    : languageName(other.languageName)
-    , countryCodes(other.countryCodes)
-    , translations(other.translations)
-    , fallback(createCopyIfNotNull(other.fallback))
-{
-}
+LocalisedStrings::LocalisedStrings ( const LocalisedStrings& other )
+    : languageName( other.languageName )
+    , countryCodes( other.countryCodes )
+    , translations( other.translations )
+    , fallback( createCopyIfNotNull( other.fallback ) )
+{}
 
-LocalisedStrings& LocalisedStrings::operator= (const LocalisedStrings& other)
+LocalisedStrings& LocalisedStrings::operator = ( const LocalisedStrings& other )
 {
     languageName = other.languageName;
     countryCodes = other.countryCodes;
     translations = other.translations;
-    fallback = createCopyIfNotNull (other.fallback);
+    fallback = createCopyIfNotNull( other.fallback );
     return *this;
 }
 
@@ -67,16 +66,16 @@ LocalisedStrings::~LocalisedStrings()
     delete fallback;
 }
 
-String LocalisedStrings::translate (const String& text, const String& resultIfNotFound) const
+String LocalisedStrings::translate( const String& text, const String& resultIfNotFound ) const
 {
-    MapType::ConstIterator it(translations);
-    if (translations.select(text, it))
+    MapType::ConstIterator it( translations );
+    if ( translations.select( text, it ) )
     {
         return it.value();
     }
     else if (fallback != nullptr)
     {
-        return fallback->translate (text);
+        return fallback->translate( text );
     }
     else
     {
@@ -86,115 +85,115 @@ String LocalisedStrings::translate (const String& text, const String& resultIfNo
 
 namespace
 {
-   #if JUCE_CHECK_MEMORY_LEAKS
-    // By using this object to force a LocalisedStrings object to be created
-    // before the currentMappings object, we can force the static order-of-destruction to
-    // delete the currentMappings object first, which avoids a bogus leak warning.
-    // (Oddly, just creating a LocalisedStrings on the stack doesn't work in gcc, it
-    // has to be created with 'new' for this to work..)
-    struct LeakAvoidanceTrick
+#if TREECORE_CHECK_MEMORY_LEAKS
+// By using this object to force a LocalisedStrings object to be created
+// before the currentMappings object, we can force the static order-of-destruction to
+// delete the currentMappings object first, which avoids a bogus leak warning.
+// (Oddly, just creating a LocalisedStrings on the stack doesn't work in gcc, it
+// has to be created with 'new' for this to work..)
+struct LeakAvoidanceTrick
+{
+    LeakAvoidanceTrick()
     {
-        LeakAvoidanceTrick()
-        {
-            const ScopedPointer<LocalisedStrings> dummy (new LocalisedStrings (String(), false));
-        }
-    };
+        const ScopedPointer<LocalisedStrings> dummy( new LocalisedStrings( String(), false ) );
+    }
+};
 
-    LeakAvoidanceTrick leakAvoidanceTrick;
-   #endif
+LeakAvoidanceTrick leakAvoidanceTrick;
+#endif // TREECORE_CHECK_MEMORY_LEAKS
 
-    SpinLock currentMappingsLock;
-    ScopedPointer<LocalisedStrings> currentMappings;
+SpinLock currentMappingsLock;
+ScopedPointer<LocalisedStrings> currentMappings;
 
-    static int findCloseQuote (const String& text, int startPos)
+static int findCloseQuote( const String& text, int startPos )
+{
+    treecore_wchar lastChar = 0;
+    String::CharPointerType t( text.getCharPointer() + startPos );
+
+    for (;; )
     {
-        juce_wchar lastChar = 0;
-        String::CharPointerType t (text.getCharPointer() + startPos);
+        const treecore_wchar c = t.getAndAdvance();
 
-        for (;;)
-        {
-            const juce_wchar c = t.getAndAdvance();
+        if ( c == 0 || (c == '"' && lastChar != '\\') )
+            break;
 
-            if (c == 0 || (c == '"' && lastChar != '\\'))
-                break;
-
-            lastChar = c;
-            ++startPos;
-        }
-
-        return startPos;
+        lastChar = c;
+        ++startPos;
     }
 
-    static String unescapeString (const String& s)
-    {
-        return s.replace ("\\\"", "\"")
-                .replace ("\\\'", "\'")
-                .replace ("\\t", "\t")
-                .replace ("\\r", "\r")
-                .replace ("\\n", "\n");
-    }
+    return startPos;
 }
 
-void LocalisedStrings::loadFromText (const String& fileContents, bool ignoreCase)
+static String unescapeString( const String& s )
+{
+    return s.replace( "\\\"", "\"" )
+           .replace( "\\\'", "\'" )
+           .replace( "\\t",  "\t" )
+           .replace( "\\r",  "\r" )
+           .replace( "\\n",  "\n" );
+}
+}
+
+void LocalisedStrings::loadFromText( const String& fileContents, bool ignoreCase )
 {
     StringArray lines;
-    lines.addLines (fileContents);
+    lines.addLines( fileContents );
 
     for (int i = 0; i < lines.size(); ++i)
     {
-        String line (lines[i].trim());
+        String line( lines[i].trim() );
 
-        if (line.startsWithChar ('"'))
+        if ( line.startsWithChar( '"' ) )
         {
-            int closeQuote = findCloseQuote (line, 1);
+            int closeQuote = findCloseQuote( line, 1 );
 
-            const String originalText (unescapeString (line.substring (1, closeQuote)));
+            const String originalText( unescapeString( line.substring( 1, closeQuote ) ) );
 
-            if (originalText.isNotEmpty())
+            if ( originalText.isNotEmpty() )
             {
-                const int openingQuote = findCloseQuote (line, closeQuote + 1);
-                closeQuote = findCloseQuote (line, openingQuote + 1);
+                const int openingQuote = findCloseQuote( line, closeQuote + 1 );
+                closeQuote = findCloseQuote( line, openingQuote + 1 );
 
-                const String newText (unescapeString (line.substring (openingQuote + 1, closeQuote)));
+                const String newText( unescapeString( line.substring( openingQuote + 1, closeQuote ) ) );
 
-                if (newText.isNotEmpty())
-                    translations.set(originalText, newText);
+                if ( newText.isNotEmpty() )
+                    translations.set( originalText, newText );
             }
         }
-        else if (line.startsWithIgnoreCase ("language:"))
+        else if ( line.startsWithIgnoreCase( "language:" ) )
         {
-            languageName = line.substring (9).trim();
+            languageName = line.substring( 9 ).trim();
         }
-        else if (line.startsWithIgnoreCase ("countries:"))
+        else if ( line.startsWithIgnoreCase( "countries:" ) )
         {
-            countryCodes.addTokens (line.substring (10).trim(), true);
+            countryCodes.addTokens( line.substring( 10 ).trim(), true );
             countryCodes.trim();
             countryCodes.removeEmptyStrings();
         }
     }
 }
 
-void LocalisedStrings::addStrings (const LocalisedStrings& other)
+void LocalisedStrings::addStrings( const LocalisedStrings& other )
 {
-    jassert (languageName == other.languageName);
-    jassert (countryCodes == other.countryCodes);
+    treecore_assert( languageName == other.languageName );
+    treecore_assert( countryCodes == other.countryCodes );
 
-    MapType::ConstIterator i_other(other.translations);
-    while (i_other.next())
+    MapType::ConstIterator i_other( other.translations );
+    while ( i_other.next() )
     {
         translations[i_other.key()] = i_other.value();
     }
 }
 
-void LocalisedStrings::setFallback (LocalisedStrings* f)
+void LocalisedStrings::setFallback( LocalisedStrings* f )
 {
     fallback = f;
 }
 
 //==============================================================================
-void LocalisedStrings::setCurrentMappings (LocalisedStrings* newTranslations)
+void LocalisedStrings::setCurrentMappings( LocalisedStrings* newTranslations )
 {
-    const SpinLock::ScopedLockType sl (currentMappingsLock);
+    const SpinLock::ScopedLockType sl( currentMappingsLock );
     currentMappings = newTranslations;
 }
 
@@ -203,21 +202,21 @@ LocalisedStrings* LocalisedStrings::getCurrentMappings()
     return currentMappings;
 }
 
-String LocalisedStrings::translateWithCurrentMappings (const String& text)  { return treecore::translate (text); }
-String LocalisedStrings::translateWithCurrentMappings (const char* text)    { return treecore::translate (text); }
+String LocalisedStrings::translateWithCurrentMappings( const String& text )  { return treecore::translate( text ); }
+String LocalisedStrings::translateWithCurrentMappings( const char* text )    { return treecore::translate( text ); }
 
-JUCE_API String translate (const String& text)       { return treecore::translate (text, text); }
-JUCE_API String translate (const char* text)         { return treecore::translate (String (text)); }
-JUCE_API String translate (CharPointer_UTF8 text)    { return treecore::translate (String (text)); }
+TREECORE_SHARED_API String translate( const String& text )       { return treecore::translate( text, text ); }
+TREECORE_SHARED_API String translate( const char* text )         { return treecore::translate( String( text ) ); }
+TREECORE_SHARED_API String translate( CharPointer_UTF8 text )    { return treecore::translate( String( text ) ); }
 
-JUCE_API String translate (const String& text, const String& resultIfNotFound)
+TREECORE_SHARED_API String translate( const String& text, const String& resultIfNotFound )
 {
-    const SpinLock::ScopedLockType sl (currentMappingsLock);
+    const SpinLock::ScopedLockType sl( currentMappingsLock );
 
-    if (const LocalisedStrings* const mappings = LocalisedStrings::getCurrentMappings())
-        return mappings->translate (text, resultIfNotFound);
+    if ( const LocalisedStrings* const mappings = LocalisedStrings::getCurrentMappings() )
+        return mappings->translate( text, resultIfNotFound );
 
     return resultIfNotFound;
 }
 
-}
+} // namespace treecore

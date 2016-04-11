@@ -126,7 +126,7 @@ namespace URLHelpers
 {
     static String getMangledParameters (const URL& url)
     {
-        jassert (url.getParameterNames().size() == url.getParameterValues().size());
+        treecore_assert (url.getParameterNames().size() == url.getParameterValues().size());
         String p;
 
         for (int i = 0; i < url.getParameterNames().size(); ++i)
@@ -263,7 +263,7 @@ void URL::createHeadersAndPostData (String& headers, MemoryBlock& headersAndPost
     if (filesToUpload.size() > 0)
     {
         // (this doesn't currently support mixing custom post-data with uploads..)
-        jassert (postData.isEmpty());
+        treecore_assert (postData.isEmpty());
 
         const String boundary (String::toHexString(int64(MT19937::getInstance()->next_uint64())));
 
@@ -435,7 +435,7 @@ URL::Upload::Upload (const String& param, const String& name,
                      const String& mime, const File& f, MemoryBlock* mb)
     : parameterName (param), filename (name), mimeType (mime), file (f), data (mb)
 {
-    jassert (mimeType.isNotEmpty()); // You need to supply a mime type!
+    treecore_assert (mimeType.isNotEmpty()); // You need to supply a mime type!
 }
 
 URL URL::withUpload (Upload* const f) const
@@ -479,8 +479,8 @@ String URL::removeEscapeChars (const String& s)
     {
         if (utf8[i] == '%')
         {
-            const int hexDigit1 = CharacterFunctions::getHexDigitValue ((juce_wchar) (uint8) utf8 [i + 1]);
-            const int hexDigit2 = CharacterFunctions::getHexDigitValue ((juce_wchar) (uint8) utf8 [i + 2]);
+            const int hexDigit1 = CharacterFunctions::getHexDigitValue ((treecore_wchar) (uint8) utf8 [i + 1]);
+            const int hexDigit2 = CharacterFunctions::getHexDigitValue ((treecore_wchar) (uint8) utf8 [i + 2]);
 
             if (hexDigit1 >= 0 && hexDigit2 >= 0)
             {
@@ -505,7 +505,7 @@ String URL::addEscapeChars (const String& s, const bool isParameter)
         const char c = utf8[i];
 
         if (! (CharacterFunctions::isLetterOrDigit (c)
-                 || legalChars.indexOf ((juce_wchar) c) >= 0))
+                 || legalChars.indexOf ((treecore_wchar) c) >= 0))
         {
             utf8[i] = '%';
             utf8.insert (++i, "0123456789ABCDEF" [((uint8) c) >> 4]);

@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,8 +23,8 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #ifndef JUCE_LOCALISEDSTRINGS_H_INCLUDED
 #define JUCE_LOCALISEDSTRINGS_H_INCLUDED
@@ -80,8 +80,8 @@ template<typename T> struct ContainerDeletePolicy;
     intercept and translate any internal Juce text strings that might be shown. (You can easily
     get a list of all the messages by searching for the TRANS() macro in the Juce source
     code).
-*/
-class JUCE_API  LocalisedStrings
+ */
+class TREECORE_SHARED_API LocalisedStrings
 {
     typedef HashMap<String, String> MapType;
 
@@ -91,18 +91,18 @@ public:
 
         When you create one of these, you can call setCurrentMappings() to make it
         the set of mappings that the system's using.
-    */
-    LocalisedStrings (const String& fileContents, bool ignoreCaseOfKeys);
+     */
+    LocalisedStrings ( const String& fileContents, bool ignoreCaseOfKeys );
 
     /** Creates a set of translations from a file.
 
         When you create one of these, you can call setCurrentMappings() to make it
         the set of mappings that the system's using.
-    */
-    LocalisedStrings (const File& fileToLoad, bool ignoreCaseOfKeys);
+     */
+    LocalisedStrings ( const File& fileToLoad, bool ignoreCaseOfKeys );
 
-    LocalisedStrings (const LocalisedStrings&);
-    LocalisedStrings& operator= (const LocalisedStrings&);
+    LocalisedStrings ( const LocalisedStrings& );
+    LocalisedStrings& operator = ( const LocalisedStrings& );
 
     /** Destructor. */
     ~LocalisedStrings();
@@ -117,14 +117,14 @@ public:
         See also the TRANS() macro, which uses the current set to do its translation.
 
         @see translateWithCurrentMappings
-    */
-    static void setCurrentMappings (LocalisedStrings* newTranslations);
+     */
+    static void setCurrentMappings( LocalisedStrings* newTranslations );
 
     /** Returns the currently selected set of mappings.
 
         This is the object that was last passed to setCurrentMappings(). It may
         be nullptr if none has been created.
-    */
+     */
     static LocalisedStrings* getCurrentMappings();
 
     /** Tries to translate a string using the currently selected set of mappings.
@@ -135,8 +135,8 @@ public:
         See also the TRANS() macro, which uses this method to do its translation.
 
         @see setCurrentMappings, getCurrentMappings
-    */
-    static String translateWithCurrentMappings (const String& text);
+     */
+    static String translateWithCurrentMappings( const String& text );
 
     /** Tries to translate a string using the currently selected set of mappings.
 
@@ -146,14 +146,13 @@ public:
         See also the TRANS() macro, which uses this method to do its translation.
 
         @see setCurrentMappings, getCurrentMappings
-    */
-    static String translateWithCurrentMappings (const char* text);
-
+     */
+    static String translateWithCurrentMappings( const char* text );
 
     /** Attempts to look up a string and return its localised version.
         If the string isn't found in the list, the resultIfNotFound string will be returned.
-    */
-    String translate (const String& text, const String& resultIfNotFound = String::empty) const;
+     */
+    String translate( const String& text, const String& resultIfNotFound = String::empty() ) const;
 
     /** Returns the name of the language specified in the translation file.
 
@@ -161,8 +160,8 @@ public:
         @code
         language: german
         @endcode
-    */
-    String getLanguageName() const                        { return languageName; }
+     */
+    String getLanguageName() const { return languageName; }
 
     /** Returns the list of suitable country codes listed in the translation file.
 
@@ -172,11 +171,11 @@ public:
         @endcode
 
         The country codes are supposed to be 2-character ISO complient codes.
-    */
-    const StringArray& getCountryCodes() const            { return countryCodes; }
+     */
+    const StringArray& getCountryCodes() const { return countryCodes; }
 
     /** Provides access to the actual list of mappings. */
-    const HashMap<String, String>& getMappings() const            { return translations; }
+    const HashMap<String, String>& getMappings() const { return translations; }
 
     //==============================================================================
     /** Adds and merges another set of translations into this set.
@@ -186,14 +185,14 @@ public:
         don't match.
 
         Any existing values will have their mappings overwritten by the new ones.
-    */
-    void addStrings (const LocalisedStrings&);
+     */
+    void addStrings( const LocalisedStrings& );
 
     /** Gives this object a set of strings to use as a fallback if a string isn't found.
         The object that is passed-in will be owned and deleted by this object
         when no longer needed. It can be nullptr to clear the existing fallback object.
-    */
-    void setFallback (LocalisedStrings* fallbackStrings);
+     */
+    void setFallback( LocalisedStrings* fallbackStrings );
 
 private:
     //==============================================================================
@@ -203,20 +202,20 @@ private:
     LocalisedStrings* fallback = nullptr;
     friend struct ContainerDeletePolicy<LocalisedStrings>;
 
-    void loadFromText (const String&, bool ignoreCase);
+    void loadFromText( const String&, bool ignoreCase );
 
-    JUCE_LEAK_DETECTOR (LocalisedStrings)
+    TREECORE_LEAK_DETECTOR( LocalisedStrings )
 };
 
 //==============================================================================
 #ifndef TRANS
- /** Uses the LocalisedStrings class to translate the given string literal.
-     This macro is provided for backwards-compatibility, and just calls the translate()
-     function. In new code, it's recommended that you just call translate() directly
-     instead, and avoid using macros.
-     @see translate(), LocalisedStrings
+/** Uses the LocalisedStrings class to translate the given string literal.
+    This macro is provided for backwards-compatibility, and just calls the translate()
+    function. In new code, it's recommended that you just call translate() directly
+    instead, and avoid using macros.
+    @see translate(), LocalisedStrings
  */
- #define TRANS(stringLiteral) treecore::translate (stringLiteral)
+ #    define TRANS( stringLiteral ) treecore::translate( stringLiteral )
 #endif
 
 /** A dummy version of the TRANS macro, used to indicate a string literal that should be
@@ -225,28 +224,28 @@ private:
     Wrapping a string literal in this macro has no effect, but by using it around strings
     that your app needs to translate at a later stage, it lets automatic code-scanning tools
     find this string and add it to the list of strings that need translation.
-*/
-#define NEEDS_TRANS(stringLiteral) (stringLiteral)
+ */
+#define NEEDS_TRANS( stringLiteral ) (stringLiteral)
 
 /** Uses the LocalisedStrings class to translate the given string literal.
     @see LocalisedStrings
-*/
-JUCE_API String translate (const String& stringLiteral);
+ */
+TREECORE_SHARED_API String translate( const String& stringLiteral );
 
 /** Uses the LocalisedStrings class to translate the given string literal.
     @see LocalisedStrings
-*/
-JUCE_API String translate (const char* stringLiteral);
+ */
+TREECORE_SHARED_API String translate( const char* stringLiteral );
 
 /** Uses the LocalisedStrings class to translate the given string literal.
     @see LocalisedStrings
-*/
-JUCE_API String translate (CharPointer_UTF8 stringLiteral);
+ */
+TREECORE_SHARED_API String translate( CharPointer_UTF8 stringLiteral );
 
 /** Uses the LocalisedStrings class to translate the given string literal.
     @see LocalisedStrings
-*/
-JUCE_API String translate (const String& stringLiteral, const String& resultIfNotFound);
+ */
+TREECORE_SHARED_API String translate( const String& stringLiteral, const String& resultIfNotFound );
 
 }
 

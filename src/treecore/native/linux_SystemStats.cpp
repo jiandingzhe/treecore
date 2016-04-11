@@ -26,7 +26,6 @@
   ==============================================================================
 */
 
-#include "treecore/BasicNativeHeaders.h"
 #include "treecore/internal/SystemStats_private.h"
 #include "treecore/File.h"
 #include "treecore/Logger.h"
@@ -35,7 +34,11 @@
 #include "treecore/SystemStats.h"
 #include "treecore/Time.h"
 
+#include <iostream>
 #include <langinfo.h>
+#include <sys/sysinfo.h>
+#include <sys/time.h>
+#include <pwd.h>
 
 namespace treecore {
 
@@ -168,7 +171,7 @@ void CPUInformation::initialise() noexcept
 }
 
 //==============================================================================
-uint32 juce_millisecondsSinceStartup() noexcept
+uint32 _milli_seconds_since_startup_() noexcept
 {
     timespec t;
     clock_gettime (CLOCK_MONOTONIC, &t);

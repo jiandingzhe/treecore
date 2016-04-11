@@ -1,5 +1,5 @@
 ﻿/*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,12 +23,13 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #ifndef TREECORE_WEAK_PTR_H
 #define TREECORE_WEAK_PTR_H
 
+#include "treecore/ClassUtils.h"
 #include "treecore/RefCountObject.h"
 #include "treecore/RefCountHolder.h"
 
@@ -82,8 +83,8 @@ namespace treecore
     @endcode
 
     @see WeakReference::Master
-*/
-template <class ObjectType, class ReferenceCountingType = RefCountObject>
+ */
+template<class ObjectType, class ReferenceCountingType = RefCountObject>
 class WeakPtr
 {
 public:
@@ -91,33 +92,31 @@ public:
     inline WeakPtr() noexcept {}
 
     /** Creates a WeakReference that points at the given object. */
-    WeakPtr (ObjectType* const object)  : holder (getRef (object)) {}
+    WeakPtr ( ObjectType* const object ): holder( getRef( object ) ) {}
 
     /** Creates a copy of another WeakReference. */
-    WeakPtr (const WeakPtr& other) noexcept         : holder (other.holder) {}
+    WeakPtr ( const WeakPtr& other ) noexcept: holder( other.holder ) {}
 
     /** Copies another pointer to this one. */
-    WeakPtr& operator= (const WeakPtr& other)       { holder = other.holder; return *this; }
+    WeakPtr& operator = ( const WeakPtr& other )       { holder = other.holder; return *this; }
 
     /** Copies another pointer to this one. */
-    WeakPtr& operator= (ObjectType* const newObject)      { holder = getRef (newObject); return *this; }
+    WeakPtr& operator = ( ObjectType* const newObject )      { holder = getRef( newObject ); return *this; }
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
-    WeakReference (WeakReference&& other) noexcept              : holder (static_cast <SharedRef&&> (other.holder)) {}
-    WeakReference& operator= (WeakReference&& other) noexcept   { holder = static_cast <SharedRef&&> (other.holder); return *this; }
-   #endif
+    WeakPtr( WeakPtr&& other ) noexcept: holder( static_cast<SharedRef &&>(other.holder) ) {}
+    WeakPtr& operator = ( WeakPtr&& other ) noexcept   { holder = static_cast<SharedRef &&>(other.holder); return *this; }
 
     /** Returns the object that this pointer refers to, or null if the object no longer exists. */
     ObjectType* get() const noexcept                            { return holder != nullptr ? holder->get() : nullptr; }
 
     /** Returns the object that this pointer refers to, or null if the object no longer exists. */
-    operator ObjectType*() const noexcept                       { return get(); }
+    operator ObjectType* () const noexcept{ return get(); }
 
     /** Returns the object that this pointer refers to, or null if the object no longer exists. */
-    ObjectType* operator->() noexcept                           { return get(); }
+    ObjectType* operator -> () noexcept                           { return get(); }
 
     /** Returns the object that this pointer refers to, or null if the object no longer exists. */
-    const ObjectType* operator->() const noexcept               { return get(); }
+    const ObjectType* operator -> () const noexcept               { return get(); }
 
     /** This returns true if this reference has been pointing at an object, but that object has
         since been deleted.
@@ -125,29 +124,29 @@ public:
         If this reference was only ever pointing at a null pointer, this will return false. Using
         operator=() to make this refer to a different object will reset this flag to match the status
         of the reference from which you're copying.
-    */
+     */
     bool wasObjectDeleted() const noexcept                      { return holder != nullptr && holder->get() == nullptr; }
 
-    bool operator== (ObjectType* const object) const noexcept   { return get() == object; }
-    bool operator!= (ObjectType* const object) const noexcept   { return get() != object; }
+    bool operator == ( ObjectType* const object ) const noexcept   { return get() == object; }
+    bool operator != ( ObjectType* const object ) const noexcept   { return get() != object; }
 
     //==============================================================================
     /** This class is used internally by the WeakReference class - don't use it directly
         in your code!
         @see WeakReference
-    */
-    class SharedPointer   : public ReferenceCountingType
+     */
+    class SharedPointer: public ReferenceCountingType
     {
-    public:
-        explicit SharedPointer (ObjectType* const obj) noexcept : owner (obj) {}
+public:
+        explicit SharedPointer ( ObjectType* const obj ) noexcept: owner( obj ) {}
 
         inline ObjectType* get() const noexcept     { return owner; }
         void clearPointer() noexcept                { owner = nullptr; }
 
-    private:
+private:
         ObjectType* volatile owner;
 
-        TREECORE_DECLARE_NON_COPYABLE (SharedPointer)
+        TREECORE_DECLARE_NON_COPYABLE( SharedPointer )
     };
 
     typedef RefCountHolder<SharedPointer> SharedRef;
@@ -157,37 +156,36 @@ public:
         This class is embedded inside an object to which you want to attach WeakReference pointers.
         See the WeakReference class notes for an example of how to use this class.
         @see WeakReference
-    */
+     */
     class Master
     {
-    public:
+public:
         Master() noexcept {}
 
-        Master(Master&& peer) noexcept
-            : sharedPointer(std::move(peer.sharedPointer))
-        {
-        }
+        Master( Master&& peer ) noexcept
+            : sharedPointer( std::move( peer.sharedPointer ) )
+        {}
 
         ~Master() noexcept
         {
             // You must remember to call clear() in your source object's destructor! See the notes
             // for the WeakReference class for an example of how to do this.
-            jassert (sharedPointer == nullptr || sharedPointer->get() == nullptr);
+            treecore_assert( sharedPointer == nullptr || sharedPointer->get() == nullptr );
         }
 
         /** The first call to this method will create an internal object that is shared by all weak
             references to the object.
-        */
-        SharedPointer* getSharedPointer (ObjectType* const object)
+         */
+        SharedPointer* getSharedPointer( ObjectType* const object )
         {
             if (sharedPointer == nullptr)
             {
-                sharedPointer = new SharedPointer (object);
+                sharedPointer = new SharedPointer( object );
             }
             else
             {
                 // You're trying to create a weak reference to an object that has already been deleted!!
-                jassert (sharedPointer->get() != nullptr);
+                treecore_assert( sharedPointer->get() != nullptr );
             }
 
             return sharedPointer;
@@ -196,25 +194,25 @@ public:
         /** The object that owns this master pointer should call this before it gets destroyed,
             to zero all the references to this object that may be out there. See the WeakReference
             class notes for an example of how to do this.
-        */
+         */
         void clear() noexcept
         {
             if (sharedPointer != nullptr)
                 sharedPointer->clearPointer();
         }
 
-    private:
+private:
         SharedRef sharedPointer;
 
-        TREECORE_DECLARE_NON_COPYABLE (Master)
+        TREECORE_DECLARE_NON_COPYABLE( Master )
     };
 
 private:
     SharedRef holder;
 
-    static inline SharedPointer* getRef (ObjectType* const o)
+    static inline SharedPointer* getRef( ObjectType* const o )
     {
-        return (o != nullptr) ? o->masterReference.getSharedPointer (o) : nullptr;
+        return (o != nullptr) ? o->masterReference.getSharedPointer( o ) : nullptr;
     }
 };
 

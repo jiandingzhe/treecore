@@ -5,7 +5,7 @@
 #include <limits>
 #include <cstdio>
 
-#if defined _WIN32 || defined _WIN64
+#if TREECORE_OS_WINDOWS
 #    include <windows.h>
 #else
 #    include <sys/ioctl.h>
@@ -14,17 +14,17 @@
 namespace treecore
 {
 
-size_t get_terminal_width()
+int32 get_terminal_width()
 {
-#if defined _WIN32 || defined _WIN64
+#if TREECORE_OS_WINDOWS
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo( GetStdHandle( STD_OUTPUT_HANDLE ), &csbi );
-    size_t columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    int32 columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
     return columns;
 #else
     struct winsize win_size;
     ioctl( fileno( stdout ), TIOCGWINSZ, &win_size );
-    return win_size.ws_col;
+    return int32(win_size.ws_col);
 #endif
 }
 
@@ -36,23 +36,23 @@ String _dup_char_( int num_repeat, char content )
     return result;
 }
 
-void _break_desc_lines_( const String& input, size_t line_size, Array<String>& output )
+void _break_desc_lines_( const String& input, int line_size, Array<String>& output )
 {
     StringArray paragraphs;
     paragraphs.addTokens( input, "\n", "" );
 
-    for (size_t line_i = 0; line_i < paragraphs.size(); line_i++)
+    for (int line_i = 0; line_i < paragraphs.size(); line_i++)
     {
-        output.add( String::empty );
+        output.add( String::empty() );
         const String& para = paragraphs[line_i];
         StringArray tokens;
         tokens.addTokens( para, " \t", "" );
 
-        for (size_t i_token = 0; i_token < tokens.size(); i_token++)
+        for (int i_token = 0; i_token < tokens.size(); i_token++)
         {
             const String& token = tokens[i_token];
             if (output.getLast().length() + token.length() + 1 > line_size)
-                output.add( String::empty );
+                output.add( String::empty() );
             if (output.getLast().length() > 0)
                 output.getLast() += " ";
             output.getLast() += token;
@@ -91,14 +91,14 @@ Option::BoolSwitch::~BoolSwitch() {}
 
 bool Option::BoolSwitch::cast_values( const Array<String>& values )
 {
-    jassert( values.size() == 0 );
+    treecore_assert( values.size() == 0 );
     *value = true;
     return true;
 }
 
 String Option::BoolSwitch::to_string()
 {
-    return String::empty;
+    return String::empty();
 }
 
 Option::Option( Option&& other ) noexcept
@@ -119,16 +119,16 @@ Option::~Option()
         delete store;
 }
 
-String Option::format_doc( size_t w_line, size_t w_key_left, size_t w_key, size_t w_key_right ) const
+String Option::format_doc( int32 w_line, int32 w_key_left, int32 w_key, int32 w_key_right ) const
 {
     // validate key width
     String doc_key = format_doc_key();
 
-    int32_t w_key_remain = w_key - doc_key.length();
+    int w_key_remain = int(w_key) - doc_key.length();
     if (w_key_remain < 0)
     {
         fprintf( stderr, "option key exceeds width limit %lu: %d\n%s\n",
-                 w_key, doc_key.length(), doc_key.toRawUTF8() );
+                 static_cast<unsigned long>(w_key), doc_key.length(), doc_key.toRawUTF8() );
         abort();
     }
 
@@ -150,7 +150,7 @@ String Option::format_doc( size_t w_line, size_t w_key_left, size_t w_key, size_
         Array<String> desc_lines;
         _break_desc_lines_( full_desc, w_line - 4, desc_lines );
 
-        for (size_t i = 0; i < desc_lines.size(); i++)
+        for (int i = 0; i < desc_lines.size(); i++)
             result += "    " + desc_lines[i] + "\n";
     }
     else
@@ -160,7 +160,7 @@ String Option::format_doc( size_t w_line, size_t w_key_left, size_t w_key, size_
 
         String leading_space = _dup_char_( w_key_left + w_key + w_key_right, ' ' );
 
-        for (size_t i = 0; i < desc_lines.size(); i++)
+        for (int i = 0; i < desc_lines.size(); i++)
         {
             if (i == 0)
             {
@@ -205,17 +205,17 @@ bool OptionParser::add_option( Option& option )
     bool long_inserted  = false;
     bool short_inserted = false;
 
-    size_t idx = options.size();
+    int32 idx = options.size();
 
     if (option.name_long.length() > 0)
     {
-        HashMap<String, size_t>::Iterator it( options_by_long );
+        HashMap<String, int32>::Iterator it( options_by_long );
         long_inserted = options_by_long.insertOrSelect( option.name_long, idx, it );
     }
 
     if (option.name_short != 0)
     {
-        HashMap<char, size_t>::Iterator it( options_by_short );
+        HashMap<char, int32>::Iterator it( options_by_short );
         short_inserted = options_by_short.insertOrSelect( option.name_short, idx, it );
     }
 
@@ -224,7 +224,7 @@ bool OptionParser::add_option( Option& option )
         options.add( &option );
 
         const String& group = option.group;
-        size_t id = group_id_seed++;
+        int32 id = group_id_seed++;
 
         group_ids.set( group, id );
 
@@ -261,7 +261,7 @@ inline void _dump_value_group_( OptionValueMap& store, Option* option, IndexedVa
     values.clear();
 }
 
-void OptionParser::parse_options( int& argc, char const ** argv )
+void OptionParser::parse_options( int& argc, char const** argv )
 {
     //
     // collect values by option
@@ -364,10 +364,10 @@ void OptionParser::parse_options( int& argc, char const ** argv )
                 }
 
                 // all values are unused
-                for (size_t i_group = 0; i_group < value_groups.size(); i_group++)
+                for (int i_group = 0; i_group < value_groups.size(); i_group++)
                 {
                     const IndexedValueGroup& value_group = value_groups[i_group];
-                    for (size_t i_value = 0; i_value < value_group.size(); i_value++)
+                    for (int i_value = 0; i_value < value_group.size(); i_value++)
                     {
                         unused_indices.add( value_group[i_value].index );
                     }
@@ -395,7 +395,7 @@ void OptionParser::parse_options( int& argc, char const ** argv )
                 }
 
                 // first value is used, all following values are unused
-                for (size_t i_value = 0; i_value < first_group.size(); i_value++)
+                for (int i_value = 0; i_value < first_group.size(); i_value++)
                 {
                     if (i_value == 0)
                         values_plain.add( first_group[i_value].value );
@@ -415,10 +415,10 @@ void OptionParser::parse_options( int& argc, char const ** argv )
                 // option can occur multiple times
                 if (option->flags & Option::FLAG_MULTI_KEY)
                 {
-                    for (size_t i_group = 0; i_group < value_groups.size(); i_group++)
+                    for (int i_group = 0; i_group < value_groups.size(); i_group++)
                     {
                         const IndexedValueGroup& value_group = value_groups[i_group];
-                        for (size_t i_value = 0; i_value < value_group.size(); i_value++)
+                        for (int i_value = 0; i_value < value_group.size(); i_value++)
                         {
                             if (values_plain.size() < option->store->limit.max)
                                 values_plain.add( value_group[i_value].value );
@@ -457,7 +457,7 @@ void OptionParser::parse_options( int& argc, char const ** argv )
                     }
 
                     // store
-                    for (size_t i_value = 0; i_value < first_group.size(); i_value++)
+                    for (int i_value = 0; i_value < first_group.size(); i_value++)
                     {
                         if (i_value < option->store->limit.max)
                             values_plain.add( first_group[i_value].value );
@@ -471,7 +471,7 @@ void OptionParser::parse_options( int& argc, char const ** argv )
             {
                 fprintf( stderr, "ERROR: failed to cast values for option \"%s\"\n",
                          option->format_doc_key().toRawUTF8() );
-                for (size_t i = 0; i < values_plain.size(); i++)
+                for (int i = 0; i < values_plain.size(); i++)
                 {
                     fprintf( stderr, "ERROR:   \"%s\"\n",
                              values_plain[i].toRawUTF8() );
@@ -482,10 +482,10 @@ void OptionParser::parse_options( int& argc, char const ** argv )
         else
         {
             // ungrouped options, collect to unused
-            for (size_t i_group = 0; i_group < value_groups.size(); i_group++)
+            for (int i_group = 0; i_group < value_groups.size(); i_group++)
             {
                 const IndexedValueGroup& value_group = value_groups[i_group];
-                for (size_t i_value = 0; i_value < value_group.size(); i_value++)
+                for (int i_value = 0; i_value < value_group.size(); i_value++)
                 {
                     unused_indices.add( value_group[i_value].index );
                 }
@@ -496,7 +496,7 @@ void OptionParser::parse_options( int& argc, char const ** argv )
     // modify argument
     // collect unprocessed names
     Array<const char*> buffer;
-    for (size_t i = 0; i < unused_indices.size(); i++)
+    for (int i = 0; i < unused_indices.size(); i++)
     {
         int index = unused_indices[i];
         if (index > 0)
@@ -504,7 +504,7 @@ void OptionParser::parse_options( int& argc, char const ** argv )
     }
 
     // modify argv
-    for (size_t i = 1; i < argc; i++)
+    for (int i = 1; i < argc; i++)
     {
         if ( i <= buffer.size() )
         {
@@ -525,16 +525,16 @@ Option* OptionParser::find_option_long( const String& key )
 
     // find exact key
     {
-        HashMap<String, size_t>::Iterator it( options_by_long );
+        HashMap<String, int32>::Iterator it( options_by_long );
         if ( options_by_long.select( key_use, it ) )
             return options[it.value()];
     }
 
     // find by prefix
     Array<String> matched_keys;
-    Array<size_t> matched_i;
+    Array<int32> matched_i;
 
-    HashMap<String, size_t>::Iterator it( options_by_long );
+    HashMap<String, int32>::Iterator it( options_by_long );
 
     while ( it.next() )
     {
@@ -558,7 +558,7 @@ Option* OptionParser::find_option_long( const String& key )
     else
     {
         fprintf( stderr, "ERROR: ambiguous option prefix \"%s\", which matches:\n", key.toRawUTF8() );
-        for (size_t i = 0; i < matched_keys.size(); i++)
+        for (int32 i = 0; i < matched_keys.size(); i++)
             fprintf( stderr, "ERROR:   %s\n", matched_keys[i].toRawUTF8() );
         exit( EXIT_FAILURE );
     }
@@ -566,7 +566,7 @@ Option* OptionParser::find_option_long( const String& key )
 
 Option* OptionParser::find_option_short( char key )
 {
-    HashMap<char, size_t>::Iterator it( options_by_short );
+    HashMap<char, int32>::Iterator it( options_by_short );
 
     if ( options_by_short.select( key, it ) )
         return options[it.value()];
@@ -578,12 +578,12 @@ Option* OptionParser::find_option_short( char key )
 
 struct GroupSort
 {
-    GroupSort(const HashMap<String, size_t>& ids ): ids( ids ) {}
+    GroupSort( const HashMap<String, int32>& ids ): ids( ids ) {}
 
     int compareElements( const String& a, const String& b )
     {
-        HashMap<String, size_t>::ConstIterator it_a( ids );
-        HashMap<String, size_t>::ConstIterator it_b( ids );
+        HashMap<String, int32>::ConstIterator it_a( ids );
+        HashMap<String, int32>::ConstIterator it_b( ids );
         if ( !ids.select( a, it_a ) ) abort();
         if ( !ids.select( b, it_b ) ) abort();
 
@@ -592,16 +592,16 @@ struct GroupSort
         else return 1;
     }
 
-    const HashMap<String, size_t>& ids;
+    const HashMap<String, int32>& ids;
 };
 
 String OptionParser::format_document()
 {
-    size_t line_width = get_terminal_width();
+    int32 line_width = get_terminal_width();
 
     // categorize by group
     HashMap<String, Array<Option*> > groups;
-    for (size_t i = 0; i < options.size(); i++)
+    for (int32 i = 0; i < options.size(); i++)
     {
         const String& group_name = options[i]->group;
         groups[group_name].add( options[i] );
@@ -610,9 +610,9 @@ String OptionParser::format_document()
     String result;
 
     // get key length
-    size_t max_doc_key_len = 0;
+    int32 max_doc_key_len = 0;
 
-    for (size_t i = 0; i < options.size(); i++)
+    for (int32 i = 0; i < options.size(); i++)
     {
         Option* opt    = options[i];
         String doc_key = opt->format_doc_key();
@@ -623,12 +623,12 @@ String OptionParser::format_document()
     // sort groups by their occurance
     Array<String> group_names;
     {
-        HashMap<String, size_t>::ConstIterator it( group_ids );
+        HashMap<String, int32>::ConstIterator it( group_ids );
         while ( it.next() )
             group_names.add( it.key() );
 
-        GroupSort sorter(group_ids);
-        group_names.sort(sorter);
+        GroupSort sorter( group_ids );
+        group_names.sort( sorter );
     }
 
     // format document for each option group
@@ -639,7 +639,7 @@ String OptionParser::format_document()
         if ( group_name.length() )
             result += group_name + "\n\n";
 
-        for (size_t i = 0; i < group_options.size(); i++)
+        for (int32 i = 0; i < group_options.size(); i++)
         {
             Option* opt = group_options[i];
             result += opt->format_doc( line_width, 2, max_doc_key_len, 2 );
