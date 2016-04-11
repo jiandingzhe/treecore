@@ -8,7 +8,7 @@ class TestFramework;
 
 namespace treecore {
 
-// FIXME thread ABA safety?
+// FIXME test in multiple threads
 /**
  *
  */
