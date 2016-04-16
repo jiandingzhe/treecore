@@ -12,8 +12,6 @@ class TestFramework;
 namespace treecore
 {
 
-// FIXME test in multiple threads
-
 ///
 /// \brief manage a global instance by managing reference count
 ///

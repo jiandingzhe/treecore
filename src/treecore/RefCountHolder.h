@@ -18,96 +18,103 @@ class RefCountHolder
     friend class ::TestFramework;
 
     template<typename T1, typename T2>
-    friend bool operator == (const RefCountHolder<T1>& a, const RefCountHolder<T2>& b);
+    friend bool operator == ( const RefCountHolder<T1>& a, const RefCountHolder<T2>& b );
 
     template<typename T1, typename T2>
-    friend bool operator == (const RefCountHolder<T1>& a, const T2 b);
+    friend bool operator == ( const RefCountHolder<T1>& a, const T2 b );
 
     template<typename T1, typename T2>
-    friend bool operator == (const T1 a, const RefCountHolder<T2>& b);
+    friend bool operator == ( const T1 a, const RefCountHolder<T2>& b );
 
     template<typename T1, typename T2>
-    friend bool operator != (const RefCountHolder<T1>& a, const RefCountHolder<T2>& b);
+    friend bool operator != ( const RefCountHolder<T1>& a, const RefCountHolder<T2>& b );
 
     template<typename T1, typename T2>
-    friend bool operator != (const RefCountHolder<T1>& a, const T2 b);
+    friend bool operator != ( const RefCountHolder<T1>& a, const T2 b );
 
     template<typename T1, typename T2>
-    friend bool operator != (const T1 a, const RefCountHolder<T2>& b);
+    friend bool operator != ( const T1 a, const RefCountHolder<T2>& b );
 
     template<typename T1, typename T2>
-    friend bool operator < (const RefCountHolder<T1>& a, const RefCountHolder<T2>& b);
+    friend bool operator < ( const RefCountHolder<T1>& a, const RefCountHolder<T2>& b );
 
 public:
     RefCountHolder() {}
 
-    RefCountHolder(const RefCountHolder& other)
+    RefCountHolder( const RefCountHolder& other )
     {
         T* tmp = other.ms_ptr;
         if (tmp)
-            smart_ref(tmp);
+            smart_ref( tmp );
         ms_ptr = tmp;
     }
 
-    RefCountHolder(RefCountHolder&& other): ms_ptr(other.ms_ptr)
+    RefCountHolder( RefCountHolder&& other ): ms_ptr( other.ms_ptr )
     {
         other.ms_ptr = nullptr;
     }
 
-    RefCountHolder(T* other)
+    RefCountHolder( T* other )
     {
         if (other)
-            smart_ref(other);
+            smart_ref( other );
         ms_ptr = other;
     }
 
     ~RefCountHolder()
     {
         if (ms_ptr)
-            smart_unref(ms_ptr);
+            smart_unref( ms_ptr );
     }
 
-    RefCountHolder& operator = (const RefCountHolder& other)
+    RefCountHolder& operator = ( const RefCountHolder& other )
     {
-        if (ms_ptr)
-            smart_unref(ms_ptr);
+        T* this_ptr = ms_ptr;
+        T* peer_ptr = other.ms_ptr;
 
-        ms_ptr = other.ms_ptr;
+        // first incr then decr, which would prevent incorrect operation when self-assignment
+        if (peer_ptr)
+            smart_ref( peer_ptr );
 
-        if (ms_ptr)
-            smart_ref(ms_ptr);
+        if (this_ptr)
+            smart_unref( ms_ptr );
+
+        ms_ptr = peer_ptr;
 
         return *this;
     }
 
-    RefCountHolder& operator = (RefCountHolder&& other)
+    RefCountHolder& operator = ( RefCountHolder&& other )
     {
         // When other is destroyed, the swapped out object will unref by one,
         // which is expected.
-        swapWith(other);
+        swapWith( other );
         return *this;
     }
 
-    RefCountHolder& operator = (T* other)
+    RefCountHolder& operator = ( T* peer_ptr )
     {
-        if (ms_ptr)
-            smart_unref(ms_ptr);
+        T* this_ptr = ms_ptr;
 
-        if(other)
-            smart_ref(other);
-        ms_ptr = other;
+        if (peer_ptr)
+            smart_ref( peer_ptr );
+
+        if (this_ptr)
+            smart_unref( this_ptr );
+
+        ms_ptr = peer_ptr;
 
         return *this;
     }
 
-    void swapWith(RefCountHolder& other)
+    void swapWith( RefCountHolder& other )
     {
-        T* tmp = ms_ptr;
+        T* this_ptr = ms_ptr;
         ms_ptr = other.ms_ptr;
-        other.ms_ptr = tmp;
+        other.ms_ptr = this_ptr;
     }
 
-    operator T*() const noexcept
+    operator T* () const noexcept
     {
         return ms_ptr;
     }
@@ -136,53 +143,50 @@ private:
     T* ms_ptr = nullptr;
 }; // class ObjectHolder
 
-inline void smart_ref(decltype(nullptr) p)
-{
-}
+inline void smart_ref( decltype(nullptr) p )
+{}
 
-inline void smart_unref(decltype(nullptr) p)
-{
-}
+inline void smart_unref( decltype(nullptr) p )
+{}
 
 template<typename T1, typename T2>
-bool operator == (const RefCountHolder<T1>& a, const RefCountHolder<T2>& b)
+bool operator == ( const RefCountHolder<T1>& a, const RefCountHolder<T2>& b )
 {
     return a.ms_ptr == b.ms_ptr;
 }
 
 template<typename T1, typename T2>
-bool operator == (const RefCountHolder<T1>& a, const T2 b)
+bool operator == ( const RefCountHolder<T1>& a, const T2 b )
 {
     return a.ms_ptr == b;
 }
 
 template<typename T1, typename T2>
-bool operator == (const T1 a, const RefCountHolder<T2>& b)
+bool operator == ( const T1 a, const RefCountHolder<T2>& b )
 {
     return a == b.ms_ptr;
 }
 
 template<typename T1, typename T2>
-bool operator != (const RefCountHolder<T1>& a, const RefCountHolder<T2>& b)
+bool operator != ( const RefCountHolder<T1>& a, const RefCountHolder<T2>& b )
 {
     return a.ms_ptr != b.ms_ptr;
 }
 
 template<typename T1, typename T2>
-bool operator != (const RefCountHolder<T1>& a, const T2 b)
+bool operator != ( const RefCountHolder<T1>& a, const T2 b )
 {
     return a.ms_ptr != b;
 }
 
 template<typename T1, typename T2>
-bool operator != (const T1 a, const RefCountHolder<T2>& b)
+bool operator != ( const T1 a, const RefCountHolder<T2>& b )
 {
     return a != b.ms_ptr;
 }
 
-
 template<typename T1, typename T2>
-bool operator < (const RefCountHolder<T1>& a, const RefCountHolder<T2>& b)
+bool operator < ( const RefCountHolder<T1>& a, const RefCountHolder<T2>& b )
 {
     return a.ms_ptr < b.ms_ptr;
 }

@@ -37,6 +37,7 @@ foreach(test_name
     t_obj_pool
     t_option_parser
     t_queue
+    t_ref_count_holder_st
     t_ref_count_singleton_mt
     t_ref_count_singleton_st
     t_scoped_denormal_flag
