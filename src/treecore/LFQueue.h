@@ -277,9 +277,7 @@ private:
         if (m_reallocLock.EnterWriteAny() == -1) return;
         uint32 const m = this->realloc( ++m_p2size, m_readPos.load(), m_writePos.load(), true );
         m_readPos.get_raw()->index = 0;
-        //m_readPos.m_data.count += 3; //TODO
         m_writePos.get_raw()->index = m;
-        //m_writePos.m_data.count += 3 ; //TODO
         m_reallocLock.ExitWrite();
     }
 

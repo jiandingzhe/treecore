@@ -21,7 +21,6 @@ protected:
     {
         treecore_assert( m_p2size >= 1 );
         checkPowerOfTwo(m_sizeDec + 1);
-        //static_assert(IS_TRIVIAL(T),"T must be pod!"); TODO
     }
 
     inline ~QueueBase(){}

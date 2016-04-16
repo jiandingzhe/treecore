@@ -33,6 +33,7 @@
 #include "treecore/CharacterFunctions.h"
 
 #include <stddef.h>
+#include <cstring>
 
 //==============================================================================
 namespace treecore {
@@ -285,10 +286,9 @@ public:
 
     int compareIgnoreCase (const CharPointer_ASCII other) const
     {
-        // TODO: IOS
 #if TREECORE_OS_WINDOWS
         return _stricmp (data, other.data);
-#elif TREECORE_OS_LINUX || TREECORE_OS_ANDROID || TREECORE_OS_OSX
+#elif TREECORE_OS_LINUX || TREECORE_OS_ANDROID || TREECORE_OS_OSX || TREECORE_OS_IOS
         return strcasecmp (data, other.data);
 #else
 #  error "unsupported OS"
