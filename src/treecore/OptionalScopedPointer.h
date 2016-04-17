@@ -1,5 +1,5 @@
 /*
-  ==============================================================================
+   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
    Copyright (c) 2013 - Raw Material Software Ltd.
@@ -23,8 +23,8 @@
 
    For more details, visit www.juce.com
 
-  ==============================================================================
-*/
+   ==============================================================================
+ */
 
 #ifndef JUCE_OPTIONALSCOPEDPOINTER_H_INCLUDED
 #define JUCE_OPTIONALSCOPEDPOINTER_H_INCLUDED
@@ -43,14 +43,14 @@ namespace treecore {
     not the object is deleted.
 
     @see ScopedPointer
-*/
-template <class ObjectType>
+ */
+template<class ObjectType>
 class OptionalScopedPointer
 {
 public:
     //==============================================================================
     /** Creates an empty OptionalScopedPointer. */
-    OptionalScopedPointer() : shouldDelete (false) {}
+    OptionalScopedPointer(): shouldDelete( false ) {}
 
     /** Creates an OptionalScopedPointer to point to a given object, and specifying whether
         the OptionalScopedPointer will delete it.
@@ -58,11 +58,10 @@ public:
         If takeOwnership is true, then the OptionalScopedPointer will act like a ScopedPointer,
         deleting the object when it is itself deleted. If this parameter is false, then the
         OptionalScopedPointer just holds a normal pointer to the object, and won't delete it.
-    */
-    OptionalScopedPointer (ObjectType* objectToHold, bool takeOwnership)
-        : object (objectToHold), shouldDelete (takeOwnership)
-    {
-    }
+     */
+    OptionalScopedPointer ( ObjectType* objectToHold, bool takeOwnership )
+        : object( objectToHold ), shouldDelete( takeOwnership )
+    {}
 
     /** Takes ownership of the object that another OptionalScopedPointer holds.
 
@@ -71,12 +70,11 @@ public:
 
         The flag to indicate whether or not to delete the managed object is also
         copied from the source object.
-    */
-    OptionalScopedPointer (OptionalScopedPointer& objectToTransferFrom)
-        : object (objectToTransferFrom.release()),
-          shouldDelete (objectToTransferFrom.shouldDelete)
-    {
-    }
+     */
+    OptionalScopedPointer ( OptionalScopedPointer&& objectToTransferFrom )
+        : object( objectToTransferFrom.release() ),
+        shouldDelete( objectToTransferFrom.shouldDelete )
+    {}
 
     /** Takes ownership of the object that another OptionalScopedPointer holds.
 
@@ -85,23 +83,25 @@ public:
 
         The ownership flag that says whether or not to delete the managed object is also
         copied from the source object.
-    */
-    OptionalScopedPointer& operator= (OptionalScopedPointer& objectToTransferFrom)
+     */
+    OptionalScopedPointer& operator = ( OptionalScopedPointer&& objectToTransferFrom )
     {
         if (object != objectToTransferFrom.object)
         {
             clear();
-            object = objectToTransferFrom.object;
+            object = objectToTransferFrom.release();
         }
 
         shouldDelete = objectToTransferFrom.shouldDelete;
         return *this;
     }
 
+    TREECORE_DECLARE_NON_COPYABLE( OptionalScopedPointer )
+
     /** The destructor may or may not delete the object that is being held, depending on the
         takeOwnership flag that was specified when the object was first passed into an
         OptionalScopedPointer constructor.
-    */
+     */
     ~OptionalScopedPointer()
     {
         clear();
@@ -109,29 +109,29 @@ public:
 
     //==============================================================================
     /** Returns the object that this pointer is managing. */
-    inline operator ObjectType*() const noexcept                    { return object; }
+    inline operator ObjectType* () const noexcept                    { return object; }
 
     /** Returns the object that this pointer is managing. */
     inline ObjectType* get() const noexcept                         { return object; }
 
     /** Returns the object that this pointer is managing. */
-    inline ObjectType& operator*() const noexcept                   { return *object; }
+    inline ObjectType& operator * () const noexcept                   { return *object; }
 
     /** Lets you access methods and properties of the object that this pointer is holding. */
-    inline ObjectType* operator->() const noexcept                  { return object; }
+    inline ObjectType* operator -> () const noexcept                  { return object; }
 
     //==============================================================================
     /** Removes the current object from this OptionalScopedPointer without deleting it.
         This will return the current object, and set this OptionalScopedPointer to a null pointer.
-    */
+     */
     ObjectType* release() noexcept                                  { return object.release(); }
 
     /** Resets this pointer to null, possibly deleting the object that it holds, if it has
         ownership of it.
-    */
+     */
     void clear()
     {
-        if (! shouldDelete)
+        if (!shouldDelete)
             object.release();
     }
 
@@ -141,8 +141,8 @@ public:
         If takeOwnership is true, then the OptionalScopedPointer will act like a ScopedPointer,
         deleting the object when it is itself deleted. If this parameter is false, then the
         OptionalScopedPointer just holds a normal pointer to the object, and won't delete it.
-    */
-    void set (ObjectType* newObject, bool takeOwnership)
+     */
+    void set( ObjectType* newObject, bool takeOwnership )
     {
         if (object != newObject)
         {
@@ -154,30 +154,30 @@ public:
     }
 
     /** Makes this OptionalScopedPointer point at a new object, and take ownership of that object. */
-    void setOwned (ObjectType* newObject)
+    void setOwned( ObjectType* newObject )
     {
-        set (newObject, true);
+        set( newObject, true );
     }
 
     /** Makes this OptionalScopedPointer point at a new object, but will not take ownership of that object. */
-    void setNonOwned (ObjectType* newObject)
+    void setNonOwned( ObjectType* newObject )
     {
-        set (newObject, false);
+        set( newObject, false );
     }
 
     /** Returns true if the target object will be deleted when this pointer
         object is deleted.
-    */
+     */
     bool willDeleteObject() const noexcept                          { return shouldDelete; }
 
     //==============================================================================
     /** Swaps this object with another OptionalScopedPointer.
         The two objects simply exchange their states.
-    */
-    void swapWith (OptionalScopedPointer<ObjectType>& other) noexcept
+     */
+    void swapWith( OptionalScopedPointer<ObjectType>& other ) noexcept
     {
-        object.swapWith (other.object);
-        std::swap (shouldDelete, other.shouldDelete);
+        object.swapWith( other.object );
+        std::swap( shouldDelete, other.shouldDelete );
     }
 
 private:

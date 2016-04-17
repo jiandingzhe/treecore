@@ -35,6 +35,7 @@ foreach(test_name
     t_memory_input_output_stream
     t_mpl
     t_obj_pool
+    t_opt_scope_ptr
     t_option_parser
     t_queue
     t_ref_count_holder_st
