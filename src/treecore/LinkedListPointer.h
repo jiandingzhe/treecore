@@ -29,7 +29,7 @@
 #ifndef JUCE_LINKEDLISTPOINTER_H_INCLUDED
 #define JUCE_LINKEDLISTPOINTER_H_INCLUDED
 
-#include "treecore/PlatformDefs.h"
+#include "treecore/ClassUtils.h"
 
 //==============================================================================
 namespace treecore {

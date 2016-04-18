@@ -1,7 +1,7 @@
 #ifndef TREECORE_DUMMY_CRITICAL_SECTION_H
 #define TREECORE_DUMMY_CRITICAL_SECTION_H
 
-#include "treecore/PlatformDefs.h"
+#include "treecore/ClassUtils.h"
 
 namespace treecore
 {

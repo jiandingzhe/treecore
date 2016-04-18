@@ -57,7 +57,7 @@
 
 #else
 #    define TREECORE_DBG( dbgtext )
-#    define treecore_assert_false { TREECORE_LOG_FILE_LOCATION }
+#    define treecore_assert_false { TREECORE_LOG_FILE_LOCATION; }
 
 #    if TREECORE_LOG_ASSERTIONS
 #        define treecore_assert( expression )      { if ( !(expression) ) treecore_assert_false; }
