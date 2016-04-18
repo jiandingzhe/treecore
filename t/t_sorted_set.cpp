@@ -1,6 +1,6 @@
 #include "treecore/SortedSet.h"
 #include "treecore/SimdFunc.h"
-#include "TestFramework.h"
+#include "treecore/TestFramework.h"
 
 using namespace treecore;
 

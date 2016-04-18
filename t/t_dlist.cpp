@@ -1,5 +1,6 @@
 #include "treecore/DList.h"
-#include "TestFramework.h"
+
+#include "treecore/TestFramework.h"
 
 struct Foo: public treecore::DListNode<Foo>
 {

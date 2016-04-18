@@ -1,5 +1,5 @@
 #include "treecore/HashMap.h"
-#include "TestFramework.h"
+#include "treecore/TestFramework.h"
 
 struct TestValue
 {

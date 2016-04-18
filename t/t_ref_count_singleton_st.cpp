@@ -1,6 +1,6 @@
 #include "treecore/RefCountObject.h"
 #include "treecore/RefCountSingleton.h"
-#include "TestFramework.h"
+#include "treecore/TestFramework.h"
 
 struct Foo: public treecore::RefCountObject
 {

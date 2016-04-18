@@ -1,8 +1,7 @@
 #include "treecore/Identifier.h"
 #include "treecore/StringPool.h"
 
-#include "TestFramework.h"
-
+#include "treecore/TestFramework.h"
 
 treecore::Identifier foo_global("foo");
 treecore::Identifier bar_global("bar");

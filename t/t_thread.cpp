@@ -1,4 +1,4 @@
-#include "TestFramework.h"
+#include "treecore/TestFramework.h"
 #include "treecore/Thread.h"
 
 class MyThread : public treecore::Thread

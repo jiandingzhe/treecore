@@ -55,6 +55,33 @@ set_target_properties(treecore
         IMPORTED_LOCATION_RELWITHDEBINFO ${TREECORE_LIBRARY_RELWITHDEBINFO}
 )
 
+find_library(TREECORE_TEST_FRAMEWORK_DEBUG treecore_test_framework_dbg
+    HINTS
+        ${TREECORE_SEARCH_PREFIX}/${CMAKE_INSTALL_LIBDIR}
+        ${TREECORE_SEARCH_PREFIX}/lib
+)
+
+find_library(TREECORE_TEST_FRAMEWORK_RELWITHDEBINFO treecore_test_framework_reldbg
+    HINTS
+        ${TREECORE_SEARCH_PREFIX}/${CMAKE_INSTALL_LIBDIR}
+        ${TREECORE_SEARCH_PREFIX}/lib
+)
+
+find_library(TREECORE_TEST_FRAMEWORK_RELEASE treecore_test_framework_rel
+    HINTS
+        ${TREECORE_SEARCH_PREFIX}/${CMAKE_INSTALL_LIBDIR}
+        ${TREECORE_SEARCH_PREFIX}/lib
+)
+
+add_library(treecore_test_framework STATIC IMPORTED GLOBAL)
+set_target_properties(treecore_test_framework
+    PROPERTIES
+        IMPORTED_LOCATION_DEBUG          ${TREECORE_TEST_FRAMEWORK_DEBUG}
+        IMPORTED_LOCATION_GRAPHICDEBUG   ${TREECORE_TEST_FRAMEWORK_DEBUG}
+        IMPORTED_LOCATION_RELEASE        ${TREECORE_TEST_FRAMEWORK_RELEASE}
+        IMPORTED_LOCATION_RELWITHDEBINFO ${TREECORE_TEST_FRAMEWORK_RELWITHDEBINFO}
+)
+
 #
 # finalize
 #
@@ -90,3 +117,10 @@ function(target_use_treecore target_name)
     treecore_set_compiler_options(${target_name})
     treecore_set_compiler_definitions(${target_name})
 endfunction()
+
+function(treecore_unit_test target_name)
+    add_executable(${target_name} ${ARGN})
+    target_link_libraries(${target_name} treecore_test_framework)
+    target_use_treecore(${target_name})
+    add_test(NAME ${target_name} COMMAND ${target_name})
+endfunction

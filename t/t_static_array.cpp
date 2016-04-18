@@ -1,7 +1,7 @@
 #include "treecore/StaticArray.h"
 #include "treecore/IntTypes.h"
 
-#include "TestFramework.h"
+#include "treecore/TestFramework.h"
 
 using treecore::pointer_sized_uint;
 

@@ -1,10 +1,3 @@
-add_library(testframework STATIC TestFramework.cpp)
-if(NOT MSVC)
-    target_compile_options(testframework PUBLIC -std=c++11)
-endif()
-
-enable_testing()
-
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/zip_input.zip DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 foreach(test_name
@@ -56,8 +49,5 @@ foreach(test_name
     t_weak_ptr
     t_zip_file
 )
-    add_executable(${test_name} ${test_name}.cpp)
-    target_link_libraries(${test_name} testframework)
-    target_use_treecore(${test_name})
-    add_test(${test_name} ${test_name})
+    treecore_unit_test(${test_name} ${test_name}.cpp)
 endforeach()

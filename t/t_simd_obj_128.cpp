@@ -1,4 +1,4 @@
-#include "TestFramework.h"
+#include "treecore/TestFramework.h"
 #include "treecore/SimdObject.h"
 
 typedef treecore::SimdObject<float, 4> ftype;

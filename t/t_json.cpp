@@ -4,7 +4,7 @@
 #include "treecore/StringPool.h"
 #include "treecore/Variant.h"
 
-#include "TestFramework.h"
+#include "treecore/TestFramework.h"
 
 using namespace treecore;
 

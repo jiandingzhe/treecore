@@ -3,7 +3,7 @@
 #include "treecore/StringArray.h"
 #include "treecore/StringRef.h"
 #include "treecore/Variant.h"
-#include "TestFramework.h"
+#include "treecore/TestFramework.h"
 
 using namespace treecore;
 

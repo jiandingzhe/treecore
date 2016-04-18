@@ -128,11 +128,19 @@ if(TREECORE_EMBEDDED)
     endfunction()
 endif()
 
+add_library(treecore_test_framework STATIC TreecoreTestFramework.cpp)
+set_target_properties(treecore_test_framework PROPERTIES
+    DEBUG_POSTFIX          _dbg
+    RELEASE_POSTFIX        _rel
+    RELWITHDEBINFO_POSTFIX _reldbg
+)
+target_use_treecore(treecore_test_framework)
+
 #
 # install
 #
 if(NOT TREECORE_EMBEDDED)
-    install(TARGETS treecore treecore_bin_builder
+    install(TARGETS treecore treecore_bin_builder treecore_test_framework
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

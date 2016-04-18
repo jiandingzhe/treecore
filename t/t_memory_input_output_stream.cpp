@@ -2,7 +2,7 @@
 #include "treecore/MemoryOutputStream.h"
 #include "treecore/MT19937.h"
 
-#include "TestFramework.h"
+#include "treecore/TestFramework.h"
 
 using namespace treecore;
 

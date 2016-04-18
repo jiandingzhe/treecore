@@ -1,10 +1,8 @@
-#include "TestFramework.h"
+#include "treecore/TestFramework.h"
 
 #include "treecore/MPL.h"
 #include "treecore/FloatUtils.h"
 #include "treecore/IntTypes.h"
-
-
 
 void TestFramework::content()
 {

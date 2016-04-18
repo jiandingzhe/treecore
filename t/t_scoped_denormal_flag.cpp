@@ -1,6 +1,6 @@
 #include "treecore/SimdFunc.h"
 
-#include "TestFramework.h"
+#include "treecore/TestFramework.h"
 
 #include <cstdio>
 

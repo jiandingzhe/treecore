@@ -2,7 +2,7 @@
 #include "treecore/AtomicObject.h"
 #include "treecore/Thread.h"
 #include "treecore/MT19937.h"
-#include "TestFramework.h"
+#include "treecore/TestFramework.h"
 
 #define NUM_ITER 100000
 #define NUM_THREAD 10

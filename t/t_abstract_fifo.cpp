@@ -2,7 +2,7 @@
 #include "treecore/MT19937.h"
 #include "treecore/Thread.h"
 
-#include "TestFramework.h"
+#include "treecore/TestFramework.h"
 
 using namespace treecore;
 
