@@ -253,11 +253,7 @@ inline int numElementsInArray( Type(&array)[N] )
 template<typename Type>
 inline Type hypot( Type a, Type b ) noexcept
 {
-#if TREECORE_COMPILER_MSVC
-    return static_cast<Type>( _hypot( a, b ) );
-#else
-    return static_cast<Type>( hypot( a, b ) );
-#endif
+    return std::hypot( a, b );
 }
 
 /** 64-bit abs function. */
