@@ -25,7 +25,7 @@ struct TestValue
 
 typedef treecore::HashMap<int, TestValue> MapType;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     MapType map_tmp;
 

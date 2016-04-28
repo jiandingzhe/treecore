@@ -24,7 +24,7 @@ struct TestType: public RefCountObject
 
 typedef RefCountHolder<TestType> Holder;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     bool a_living = false;
     TestType* a   = new TestType( 1.2f, 34, a_living );

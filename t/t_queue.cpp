@@ -2,7 +2,7 @@
 
 #include "treecore/TestFramework.h"
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     treecore::Queue<int> int_queue;
     OK(int_queue.isEmpty());

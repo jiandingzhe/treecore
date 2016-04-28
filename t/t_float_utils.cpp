@@ -4,7 +4,7 @@
 #include "treecore/FloatUtils.h"
 #include "treecore/IntTypes.h"
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     bool int8_float_is_float = treecore::mpl_same_type<treecore::similar_float<treecore::int8>::type, float>::value;
     bool int16_float_is_float = treecore::mpl_same_type<treecore::similar_float<treecore::int16>::type, float>::value;

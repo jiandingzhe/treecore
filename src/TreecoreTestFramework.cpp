@@ -4,26 +4,24 @@
 
 using namespace std;
 
-TestFramework::TestFramework(): n_planned(0), n_got(0), n_fail(0)
-{
-}
+TestFramework::TestFramework(): n_planned( 0 ), n_got( 0 ), n_fail( 0 )
+{}
 
-TestFramework::TestFramework(size_t n_tests): n_planned(n_tests), n_got(0), n_fail(0)
+TestFramework::TestFramework( size_t n_tests ): n_planned( n_tests ), n_got( 0 ), n_fail( 0 )
 {
     if (!n_tests)
     {
         cerr << "zero number of planned tests" << endl;
-        exit(EXIT_FAILURE);
+        exit( EXIT_FAILURE );
     }
 }
 
 TestFramework::~TestFramework()
-{
-}
+{}
 
-bool TestFramework::run()
+bool TestFramework::run( int argc, char** argv )
 {
-    content();
+    content( argc, argv );
     if (n_planned && n_planned != n_got)
     {
         cerr << "planned " << n_planned << ", but only run " << n_got << endl;
@@ -36,7 +34,7 @@ bool TestFramework::run()
     }
 }
 
-void TestFramework::ok(bool value, const char *desc)
+void TestFramework::ok( bool value, const char* desc )
 {
     n_got++;
     if (value)
@@ -50,9 +48,9 @@ void TestFramework::ok(bool value, const char *desc)
     }
 }
 
-int main(int argc, char** argv)
+int main( int argc, char** argv )
 {
     TestFramework t;
-    bool t_re = t.run();
-    exit(!t_re);
+    bool t_re = t.run( argc, argv );
+    exit( !t_re );
 }

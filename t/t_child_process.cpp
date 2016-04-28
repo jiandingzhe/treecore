@@ -2,7 +2,7 @@
 
 #include "treecore/TestFramework.h"
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
 #if TREECORE_OS_WINDOWS || TREECORE_OS_OSX || TREECORE_OS_LINUX || TREECORE_OS_FREEBSD
     treecore::ChildProcess p;

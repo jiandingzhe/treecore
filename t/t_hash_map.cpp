@@ -7,7 +7,7 @@ using namespace treecore;
 
 typedef HashMap<String, String> MapType;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     MapType map;
     map.set( "a", "b" );

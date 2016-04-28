@@ -61,7 +61,7 @@ struct Vec4f
     SIMDType<16> data;
 };
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     {
         void* aaa = treecore::aligned_malloc<0>(4);

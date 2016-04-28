@@ -19,7 +19,7 @@ struct MovableObj
 
 typedef treecore::Array<MovableObj> TestArray;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     TestArray array;
 

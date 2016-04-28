@@ -7,7 +7,7 @@ using namespace treecore;
 
 typedef HashSet<String> StrSet;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     StrSet set;
     OK(set.insert("foo"));

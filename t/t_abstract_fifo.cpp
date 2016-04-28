@@ -51,7 +51,7 @@ private:
     MT19937 rng;
 };
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     OK( "AbstractFifo" );
 

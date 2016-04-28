@@ -15,7 +15,7 @@ struct Foo: public treecore::RefCountObject
     bool* flag = nullptr;
 };
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     Foo* obj = treecore::RefCountSingleton<Foo>::getInstance();
     OK(obj);

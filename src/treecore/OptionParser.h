@@ -181,7 +181,7 @@ public:
 protected:
     static bool validate_name( char name );
     static bool validate_name( const String& name );
-    String format_doc(int32 w_line, int32 w_key_left, int32 w_key, int32 w_key_right ) const;
+    String format_doc( int32 w_line, int32 w_key_left, int32 w_key, int32 w_key_right ) const;
     String format_doc_key() const;
 
 protected:

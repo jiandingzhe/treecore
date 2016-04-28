@@ -90,7 +90,7 @@ struct TestThread: public treecore::Thread
     MT19937 prng;
 };
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     Array<TestThread*> threads;
     for (int i_thread = 0; i_thread < NUM_THREAD; i_thread++)

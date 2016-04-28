@@ -3,7 +3,7 @@
 
 using namespace treecore;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
 #if ! (defined TREECORE_COMPILER_MSVC && TREECORE_SIZE_PTR == 8)
     // set values

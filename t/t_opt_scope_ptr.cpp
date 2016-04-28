@@ -26,7 +26,7 @@ struct FooBar
 
 typedef OptionalScopedPointer<FooBar> Ptr;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     {
         bool obj_life = false;

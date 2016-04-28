@@ -2,7 +2,7 @@
 #include "treecore/SparseSet.h"
 
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
 
 }

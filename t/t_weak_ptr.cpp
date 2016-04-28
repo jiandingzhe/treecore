@@ -29,7 +29,7 @@ private:
     friend class treecore::WeakPtr<Foo>;
 };
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     Foo* obj = new Foo();
     OK(obj);

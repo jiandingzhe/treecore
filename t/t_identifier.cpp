@@ -6,7 +6,7 @@
 treecore::Identifier foo_global("foo");
 treecore::Identifier bar_global("bar");
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     treecore::Identifier foo1("foo");
     treecore::Identifier baz1("baz");

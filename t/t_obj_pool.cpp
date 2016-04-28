@@ -26,7 +26,7 @@ struct Foo
     bool* flag;
 };
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     // tests for non-threaded queue
     {

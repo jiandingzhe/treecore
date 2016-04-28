@@ -4,7 +4,7 @@
 
 using namespace treecore;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     SortedSet<SIMDType<16>, 16> set;
 }

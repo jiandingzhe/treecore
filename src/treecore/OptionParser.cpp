@@ -24,7 +24,7 @@ int32 get_terminal_width()
 #else
     struct winsize win_size;
     ioctl( fileno( stdout ), TIOCGWINSZ, &win_size );
-    return int32(win_size.ws_col);
+    return int32( win_size.ws_col );
 #endif
 }
 
@@ -512,7 +512,7 @@ void OptionParser::parse_options( int& argc, char const** argv )
         }
         else
         {
-            argv[i] = NULL;
+            argv[i] = nullptr;
         }
     }
 

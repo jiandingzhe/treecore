@@ -2,7 +2,7 @@
 #include "treecore/IntUtils.h"
 #include "treecore/MPL.h"
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     bool float_int_is_32 = treecore::mpl_same_type<typename treecore::similar_int<float>::type, treecore::int32>::value;
     bool float_uint_is_32 = treecore::mpl_same_type<typename treecore::similar_uint<float>::type, treecore::uint32>::value;

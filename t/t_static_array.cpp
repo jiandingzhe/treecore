@@ -19,7 +19,7 @@ TREECORE_ALN_BEGIN(32) struct Bar
 } TREECORE_ALN_END(32);
 
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     char fuck = 0;
     IS(fuck, 0);

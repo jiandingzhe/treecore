@@ -1,7 +1,7 @@
 #include "treecore/LFQueue.h"
 #include "treecore/TestFramework.h"
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     treecore::LfQueue<int> int_queue;
     OK(int_queue.isEmpty());

@@ -34,7 +34,7 @@ bool test_diff( const String& a, const String& b )
     return result == b;
 }
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     OK( test_diff( String::empty(), String::empty() ) );
     OK( test_diff( "x",             String::empty() ) );

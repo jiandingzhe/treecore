@@ -1,3 +1,8 @@
+configure_file(TestConfig.h.in TestConfig.h @ONLY)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+treecore_wrap_resource(build_time_resource_wrap_input build_time_resource_wrap_output)
+
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/zip_input.zip DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 foreach(test_name
@@ -8,6 +13,7 @@ foreach(test_name
     t_array_ref
     t_atomic_func_st
     t_atomic_obj_st
+    t_build_time_resource_wrap
     t_child_process
     t_dlist
     t_file
@@ -51,3 +57,8 @@ foreach(test_name
 )
     treecore_unit_test(${test_name} ${test_name}.cpp)
 endforeach()
+
+add_executable(t_binary_builder t_binary_builder.cpp)
+target_link_libraries(t_binary_builder treecore_test_framework)
+target_use_treecore(t_binary_builder)
+add_test(NAME t_binary_builder COMMAND t_binary_builder $<TARGET_FILE:treecore_bin_builder>)

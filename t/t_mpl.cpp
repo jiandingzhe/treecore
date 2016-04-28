@@ -14,7 +14,7 @@ template<typename T> struct Baz
 {
 };
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     bool value_int_int = treecore::mpl_same_type<int, int>::value;
     OK(value_int_int);

@@ -8,7 +8,7 @@
 
 using namespace treecore;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     OK( "GZIP" );
     MT19937& rng = *MT19937::getInstance();

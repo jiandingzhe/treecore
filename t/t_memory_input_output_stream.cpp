@@ -28,7 +28,7 @@ static String createRandomWideCharString()
     return CharPointer_UTF32( buffer );
 }
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     OK( "Basics" );
     MT19937& r = *MT19937::getInstance();

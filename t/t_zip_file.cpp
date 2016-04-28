@@ -6,7 +6,7 @@
 
 using namespace treecore;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     ZipFile* archive = new ZipFile(File("zip_input.zip"));
 

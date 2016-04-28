@@ -33,7 +33,7 @@
     {                                                                                                 \
         auto _re1_ = _exp1_;                                                                          \
         auto _re2_ = _exp2_;                                                                          \
-        treecore_assert(std::abs(_re1_ == _re2_) <= decltype(_re2_)(1.0 / TEST_DEFAULT_EPSILON) );    \
+        treecore_assert(std::abs(_re1_ - _re2_) <= decltype(_re2_)(1.0 / TEST_DEFAULT_EPSILON) );    \
         is_epsilon( _re1_, _re2_, EXPAND_AND_STRINGIFY(_exp1_) " ~~ " EXPAND_AND_STRINGIFY(_exp2_) ); \
     }
 #define GT(_exp1_, _exp2_)                                                                   \
@@ -95,10 +95,10 @@ public:
     template<typename T1, typename T2>
     void le(T1 a, T2 b, const char* desc);
 
-    bool run();
+    bool run(int argc, char** argv);
 
 protected:
-    void content();
+    void content(int argc, char** argv);
     size_t n_planned;
     size_t n_got;
     size_t n_fail;

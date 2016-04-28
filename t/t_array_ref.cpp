@@ -3,7 +3,7 @@
 
 using namespace treecore;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     Array<int> array_obj;
     array_obj.add(123);

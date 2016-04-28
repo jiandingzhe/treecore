@@ -96,18 +96,27 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(TREECORE
 # functions
 #
 function(treecore_wrap_resource input_dir class_name)
+    if(NOT TREECORE_BIN_BUILDER)
+        message(FATAL_ERROR "cannot call treecore_wrap_resource because TREECORE_BIN_BUILDER is empty")
+    endif()
+
+    file(GLOB_RECURSE _files_in_ ${input_dir}/*)
+    set(_files_out_ ${CMAKE_CURRENT_BINARY_DIR}/${class_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${class_name}.cpp)
+
+    # generation-time wrap
+    execute_process(COMMAND ${TREECORE_BIN_BUILDER} --in ${CMAKE_CURRENT_SOURCE_DIR}/${input_dir} --out ${CMAKE_CURRENT_BINARY_DIR} --name ${class_name} --update --quiet)
+
+    # build-time wrap
     add_custom_command(
-        OUTPUT
-            ${CMAKE_CURRENT_BINARY_DIR}/${class_name}.h
-            ${CMAKE_CURRENT_BINARY_DIR}/${class_name}.cpp
-        COMMAND
-            ${TREECORE_BIN_BUILDER} ${CMAKE_CURRENT_SOURCE_DIR}/${input_dir} ${CMAKE_CURRENT_BINARY_DIR} ${class_name}
+        DEPENDS ${_files_in_}
+        OUTPUT  ${_files_out_}
+        COMMAND ${TREECORE_BIN_BUILDER} --in ${CMAKE_CURRENT_SOURCE_DIR}/${input_dir} --out ${CMAKE_CURRENT_BINARY_DIR} --name ${class_name} --quiet
     )
     add_custom_target(${class_name} ALL
-        DEPENDS
-            ${CMAKE_CURRENT_BINARY_DIR}/${class_name}.h
-            ${CMAKE_CURRENT_BINARY_DIR}/${class_name}.cpp
+        DEPENDS ${_files_out_}
     )
+
+    set_source_files_properties(${_files_out_} PROPERTIES GENERATED 1)
 endfunction()
 
 function(target_use_treecore target_name)

@@ -3,7 +3,7 @@
 
 using namespace treecore;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     Array<int> aaa_values;
     Option opt_a("aaa", 'a', "major", &aaa_values, 0, ValueLimit::Free(), "option aaa", "a b c");

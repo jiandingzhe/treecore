@@ -1,7 +1,7 @@
 #include "treecore/StringPool.h"
 #include "treecore/TestFramework.h"
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     treecore::StringPool pool;
     IS(pool.m_strings.size(), 0);

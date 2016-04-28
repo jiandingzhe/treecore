@@ -82,7 +82,7 @@ var createRandomVar( int depth )
     }
 }
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     MT19937& r = *MT19937::getInstance();
 

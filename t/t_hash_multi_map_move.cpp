@@ -5,7 +5,7 @@
 
 using namespace treecore;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     HashMultiMap<String, String> map1;
     map1.store("a", "1");

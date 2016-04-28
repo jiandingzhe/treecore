@@ -1,7 +1,7 @@
 #include "treecore/TestFramework.h"
 #include "treecore/IntTypes.h"
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     IS(sizeof(treecore::int8), 1);
     IS(sizeof(treecore::int16), 2);

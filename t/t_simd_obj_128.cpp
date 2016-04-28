@@ -4,7 +4,7 @@
 typedef treecore::SimdObject<float, 4> ftype;
 typedef treecore::SimdObject<treecore::int32, 4> itype;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     {
         ftype obj;

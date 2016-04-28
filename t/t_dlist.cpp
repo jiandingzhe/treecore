@@ -11,7 +11,7 @@ struct Foo: public treecore::DListNode<Foo>
 
 typedef treecore::DList<Foo> ListType;
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     ListType list;
 

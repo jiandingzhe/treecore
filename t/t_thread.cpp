@@ -17,7 +17,7 @@ public:
     }
 };
 
-void TestFramework::content()
+void TestFramework::content( int argc, char** argv )
 {
     MyThread* thread1 = new MyThread("");
     thread1->startThread();
