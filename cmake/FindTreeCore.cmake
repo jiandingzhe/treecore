@@ -132,4 +132,4 @@ function(treecore_unit_test target_name)
     target_link_libraries(${target_name} treecore_test_framework)
     target_use_treecore(${target_name})
     add_test(NAME ${target_name} COMMAND ${target_name})
-endfunction
+endfunction()
