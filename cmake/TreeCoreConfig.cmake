@@ -109,4 +109,12 @@ function(treecore_set_compiler_options target_name)
     endif()
 endfunction()
 
+function(treecore_output_from_input var_out dir_out)
+    foreach(f_in ${ARGN})
+        get_filename_component(_base_name_ ${f_in} NAME)
+        list(APPEND result "${dir_out}/${_base_name_}.cpp")
+    endforeach()
+    set(${var_out} ${result} PARENT_SCOPE)
+endfunction()
+
 

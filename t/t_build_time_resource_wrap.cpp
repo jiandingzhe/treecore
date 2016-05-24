@@ -31,11 +31,15 @@ int item_size( const File& file, const String& name )
 void TestFramework::content( int, char** )
 {
     File file_out_header = File( TREECORE_BINARY_DIR ).getChildFile( "t" ).getChildFile( OUTPUT_NAME ".h" );
-    File file_out_source = File( TREECORE_BINARY_DIR ).getChildFile( "t" ).getChildFile( OUTPUT_NAME ".cpp" );
+    File file_out_source_foo = File( TREECORE_BINARY_DIR ).getChildFile( "t" ).getChildFile( "foo.cpp" );
+    File file_out_source_bar = File( TREECORE_BINARY_DIR ).getChildFile( "t" ).getChildFile( "bar.cpp" );
+    File file_out_source_baz = File( TREECORE_BINARY_DIR ).getChildFile( "t" ).getChildFile( "baz.cpp" );
     OK( file_out_header.existsAsFile() );
-    OK( file_out_source.existsAsFile() );
+    OK( file_out_source_foo.existsAsFile() );
+    OK( file_out_source_bar.existsAsFile() );
+    OK( file_out_source_baz.existsAsFile() );
 
-    IS( item_size( file_out_header, "foo" ), 9 );
-    IS( item_size( file_out_header, "bar" ), 9 );
+    IS( item_size( file_out_header, "foo" ),  9 );
+    IS( item_size( file_out_header, "bar" ),  9 );
     IS( item_size( file_out_header, "baz" ), 10 );
 }

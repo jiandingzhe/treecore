@@ -33,6 +33,7 @@
 #include "treecore/IntTypes.h"
 #include "treecore/LeakedObjectDetector.h"
 #include "treecore/MathsFunctions.h"
+#include "treecore/RefCountObject.h"
 #include "treecore/String.h"
 
 namespace treecore {
@@ -47,7 +48,7 @@ class MemoryBlock;
 
     @see OutputStream, MemoryInputStream, BufferedInputStream, FileInputStream
  */
-class TREECORE_SHARED_API InputStream
+class TREECORE_SHARED_API InputStream: public treecore::RefCountObject
 {
 public:
     /** Destructor. */

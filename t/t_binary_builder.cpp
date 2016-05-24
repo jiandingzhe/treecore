@@ -22,11 +22,12 @@ void create_input()
 void TestFramework::content( int argc, char** argv )
 {
     File dir_in   = File::getCurrentWorkingDirectory().getChildFile( DIR_IN );
-    File file_in1 = dir_in.getChildFile( "foo" );
-    File file_in2 = dir_in.getChildFile( "bar" );
+    File file_in1 = dir_in.getChildFile( "foofoo" );
+    File file_in2 = dir_in.getChildFile( "barbar" );
 
-    File file_out_header = File::getCurrentWorkingDirectory().getChildFile( NAME_OUT ".h" );
-    File file_out_source = File::getCurrentWorkingDirectory().getChildFile( NAME_OUT ".cpp" );
+    File file_out_header  = File::getCurrentWorkingDirectory().getChildFile( NAME_OUT ".h" );
+    File file_out_source1 = File::getCurrentWorkingDirectory().getChildFile( "foofoo.cpp" );
+    File file_out_source2 = File::getCurrentWorkingDirectory().getChildFile( "barbar.cpp" );
 
     // validate arguments
     if (argc != 2)
@@ -74,14 +75,16 @@ void TestFramework::content( int argc, char** argv )
 
     // check output file
     OK( file_out_header.exists() );
-    OK( file_out_source.exists() );
+    OK( file_out_source1.exists() );
+    OK( file_out_source2.exists() );
 
-    const int64 ctime_header_orig = file_out_header.getLastModificationTime().toMilliseconds();
-    const int64 ctime_source_orig = file_out_source.getLastModificationTime().toMilliseconds();
+    const int64 ctime_header_orig  = file_out_header.getLastModificationTime().toMilliseconds();
+    const int64 ctime_source1_orig = file_out_source1.getLastModificationTime().toMilliseconds();
+    const int64 ctime_source2_orig = file_out_source2.getLastModificationTime().toMilliseconds();
     LT( mtime_in1_orig, ctime_header_orig );
     LT( mtime_in2_orig, ctime_header_orig );
-    LT( mtime_in1_orig, ctime_source_orig );
-    LT( mtime_in2_orig, ctime_source_orig );
+    LT( mtime_in1_orig, ctime_source1_orig );
+    LT( mtime_in2_orig, ctime_source2_orig );
 
     Thread::sleep( 1000 );
 
@@ -92,10 +95,12 @@ void TestFramework::content( int argc, char** argv )
     OK( child.start( String( argv[1] ) + " --in " DIR_IN " --name " NAME_OUT " --update" ) );
     OK( child.waitForProcessToFinish( -1 ) );
 
-    const int64 ctime_header_update1 = file_out_header.getLastModificationTime().toMilliseconds();
-    const int64 ctime_source_update1 = file_out_source.getLastModificationTime().toMilliseconds();
-    IS( ctime_header_orig, ctime_header_update1 );
-    IS( ctime_source_orig, ctime_source_update1 );
+    const int64 ctime_header_update1  = file_out_header.getLastModificationTime().toMilliseconds();
+    const int64 ctime_source1_update1 = file_out_source1.getLastModificationTime().toMilliseconds();
+    const int64 ctime_source2_update1 = file_out_source2.getLastModificationTime().toMilliseconds();
+    IS( ctime_header_orig,  ctime_header_update1 );
+    IS( ctime_source1_orig, ctime_source1_update1 );
+    IS( ctime_source2_orig, ctime_source2_update1 );
 
     Thread::sleep( 1000 );
 
@@ -103,19 +108,21 @@ void TestFramework::content( int argc, char** argv )
     // modify input file and run in update mode
     //
     file_in1.setLastModificationTime( Time::getCurrentTime() );
-    int64 mtime_in1_mod1 = file_in1.getLastModificationTime().toMilliseconds();
-    LT( mtime_in1_orig,    mtime_in1_mod1 );
-    LT( ctime_header_orig, mtime_in1_mod1 );
-    LT( ctime_source_orig, mtime_in1_mod1 );
+    const int64 mtime_in1_mod1 = file_in1.getLastModificationTime().toMilliseconds();
+    LT( mtime_in1_orig,     mtime_in1_mod1 );
+    LT( ctime_header_orig,  mtime_in1_mod1 );
+    LT( ctime_source1_orig, mtime_in1_mod1 );
 
     OK( child.start( String( argv[1] ) + " --in " DIR_IN " --name " NAME_OUT " --update" ) );
     OK( child.waitForProcessToFinish( -1 ) );
 
-    const int64 ctime_header_update2 = file_out_header.getLastModificationTime().toMilliseconds();
-    const int64 ctime_source_update2 = file_out_source.getLastModificationTime().toMilliseconds();
+    const int64 ctime_header_update2  = file_out_header.getLastModificationTime().toMilliseconds();
+    const int64 ctime_source1_update2 = file_out_source1.getLastModificationTime().toMilliseconds();
+    const int64 ctime_source2_update2 = file_out_source2.getLastModificationTime().toMilliseconds();
 
-    LT( ctime_header_orig, ctime_header_update2 );
-    LT( ctime_source_orig, ctime_source_update2 );
+    LT( ctime_header_orig,  ctime_header_update2 );
+    LT( ctime_source1_orig, ctime_source1_update2 );
+    LT( ctime_source2_orig, ctime_source2_update2 );
 
     Thread::sleep( 1000 );
 
@@ -125,9 +132,11 @@ void TestFramework::content( int argc, char** argv )
     OK( child.start( String( argv[1] ) + " --in " DIR_IN " --name " NAME_OUT ) );
     OK( child.waitForProcessToFinish( -1 ) );
 
-    const int64 ctime_header_override = file_out_header.getLastModificationTime().toMilliseconds();
-    const int64 ctime_source_override = file_out_source.getLastModificationTime().toMilliseconds();
-    LT( ctime_header_update2, ctime_header_override );
-    LT( ctime_source_update2, ctime_source_override );
+    const int64 ctime_header_override  = file_out_header.getLastModificationTime().toMilliseconds();
+    const int64 ctime_source1_override = file_out_source1.getLastModificationTime().toMilliseconds();
+    const int64 ctime_source2_override = file_out_source2.getLastModificationTime().toMilliseconds();
+    LT( ctime_header_update2,  ctime_header_override );
+    LT( ctime_source1_update2, ctime_source1_override );
+    LT( ctime_source2_update2, ctime_source2_override );
 }
 

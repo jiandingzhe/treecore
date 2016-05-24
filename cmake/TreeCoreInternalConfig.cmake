@@ -21,7 +21,10 @@ endfunction()
 
 function(treecore_wrap_resource input_dir class_name)
     file(GLOB_RECURSE _files_in_ ${input_dir}/*)
-    set(_files_out_ ${CMAKE_CURRENT_BINARY_DIR}/${class_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${class_name}.cpp)
+
+    # collect output files
+    treecore_output_from_input(_files_out_ ${CMAKE_CURRENT_BINARY_DIR} ${_files_in_})
+    list(APPEND _files_out_ ${CMAKE_CURRENT_BINARY_DIR}/${class_name}.h)
 
     # build-time wrap
     add_custom_command(

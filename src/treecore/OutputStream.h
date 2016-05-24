@@ -31,6 +31,7 @@
 
 #include "treecore/ClassUtils.h"
 #include "treecore/LeakedObjectDetector.h"
+#include "treecore/RefCountObject.h"
 #include "treecore/String.h"
 
 namespace treecore {
@@ -48,7 +49,7 @@ class NewLine;
 
     @see InputStream, MemoryOutputStream, FileOutputStream
  */
-class TREECORE_SHARED_API OutputStream
+class TREECORE_SHARED_API OutputStream: public treecore::RefCountObject
 {
 protected:
     //==============================================================================
