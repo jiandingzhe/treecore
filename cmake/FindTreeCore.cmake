@@ -3,8 +3,6 @@ include(FindPackageHandleStandardArgs)
 include(TreeCoreConfig)
 include(GNUInstallDirs)
 
-find_package(TreeCoreBinBuilder)
-
 set(TREECORE_SEARCH_PREFIX $ENV{TREECORE_PREFIX} CACHE PATH "additional path to search for treecore")
 
 #
