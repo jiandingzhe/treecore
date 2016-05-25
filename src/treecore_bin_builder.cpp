@@ -260,9 +260,9 @@ int main( int argc, char const** argv )
     if (update_only && headerFile.existsAsFile() && dir_out.exists() && all_output_exist)
     {
         // collect time of the oldest output file
-        int64 output_oldest = headerFile.getCreationTime().toMilliseconds();
+        int64 output_oldest = headerFile.getLastModificationTime().toMilliseconds();
         for (const File& f : files_out)
-            output_oldest = std::min( output_oldest, f.getCreationTime().toMilliseconds() );
+            output_oldest = std::min( output_oldest, f.getLastModificationTime().toMilliseconds() );
 
         // collect time of the newest input file
         int64 input_newest = 0;
