@@ -82,6 +82,11 @@ else()
 endif()
 
 # declare library target
+treecore_set_source_group(
+    ${zlib_src_files}
+    ${treecore_common_src_files}
+    ${treecore_platform_src_files}
+)
 add_library(treecore STATIC
     ${zlib_src_files}
     ${treecore_common_src_files} 
