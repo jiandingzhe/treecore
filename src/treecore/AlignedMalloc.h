@@ -92,7 +92,7 @@ forcedinline void* aligned_realloc(void* const ptr,size_t len)
         return ptr;\
     }\
     \
-    void* operator new (std::size_t size, const std::nothrow_t& nothrow_value) noexcept\
+    void* operator new (std::size_t size, const std::nothrow_t&) noexcept\
     {\
         return treecore::aligned_malloc<TREECORE_ALIGNOF(_TYPE_)>(size);\
     }\
