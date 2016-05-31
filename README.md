@@ -53,11 +53,11 @@ install prefix:
 
 1. Run cmake GUI from start menu.
 
-2. Specify treejuce source directory and the build directory.
+2. Specify treecore source directory and the build directory.
 
 3. Click "configure" button at the bottom of the window. It will pop up a dialog
-   to let you select the generator. Select the MSVC generator with version you
-   prefer.
+   to let you select project generator. Select the MSVC generator with version 
+   you prefer.
 
 4. The project will be configured and showing a lot of options. At this time,
    you may specify *CMAKE_INSTALL_PREFIX*.
@@ -73,3 +73,36 @@ install prefix:
 
 8. You can build the *INSTALL* project to have the libraries and the headers
    installed to the directory specified by *CMAKE_INSTALL_PREFIX*.
+
+Use treecore
+------------
+
+### Use installed treecore
+
+The CMake treecore finding module will be installed to CMake module path. In
+your project that use treecore, firstly find it:
+
+    find_package(TreeCore)
+
+As treecore library uses lots of compiler options and macros, to eass the use we
+provided a wrapper CMake function `target_use_treecore`. It set header inclusion
+directories, treecore library and compiling options in one CMake call:
+
+    add_executable(my_prog my_prog.cpp)
+    target_use_treecore(my_prog)
+    
+    add_library(my_lib my _lib.cpp)
+    target_use_treecore(my_lib)
+
+Also, we wrapped JUCE's binary builder to another CMake function
+`treecore_wrap_resource`. It accepts two parameters: the input directory and the
+output class name. Resultant source files will be generated at 
+*CMAKE_CURRENT_BINARY_DIR* in which `treecore_wrap_resource` is called.
+
+### Use treecore as subproject
+
+You can directly move treecore source code hierarchy to your source code
+directory, and include treecore by:
+
+    add_subdirectory(treecore)
+
