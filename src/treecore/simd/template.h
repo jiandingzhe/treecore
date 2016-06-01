@@ -28,7 +28,7 @@ template<typename T, int SZ> inline void simd_sub( SIMDType<SZ>& target, const S
 template<typename T, int SZ> inline void simd_mul( SIMDType<SZ>& target, const SIMDType<SZ>& a, const SIMDType<SZ>& b ) noexcept;
 template<typename T, int SZ> inline void simd_div( SIMDType<SZ>& target, const SIMDType<SZ>& a, const SIMDType<SZ>& b ) noexcept;
 
-template<typename InputType, typename OutputType, int SZ> inline void simd_convert( SIMDType<SZ>& target, SIMDType<SZ>& input ) noexcept;
+template<typename OutputType, typename InputType, int SZ> inline void simd_convert( SIMDType<SZ>& target, SIMDType<SZ>& input ) noexcept;
 
 template<typename T, int SZ> inline void simd_cmpl( SIMDType<SZ>& target ) noexcept;
 template<typename T, int SZ> inline void simd_and( SIMDType<SZ>& target, const SIMDType<SZ>& a, const SIMDType<SZ>& b ) noexcept;

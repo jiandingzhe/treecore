@@ -271,12 +271,12 @@ template<> inline void simd_mul<double, 16>( SIMDType<16>& target, const SIMDTyp
 template<> inline void simd_div<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_div_ps( a.simd_by_float,  b.simd_by_float );     }
 template<> inline void simd_div<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_div_pd( a.simd_by_double, b.simd_by_double );   }
 
-template<> inline void simd_convert<float,  int32,  16>( SIMDType<16>& target, SIMDType<16>& input ) noexcept { target.simd_by_int = _mm_cvtps_epi32( input.simd_by_float ); }
-template<> inline void simd_convert<float,  double, 16>( SIMDType<16>& target, SIMDType<16>& input ) noexcept { target.simd_by_double = _mm_cvtps_pd( input.simd_by_float ); }
-template<> inline void simd_convert<int32,  float,  16>( SIMDType<16>& target, SIMDType<16>& input ) noexcept { target.simd_by_float = _mm_cvtepi32_ps( input.simd_by_int ); }
-template<> inline void simd_convert<int32,  double, 16>( SIMDType<16>& target, SIMDType<16>& input ) noexcept { target.simd_by_double = _mm_cvtepi32_pd( input.simd_by_int ); }
-template<> inline void simd_convert<double, float,  16>( SIMDType<16>& target, SIMDType<16>& input ) noexcept { target.simd_by_float = _mm_cvtpd_ps( input.simd_by_double ); }
-template<> inline void simd_convert<double, int32,  16>( SIMDType<16>& target, SIMDType<16>& input ) noexcept { target.simd_by_int = _mm_cvtpd_epi32( input.simd_by_double ); }
+template<> inline void simd_convert<float,  int32,  16>( SIMDType<16>& target, SIMDType<16>& input ) noexcept { target.simd_by_float = _mm_cvtepi32_ps( input.simd_by_int ); }
+template<> inline void simd_convert<float,  double, 16>( SIMDType<16>& target, SIMDType<16>& input ) noexcept { target.simd_by_float = _mm_cvtpd_ps( input.simd_by_double ); }
+template<> inline void simd_convert<int32,  float,  16>( SIMDType<16>& target, SIMDType<16>& input ) noexcept { target.simd_by_int = _mm_cvttps_epi32( input.simd_by_float ); }
+template<> inline void simd_convert<int32,  double, 16>( SIMDType<16>& target, SIMDType<16>& input ) noexcept { target.simd_by_int = _mm_cvttpd_epi32( input.simd_by_double ); }
+template<> inline void simd_convert<double, float,  16>( SIMDType<16>& target, SIMDType<16>& input ) noexcept { target.simd_by_double = _mm_cvtps_pd( input.simd_by_float ); }
+template<> inline void simd_convert<double, int32,  16>( SIMDType<16>& target, SIMDType<16>& input ) noexcept { target.simd_by_double = _mm_cvtepi32_pd( input.simd_by_int ); }
 
 template<> inline void simd_cmpl<float, 16>( SIMDType<16>& target ) noexcept
 {

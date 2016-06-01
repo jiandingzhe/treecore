@@ -115,6 +115,72 @@ void TestFramework::content( int argc, char** argv )
     IS( c.values_by_float[2], 3.0f / 7 );
     IS( c.values_by_float[3], 4.0f / 8 );
 
+    OK( "convert float to int32" );
+    {
+        SIMDType<16> fv;
+        SIMDType<16> iv;
+        simd_set_all<float>( fv, 1.2f, 3.4f, 5.6f, 78.912f );
+        simd_convert<int32, float>( iv, fv );
+        IS( iv.values_by_i32[0],  1 );
+        IS( iv.values_by_i32[1],  3 );
+        IS( iv.values_by_i32[2],  5 );
+        IS( iv.values_by_i32[3], 78 );
+    }
+
+    OK( "convert float to double" );
+    {
+        SIMDType<16> fv;
+        SIMDType<16> dv;
+        simd_set_all<float>( fv, 1.2f, 3.4f, 0.0f, 0.0f );
+        simd_convert<double, float>( dv, fv );
+        IS_EPSILON( dv.values_by_double[0], 1.2 );
+        IS_EPSILON( dv.values_by_double[1], 3.4 );
+    }
+
+    OK( "convert int32 to float" );
+    {
+        SIMDType<16> iv;
+        SIMDType<16> fv;
+        simd_set_all<int32>( iv, 123, -456, 789, -422 );
+        simd_convert<float, int32>( fv, iv );
+        IS( fv.values_by_float[0], 123.0f );
+        IS( fv.values_by_float[1],      -456.0f );
+        IS( fv.values_by_float[2], 789.0f );
+        IS( fv.values_by_float[3],      -422.0f );
+    }
+    OK( "convert int32 to double" );
+    {
+        SIMDType<16> iv;
+        SIMDType<16> dv;
+        simd_set_all<float>( iv, 123, -456, 0, 0 );
+        simd_convert<double, float>( dv, iv );
+        IS( dv.values_by_double[0],  123 );
+        IS( dv.values_by_double[1], -456 );
+    }
+
+    OK( "convert double to float" );
+    {
+        SIMDType<16> dv;
+        SIMDType<16> fv;
+        simd_set_all<double>( dv, -1.26, 3.45 );
+        simd_convert<float, double>( fv, dv );
+        IS( fv.values_by_float[0],     -1.26f );
+        IS( fv.values_by_float[1], 3.45f );
+        IS( fv.values_by_float[2],  0.0f );
+        IS( fv.values_by_float[3],  0.0f );
+    }
+    OK( "convert double to int32" );
+    {
+        SIMDType<16> dv;
+        SIMDType<16> iv;
+        simd_set_all<double>( dv, 12.26, 345.45 );
+        simd_convert<int32, double>( iv, dv );
+        IS( iv.values_by_i32[0],  12 );
+        IS( iv.values_by_i32[1], 345 );
+        IS( iv.values_by_i32[2],   0 );
+        IS( iv.values_by_i32[3],   0 );
+    }
+
     OK( "shuffle 3 2 1 0" );
     c = a;
     simd_shuffle<3, 2, 1, 0>( c );
