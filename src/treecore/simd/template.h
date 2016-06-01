@@ -15,6 +15,9 @@ template<int IDX, typename T, int SZ> inline void simd_set_one( SIMDType<SZ>& ta
 
 template<typename T, int SZ> inline void simd_get_all( const SIMDType<SZ>& target, T* values ) noexcept;
 
+template<typename T, int SZ> inline void simd_set_all( SIMDType<SZ>& target,
+                                                       T v0, T v1, T v2, T v3, T v4, T v5, T v6, T v7,
+                                                       T v8, T v9, T v10, T v11, T v12, T v13, T v14, T v15 ) noexcept;
 template<typename T, int SZ> inline void simd_set_all( SIMDType<SZ>& target, T a, T b, T c, T d, T e, T f, T g, T h ) noexcept;
 template<typename T, int SZ> inline void simd_set_all( SIMDType<SZ>& target, T a, T b, T c, T d ) noexcept;
 template<typename T, int SZ> inline void simd_set_all( SIMDType<SZ>& target, T a, T b ) noexcept;
@@ -44,6 +47,7 @@ template<int SHIFT_COUNT, int SZ> inline void simd_shift_byte_left( SIMDType<SZ>
 template<int SHIFT_COUNT, int SZ> inline void simd_shift_byte_right( SIMDType<SZ>& result, const SIMDType<SZ>& input ) noexcept;
 
 template<typename T, int SZ> inline void simd_cmp( SIMDType<SZ>& target, const SIMDType<SZ>& a, const SIMDType<SZ>& b ) noexcept;
+template<typename T, int SZ> inline void simd_ncmp( SIMDType<SZ>& target, const SIMDType<SZ>& a, const SIMDType<SZ>& b ) noexcept;
 template<typename T, int SZ> inline void simd_gt( SIMDType<SZ>& target, const SIMDType<SZ>& a, const SIMDType<SZ>& b ) noexcept;
 template<typename T, int SZ> inline void simd_ge( SIMDType<SZ>& target, const SIMDType<SZ>& a, const SIMDType<SZ>& b ) noexcept;
 template<typename T, int SZ> inline void simd_lt( SIMDType<SZ>& target, const SIMDType<SZ>& a, const SIMDType<SZ>& b ) noexcept;

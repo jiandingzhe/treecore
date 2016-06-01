@@ -234,11 +234,21 @@ template<> inline void simd_set_one<3, float, 16>( SIMDType<16>& target, float v
 template<> inline void simd_set_one<0, double, 16>( SIMDType<16>& target, double value ) noexcept { target.values_by_double[0] = value; }
 template<> inline void simd_set_one<1, double, 16>( SIMDType<16>& target, double value ) noexcept { target.values_by_double[1] = value; }
 
+template<> inline void simd_get_all<int8,  16>( const SIMDType<16>& target, int8*  store ) noexcept { _mm_store_si128( (__m128i*) store, target.simd_by_int ); }
+template<> inline void simd_get_all<int16,  16>( const SIMDType<16>& target, int16*  store ) noexcept { _mm_store_si128( (__m128i*) store, target.simd_by_int ); }
 template<> inline void simd_get_all<int32,  16>( const SIMDType<16>& target, int32*  store ) noexcept { _mm_store_si128( (__m128i*) store, target.simd_by_int ); }
+template<> inline void simd_get_all<int64,  16>( const SIMDType<16>& target, int64*  store ) noexcept { _mm_store_si128( (__m128i*) store, target.simd_by_int ); }
 template<> inline void simd_get_all<float,  16>( const SIMDType<16>& target, float*  store ) noexcept { _mm_store_ps( store, target.simd_by_float ); }
 template<> inline void simd_get_all<double, 16>( const SIMDType<16>& target, double* store ) noexcept { _mm_store_pd( store, target.simd_by_double ); }
 
 // set all components by specifying all of them
+template<> inline void simd_set_all<int8,  16>( SIMDType<16>& target,
+                                                int8 v0, int8 v1, int8 v2, int8 v3, int8 v4, int8 v5, int8 v6, int8 v7,
+                                                int8 v8, int8 v9, int8 v10, int8 v11, int8 v12, int8 v13, int8 v14, int8 v15 ) noexcept
+{
+    target.simd_by_int = _mm_set_epi8( v15, v14, v13, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0 );
+}
+
 template<> inline void simd_set_all<int16,  16>( SIMDType<16>& target, int16 a, int16 b, int16 c, int16 d, int16 e, int16 f, int16 g, int16 h ) noexcept { target.simd_by_int = _mm_set_epi16( h, g, f, e, d, c, b, a ); }
 template<> inline void simd_set_all<int32,  16>( SIMDType<16>& target, int32 a, int32 b, int32 c, int32 d ) noexcept { target.simd_by_int = _mm_set_epi32( d, c, b, a ); }
 template<> inline void simd_set_all<int64,  16>( SIMDType<16>& target, int64 a, int64 b ) noexcept { target.simd_by_int = _mm_set_epi64x( b, a ); }
@@ -294,37 +304,36 @@ template<> inline void simd_cmpl<double, 16>( SIMDType<16>& target ) noexcept
 
 template<> inline void simd_cmpl<int, 16>( SIMDType<16>& target ) noexcept
 {
-    SIMDType<16> ones;
-    simd_broadcast<int32>( ones, 0xffffffff );
-    target.simd_by_int = _mm_andnot_si128( target.simd_by_int, ones.simd_by_int );
+    __m128i ones = _mm_set1_epi32( int(0xffffffff) );
+    target.simd_by_int = _mm_andnot_si128( target.simd_by_int, ones );
 }
 
-template<> inline void simd_and<int32,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_and_si128( a.simd_by_int,    b.simd_by_int );      }
-template<> inline void simd_and<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_and_ps( a.simd_by_float,  b.simd_by_float );     }
+template<> inline void simd_and<int,    16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_and_si128( a.simd_by_int, b.simd_by_int );      }
+template<> inline void simd_and<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_and_ps( a.simd_by_float, b.simd_by_float );     }
 template<> inline void simd_and<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_and_pd( a.simd_by_double, b.simd_by_double );   }
 
-template<> inline void simd_or<int32,   16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_or_si128( a.simd_by_int,    b.simd_by_int );       }
-template<> inline void simd_or<float,   16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_or_ps( a.simd_by_float,  b.simd_by_float );      }
-template<> inline void simd_or<double,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_or_pd( a.simd_by_double, b.simd_by_double );    }
+template<> inline void simd_or<int,    16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_or_si128( a.simd_by_int, b.simd_by_int );       }
+template<> inline void simd_or<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_or_ps( a.simd_by_float, b.simd_by_float );      }
+template<> inline void simd_or<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_or_pd( a.simd_by_double, b.simd_by_double );    }
 
-template<> inline void simd_xor<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_xor_ps( a.simd_by_float,  b.simd_by_float );     }
-template<> inline void simd_xor<int32,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_xor_si128( a.simd_by_int,    b.simd_by_int );      }
+template<> inline void simd_xor<int,    16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_xor_si128( a.simd_by_int, b.simd_by_int );      }
+template<> inline void simd_xor<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_xor_ps( a.simd_by_float, b.simd_by_float );     }
 template<> inline void simd_xor<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_xor_pd( a.simd_by_double, b.simd_by_double );   }
 
-template<> inline void simd_nand<int32,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_andnot_si128( a.simd_by_int,    b.simd_by_int );      }
-template<> inline void simd_nand<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_andnot_ps( a.simd_by_float,  b.simd_by_float );     }
+template<> inline void simd_nand<int,    16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_andnot_si128( a.simd_by_int, b.simd_by_int );      }
+template<> inline void simd_nand<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_andnot_ps( a.simd_by_float, b.simd_by_float );     }
 template<> inline void simd_nand<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_andnot_pd( a.simd_by_double, b.simd_by_double );   }
 
-template<> inline void simd_shift_left<int16, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept {result.simd_by_int = _mm_slli_epi16( input.simd_by_int, shift_value ); }
-template<> inline void simd_shift_left<int32, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept {result.simd_by_int = _mm_slli_epi32( input.simd_by_int, shift_value ); }
-template<> inline void simd_shift_left<int64, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept {result.simd_by_int = _mm_slli_epi64( input.simd_by_int, shift_value ); }
+template<> inline void simd_shift_left<int16, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept { result.simd_by_int = _mm_slli_epi16( input.simd_by_int, shift_value ); }
+template<> inline void simd_shift_left<int32, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept { result.simd_by_int = _mm_slli_epi32( input.simd_by_int, shift_value ); }
+template<> inline void simd_shift_left<int64, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept { result.simd_by_int = _mm_slli_epi64( input.simd_by_int, shift_value ); }
 
-template<> inline void simd_shift_right_zero<int16, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept {result.simd_by_int = _mm_srli_epi16( input.simd_by_int, shift_value ); }
-template<> inline void simd_shift_right_zero<int32, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept {result.simd_by_int = _mm_srli_epi32( input.simd_by_int, shift_value ); }
-template<> inline void simd_shift_right_zero<int64, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept {result.simd_by_int = _mm_srli_epi64( input.simd_by_int, shift_value ); }
+template<> inline void simd_shift_right_zero<int16, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept { result.simd_by_int = _mm_srli_epi16( input.simd_by_int, shift_value ); }
+template<> inline void simd_shift_right_zero<int32, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept { result.simd_by_int = _mm_srli_epi32( input.simd_by_int, shift_value ); }
+template<> inline void simd_shift_right_zero<int64, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept { result.simd_by_int = _mm_srli_epi64( input.simd_by_int, shift_value ); }
 
-template<> inline void simd_shift_right_sign<int16, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept {result.simd_by_int = _mm_srai_epi16( input.simd_by_int, shift_value ); }
-template<> inline void simd_shift_right_sign<int32, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept {result.simd_by_int = _mm_srai_epi32( input.simd_by_int, shift_value ); }
+template<> inline void simd_shift_right_sign<int16, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept { result.simd_by_int = _mm_srai_epi16( input.simd_by_int, shift_value ); }
+template<> inline void simd_shift_right_sign<int32, 16>( SIMDType<16>& result, const SIMDType<16>& input, int shift_value ) noexcept { result.simd_by_int = _mm_srai_epi32( input.simd_by_int, shift_value ); }
 
 template<> inline void simd_shift_byte_left<0,  16>( SIMDType<16>& result, const SIMDType<16>& input ) noexcept { result.simd_by_int = _mm_slli_si128( input.simd_by_int, 0 ); }
 template<> inline void simd_shift_byte_left<1,  16>( SIMDType<16>& result, const SIMDType<16>& input ) noexcept { result.simd_by_int = _mm_slli_si128( input.simd_by_int, 1 ); }
@@ -368,21 +377,33 @@ template<> inline void simd_cmp<int32,  16>( SIMDType<16>& target, const SIMDTyp
 template<> inline void simd_cmp<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_cmpeq_ps( a.simd_by_float,  b.simd_by_float );   }
 template<> inline void simd_cmp<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_cmpeq_pd( a.simd_by_double, b.simd_by_double ); }
 
-template<> inline void simd_gt<int8,   16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_cmpgt_epi8( a.simd_by_int,    b.simd_by_int );    }
-template<> inline void simd_gt<int16,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_cmpgt_epi16( a.simd_by_int,    b.simd_by_int );    }
-template<> inline void simd_gt<int32,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_cmpgt_epi32( a.simd_by_int,    b.simd_by_int );    }
-template<> inline void simd_gt<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_cmpgt_ps( a.simd_by_float,  b.simd_by_float );   }
+template<> inline void simd_ncmp<int8,   16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_andnot_si128( _mm_cmpeq_epi8( a.simd_by_int, b.simd_by_int ), _mm_set1_epi8( 0xff ) );    }
+template<> inline void simd_ncmp<int16,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_andnot_si128( _mm_cmpeq_epi16( a.simd_by_int, b.simd_by_int ), _mm_set1_epi8( 0xff ) );    }
+template<> inline void simd_ncmp<int32,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_andnot_si128( _mm_cmpeq_epi32( a.simd_by_int, b.simd_by_int ), _mm_set1_epi8( 0xff ) );    }
+template<> inline void simd_ncmp<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_cmpneq_ps( a.simd_by_float,  b.simd_by_float );   }
+template<> inline void simd_ncmp<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_cmpneq_pd( a.simd_by_double, b.simd_by_double ); }
+
+template<> inline void simd_gt<int8,   16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_cmpgt_epi8( a.simd_by_int, b.simd_by_int );    }
+template<> inline void simd_gt<int16,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_cmpgt_epi16( a.simd_by_int, b.simd_by_int );    }
+template<> inline void simd_gt<int32,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_cmpgt_epi32( a.simd_by_int, b.simd_by_int );    }
+template<> inline void simd_gt<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_cmpgt_ps( a.simd_by_float, b.simd_by_float );   }
 template<> inline void simd_gt<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_cmpgt_pd( a.simd_by_double, b.simd_by_double ); }
 
+template<> inline void simd_ge<int8,   16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_or_si128( _mm_cmpgt_epi8( a.simd_by_int, b.simd_by_int ), _mm_cmpeq_epi8( a.simd_by_int, b.simd_by_int ) );    }
+template<> inline void simd_ge<int16,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_or_si128( _mm_cmpgt_epi16( a.simd_by_int, b.simd_by_int ), _mm_cmpeq_epi16( a.simd_by_int, b.simd_by_int ) );    }
+template<> inline void simd_ge<int32,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_or_si128( _mm_cmpgt_epi32( a.simd_by_int, b.simd_by_int ), _mm_cmpeq_epi32( a.simd_by_int, b.simd_by_int ) );    }
 template<> inline void simd_ge<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_cmpge_ps( a.simd_by_float,  b.simd_by_float );  }
 template<> inline void simd_ge<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_cmpge_pd( a.simd_by_double, b.simd_by_double ); }
 
-template<> inline void simd_lt<int8,   16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_cmplt_epi8( a.simd_by_int,    b.simd_by_int );    }
-template<> inline void simd_lt<int16,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_cmplt_epi16( a.simd_by_int,    b.simd_by_int );    }
-template<> inline void simd_lt<int32,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_cmplt_epi32( a.simd_by_int,    b.simd_by_int );    }
-template<> inline void simd_lt<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_cmplt_ps( a.simd_by_float,  b.simd_by_float );  }
+template<> inline void simd_lt<int8,   16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_cmplt_epi8( a.simd_by_int, b.simd_by_int );    }
+template<> inline void simd_lt<int16,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_cmplt_epi16( a.simd_by_int, b.simd_by_int );    }
+template<> inline void simd_lt<int32,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_cmplt_epi32( a.simd_by_int, b.simd_by_int );    }
+template<> inline void simd_lt<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_cmplt_ps( a.simd_by_float, b.simd_by_float );  }
 template<> inline void simd_lt<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_cmplt_pd( a.simd_by_double, b.simd_by_double ); }
 
+template<> inline void simd_le<int8,   16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_or_si128( _mm_cmplt_epi8( a.simd_by_int, b.simd_by_int ), _mm_cmpeq_epi8( a.simd_by_int, b.simd_by_int ) );    }
+template<> inline void simd_le<int16,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_or_si128( _mm_cmplt_epi16( a.simd_by_int, b.simd_by_int ), _mm_cmpeq_epi16( a.simd_by_int, b.simd_by_int ) );    }
+template<> inline void simd_le<int32,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_or_si128( _mm_cmplt_epi32( a.simd_by_int, b.simd_by_int ), _mm_cmpeq_epi32( a.simd_by_int, b.simd_by_int ) );    }
 template<> inline void simd_le<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_cmple_ps( a.simd_by_float,  b.simd_by_float );  }
 template<> inline void simd_le<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_cmple_pd( a.simd_by_double, b.simd_by_double ); }
 

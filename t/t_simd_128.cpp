@@ -1,6 +1,8 @@
 #include "treecore/TestFramework.h"
 #include "treecore/SimdFunc.h"
 
+#include <limits>
+
 using namespace treecore;
 
 void TestFramework::content( int argc, char** argv )
@@ -329,6 +331,350 @@ void TestFramework::content( int argc, char** argv )
         simd_shift_left<int64>( value, value, 7 );
         IS( value.values_by_i64[0], 1580246881975296 );
         IS( value.values_by_i64[1],     -12641975296 );
+    }
+
+    //
+    // comparison functions
+    //
+    OK( "int8 comparison" );
+    {
+        SIMDType<16> value1;
+        SIMDType<16> value2;
+        SIMDType<16> result;
+        simd_set_all<int8>( value1,
+                            127, -3, 5, 54, 0, -128,  6, 93,
+                            4, 30, 28, 3, -6, 25, 11, 90 );
+        simd_set_all<int8>( value2,
+                            -128, -4, 5, 55, 1, -127, 98, 93,
+                            4, 30, 29, 2, -6, -5, 11, 20 );
+
+        simd_cmp<int8>( result, value1, value2 );
+        IS( result.values_by_i8[0],  int8( 0 ) );
+        IS( result.values_by_i8[1],  int8( 0 ) );
+        IS( result.values_by_i8[2],  int8( 0xff ) );
+        IS( result.values_by_i8[3],  int8( 0 ) );
+        IS( result.values_by_i8[4],  int8( 0 ) );
+        IS( result.values_by_i8[5],  int8( 0 ) );
+        IS( result.values_by_i8[6],  int8( 0 ) );
+        IS( result.values_by_i8[7],  int8( 0xff ) );
+        IS( result.values_by_i8[8],  int8( 0xff ) );
+        IS( result.values_by_i8[9],  int8( 0xff ) );
+        IS( result.values_by_i8[10], int8( 0 ) );
+        IS( result.values_by_i8[11], int8( 0 ) );
+        IS( result.values_by_i8[12], int8( 0xff ) );
+        IS( result.values_by_i8[13], int8( 0 ) );
+        IS( result.values_by_i8[14], int8( 0xff ) );
+        IS( result.values_by_i8[15], int8( 0 ) );
+
+        simd_ncmp<int8>( result, value1, value2 );
+        IS( result.values_by_i8[0],  int8( 0xff ) );
+        IS( result.values_by_i8[1],  int8( 0xff ) );
+        IS( result.values_by_i8[2],  int8( 0 ) );
+        IS( result.values_by_i8[3],  int8( 0xff ) );
+        IS( result.values_by_i8[4],  int8( 0xff ) );
+        IS( result.values_by_i8[5],  int8( 0xff ) );
+        IS( result.values_by_i8[6],  int8( 0xff ) );
+        IS( result.values_by_i8[7],  int8( 0 ) );
+        IS( result.values_by_i8[8],  int8( 0 ) );
+        IS( result.values_by_i8[9],  int8( 0 ) );
+        IS( result.values_by_i8[10], int8( 0xff ) );
+        IS( result.values_by_i8[11], int8( 0xff ) );
+        IS( result.values_by_i8[12], int8( 0 ) );
+        IS( result.values_by_i8[13], int8( 0xff ) );
+        IS( result.values_by_i8[14], int8( 0 ) );
+        IS( result.values_by_i8[15], int8( 0xff ) );
+
+        simd_gt<int8>( result, value1, value2 );
+        IS( result.values_by_i8[0],  int8( 0xff ) );
+        IS( result.values_by_i8[1],  int8( 0xff ) );
+        IS( result.values_by_i8[2],  int8( 0 ) );
+        IS( result.values_by_i8[3],  int8( 0 ) );
+        IS( result.values_by_i8[4],  int8( 0 ) );
+        IS( result.values_by_i8[5],  int8( 0 ) );
+        IS( result.values_by_i8[6],  int8( 0 ) );
+        IS( result.values_by_i8[7],  int8( 0 ) );
+        IS( result.values_by_i8[8],  int8( 0 ) );
+        IS( result.values_by_i8[9],  int8( 0 ) );
+        IS( result.values_by_i8[10], int8( 0 ) );
+        IS( result.values_by_i8[11], int8( 0xff ) );
+        IS( result.values_by_i8[12], int8( 0 ) );
+        IS( result.values_by_i8[13], int8( 0xff ) );
+        IS( result.values_by_i8[14], int8( 0 ) );
+        IS( result.values_by_i8[15], int8( 0xff ) );
+
+        simd_ge<int8>( result, value1, value2 );
+        IS( result.values_by_i8[0],  int8( 0xff ) );
+        IS( result.values_by_i8[1],  int8( 0xff ) );
+        IS( result.values_by_i8[2],  int8( 0xff ) );
+        IS( result.values_by_i8[3],  int8( 0 ) );
+        IS( result.values_by_i8[4],  int8( 0 ) );
+        IS( result.values_by_i8[5],  int8( 0 ) );
+        IS( result.values_by_i8[6],  int8( 0 ) );
+        IS( result.values_by_i8[7],  int8( 0xff ) );
+        IS( result.values_by_i8[8],  int8( 0xff ) );
+        IS( result.values_by_i8[9],  int8( 0xff ) );
+        IS( result.values_by_i8[10], int8( 0 ) );
+        IS( result.values_by_i8[11], int8( 0xff ) );
+        IS( result.values_by_i8[12], int8( 0xff ) );
+        IS( result.values_by_i8[13], int8( 0xff ) );
+        IS( result.values_by_i8[14], int8( 0xff ) );
+        IS( result.values_by_i8[15], int8( 0xff ) );
+
+        simd_lt<int8>( result, value1, value2 );
+        IS( result.values_by_i8[0],  int8( 0 ) );
+        IS( result.values_by_i8[1],  int8( 0 ) );
+        IS( result.values_by_i8[2],  int8( 0 ) );
+        IS( result.values_by_i8[3],  int8( 0xff ) );
+        IS( result.values_by_i8[4],  int8( 0xff ) );
+        IS( result.values_by_i8[5],  int8( 0xff ) );
+        IS( result.values_by_i8[6],  int8( 0xff ) );
+        IS( result.values_by_i8[7],  int8( 0 ) );
+        IS( result.values_by_i8[8],  int8( 0 ) );
+        IS( result.values_by_i8[9],  int8( 0 ) );
+        IS( result.values_by_i8[10], int8( 0xff ) );
+        IS( result.values_by_i8[11], int8( 0 ) );
+        IS( result.values_by_i8[12], int8( 0 ) );
+        IS( result.values_by_i8[13], int8( 0 ) );
+        IS( result.values_by_i8[14], int8( 0 ) );
+        IS( result.values_by_i8[15], int8( 0 ) );
+
+        simd_le<int8>( result, value1, value2 );
+        IS( result.values_by_i8[0],  int8( 0 ) );
+        IS( result.values_by_i8[1],  int8( 0 ) );
+        IS( result.values_by_i8[2],  int8( 0xff ) );
+        IS( result.values_by_i8[3],  int8( 0xff ) );
+        IS( result.values_by_i8[4],  int8( 0xff ) );
+        IS( result.values_by_i8[5],  int8( 0xff ) );
+        IS( result.values_by_i8[6],  int8( 0xff ) );
+        IS( result.values_by_i8[7],  int8( 0xff ) );
+        IS( result.values_by_i8[8],  int8( 0xff ) );
+        IS( result.values_by_i8[9],  int8( 0xff ) );
+        IS( result.values_by_i8[10], int8( 0xff ) );
+        IS( result.values_by_i8[11], int8( 0 ) );
+        IS( result.values_by_i8[12], int8( 0xff ) );
+        IS( result.values_by_i8[13], int8( 0 ) );
+        IS( result.values_by_i8[14], int8( 0xff ) );
+        IS( result.values_by_i8[15], int8( 0 ) );
+    }
+
+    OK( "int16 comparison" );
+    {
+        SIMDType<16> value1;
+        SIMDType<16> value2;
+        SIMDType<16> result;
+        simd_set_all<int16>( value1, 123, -432, 10,  0, 32767, -32768, -32768, 1 );
+        simd_set_all<int16>( value2, 124, -432,  9, -1, 32766, -32768, -32767, 1 );
+
+        simd_cmp<int16>( result, value1, value2 );
+        IS( result.values_by_i16[0], int16( 0 ) );
+        IS( result.values_by_i16[1], int16( 0xffff ) );
+        IS( result.values_by_i16[2], int16( 0 ) );
+        IS( result.values_by_i16[3], int16( 0 ) );
+        IS( result.values_by_i16[4], int16( 0 ) );
+        IS( result.values_by_i16[5], int16( 0xffff ) );
+        IS( result.values_by_i16[6], int16( 0 ) );
+        IS( result.values_by_i16[7], int16( 0xffff ) );
+
+        simd_ncmp<int16>( result, value1, value2 );
+        IS( result.values_by_i16[0], int16( 0xffff ) );
+        IS( result.values_by_i16[1], int16( 0 ) );
+        IS( result.values_by_i16[2], int16( 0xffff ) );
+        IS( result.values_by_i16[3], int16( 0xffff ) );
+        IS( result.values_by_i16[4], int16( 0xffff ) );
+        IS( result.values_by_i16[5], int16( 0 ) );
+        IS( result.values_by_i16[6], int16( 0xffff ) );
+        IS( result.values_by_i16[7], int16( 0 ) );
+
+        simd_gt<int16>( result, value1, value2 );
+        IS( result.values_by_i16[0], int16( 0 ) );
+        IS( result.values_by_i16[1], int16( 0 ) );
+        IS( result.values_by_i16[2], int16( 0xffff ) );
+        IS( result.values_by_i16[3], int16( 0xffff ) );
+        IS( result.values_by_i16[4], int16( 0xffff ) );
+        IS( result.values_by_i16[5], int16( 0 ) );
+        IS( result.values_by_i16[6], int16( 0 ) );
+        IS( result.values_by_i16[7], int16( 0 ) );
+
+        simd_ge<int16>( result, value1, value2 );
+        IS( result.values_by_i16[0], int16( 0 ) );
+        IS( result.values_by_i16[1], int16( 0xffff ) );
+        IS( result.values_by_i16[2], int16( 0xffff ) );
+        IS( result.values_by_i16[3], int16( 0xffff ) );
+        IS( result.values_by_i16[4], int16( 0xffff ) );
+        IS( result.values_by_i16[5], int16( 0xffff ) );
+        IS( result.values_by_i16[6], int16( 0 ) );
+        IS( result.values_by_i16[7], int16( 0xffff ) );
+
+        simd_lt<int16>( result, value1, value2 );
+        IS( result.values_by_i16[0], int16( 0xffff ) );
+        IS( result.values_by_i16[1], int16( 0 ) );
+        IS( result.values_by_i16[2], int16( 0 ) );
+        IS( result.values_by_i16[3], int16( 0 ) );
+        IS( result.values_by_i16[4], int16( 0 ) );
+        IS( result.values_by_i16[5], int16( 0 ) );
+        IS( result.values_by_i16[6], int16( 0xffff ) );
+        IS( result.values_by_i16[7], int16( 0 ) );
+
+        simd_le<int16>( result, value1, value2 );
+        IS( result.values_by_i16[0], int16( 0xffff ) );
+        IS( result.values_by_i16[1], int16( 0xffff ) );
+        IS( result.values_by_i16[2], int16( 0 ) );
+        IS( result.values_by_i16[3], int16( 0 ) );
+        IS( result.values_by_i16[4], int16( 0 ) );
+        IS( result.values_by_i16[5], int16( 0xffff ) );
+        IS( result.values_by_i16[6], int16( 0xffff ) );
+        IS( result.values_by_i16[7], int16( 0xffff ) );
+    }
+
+    OK( "int32 comparison" );
+    {
+        SIMDType<16> value1;
+        SIMDType<16> value2;
+        SIMDType<16> result;
+        simd_set_all<int32>( value1, int32( 0x7fffffff ), int32( 2 ), int32( 0xffffffff ), int32( 0x80000000 ) );
+        simd_set_all<int32>( value2, int32( 0x80000000 ), int32( 2 ), int32( 1 ),          int32( 0xffffffff ) );
+
+        simd_cmp<int32>( result, value1, value2 );
+        IS( result.values_by_i32[0], int32( 0 ) );
+        IS( result.values_by_i32[1], int32( 0xffffffff ) );
+        IS( result.values_by_i32[2], int32( 0 ) );
+        IS( result.values_by_i32[3], int32( 0 ) );
+
+        simd_ncmp<int32>( result, value1, value2 );
+        IS( result.values_by_i32[0], int32( 0xffffffff ) );
+        IS( result.values_by_i32[1], int32( 0 ) );
+        IS( result.values_by_i32[2], int32( 0xffffffff ) );
+        IS( result.values_by_i32[3], int32( 0xffffffff ) );
+
+        simd_gt<int32>( result, value1, value2 );
+        IS( result.values_by_i32[0], int32( 0xffffffff ) );
+        IS( result.values_by_i32[1], int32( 0 ) );
+        IS( result.values_by_i32[2], int32( 0 ) );
+        IS( result.values_by_i32[3], int32( 0 ) );
+
+        simd_ge<int32>( result, value1, value2 );
+        IS( result.values_by_i32[0], int32( 0xffffffff ) );
+        IS( result.values_by_i32[1], int32( 0xffffffff ) );
+        IS( result.values_by_i32[2], int32( 0 ) );
+        IS( result.values_by_i32[3], int32( 0 ) );
+
+        simd_lt<int32>( result, value1, value2 );
+        IS( result.values_by_i32[0], int32( 0 ) );
+        IS( result.values_by_i32[1], int32( 0 ) );
+        IS( result.values_by_i32[2], int32( 0xffffffff ) );
+        IS( result.values_by_i32[3], int32( 0xffffffff ) );
+
+        simd_le<int32>( result, value1, value2 );
+        IS( result.values_by_i32[0], int32( 0 ) );
+        IS( result.values_by_i32[1], int32( 0xffffffff ) );
+        IS( result.values_by_i32[2], int32( 0xffffffff ) );
+        IS( result.values_by_i32[3], int32( 0xffffffff ) );
+    }
+
+    OK( "float comparison" );
+    {
+        SIMDType<16> value1;
+        SIMDType<16> value2;
+        SIMDType<16> result;
+        simd_set_all<float>( value1, 1.2001f, std::numeric_limits<float>::quiet_NaN(), 5.6f, -7.8f );
+        simd_set_all<float>( value2,    1.2f, std::numeric_limits<float>::quiet_NaN(), 5.6f, -7.799f );
+
+        simd_cmp<float>( result, value1, value2 );
+        IS( result.values_by_i32[0], int32( 0 ) );
+        IS( result.values_by_i32[1], int32( 0 ) );
+        IS( result.values_by_i32[2], int32( 0xffffffff ) );
+        IS( result.values_by_i32[3], int32( 0 ) );
+
+        simd_ncmp<float>( result, value1, value2 );
+        IS( result.values_by_i32[0], int32( 0xffffffff ) );
+        IS( result.values_by_i32[1], int32( 0xffffffff ) );
+        IS( result.values_by_i32[2], int32( 0 ) );
+        IS( result.values_by_i32[3], int32( 0xffffffff ) );
+
+        simd_gt<float>( result, value1, value2 );
+        IS( result.values_by_i32[0], int32( 0xffffffff ) );
+        IS( result.values_by_i32[1], int32( 0 ) );
+        IS( result.values_by_i32[2], int32( 0 ) );
+        IS( result.values_by_i32[3], int32( 0 ) );
+
+        simd_ge<float>( result, value1, value2 );
+        IS( result.values_by_i32[0], int32( 0xffffffff ) );
+        IS( result.values_by_i32[1], int32( 0 ) );
+        IS( result.values_by_i32[2], int32( 0xffffffff ) );
+        IS( result.values_by_i32[3], int32( 0 ) );
+
+        simd_lt<float>( result, value1, value2 );
+        IS( result.values_by_i32[0], int32( 0 ) );
+        IS( result.values_by_i32[1], int32( 0 ) );
+        IS( result.values_by_i32[2], int32( 0 ) );
+        IS( result.values_by_i32[3], int32( 0xffffffff ) );
+
+        simd_le<float>( result, value1, value2 );
+        IS( result.values_by_i32[0], int32( 0 ) );
+        IS( result.values_by_i32[1], int32( 0 ) );
+        IS( result.values_by_i32[2], int32( 0xffffffff ) );
+        IS( result.values_by_i32[3], int32( 0xffffffff ) );
+    }
+
+    OK( "double comparison" );
+    {
+        SIMDType<16> value1;
+        SIMDType<16> value2;
+        SIMDType<16> result;
+
+        simd_set_all<double>( value1, 1.2001, std::numeric_limits<double>::quiet_NaN() );
+        simd_set_all<double>( value2,    1.2, std::numeric_limits<double>::infinity() );
+
+        simd_cmp<double>( result, value1, value2 );
+        IS( result.values_by_i64[0], int32( 0 ) );
+        IS( result.values_by_i64[1], int32( 0 ) );
+
+        simd_ncmp<double>( result, value1, value2 );
+        IS( result.values_by_i64[0], int32( 0xffffffffffffffff ) );
+        IS( result.values_by_i64[1], int32( 0xffffffffffffffff ) );
+
+        simd_gt<double>( result, value1, value2 );
+        IS( result.values_by_i64[0], int32( 0xffffffffffffffff ) );
+        IS( result.values_by_i64[1], int32( 0 ) );
+
+        simd_ge<double>( result, value1, value2 );
+        IS( result.values_by_i64[0], int32( 0xffffffffffffffff ) );
+        IS( result.values_by_i64[1], int32( 0 ) );
+
+        simd_lt<double>( result, value1, value2 );
+        IS( result.values_by_i64[0], int32( 0 ) );
+        IS( result.values_by_i64[1], int32( 0 ) );
+
+        simd_le<double>( result, value1, value2 );
+        IS( result.values_by_i64[0], int32( 0 ) );
+        IS( result.values_by_i64[1], int32( 0 ) );
+
+        simd_set_all<double>( value1, 3.4, 5.6 );
+        simd_set_all<double>( value2, 3.4, std::numeric_limits<double>::infinity() );
+
+        simd_cmp<double>( result, value1, value2 );
+        IS( result.values_by_i64[0], int32( 0xffffffffffffffff ) );
+        IS( result.values_by_i64[1], int32( 0 ) );
+
+        simd_ncmp<double>( result, value1, value2 );
+        IS( result.values_by_i64[0], int32( 0 ) );
+        IS( result.values_by_i64[1], int32( 0xffffffffffffffff ) );
+
+        simd_gt<double>( result, value1, value2 );
+        IS( result.values_by_i64[0], int32( 0 ) );
+        IS( result.values_by_i64[1], int32( 0 ) );
+
+        simd_ge<double>( result, value1, value2 );
+        IS( result.values_by_i64[0], int32( 0xffffffffffffffff ) );
+        IS( result.values_by_i64[1], int32( 0 ) );
+
+        simd_lt<double>( result, value1, value2 );
+        IS( result.values_by_i64[0], int32( 0 ) );
+        IS( result.values_by_i64[1], int32( 0xffffffffffffffff ) );
+
+        simd_le<double>( result, value1, value2 );
+        IS( result.values_by_i64[0], int32( 0xffffffffffffffff ) );
+        IS( result.values_by_i64[1], int32( 0xffffffffffffffff ) );
     }
 
     OK( "equal operator int16" );
