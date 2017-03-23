@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_TIME_H_INCLUDED
-#define JUCE_TIME_H_INCLUDED
+#ifndef TREECORE_TIME_H
+#define TREECORE_TIME_H
 
 #include "treecore/String.h"
 #include "treecore/RelativeTime.h"
@@ -406,4 +406,4 @@ TREECORE_SHARED_API bool operator>= (Time time1, Time time2) noexcept;
 
 }
 
-#endif   // JUCE_TIME_H_INCLUDED
+#endif   // TREECORE_TIME_H

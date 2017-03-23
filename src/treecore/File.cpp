@@ -188,7 +188,7 @@ String File::addTrailingSeparator( const String& path )
 }
 
 //==============================================================================
-#if TREECORE_OS_LINUX
+#if TREECORE_OS_LINUX || TREECORE_OS_OSX || TREECORE_OS_IOS
 #    define NAMES_ARE_CASE_SENSITIVE 1
 #elif TREECORE_OS_WINDOWS
 #else

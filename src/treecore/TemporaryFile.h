@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_TEMPORARYFILE_H_INCLUDED
-#define JUCE_TEMPORARYFILE_H_INCLUDED
+#ifndef TREECORE_TEMPORARYFILE_H
+#define TREECORE_TEMPORARYFILE_H
 
 #include "treecore/File.h"
 
@@ -171,4 +171,4 @@ private:
 
 }
 
-#endif   // JUCE_TEMPORARYFILE_H_INCLUDED
+#endif   // TREECORE_TEMPORARYFILE_H

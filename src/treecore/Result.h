@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_RESULT_H_INCLUDED
-#define JUCE_RESULT_H_INCLUDED
+#ifndef TREECORE_RESULT_H
+#define TREECORE_RESULT_H
 
 #include "treecore/Common.h"
 #include "treecore/String.h"
@@ -125,4 +125,4 @@ private:
 
 }
 
-#endif   // JUCE_RESULT_H_INCLUDED
+#endif   // TREECORE_RESULT_H

@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_SYSTEMSTATS_H_INCLUDED
-#define JUCE_SYSTEMSTATS_H_INCLUDED
+#ifndef TREECORE_SYSTEMSTATS_H
+#define TREECORE_SYSTEMSTATS_H
 
 #include "treecore/ClassUtils.h"
 #include "treecore/String.h"
@@ -192,4 +192,4 @@ private:
 
 }
 
-#endif   // JUCE_SYSTEMSTATS_H_INCLUDED
+#endif   // TREECORE_SYSTEMSTATS_H

@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_FILESEARCHPATH_H_INCLUDED
-#define JUCE_FILESEARCHPATH_H_INCLUDED
+#ifndef TREECORE_FILESEARCHPATH_H
+#define TREECORE_FILESEARCHPATH_H
 
 #include "treecore/LeakedObjectDetector.h"
 #include "treecore/StringArray.h"
@@ -170,4 +170,4 @@ private:
 
 }
 
-#endif   // JUCE_FILESEARCHPATH_H_INCLUDED
+#endif   // TREECORE_FILESEARCHPATH_H

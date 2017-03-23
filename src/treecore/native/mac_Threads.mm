@@ -31,8 +31,16 @@
     live in juce_posix_SharedCode.h!
  */
 
+#include "treecore/DebugUtils.h"
 #include "treecore/PlatformDefs.h"
 #include "treecore/Process.h"
+#include "treecore/Thread.h"
+
+#include "treecore/native/osx_ObjCHelpers.h"
+
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#include <errno.h>
 
 namespace treecore
 {
@@ -73,5 +81,14 @@ TREECORE_SHARED_API bool TREECORE_STDCALL Process::isRunningUnderDebugger()
 
     return testResult > 0;
 }
-
+    
+    
+void TREECORE_STDCALL Thread::setCurrentThreadName( const String& name )
+{
+    TREECORE_AUTO_RELEASE_POOL
+    {
+        [[NSThread currentThread] setName : juceStringToNS( name )];
+    }
+}
+    
 } // namespace treecore

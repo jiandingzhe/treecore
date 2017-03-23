@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_SCOPEDLOCK_H_INCLUDED
-#define JUCE_SCOPEDLOCK_H_INCLUDED
+#ifndef TREECORE_SCOPEDLOCK_H
+#define TREECORE_SCOPEDLOCK_H
 
 #include "treecore/ClassUtils.h"
 
@@ -236,4 +236,4 @@ private:
 
 }
 
-#endif   // JUCE_SCOPEDLOCK_H_INCLUDED
+#endif   // TREECORE_SCOPEDLOCK_H

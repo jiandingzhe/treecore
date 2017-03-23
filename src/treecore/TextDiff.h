@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_TEXTDIFF_H_INCLUDED
-#define JUCE_TEXTDIFF_H_INCLUDED
+#ifndef TREECORE_TEXTDIFF_H
+#define TREECORE_TEXTDIFF_H
 
 #include "treecore/Array.h"
 
@@ -83,4 +83,4 @@ public:
 
 }
 
-#endif   // JUCE_TEXTDIFF_H_INCLUDED
+#endif   // TREECORE_TEXTDIFF_H

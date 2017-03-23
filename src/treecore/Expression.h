@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_EXPRESSION_H_INCLUDED
-#define JUCE_EXPRESSION_H_INCLUDED
+#ifndef TREECORE_EXPRESSION_H
+#define TREECORE_EXPRESSION_H
 
 #include "treecore/Array.h"
 #include "treecore/RefCountHolder.h"
@@ -275,4 +275,4 @@ private:
 
 }
 
-#endif   // JUCE_EXPRESSION_H_INCLUDED
+#endif   // TREECORE_EXPRESSION_H

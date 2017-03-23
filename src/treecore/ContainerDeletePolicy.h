@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_CONTAINERDELETEPOLICY_H_INCLUDED
-#define JUCE_CONTAINERDELETEPOLICY_H_INCLUDED
+#ifndef TREECORE_CONTAINERDELETEPOLICY_H
+#define TREECORE_CONTAINERDELETEPOLICY_H
 
 #include "treecore/Common.h"
 
@@ -62,4 +62,4 @@ struct ContainerDeletePolicy
 
 }
 
-#endif   // JUCE_CONTAINERDELETEPOLICY_H_INCLUDED
+#endif   // TREECORE_CONTAINERDELETEPOLICY_H

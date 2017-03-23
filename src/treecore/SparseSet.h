@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_SPARSESET_H_INCLUDED
-#define JUCE_SPARSESET_H_INCLUDED
+#ifndef TREECORE_SPARSESET_H
+#define TREECORE_SPARSESET_H
 
 #include "treecore/Array.h"
 #include "treecore/Common.h"
@@ -302,4 +302,4 @@ private:
 
 }
 
-#endif   // JUCE_SPARSESET_H_INCLUDED
+#endif   // TREECORE_SPARSESET_H

@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_SOCKET_H_INCLUDED
-#define JUCE_SOCKET_H_INCLUDED
+#ifndef TREECORE_SOCKET_H
+#define TREECORE_SOCKET_H
 
 #include "treecore/CriticalSection.h"
 #include "treecore/LeakedObjectDetector.h"
@@ -302,4 +302,4 @@ private:
 
 } // namespace treecore
 
-#endif   // JUCE_SOCKET_H_INCLUDED
+#endif   // TREECORE_SOCKET_H

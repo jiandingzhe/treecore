@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_LINKEDLISTPOINTER_H_INCLUDED
-#define JUCE_LINKEDLISTPOINTER_H_INCLUDED
+#ifndef TREECORE_LINKEDLISTPOINTER_H
+#define TREECORE_LINKEDLISTPOINTER_H
 
 #include "treecore/ClassUtils.h"
 
@@ -370,4 +370,4 @@ private:
 
 }
 
-#endif   // JUCE_LINKEDLISTPOINTER_H_INCLUDED
+#endif   // TREECORE_LINKEDLISTPOINTER_H

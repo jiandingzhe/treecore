@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_INTERPROCESSLOCK_H_INCLUDED
-#define JUCE_INTERPROCESSLOCK_H_INCLUDED
+#ifndef TREECORE_INTERPROCESSLOCK_H
+#define TREECORE_INTERPROCESSLOCK_H
 
 #include "treecore/CriticalSection.h"
 #include "treecore/String.h"
@@ -131,4 +131,4 @@ private:
 
 }
 
-#endif   // JUCE_INTERPROCESSLOCK_H_INCLUDED
+#endif   // TREECORE_INTERPROCESSLOCK_H

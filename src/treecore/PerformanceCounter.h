@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_PERFORMANCECOUNTER_H_INCLUDED
-#define JUCE_PERFORMANCECOUNTER_H_INCLUDED
+#ifndef TREECORE_PERFORMANCECOUNTER_H
+#define TREECORE_PERFORMANCECOUNTER_H
 
 #include "treecore/File.h"
 #include "treecore/LeakedObjectDetector.h"
@@ -129,4 +129,4 @@ private:
 
 }
 
-#endif   // JUCE_PERFORMANCECOUNTER_H_INCLUDED
+#endif   // TREECORE_PERFORMANCECOUNTER_H

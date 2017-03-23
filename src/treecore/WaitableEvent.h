@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_WAITABLEEVENT_H_INCLUDED
-#define JUCE_WAITABLEEVENT_H_INCLUDED
+#ifndef TREECORE_WAITABLEEVENT_H
+#define TREECORE_WAITABLEEVENT_H
 
 #include "treecore/PlatformDefs.h"
 #include "treecore/LeakedObjectDetector.h"
@@ -120,4 +120,4 @@ private:
 
 }
 
-#endif   // JUCE_WAITABLEEVENT_H_INCLUDED
+#endif   // TREECORE_WAITABLEEVENT_H

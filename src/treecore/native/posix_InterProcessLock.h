@@ -8,7 +8,7 @@
 
 #include <sys/fcntl.h>
 #include <sys/types.h>
-
+#include <errno.h>
 namespace treecore {
 
 class InterProcessLock::Pimpl

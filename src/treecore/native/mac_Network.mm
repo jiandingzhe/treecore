@@ -35,8 +35,16 @@
 #include "treecore/Thread.h"
 #include "treecore/URL.h"
 
+#include "treecore/native/osx_ObjCHelpers.h"
+
+
 #include <sys/types.h>
+#include <sys/socket.h>
+
+#include <net/if_dl.h>
 #include <ifaddrs.h>
+
+#import <Foundation/Foundation.h>
 
 namespace treecore
 {
@@ -60,7 +68,7 @@ void MacAddress::findAllAddresses( Array<MacAddress>& result )
 
                 if (sadd->sdl_type == IFT_ETHER)
                 {
-                    MacAddress ma( MACAddress( ( (const uint8*) sadd->sdl_data ) + sadd->sdl_nlen ) );
+                    MacAddress ma( MacAddress( ( (const uint8*) sadd->sdl_data ) + sadd->sdl_nlen ) );
 
                     if ( !ma.isNull() )
                         result.addIfNotAlreadyThere( ma );
@@ -247,7 +255,7 @@ public:
 
     void didFailWithError( NSError* error )
     {
-        TREECORE_DBG( toString([error description] ) ); (void) error;
+        TREECORE_DBG( nsStringToJuce([error description] ) ); (void) error;
         hasFailed   = true;
         initialised = true;
         signalThreadShouldExit();
@@ -358,7 +366,7 @@ class WebInputStream: public InputStream
 public:
     WebInputStream ( const String& address_, bool isPost_, const MemoryBlock& postData_,
                      URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext,
-                     const String& headers_, int timeOutMs_, StringPairArray* responseHeaders,
+                     const String& headers_, int timeOutMs_, HashMap<String, String>* responseHeaders,
                      const int numRedirectsToFollow_ )
         : statusCode( 0 ), address( address_ ), headers( headers_ ), postData( postData_ ), position( 0 ),
         finished( false ), isPost( isPost_ ), timeOutMs( timeOutMs_ ), numRedirectsToFollow( numRedirectsToFollow_ )
@@ -376,8 +384,8 @@ public:
                     NSEnumerator* enumerator = [connection->headers keyEnumerator];
 
                     while (NSString* key = [enumerator nextObject])
-                        responseHeaders->set( toString( key ),
-                                              toString( (NSString*) [connection->headers objectForKey: key] ) );
+                        responseHeaders->set( nsStringToJuce( key ),
+                                              nsStringToJuce( (NSString*) [connection->headers objectForKey: key] ) );
                 }
             }
         }

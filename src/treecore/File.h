@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_FILE_H_INCLUDED
-#define JUCE_FILE_H_INCLUDED
+#ifndef TREECORE_FILE_H
+#define TREECORE_FILE_H
 
 #include "treecore/Array.h"
 #include "treecore/MathsFunctions.h"
@@ -993,4 +993,4 @@ std::basic_ostream<wchar_t, traits>& TREECORE_STDCALL operator << ( std::basic_o
 
 } // namespace treecore
 
-#endif   // JUCE_FILE_H_INCLUDED
+#endif   // TREECORE_FILE_H

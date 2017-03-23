@@ -1,5 +1,5 @@
-#ifndef TREEFACE_OJBECT_HOLDER_H
-#define TREEFACE_OJBECT_HOLDER_H
+#ifndef TREECORE_OJBECT_HOLDER_H
+#define TREECORE_OJBECT_HOLDER_H
 
 #include "treecore/AtomicObject.h"
 #include "treecore/PlatformDefs.h"
@@ -193,4 +193,4 @@ bool operator < ( const RefCountHolder<T1>& a, const RefCountHolder<T2>& b )
 
 }
 
-#endif // TREEFACE_OJBECT_HOLDER_H
+#endif // TREECORE_OJBECT_HOLDER_H

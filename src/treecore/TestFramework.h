@@ -1,5 +1,5 @@
-#ifndef TREEFACE_TEST_FRAMEWORK
-#define TREEFACE_TEST_FRAMEWORK
+#ifndef TREECORE_TEST_FRAMEWORK
+#define TREECORE_TEST_FRAMEWORK
 
 #include <cstdint>
 #include <cstdlib>
@@ -200,4 +200,4 @@ void TestFramework::le(T1 a, T2 b, const char* desc)
     }
 }
 
-#endif // TREEFACE_TEST_FRAMEWORK
+#endif // TREECORE_TEST_FRAMEWORK

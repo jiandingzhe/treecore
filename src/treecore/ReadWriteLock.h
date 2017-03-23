@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_READWRITELOCK_H_INCLUDED
-#define JUCE_READWRITELOCK_H_INCLUDED
+#ifndef TREECORE_READWRITELOCK_H
+#define TREECORE_READWRITELOCK_H
 
 #include "treecore/Array.h"
 #include "treecore/SpinLock.h"
@@ -156,4 +156,4 @@ private:
 
 }
 
-#endif   // JUCE_READWRITELOCK_H_INCLUDED
+#endif   // TREECORE_READWRITELOCK_H

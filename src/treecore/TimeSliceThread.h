@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_TIMESLICETHREAD_H_INCLUDED
-#define JUCE_TIMESLICETHREAD_H_INCLUDED
+#ifndef TREECORE_TIMESLICETHREAD_H
+#define TREECORE_TIMESLICETHREAD_H
 
 #include "treecore/Array.h"
 #include "treecore/CriticalSection.h"
@@ -154,4 +154,4 @@ private:
 
 }
 
-#endif   // JUCE_TIMESLICETHREAD_H_INCLUDED
+#endif   // TREECORE_TIMESLICETHREAD_H

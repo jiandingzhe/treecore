@@ -2,6 +2,7 @@
 
 #include <pthread.h>
 #include <sys/time.h>
+#include <errno.h>
 
 namespace treecore
 {
@@ -44,8 +45,8 @@ void CriticalSection::exit() const noexcept
 
 void TREECORE_SHARED_API _thread_entry_point_( void* );
 
-extern "C" void* threadEntryProc( void* );
-extern "C" void* threadEntryProc( void* userData )
+extern "C" void* treecoreThreadEntryProc( void* );
+extern "C" void* treecoreThreadEntryProc( void* userData )
 {
     TREECORE_AUTO_RELEASE_POOL
     {
@@ -64,7 +65,7 @@ void Thread::launchThread()
     threadHandle = 0;
     pthread_t handle = 0;
 
-    if (pthread_create( &handle, 0, threadEntryProc, this ) == 0)
+    if (pthread_create( &handle, 0, treecoreThreadEntryProc, this ) == 0)
     {
         pthread_detach( handle );
         threadHandle = (void*) handle;
@@ -88,22 +89,6 @@ void Thread::killThread()
         pthread_cancel( pthread_t( threadHandle ) );
 #endif
     }
-}
-
-void TREECORE_STDCALL Thread::setCurrentThreadName( const String& name )
-{
-#if TREECORE_OS_IOS || (TREECORE_OS_OSX && defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5)
-    TREECORE_AUTO_RELEASE_POOL
-    {
-        [[NSThread currentThread] setName : juceStringToNS( name )];
-    }
-#elif TREECORE_OS_LINUX
-#    if (__GLIBC__ * 1000 + __GLIBC_MINOR__) >= 2012
-    pthread_setname_np( pthread_self(), name.toRawUTF8() );
-#    else
-    prctl( PR_SET_NAME, name.toRawUTF8(), 0, 0, 0 );
-#    endif
-#endif
 }
 
 bool Thread::setThreadPriority( void* handle, int priority )

@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_IPADDRESS_H_INCLUDED
-#define JUCE_IPADDRESS_H_INCLUDED
+#ifndef TREECORE_IPADDRESS_H
+#define TREECORE_IPADDRESS_H
 
 #include "treecore/Array.h"
 
@@ -85,4 +85,4 @@ public:
 
 } // treecore
 
-#endif   // JUCE_IPADDRESS_H_INCLUDED
+#endif   // TREECORE_IPADDRESS_H

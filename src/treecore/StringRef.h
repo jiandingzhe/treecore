@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_STRINGREF_H_INCLUDED
-#define JUCE_STRINGREF_H_INCLUDED
+#ifndef TREECORE_STRINGREF_H
+#define TREECORE_STRINGREF_H
 
 #include "treecore/String.h"
 
@@ -131,4 +131,4 @@ TREECORE_SHARED_API bool TREECORE_STDCALL operator!= (const String& string1, Str
 
 }
 
-#endif   // JUCE_STRINGREF_H_INCLUDED
+#endif   // TREECORE_STRINGREF_H

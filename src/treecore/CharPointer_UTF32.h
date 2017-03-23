@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_CHARPOINTER_UTF32_H_INCLUDED
-#define JUCE_CHARPOINTER_UTF32_H_INCLUDED
+#ifndef TREECORE_CHARPOINTER_UTF32_H
+#define TREECORE_CHARPOINTER_UTF32_H
 
 #include "treecore/AtomicFunc.h"
 #include "treecore/Common.h"
@@ -381,4 +381,4 @@ private:
 
 }
 
-#endif   // JUCE_CHARPOINTER_UTF32_H_INCLUDED
+#endif   // TREECORE_CHARPOINTER_UTF32_H

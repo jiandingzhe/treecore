@@ -26,12 +26,16 @@
    ==============================================================================
  */
 
-#ifndef JUCE_BYTEORDER_H_INCLUDED
-#define JUCE_BYTEORDER_H_INCLUDED
+#ifndef TREECORE_BYTEORDER_H
+#define TREECORE_BYTEORDER_H
 
 #include "treecore/ClassUtils.h"
 #include "treecore/PlatformDefs.h"
 #include "treecore/MathsFunctions.h"
+
+#if TREECORE_OS_OSX || TREECORE_OS_IOS
+#    include <libkern/OSByteOrder.h>
+#endif
 
 namespace treecore {
 
@@ -201,4 +205,4 @@ inline void ByteOrder::bigEndian24BitToChars( const int value, void* const destB
 
 }
 
-#endif   // JUCE_BYTEORDER_H_INCLUDED
+#endif   // TREECORE_BYTEORDER_H

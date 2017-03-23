@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_CHILDPROCESS_H_INCLUDED
-#define JUCE_CHILDPROCESS_H_INCLUDED
+#ifndef TREECORE_CHILDPROCESS_H
+#define TREECORE_CHILDPROCESS_H
 
 #include "treecore/LeakedObjectDetector.h"
 #include "treecore/MathsFunctions.h"
@@ -125,4 +125,4 @@ private:
 
 }
 
-#endif   // JUCE_CHILDPROCESS_H_INCLUDED
+#endif   // TREECORE_CHILDPROCESS_H

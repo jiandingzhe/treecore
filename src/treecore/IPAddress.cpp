@@ -30,6 +30,8 @@
 
 #include "treecore/StringArray.h"
 
+#include <errno.h>
+
 namespace treecore
 {
 

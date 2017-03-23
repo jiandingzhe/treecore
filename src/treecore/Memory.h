@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_MEMORY_H_INCLUDED
-#define JUCE_MEMORY_H_INCLUDED
+#ifndef TREECORE_MEMORY_H
+#define TREECORE_MEMORY_H
 
 #include "treecore/IntTypes.h"
 #include "treecore/PlatformDefs.h"
@@ -71,7 +71,7 @@ inline Type* createCopyIfNotNull( const Type* pointer )     { return pointer != 
 
 //==============================================================================
 #if TREECORE_OS_OSX || TREECORE_OS_IOS || TREECORE_COMPILER_DOXYGEN
-
+#include "treecore/ClassUtils.h"
 /** A handy C++ wrapper that creates and deletes an NSAutoreleasePool object using RAII.
      You should use the TREECORE_AUTO_RELEASE_POOL macro to create a local auto-release pool on the stack.
  */
@@ -126,4 +126,4 @@ extern TREECORE_SHARED_API void  _dll_free_( void* );
 
 }
 
-#endif   // JUCE_MEMORY_H_INCLUDED
+#endif   // TREECORE_MEMORY_H

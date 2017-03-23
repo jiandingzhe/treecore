@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_PROCESS_H_INCLUDED
-#define JUCE_PROCESS_H_INCLUDED
+#ifndef TREECORE_PROCESS_H
+#define TREECORE_PROCESS_H
 
 #include "treecore/ClassUtils.h"
 #include "treecore/IntTypes.h"
@@ -145,4 +145,4 @@ private:
 
 }
 
-#endif   // JUCE_PROCESS_H_INCLUDED
+#endif   // TREECORE_PROCESS_H

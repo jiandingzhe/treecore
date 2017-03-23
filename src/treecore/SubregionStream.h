@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_SUBREGIONSTREAM_H_INCLUDED
-#define JUCE_SUBREGIONSTREAM_H_INCLUDED
+#ifndef TREECORE_SUBREGIONSTREAM_H
+#define TREECORE_SUBREGIONSTREAM_H
 
 #include "treecore/OptionalScopedPointer.h"
 #include "treecore/InputStream.h"
@@ -92,4 +92,4 @@ private:
 
 }
 
-#endif   // JUCE_SUBREGIONSTREAM_H_INCLUDED
+#endif   // TREECORE_SUBREGIONSTREAM_H

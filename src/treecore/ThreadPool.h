@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_THREADPOOL_H_INCLUDED
-#define JUCE_THREADPOOL_H_INCLUDED
+#ifndef TREECORE_THREADPOOL_H
+#define TREECORE_THREADPOOL_H
 
 #include "treecore/Array.h"
 #include "treecore/LeakedObjectDetector.h"
@@ -339,4 +339,4 @@ public:
 
 } // namespace treecore
 
-#endif   // JUCE_THREADPOOL_H_INCLUDED
+#endif   // TREECORE_THREADPOOL_H

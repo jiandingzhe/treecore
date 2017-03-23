@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_ABSTRACTFIFO_H_INCLUDED
-#define JUCE_ABSTRACTFIFO_H_INCLUDED
+#ifndef TREECORE_ABSTRACTFIFO_H
+#define TREECORE_ABSTRACTFIFO_H
 
 #include "treecore/AtomicObject.h"
 #include "treecore/ClassUtils.h"
@@ -223,4 +223,4 @@ private:
 
 }
 
-#endif   // JUCE_ABSTRACTFIFO_H_INCLUDED
+#endif   // TREECORE_ABSTRACTFIFO_H

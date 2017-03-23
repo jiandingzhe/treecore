@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_LOCALISEDSTRINGS_H_INCLUDED
-#define JUCE_LOCALISEDSTRINGS_H_INCLUDED
+#ifndef TREECORE_LOCALISEDSTRINGS_H
+#define TREECORE_LOCALISEDSTRINGS_H
 
 #include "treecore/HashMap.h"
 #include "treecore/String.h"
@@ -249,4 +249,4 @@ TREECORE_SHARED_API String translate( const String& stringLiteral, const String&
 
 }
 
-#endif   // JUCE_LOCALISEDSTRINGS_H_INCLUDED
+#endif   // TREECORE_LOCALISEDSTRINGS_H

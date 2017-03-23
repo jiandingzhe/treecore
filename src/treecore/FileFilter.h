@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_FILEFILTER_H_INCLUDED
-#define JUCE_FILEFILTER_H_INCLUDED
+#ifndef TREECORE_FILEFILTER_H
+#define TREECORE_FILEFILTER_H
 
 #include "treecore/File.h"
 
@@ -78,4 +78,4 @@ protected:
 
 }
 
-#endif   // JUCE_FILEFILTER_H_INCLUDED
+#endif   // TREECORE_FILEFILTER_H

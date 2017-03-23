@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_RELATIVETIME_H_INCLUDED
-#define JUCE_RELATIVETIME_H_INCLUDED
+#ifndef TREECORE_RELATIVETIME_H
+#define TREECORE_RELATIVETIME_H
 
 #include "treecore/String.h"
 #include "treecore/MathsFunctions.h"
@@ -185,4 +185,4 @@ RelativeTime  operator-  (RelativeTime t1, RelativeTime t2) noexcept;
 
 }
 
-#endif   // JUCE_RELATIVETIME_H_INCLUDED
+#endif   // TREECORE_RELATIVETIME_H

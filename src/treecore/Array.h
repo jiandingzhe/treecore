@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_ARRAY_H_INCLUDED
-#define JUCE_ARRAY_H_INCLUDED
+#ifndef TREECORE_ARRAY_H
+#define TREECORE_ARRAY_H
 
 #include "treecore/ArrayAllocationBase.h"
 #include "treecore/DebugUtils.h"
@@ -1162,4 +1162,4 @@ private:
 #undef _LOCK_THIS_OBJ_
 #undef _LOCK_PEER_OBJ_
 
-#endif   // JUCE_ARRAY_H_INCLUDED
+#endif   // TREECORE_ARRAY_H

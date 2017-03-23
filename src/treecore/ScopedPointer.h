@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_SCOPEDPOINTER_H_INCLUDED
-#define JUCE_SCOPEDPOINTER_H_INCLUDED
+#ifndef TREECORE_SCOPEDPOINTER_H
+#define TREECORE_SCOPEDPOINTER_H
 
 #include "treecore/ClassUtils.h"
 #include "treecore/ContainerDeletePolicy.h"
@@ -198,4 +198,4 @@ void deleteAndZero( ScopedPointer<Type>& )  { static_assert( sizeof(Type) == 123
 
 }
 
-#endif   // JUCE_SCOPEDPOINTER_H_INCLUDED
+#endif   // TREECORE_SCOPEDPOINTER_H

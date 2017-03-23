@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_SCOPEDREADLOCK_H_INCLUDED
-#define JUCE_SCOPEDREADLOCK_H_INCLUDED
+#ifndef TREECORE_SCOPEDREADLOCK_H
+#define TREECORE_SCOPEDREADLOCK_H
 
 #include "treecore/PlatformDefs.h"
 
@@ -93,4 +93,4 @@ private:
 
 }
 
-#endif   // JUCE_SCOPEDREADLOCK_H_INCLUDED
+#endif   // TREECORE_SCOPEDREADLOCK_H

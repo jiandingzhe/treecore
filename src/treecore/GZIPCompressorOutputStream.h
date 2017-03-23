@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_GZIPCOMPRESSOROUTPUTSTREAM_H_INCLUDED
-#define JUCE_GZIPCOMPRESSOROUTPUTSTREAM_H_INCLUDED
+#ifndef TREECORE_GZIPCOMPRESSOROUTPUTSTREAM_H
+#define TREECORE_GZIPCOMPRESSOROUTPUTSTREAM_H
 
 #include "treecore/ContainerDeletePolicy.h"
 #include "treecore/OptionalScopedPointer.h"
@@ -106,4 +106,4 @@ private:
 
 }
 
-#endif   // JUCE_GZIPCOMPRESSOROUTPUTSTREAM_H_INCLUDED
+#endif   // TREECORE_GZIPCOMPRESSOROUTPUTSTREAM_H

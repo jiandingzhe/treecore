@@ -38,7 +38,7 @@
 
 #if TREECORE_OS_WINDOWS
 #    include <sys/timeb.h>
-#elif TREECORE_OS_LINUX || TREECORE_OS_ANDROID
+#elif TREECORE_OS_LINUX || TREECORE_OS_ANDROID || TREECORE_OS_OSX || TREECORE_OS_IOS
 #    include <time.h>
 #    include <sys/time.h>
 #endif

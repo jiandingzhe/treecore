@@ -1,5 +1,5 @@
-﻿#ifndef ztd_aligffffffffffffffffffffned_malloc_h__
-#define ztd_aligffffffffffffffffffffned_malloc_h__
+﻿#ifndef TREECORE_CHECKED_MALLOC_H
+#define TREECORE_CHECKED_MALLOC_H
 
 #include "treecore/IntTypes.h"
 
@@ -16,4 +16,4 @@ void* checked_realloc(void* const ptr, size_t len);
 
 } // namespace treecore
 
-#endif // ztd_aligned_malloc_h__
+#endif // TREECORE_CHECKED_MALLOC_H

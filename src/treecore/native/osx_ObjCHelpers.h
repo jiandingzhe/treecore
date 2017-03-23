@@ -32,6 +32,10 @@
 #include "treecore/String.h"
 #include "treecore/MT19937.h"
 
+#include <objc/objc-runtime.h>
+
+#import <Foundation/Foundation.h>
+
 namespace treecore
 {
 /* This file contains a few helper functions that are used internally but which
@@ -109,14 +113,14 @@ struct ObjCClass
     void addIvar( const char* name )
     {
         BOOL b = class_addIvar( cls, name, sizeof(Type), (uint8_t) rint( log2( sizeof(Type) ) ), @encode( Type ) );
-        jassert( b ); (void) b;
+        treecore_assert( b ); (void) b;
     }
 
     template<typename FunctionType>
     void addMethod( SEL selector, FunctionType callbackFn, const char* signature )
     {
         BOOL b = class_addMethod( cls, selector, (IMP) callbackFn, signature );
-        jassert( b ); (void) b;
+        treecore_assert( b ); (void) b;
     }
 
     template<typename FunctionType>
@@ -140,7 +144,7 @@ struct ObjCClass
     void addProtocol( Protocol* protocol )
     {
         BOOL b = class_addProtocol( cls, protocol );
-        jassert( b ); (void) b;
+        treecore_assert( b ); (void) b;
     }
 
     static id sendSuperclassMessage( id self, SEL selector )
@@ -162,7 +166,7 @@ struct ObjCClass
 private:
     static String getRandomisedName( const char* root )
     {
-        return root + String::toHexString( MT19937::getInstance()->next_uint64() );
+        return root + String::toHexString( int64(MT19937::getInstance()->next_uint64()) );
     }
 
     TREECORE_DECLARE_NON_COPYABLE( ObjCClass )

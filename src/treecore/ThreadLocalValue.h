@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_THREADLOCALVALUE_H_INCLUDED
-#define JUCE_THREADLOCALVALUE_H_INCLUDED
+#ifndef TREECORE_THREADLOCALVALUE_H
+#define TREECORE_THREADLOCALVALUE_H
 
 #include "treecore/AtomicFunc.h"
 
@@ -53,68 +53,69 @@ namespace treecore {
     this method, the object storage will be left allocated until the ThreadLocalValue object
     is deleted.
  */
-//template<typename Type>
-//class ThreadLocalValue
-//{
-//public:
-//    /** */
-//    ThreadLocalValue() noexcept
-//    {}
+#ifdef NEVER_TOUCH
+template<typename Type>
+class ThreadLocalValue
+{
+public:
+    /** */
+    ThreadLocalValue() noexcept
+    {}
 
-//    /** Destructor.
-//        When this object is deleted, all the value objects for all threads will be deleted.
-//     */
-//    ~ThreadLocalValue()
-//    {
-//    }
+    /** Destructor.
+        When this object is deleted, all the value objects for all threads will be deleted.
+     */
+    ~ThreadLocalValue()
+    {
+    }
 
-//    /** Returns a reference to this thread's instance of the value.
-//        Note that the first time a thread tries to access the value, an instance of the
-//        value object will be created - so if your value's class has a non-trivial
-//        constructor, be aware that this method could invoke it.
-//     */
-//    Type& operator * () const noexcept                        { return get(); }
+    /** Returns a reference to this thread's instance of the value.
+        Note that the first time a thread tries to access the value, an instance of the
+        value object will be created - so if your value's class has a non-trivial
+        constructor, be aware that this method could invoke it.
+     */
+    Type& operator * () const noexcept                        { return get(); }
 
-//    /** Returns a pointer to this thread's instance of the value.
-//        Note that the first time a thread tries to access the value, an instance of the
-//        value object will be created - so if your value's class has a non-trivial
-//        constructor, be aware that this method could invoke it.
-//     */
-//    operator Type* () const noexcept{ return &get(); }
+    /** Returns a pointer to this thread's instance of the value.
+        Note that the first time a thread tries to access the value, an instance of the
+        value object will be created - so if your value's class has a non-trivial
+        constructor, be aware that this method could invoke it.
+     */
+    operator Type* () const noexcept{ return &get(); }
 
-//    /** Accesses a method or field of the value object.
-//        Note that the first time a thread tries to access the value, an instance of the
-//        value object will be created - so if your value's class has a non-trivial
-//        constructor, be aware that this method could invoke it.
-//     */
-//    Type* operator -> () const noexcept                       { return &get(); }
+    /** Accesses a method or field of the value object.
+        Note that the first time a thread tries to access the value, an instance of the
+        value object will be created - so if your value's class has a non-trivial
+        constructor, be aware that this method could invoke it.
+     */
+    Type* operator -> () const noexcept                       { return &get(); }
 
-//    /** Assigns a new value to the thread-local object. */
-//    ThreadLocalValue& operator = ( const Type& newValue )      { get() = newValue; return *this; }
+    /** Assigns a new value to the thread-local object. */
+    ThreadLocalValue& operator = ( const Type& newValue )      { get() = newValue; return *this; }
 
-//    /** Returns a reference to this thread's instance of the value.
-//        Note that the first time a thread tries to access the value, an instance of the
-//        value object will be created - so if your value's class has a non-trivial
-//        constructor, be aware that this method could invoke it.
-//     */
-//    Type& get() const noexcept
-//    {
-//        static thread_local Type object;
-//        return object;
-//    }
+    /** Returns a reference to this thread's instance of the value.
+        Note that the first time a thread tries to access the value, an instance of the
+        value object will be created - so if your value's class has a non-trivial
+        constructor, be aware that this method could invoke it.
+     */
+    Type& get() const noexcept
+    {
+        static thread_local Type object;
+        return object;
+    }
 
-//    /** Called by a thread before it terminates, to allow this class to release
-//        any storage associated with the thread.
-//     */
-//    void releaseCurrentThreadStorage()
-//    {
-//    }
+    /** Called by a thread before it terminates, to allow this class to release
+        any storage associated with the thread.
+     */
+    void releaseCurrentThreadStorage()
+    {
+    }
 
-//private:
+private:
 
-//    TREECORE_DECLARE_NON_COPYABLE( ThreadLocalValue )
-//};
+    TREECORE_DECLARE_NON_COPYABLE( ThreadLocalValue )
+};
+#endif // TREECORE_OS_OSX || TREECORE_OS_IOS
+} // namespace treecore
 
-}
-
-#endif   // JUCE_THREADLOCALVALUE_H_INCLUDED
+#endif   // TREECORE_THREADLOCALVALUE_H

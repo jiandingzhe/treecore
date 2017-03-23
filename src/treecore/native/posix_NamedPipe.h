@@ -5,6 +5,7 @@
 #include "treecore/Time.h"
 
 #include <sys/stat.h>
+#include <errno.h>
 
 namespace treecore
 {

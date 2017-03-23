@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_WILDCARDFILEFILTER_H_INCLUDED
-#define JUCE_WILDCARDFILEFILTER_H_INCLUDED
+#ifndef TREECORE_WILDCARDFILEFILTER_H
+#define TREECORE_WILDCARDFILEFILTER_H
 
 #include "treecore/Common.h"
 #include "treecore/FileFilter.h"
@@ -89,4 +89,4 @@ private:
 
 }
 
-#endif   // JUCE_WILDCARDFILEFILTER_H_INCLUDED
+#endif   // TREECORE_WILDCARDFILEFILTER_H

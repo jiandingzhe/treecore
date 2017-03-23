@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_PROPERTYSET_H_INCLUDED
-#define JUCE_PROPERTYSET_H_INCLUDED
+#ifndef TREECORE_PROPERTYSET_H
+#define TREECORE_PROPERTYSET_H
 
 #include "treecore/HashMap.h"
 #include "treecore/String.h"
@@ -219,4 +219,4 @@ private:
 
 } // namespace treecore
 
-#endif   // JUCE_PROPERTYSET_H_INCLUDED
+#endif   // TREECORE_PROPERTYSET_H

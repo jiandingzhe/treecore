@@ -7,6 +7,7 @@
 #include "treecore/StringArray.h"
 
 #include <sys/wait.h>
+#include <signal.h>
 
 namespace treecore {
 

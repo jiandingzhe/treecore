@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_SCOPEDWRITELOCK_H_INCLUDED
-#define JUCE_SCOPEDWRITELOCK_H_INCLUDED
+#ifndef TREECORE_SCOPEDWRITELOCK_H
+#define TREECORE_SCOPEDWRITELOCK_H
 
 #include "treecore/PlatformDefs.h"
 
@@ -93,4 +93,4 @@ private:
 
 }
 
-#endif   // JUCE_SCOPEDWRITELOCK_H_INCLUDED
+#endif   // TREECORE_SCOPEDWRITELOCK_H

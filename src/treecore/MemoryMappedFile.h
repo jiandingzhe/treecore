@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_MEMORYMAPPEDFILE_H_INCLUDED
-#define JUCE_MEMORYMAPPEDFILE_H_INCLUDED
+#ifndef TREECORE_MEMORYMAPPEDFILE_H
+#define TREECORE_MEMORYMAPPEDFILE_H
 
 #include "treecore/MathsFunctions.h"
 #include "treecore/PlatformDefs.h"
@@ -120,4 +120,4 @@ private:
 
 }
 
-#endif   // JUCE_MEMORYMAPPEDFILE_H_INCLUDED
+#endif   // TREECORE_MEMORYMAPPEDFILE_H

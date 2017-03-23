@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_URL_H_INCLUDED
-#define JUCE_URL_H_INCLUDED
+#ifndef TREECORE_URL_H
+#define TREECORE_URL_H
 
 #include "treecore/File.h"
 #include "treecore/HashMap.h"
@@ -395,4 +395,4 @@ private:
 
 } // namespace treecore
 
-#endif   // JUCE_URL_H_INCLUDED
+#endif   // TREECORE_URL_H

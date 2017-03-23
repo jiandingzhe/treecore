@@ -3,6 +3,8 @@
 #include "treecore/MathsFunctions.h"
 #include "treecore/IPAddress.h"
 
+#include <errno.h>
+
 namespace treecore
 {
 

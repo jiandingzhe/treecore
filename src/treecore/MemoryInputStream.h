@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_MEMORYINPUTSTREAM_H_INCLUDED
-#define JUCE_MEMORYINPUTSTREAM_H_INCLUDED
+#ifndef TREECORE_MEMORYINPUTSTREAM_H
+#define TREECORE_MEMORYINPUTSTREAM_H
 
 #include "treecore/InputStream.h"
 #include "treecore/HeapBlock.h"
@@ -102,4 +102,4 @@ private:
 
 }
 
-#endif   // JUCE_MEMORYINPUTSTREAM_H_INCLUDED
+#endif   // TREECORE_MEMORYINPUTSTREAM_H

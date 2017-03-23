@@ -329,7 +329,7 @@ int main( int argc, char const** argv )
         "#endif\r\n";
 
     if (!quiet && !dry_run)
-        Logger::writeToLog( "Total size of binary data: " + String( totalBytes ) + " bytes" );
+        Logger::writeToLog( "Total size of binary data: " + String( int64(totalBytes) ) + " bytes" );
 
     // clear stuffs to avoid some messages
     StringPool::releaseInstance();

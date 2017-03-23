@@ -34,6 +34,8 @@
 #include "treecore/Process.h"
 #include "treecore/Thread.h"
 
+#include <sys/ptrace.h>
+
 namespace treecore {
 
 uint32 MESSAGE_WINDOW_HANDLE = 0;
@@ -59,6 +61,14 @@ TREECORE_SHARED_API void TREECORE_STDCALL Process::setPriority (const ProcessPri
     pthread_setschedparam (pthread_self(), policy, &param);
 }
 
+void TREECORE_STDCALL Thread::setCurrentThreadName( const String& name )
+{
+#if (__GLIBC__ * 1000 + __GLIBC_MINOR__) >= 2012
+    pthread_setname_np( pthread_self(), name.toRawUTF8() );
+#else
+    prctl( PR_SET_NAME, name.toRawUTF8(), 0, 0, 0 );
+#endif
+}
 
 
 static bool swapUserAndEffectiveUser()

@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_UUID_H_INCLUDED
-#define JUCE_UUID_H_INCLUDED
+#ifndef TREECORE_UUID_H
+#define TREECORE_UUID_H
 
 #include "treecore/LeakedObjectDetector.h"
 #include "treecore/MathsFunctions.h"
@@ -123,4 +123,4 @@ private:
 
 }
 
-#endif   // JUCE_UUID_H_INCLUDED
+#endif   // TREECORE_UUID_H

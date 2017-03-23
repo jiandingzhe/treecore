@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_THREAD_H_INCLUDED
-#define JUCE_THREAD_H_INCLUDED
+#ifndef TREECORE_THREAD_H
+#define TREECORE_THREAD_H
 
 #include "treecore/Config.h"
 #include "treecore/String.h"
@@ -300,4 +300,4 @@ private:
 
 }
 
-#endif   // JUCE_THREAD_H_INCLUDED
+#endif   // TREECORE_THREAD_H

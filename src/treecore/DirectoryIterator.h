@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_DIRECTORYITERATOR_H_INCLUDED
-#define JUCE_DIRECTORYITERATOR_H_INCLUDED
+#ifndef TREECORE_DIRECTORYITERATOR_H
+#define TREECORE_DIRECTORYITERATOR_H
 
 #include "treecore/ScopedPointer.h"
 #include "treecore/StringArray.h"
@@ -166,4 +166,4 @@ private:
 
 }
 
-#endif   // JUCE_DIRECTORYITERATOR_H_INCLUDED
+#endif   // TREECORE_DIRECTORYITERATOR_H

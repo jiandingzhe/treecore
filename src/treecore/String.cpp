@@ -56,7 +56,11 @@ static inline CharPointer_wchar_t castToCharPointer_wchar_t( const void* t ) noe
 //==============================================================================
 // (Mirrors the structure of StringHolder, but without the atomic member, so can be statically constructed)
 
-const EmptyString emptyString = { 0x3fffffff, sizeof(String::CharPointerType::CharType), 0 };
+const EmptyString& emptyString()
+{
+    static const EmptyString value = { 0x3fffffff, sizeof(String::CharPointerType::CharType), 0 };
+    return value;
+}
 
 //==============================================================================
 StringHolder::CharPointerType StringHolder::createUninitialisedBytes( size_t numBytes )
@@ -71,7 +75,7 @@ StringHolder::CharPointerType StringHolder::createUninitialisedBytes( size_t num
 StringHolder::CharPointerType StringHolder::createFromCharPointer( const CharPointerType start, const CharPointerType end )
 {
     if ( start.getAddress() == nullptr || start.isEmpty() )
-        return CharPointerType( &(emptyString.text) );
+        return CharPointerType( &(emptyString().text) );
 
     const size_t numBytes = (size_t) ( reinterpret_cast<const char*>( end.getAddress() )
                                        - reinterpret_cast<const char*>( start.getAddress() ) );
@@ -92,7 +96,7 @@ void StringHolder::retain( const CharPointerType text ) noexcept
 {
     StringHolder* const b = bufferFromText( text );
 
-    if (b != (StringHolder*) &emptyString)
+    if (b != (StringHolder*) &emptyString())
         ++(b->refCount);
 }
 
@@ -100,7 +104,7 @@ StringHolder::CharPointerType StringHolder::makeUniqueWithByteSize( const CharPo
 {
     StringHolder* const b = bufferFromText( text );
 
-    if (b == (StringHolder*) &emptyString)
+    if (b == (StringHolder*) &emptyString())
     {
         CharPointerType newText( createUninitialisedBytes( numBytes ) );
         newText.writeNull();
@@ -129,7 +133,7 @@ const String& String::empty()
 }
 
 //==============================================================================
-String::String() noexcept: text( &(emptyString.text) )
+String::String() noexcept: text( &(emptyString().text) )
 {}
 
 String::~String() noexcept
@@ -150,7 +154,7 @@ void String::swapWith( String& other ) noexcept
 void String::clear() noexcept
 {
     StringHolder::release( text );
-    text = &(emptyString.text);
+    text = &(emptyString().text);
 }
 
 String& String::operator = ( const String& other ) noexcept
@@ -163,7 +167,7 @@ String& String::operator = ( const String& other ) noexcept
 String::String ( String&& other ) noexcept
     : text( other.text )
 {
-    other.text = &(emptyString.text); // why not use swap here?
+    other.text = &(emptyString().text); // why not use swap here?
 }
 
 String& String::operator = ( String&& other ) noexcept

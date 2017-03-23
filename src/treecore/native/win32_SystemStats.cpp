@@ -34,7 +34,7 @@
 #include "treecore/internal/SystemStats_private.h"
 #include "treecore/Time.h"
 
-#include <timeapi.h>
+#include <mmsystem.h>
 
 namespace treecore
 {

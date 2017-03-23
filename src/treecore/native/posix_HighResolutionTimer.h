@@ -5,6 +5,20 @@
 #include "treecore/MathsFunctions.h"
 #include "treecore/Thread.h"
 
+#include <pthread.h>
+
+#if TREECORE_OS_OSX || TREECORE_OS_IOS
+#    include <mach/mach_time.h>
+#    include <mach/mach_init.h>
+#    include <mach/thread_policy.h>
+
+kern_return_t   thread_policy_set(thread_t                        thread,
+                                  thread_policy_flavor_t          flavor,
+                                  thread_policy_t                 policy_info,
+                                  mach_msg_type_number_t          count);
+
+#endif
+
 namespace treecore {
 
 struct HighResolutionTimer::Pimpl
@@ -95,7 +109,7 @@ private:
 
     struct Clock
     {
-#if TREECORE_OS_MAC || TREECORE_OS_IOS
+#if TREECORE_OS_OSX || TREECORE_OS_IOS
         Clock ( double millis ) noexcept
         {
             mach_timebase_info_data_t timebase;
@@ -150,7 +164,7 @@ private:
 
     static bool setThreadToRealtime( pthread_t thread, uint64 periodMs )
     {
-#if TREECORE_OS_MAC || TREECORE_OS_IOS
+#if TREECORE_OS_OSX || TREECORE_OS_IOS
         thread_time_constraint_policy_data_t policy;
         policy.period = (uint32_t) (periodMs * 1000000);
         policy.computation = 50000;

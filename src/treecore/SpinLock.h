@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_SPINLOCK_H_INCLUDED
-#define JUCE_SPINLOCK_H_INCLUDED
+#ifndef TREECORE_SPINLOCK_H
+#define TREECORE_SPINLOCK_H
 
 #include "treecore/AtomicFunc.h"
 #include "treecore/DebugUtils.h"
@@ -94,4 +94,4 @@ private:
 
 }
 
-#endif   // JUCE_SPINLOCK_H_INCLUDED
+#endif   // TREECORE_SPINLOCK_H

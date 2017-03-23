@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_STRINGARRAY_H_INCLUDED
-#define JUCE_STRINGARRAY_H_INCLUDED
+#ifndef TREECORE_STRINGARRAY_H
+#define TREECORE_STRINGARRAY_H
 
 #include "treecore/Array.h"
 #include "treecore/LeakedObjectDetector.h"
@@ -483,4 +483,4 @@ private:
 
 }
 
-#endif   // JUCE_STRINGARRAY_H_INCLUDED
+#endif   // TREECORE_STRINGARRAY_H

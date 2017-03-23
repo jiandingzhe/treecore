@@ -32,6 +32,9 @@
 #include "treecore/MathsFunctions.h"
 #include "treecore/PlatformDefs.h"
 #include <Windows.h>
+#include <wtypes.h>
+#include <cstdio>
+
 
 namespace treecore
 {

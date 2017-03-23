@@ -33,6 +33,10 @@
 #include "treecore/PlatformDefs.h"
 #include "treecore/ScopedLock.h"
 
+#if !TREECORE_OS_WINDOWS
+#include <pthread.h>
+#endif
+
 namespace treecore {
 
 //==============================================================================

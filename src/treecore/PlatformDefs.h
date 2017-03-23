@@ -141,11 +141,12 @@
 #            pragma comment (lib, "comsupp.lib")
 #        endif
 #    endif
+#endif
 
+#if TREECORE_OS_WINDOWS
 #    define TREECORE_LOAD_WINAPI_FUNCTION( dll, functionName, localFunctionName, returnType, params ) \
     typedef returnType ( WINAPI* type ## localFunctionName ) params;                                  \
     type ## localFunctionName localFunctionName = (type ## localFunctionName)dll.getFunction(#functionName );
-
 #endif // TREECORE_COMPILER_MSVC
 
 #ifndef TREECORE_MSVC_INTRIN

@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_SORTEDSET_H_INCLUDED
-#define JUCE_SORTEDSET_H_INCLUDED
+#ifndef TREECORE_SORTEDSET_H
+#define TREECORE_SORTEDSET_H
 
 #include "treecore/Array.h"
 #include "treecore/RefCountObject.h"
@@ -494,4 +494,4 @@ private:
 
 }
 
-#endif   // JUCE_SORTEDSET_H_INCLUDED
+#endif   // TREECORE_SORTEDSET_H

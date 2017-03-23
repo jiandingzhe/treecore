@@ -90,9 +90,9 @@ uint64 _get_seed_from_time_()
 
 uint64 _get_seed_from_pid_()
 {
-#if TREECORE_COMPILER_MSVC
+#if TREECORE_OS_WINDOWS
     uint32 pid  = uint32( _getpid() );
-    uint32 ppid = uint32( _getpid() );
+    uint32 ppid = pid;
 #else
     uint32 pid  = uint32( getpid() );
     uint32 ppid = uint32( getppid() );

@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_HEAPBLOCK_H_INCLUDED
-#define JUCE_HEAPBLOCK_H_INCLUDED
+#ifndef TREECORE_HEAPBLOCK_H
+#define TREECORE_HEAPBLOCK_H
 
 #include "treecore/AlignedMalloc.h"
 #include "treecore/DebugUtils.h"
@@ -371,4 +371,4 @@ private:
 
 }
 
-#endif   // JUCE_HEAPBLOCK_H_INCLUDED
+#endif   // TREECORE_HEAPBLOCK_H

@@ -62,7 +62,7 @@ elseif(MSVC)
     set(TREECORE_CMAKE_COMPILER "_MSVC" CACHE STRING "" FORCE)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
     set(TREECORE_CMAKE_COMPILER "_ICC" CACHE STRING "" FORCE)
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
     set(TREECORE_CMAKE_COMPILER "_CLANG" CACHE STRING "" FORCE)
 else()
     message(FATAL_ERROR "unsupported compiler family: ${CMAKE_CXX_COMPILER_ID}")
@@ -73,8 +73,35 @@ function(treecore_set_dep_libraries target_name)
         target_link_libraries(${target_name} pthread dl)
     elseif(TREECORE_OS STREQUAL "WINDOWS")
         target_link_libraries(${target_name} version winmm Shlwapi Dbghelp)
-    else()
-            message(FATAL_ERROR "unimplemented TREECORE_OS: ${TREECORE_OS}")
+    elseif(TREECORE_OS STREQUAL "OSX")
+        find_library(FRAMELIB_ACCELERATE Accelerate)
+        find_library(FRAMELIB_AUDIOTOOLBOX AudioToolbox)
+        find_library(FRAMELIB_AUDIOUNIT AudioUnit)
+        find_library(FRAMELIB_CARBON Carbon)
+        find_library(FRAMELIB_COCOA Cocoa)
+        find_library(FRAMELIB_COREAUDIO CoreAudio)
+        find_library(FRAMELIB_COREAUDIOKIT CoreAudioKit)
+        find_library(FRAMELIB_COREMIDI CoreMIDI)
+        find_library(FRAMELIB_DISCRECORDING DiscRecording)
+        find_library(FRAMELIB_IOKIT IOKit)
+        find_library(FRAMELIB_QUARTZCORE QuartzCore)
+        find_library(FRAMELIB_WEBKIT WebKit)
+
+        target_link_libraries(${target_name}
+            ${OPENGL_gl_LIBRARY}
+            ${FRAMELIB_ACCELERATE}
+            ${FRAMELIB_AUDIOTOOLBOX}
+            ${FRAMELIB_AUDIOUNIT}
+            ${FRAMELIB_CARBON}
+            ${FRAMELIB_COCOA}
+            ${FRAMELIB_COREAUDIO}
+            ${FRAMELIB_COREAUDIOKIT}
+            ${FRAMELIB_COREMIDI}
+            ${FRAMELIB_DISCRECORDING}
+            ${FRAMELIB_IOKIT}
+            ${FRAMELIB_QUARTZCORE}
+            ${FRAMELIB_WEBKIT}
+        )
     endif()
 endfunction()
 
@@ -107,6 +134,10 @@ function(treecore_set_compiler_options target_name)
             target_compile_options(${target_name} PRIVATE -msse3 -mstackrealign)
         endif()
     endif()
+
+    if(TREECORE_OS STREQUAL "OSX" AND TREECORE_CMAKE_COMPILER STREQUAL "_CLANG")
+        target_compile_options(${target_name} PUBLIC -fmodules)
+    endif()
 endfunction()
 
 function(treecore_output_from_input var_out dir_out)
@@ -133,4 +164,3 @@ function(treecore_set_source_group)
         endif()
     endforeach()
 endfunction()
-

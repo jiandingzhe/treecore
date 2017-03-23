@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_INPUTSTREAM_H_INCLUDED
-#define JUCE_INPUTSTREAM_H_INCLUDED
+#ifndef TREECORE_INPUTSTREAM_H
+#define TREECORE_INPUTSTREAM_H
 
 #include "treecore/ClassUtils.h"
 #include "treecore/IntTypes.h"
@@ -274,4 +274,4 @@ private:
 
 }
 
-#endif   // JUCE_INPUTSTREAM_H_INCLUDED
+#endif   // TREECORE_INPUTSTREAM_H

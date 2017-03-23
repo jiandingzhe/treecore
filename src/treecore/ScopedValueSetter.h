@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_SCOPEDVALUESETTER_H_INCLUDED
-#define JUCE_SCOPEDVALUESETTER_H_INCLUDED
+#ifndef TREECORE_SCOPEDVALUESETTER_H
+#define TREECORE_SCOPEDVALUESETTER_H
 
 #include "treecore/Common.h"
 #include "treecore/PlatformDefs.h"
@@ -102,4 +102,4 @@ private:
 
 }
 
-#endif   // JUCE_SCOPEDVALUESETTER_H_INCLUDED
+#endif   // TREECORE_SCOPEDVALUESETTER_H

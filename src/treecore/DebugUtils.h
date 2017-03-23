@@ -3,16 +3,13 @@
 
 #include "treecore/PlatformDefs.h"
 
-
+#if TREECORE_OS_WINDOWS
+#include <WinBase.h>
+#endif
 
 // break debugger
 #if TREECORE_COMPILER_ATTR_MSVC
-#    if TREECORE_MSVC_INTRIN
-#        pragma intrinsic (__debugbreak)
-#        define TREECORE_BREAK_DEBUGGER        { __debugbreak(); }
-#    else
-#        error "don't know what to do for MSVC without intrinsics support"
-#    endif
+#    define TREECORE_BREAK_DEBUGGER DebugBreak()
 #elif TREECORE_COMPILER_ATTR_GCC || TREECORE_COMPILER_ATTR_CLANG
 #    if TREECORE_NO_INLINE_ASM
 #        define TREECORE_BREAK_DEBUGGER       {}

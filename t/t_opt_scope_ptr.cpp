@@ -24,7 +24,7 @@ struct FooBar
     bool& living;
 };
 
-typedef OptionalScopedPointer<FooBar> Ptr;
+typedef OptionalScopedPointer<FooBar> FooBarPtr;
 
 void TestFramework::content( int argc, char** argv )
 {
@@ -34,13 +34,13 @@ void TestFramework::content( int argc, char** argv )
         OK( obj_life );
 
         {
-            Ptr p1( obj, false );
+            FooBarPtr p1( obj, false );
             IS( p1.get(), obj );
         }
         OK( obj_life );
 
         {
-            Ptr p2( obj, true );
+            FooBarPtr p2( obj, true );
             IS( p2.get(), obj );
         }
         OK( !obj_life );
@@ -51,10 +51,10 @@ void TestFramework::content( int argc, char** argv )
         bool obj_life = false;
         FooBar* obj   = new FooBar( obj_life );
         {
-            Ptr to_be_moved( obj, false );
+            FooBarPtr to_be_moved( obj, false );
             IS( to_be_moved.get(), obj );
 
-            Ptr move_target( std::move( to_be_moved ) );
+            FooBarPtr move_target( std::move( to_be_moved ) );
             OK( to_be_moved.get() == nullptr );
             IS( move_target.get(), obj );
             OK( obj_life );
@@ -62,10 +62,10 @@ void TestFramework::content( int argc, char** argv )
         OK( obj_life );
 
         {
-            Ptr to_be_moved( obj, true );
+            FooBarPtr to_be_moved( obj, true );
             IS( to_be_moved.get(), obj );
 
-            Ptr move_target( std::move( to_be_moved ) );
+            FooBarPtr move_target( std::move( to_be_moved ) );
             OK( to_be_moved.get() == nullptr );
             IS( move_target.get(), obj );
             OK( obj_life );
@@ -78,10 +78,10 @@ void TestFramework::content( int argc, char** argv )
         bool obj_life = false;
         FooBar* obj   = new FooBar( obj_life );
         {
-            Ptr to_be_moved( obj, false );
+            FooBarPtr to_be_moved( obj, false );
             IS( to_be_moved.get(), obj );
 
-            Ptr move_target;
+            FooBarPtr move_target;
             OK( move_target.get() == nullptr );
 
             move_target = std::move( to_be_moved );
@@ -92,10 +92,10 @@ void TestFramework::content( int argc, char** argv )
         OK( obj_life );
 
         {
-            Ptr to_be_moved( obj, true );
+            FooBarPtr to_be_moved( obj, true );
             IS( to_be_moved.get(), obj );
 
-            Ptr move_target;
+            FooBarPtr move_target;
             OK( move_target.get() == nullptr );
 
             move_target = std::move( to_be_moved );

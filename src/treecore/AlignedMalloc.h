@@ -1,11 +1,16 @@
-﻿#ifndef ztd_aligned_malloc_h__
-#define ztd_aligned_malloc_h__
+﻿#ifndef TREECORE_ALIGNED_MALLOC_H
+#define TREECORE_ALIGNED_MALLOC_H
 
 #include "treecore/Align.h"
 #include "treecore/IntTypes.h"
 
 #include <new>
-#include <malloc.h>
+
+#if TREECORE_OS_IOS || TREECORE_OS_OSX
+#    include <malloc/malloc.h>
+#else
+#    include <malloc.h>
+#endif
 
 namespace treecore
 {
@@ -92,7 +97,7 @@ forcedinline void* aligned_realloc(void* const ptr,size_t len)
         return ptr;\
     }\
     \
-    void* operator new (std::size_t size, const std::nothrow_t&) noexcept\
+    void* operator new (std::size_t size, const std::nothrow_t& nothrow_value) noexcept\
     {\
         return treecore::aligned_malloc<TREECORE_ALIGNOF(_TYPE_)>(size);\
     }\
@@ -151,4 +156,4 @@ forcedinline void* aligned_realloc(void* const ptr,size_t len)
         treecore_assert(treecore::pointer_sized_uint(ptr) % TREECORE_ALIGNOF(_TYPE_) == 0);\
     }
 
-#endif // ztd_aligned_malloc_h__
+#endif // TREECORE_ALIGNED_MALLOC_H

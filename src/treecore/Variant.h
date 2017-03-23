@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_VARIANT_H_INCLUDED
-#define JUCE_VARIANT_H_INCLUDED
+#ifndef TREECORE_VARIANT_H
+#define TREECORE_VARIANT_H
 
 #include "treecore/Array.h"
 #include "treecore/String.h"
@@ -348,4 +348,4 @@ std::basic_ostream<wchar_t, traits>& TREECORE_STDCALL operator << ( std::basic_o
 
 }
 
-#endif   // JUCE_VARIANT_H_INCLUDED
+#endif   // TREECORE_VARIANT_H

@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_MACADDRESS_H_INCLUDED
-#define JUCE_MACADDRESS_H_INCLUDED
+#ifndef TREECORE_MACADDRESS_H
+#define TREECORE_MACADDRESS_H
 
 #include "treecore/Array.h"
 
@@ -84,4 +84,4 @@ private:
 
 } // namespace treecore
 
-#endif   // JUCE_MACADDRESS_H_INCLUDED
+#endif   // TREECORE_MACADDRESS_H

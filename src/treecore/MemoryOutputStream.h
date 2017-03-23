@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_MEMORYOUTPUTSTREAM_H_INCLUDED
-#define JUCE_MEMORYOUTPUTSTREAM_H_INCLUDED
+#ifndef TREECORE_MEMORYOUTPUTSTREAM_H
+#define TREECORE_MEMORYOUTPUTSTREAM_H
 
 #include "treecore/OutputStream.h"
 #include "treecore/MemoryBlock.h"
@@ -141,4 +141,4 @@ OutputStream& TREECORE_STDCALL operator<< (OutputStream& stream, const MemoryOut
 
 }
 
-#endif   // JUCE_MEMORYOUTPUTSTREAM_H_INCLUDED
+#endif // TREECORE_MEMORYOUTPUTSTREAM_H

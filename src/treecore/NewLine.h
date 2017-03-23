@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_NEWLINE_H_INCLUDED
-#define JUCE_NEWLINE_H_INCLUDED
+#ifndef TREECORE_NEWLINE_H
+#define TREECORE_NEWLINE_H
 
 #include "treecore/StringRef.h"
 
@@ -84,4 +84,4 @@ TREECORE_SHARED_API String& TREECORE_STDCALL operator<< (String& string1, const 
 
 }
 
-#endif   // JUCE_NEWLINE_H_INCLUDED
+#endif   // TREECORE_NEWLINE_H

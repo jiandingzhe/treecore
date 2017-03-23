@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_XMLDOCUMENT_H_INCLUDED
-#define JUCE_XMLDOCUMENT_H_INCLUDED
+#ifndef TREECORE_XMLDOCUMENT_H
+#define TREECORE_XMLDOCUMENT_H
 
 #include "treecore/Common.h"
 #include "treecore/InputSource.h"
@@ -188,4 +188,4 @@ private:
 
 }
 
-#endif   // JUCE_XMLDOCUMENT_H_INCLUDED
+#endif   // TREECORE_XMLDOCUMENT_H

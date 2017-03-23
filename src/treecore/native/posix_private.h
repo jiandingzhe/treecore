@@ -7,8 +7,15 @@
 #include "treecore/Result.h"
 
 #include <sys/stat.h>
-#include <sys/vfs.h>
 
+#if TREECORE_OS_LINUX
+#include <sys/vfs.h>
+#elif TREECORE_OS_OSX || TREECORE_OS_IOS
+#include <sys/param.h>
+#include <sys/mount.h>
+#else
+#error "system unimplemented"
+#endif
 namespace treecore {
 
 class File;

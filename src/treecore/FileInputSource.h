@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_FILEINPUTSOURCE_H_INCLUDED
-#define JUCE_FILEINPUTSOURCE_H_INCLUDED
+#ifndef TREECORE_FILEINPUTSOURCE_H
+#define TREECORE_FILEINPUTSOURCE_H
 
 #include "treecore/File.h"
 #include "treecore/InputSource.h"
@@ -68,4 +68,4 @@ private:
 
 }
 
-#endif   // JUCE_FILEINPUTSOURCE_H_INCLUDED
+#endif   // TREECORE_FILEINPUTSOURCE_H

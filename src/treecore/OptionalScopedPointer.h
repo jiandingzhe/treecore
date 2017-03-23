@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_OPTIONALSCOPEDPOINTER_H_INCLUDED
-#define JUCE_OPTIONALSCOPEDPOINTER_H_INCLUDED
+#ifndef TREECORE_OPTIONALSCOPEDPOINTER_H
+#define TREECORE_OPTIONALSCOPEDPOINTER_H
 
 #include "treecore/Common.h"
 #include "treecore/ScopedPointer.h"
@@ -188,4 +188,4 @@ private:
 
 }
 
-#endif   // JUCE_OPTIONALSCOPEDPOINTER_H_INCLUDED
+#endif   // TREECORE_OPTIONALSCOPEDPOINTER_H

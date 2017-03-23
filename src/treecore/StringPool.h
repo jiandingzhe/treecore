@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_STRINGPOOL_H_INCLUDED
-#define JUCE_STRINGPOOL_H_INCLUDED
+#ifndef TREECORE_STRINGPOOL_H
+#define TREECORE_STRINGPOOL_H
 
 #include "treecore/HashSet.h"
 #include "treecore/RefCountSingleton.h"
@@ -91,4 +91,4 @@ private:
 
 } // namespace treecore
 
-#endif   // JUCE_STRINGPOOL_H_INCLUDED
+#endif   // TREECORE_STRINGPOOL_H

@@ -26,6 +26,7 @@
    ==============================================================================
  */
 
+#include "treecore/DebugUtils.h"
 #include "treecore/Logger.h"
 #include "treecore/Memory.h"
 #include "treecore/StringRef.h"
@@ -33,7 +34,15 @@
 #include "treecore/SystemStats.h"
 #include "treecore/Time.h"
 
+#include "treecore/native/osx_ObjCHelpers.h"
+
 #include "treecore/internal/SystemStats_private.h"
+
+#include <sys/types.h>
+#include <sys/sysctl.h>
+
+#include <mach/mach.h>
+#include <mach/mach_time.h>
 
 namespace treecore
 {
@@ -125,7 +134,7 @@ static String getOSXVersion()
         NSDictionary* dict = [NSDictionary dictionaryWithContentsOfFile:
                               nsStringLiteral( "/System/Library/CoreServices/SystemVersion.plist" )];
 
-        return toString([dict objectForKey: nsStringLiteral( "ProductVersion" )] );
+        return nsStringToJuce([dict objectForKey: nsStringLiteral( "ProductVersion" )] );
     }
 }
 #endif
@@ -149,7 +158,7 @@ SystemStats::OperatingSystemType SystemStats::getOperatingSystemType()
 String SystemStats::getOperatingSystemName()
 {
 #if TREECORE_OS_IOS
-    return "iOS " + toString([[UIDevice currentDevice] systemVersion] );
+    return "iOS " + nsStringToJuce([[UIDevice currentDevice] systemVersion] );
 #else
     return "Mac OSX " + getOSXVersion();
 #endif
@@ -158,7 +167,7 @@ String SystemStats::getOperatingSystemName()
 String SystemStats::getDeviceDescription()
 {
 #if TREECORE_OS_IOS
-    return toString([[UIDevice currentDevice] model] );
+    return nsStringToJuce([[UIDevice currentDevice] model] );
 #else
     return String();
 #endif
@@ -210,12 +219,12 @@ int SystemStats::getCpuSpeedInMegaherz()
 //==============================================================================
 String SystemStats::getLogonName()
 {
-    return toString( NSUserName() );
+    return nsStringToJuce( NSUserName() );
 }
 
 String SystemStats::getFullUserName()
 {
-    return toString( NSFullUserName() );
+    return nsStringToJuce( NSFullUserName() );
 }
 
 String SystemStats::getComputerName()
@@ -230,7 +239,7 @@ String SystemStats::getComputerName()
 static String getLocaleValue( CFStringRef key )
 {
     CFLocaleRef cfLocale = CFLocaleCopyCurrent();
-    const String result( toString( (CFStringRef) CFLocaleGetValue( cfLocale, key ) ) );
+    const String result( String::fromCFString((CFStringRef) CFLocaleGetValue( cfLocale, key ) ) );
     CFRelease( cfLocale );
     return result;
 }
@@ -241,7 +250,7 @@ String SystemStats::getUserRegion()     { return getLocaleValue( kCFLocaleCountr
 String SystemStats::getDisplayLanguage()
 {
     CFArrayRef cfPrefLangs = CFLocaleCopyPreferredLanguages();
-    const String result( toString( (CFStringRef) CFArrayGetValueAtIndex( cfPrefLangs, 0 ) ) );
+    const String result( String::fromCFString( (CFStringRef) CFArrayGetValueAtIndex( cfPrefLangs, 0 ) ) );
     CFRelease( cfPrefLangs );
     return result;
 }

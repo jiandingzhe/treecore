@@ -58,8 +58,12 @@ Thread::~Thread()
     stopThread( -1 );
 }
 
+#if TREECORE_OS_OSX || TREECORE_OS_IOS
+__thread Thread* _current_thread_;
+#else
 thread_local Thread* _current_thread_;
-
+#endif
+    
 void Thread::threadEntryPoint()
 {
     _current_thread_ = this;

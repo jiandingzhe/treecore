@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_FILEOUTPUTSTREAM_H_INCLUDED
-#define JUCE_FILEOUTPUTSTREAM_H_INCLUDED
+#ifndef TREECORE_FILEOUTPUTSTREAM_H
+#define TREECORE_FILEOUTPUTSTREAM_H
 
 #include "treecore/ClassUtils.h"
 #include "treecore/OutputStream.h"
@@ -120,4 +120,4 @@ private:
 
 }
 
-#endif   // JUCE_FILEOUTPUTSTREAM_H_INCLUDED
+#endif   // TREECORE_FILEOUTPUTSTREAM_H

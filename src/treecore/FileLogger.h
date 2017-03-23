@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_FILELOGGER_H_INCLUDED
-#define JUCE_FILELOGGER_H_INCLUDED
+#ifndef TREECORE_FILELOGGER_H
+#define TREECORE_FILELOGGER_H
 
 #include "treecore/CriticalSection.h"
 #include "treecore/File.h"
@@ -138,4 +138,4 @@ private:
 
 }
 
-#endif   // JUCE_FILELOGGER_H_INCLUDED
+#endif   // TREECORE_FILELOGGER_H

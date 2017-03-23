@@ -40,7 +40,6 @@
 #include "treecore/native/win32_InterProcessLock.h"
 
 #include <process.h>
-#include <timeapi.h>
 #include <mmsystem.h>
 
 namespace treecore
@@ -85,7 +84,7 @@ bool WaitableEvent::wait( const int timeOutMs ) const noexcept
 //==============================================================================
 void TREECORE_SHARED_API _thread_entry_point_( void* );
 
-static unsigned int __stdcall threadEntryProc( void* userData )
+static unsigned int __stdcall treecoreThreadEntryProc( void* userData )
 {
     if (MESSAGE_WINDOW_HANDLE != 0)
         AttachThreadInput( GetWindowThreadProcessId( MESSAGE_WINDOW_HANDLE, 0 ),
@@ -100,7 +99,7 @@ static unsigned int __stdcall threadEntryProc( void* userData )
 void Thread::launchThread()
 {
     unsigned int newThreadId = 0;
-    threadHandle = (void*) _beginthreadex( 0, 0, &threadEntryProc, this, 0, &newThreadId );
+    threadHandle = (void*) _beginthreadex( 0, 0, &treecoreThreadEntryProc, this, 0, &newThreadId );
     if (threadHandle == 0)
         abort();
     threadId = ThreadID(newThreadId);

@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_RANGE_H_INCLUDED
-#define JUCE_RANGE_H_INCLUDED
+#ifndef TREECORE_RANGE_H
+#define TREECORE_RANGE_H
 
 #include "treecore/Common.h"
 #include "treecore/MathsFunctions.h"
@@ -306,4 +306,4 @@ private:
 
 }
 
-#endif   // JUCE_RANGE_H_INCLUDED
+#endif   // TREECORE_RANGE_H

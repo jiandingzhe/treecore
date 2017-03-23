@@ -4,7 +4,12 @@
 #include "treecore/Memory.h"
 #include "treecore/PlatformDefs.h"
 
-#include <malloc.h>
+#if TREECORE_OS_OSX || TREECORE_OS_IOS
+#    include <malloc/malloc.h>
+#else
+#    include <malloc.h>
+#endif
+
 #include <new>
 
 namespace treecore {

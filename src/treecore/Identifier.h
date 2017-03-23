@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_IDENTIFIER_H_INCLUDED
-#define JUCE_IDENTIFIER_H_INCLUDED
+#ifndef TREECORE_IDENTIFIER_H
+#define TREECORE_IDENTIFIER_H
 
 #include "treecore/String.h"
 #include "treecore/StringRef.h"
@@ -164,4 +164,4 @@ private:
 
 }
 
-#endif   // JUCE_IDENTIFIER_H_INCLUDED
+#endif   // TREECORE_IDENTIFIER_H

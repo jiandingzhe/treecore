@@ -32,6 +32,10 @@
 #include "treecore/String.h"
 #include "treecore/StringRef.h"
 
+#if TREECORE_OS_WINDOWS
+#include "intrin.h"
+#endif
+
 namespace treecore {
 
 namespace
@@ -321,7 +325,7 @@ inline static int highestBitInInt( uint32 n ) noexcept
 
 #if TREECORE_COMPILER_ATTR_GCC || TREECORE_COMPILER_ATTR_CLANG
     return 31 - __builtin_clz( n );
-#elif TREECORE_MSVC_INTRIN
+#elif TREECORE_OS_WINDOWS
     unsigned long highest;
     _BitScanReverse( &highest, n );
     return (int) highest;

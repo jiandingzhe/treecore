@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_MEMORYBLOCK_H_INCLUDED
-#define JUCE_MEMORYBLOCK_H_INCLUDED
+#ifndef TREECORE_MEMORYBLOCK_H
+#define TREECORE_MEMORYBLOCK_H
 
 #include "treecore/HeapBlock.h"
 #include "treecore/LeakedObjectDetector.h"
@@ -257,4 +257,4 @@ private:
 
 }
 
-#endif   // JUCE_MEMORYBLOCK_H_INCLUDED
+#endif   // TREECORE_MEMORYBLOCK_H

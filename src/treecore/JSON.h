@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_JSON_H_INCLUDED
-#define JUCE_JSON_H_INCLUDED
+#ifndef TREECORE_JSON_H
+#define TREECORE_JSON_H
 
 #include "treecore/Array.h"
 #include "treecore/String.h"
@@ -183,4 +183,4 @@ public:
 
 }
 
-#endif   // JUCE_JSON_H_INCLUDED
+#endif   // TREECORE_JSON_H

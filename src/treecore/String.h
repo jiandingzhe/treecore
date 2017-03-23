@@ -37,6 +37,10 @@
 #include "treecore/CharPointer_UTF16.h"
 #include "treecore/CharPointer_UTF32.h"
 
+#if TREECORE_OS_OSX || TREECORE_OS_IOS
+#    include <CoreFoundation/CFString.h>
+#endif
+
 #include <string>
 
 namespace treecore {

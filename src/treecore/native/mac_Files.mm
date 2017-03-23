@@ -33,11 +33,34 @@
 
 #include "treecore/File.h"
 #include "treecore/ClassUtils.h"
+#include "treecore/native/osx_ObjCHelpers.h"
+#include "treecore/native/posix_private.h"
+#include "treecore/DirectoryIterator.h"
+#include "treecore/Process.h"
+
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
+
+#include <fnmatch.h>
+#include <mach-o/dyld.h>
 
 namespace treecore
 {
 
-//==============================================================================
+    bool doStatFS (File f, struct statfs& result)
+    {
+        for (int i = 5; --i >= 0;)
+        {
+            if (f.exists())
+                break;
+            
+            f = f.getParentDirectory();
+        }
+        
+        return statfs (f.getFullPathName().toUTF8(), &result) == 0;
+    }
+    
+    //==============================================================================
 bool File::copyInternal( const File& dest ) const
 {
     TREECORE_AUTO_RELEASE_POOL
@@ -69,7 +92,7 @@ static bool isFileOnDriveType( const File& f, const char* const* types )
 {
     struct statfs buf;
 
-    if ( juce_doStatFS( f, buf ) )
+    if ( doStatFS( f, buf ) )
     {
         const String type( buf.f_fstypename );
 
@@ -197,7 +220,7 @@ File File::getSpecialLocation( const SpecialLocationType type )
         case tempDirectory:
         {
             File tmp( FileHelpers::getIOSSystemLocation( NSCachesDirectory ) );
-            tmp = tmp.getChildFile( juce_getExecutableFile().getFileNameWithoutExtension() );
+            tmp = tmp.getChildFile( _get_executable_file_().getFileNameWithoutExtension() );
             tmp.createDirectory();
             return tmp.getFullPathName();
         }
@@ -208,7 +231,7 @@ File File::getSpecialLocation( const SpecialLocationType type )
 
         case tempDirectory:
         {
-            File tmp( "~/Library/Caches/" + juce_getExecutableFile().getFileNameWithoutExtension() );
+            File tmp( "~/Library/Caches/" + _get_executable_file_().getFileNameWithoutExtension() );
             tmp.createDirectory();
             return File( tmp.getFullPathName() );
         }
@@ -227,11 +250,11 @@ File File::getSpecialLocation( const SpecialLocationType type )
 // deliberate fall-through...
 
         case currentExecutableFile:
-            return juce_getExecutableFile();
+            return _get_executable_file_();
 
         case currentApplicationFile:
         {
-            const File exe( juce_getExecutableFile() );
+            const File exe( _get_executable_file_() );
             const File parent( exe.getParentDirectory() );
 
 #if TREECORE_OS_IOS
@@ -370,7 +393,7 @@ public:
                     continue;
 
                 const String fullPath( parentDir + filenameFound );
-                updateStatInfoForFile( fullPath, isDir, fileSize, modTime, creationTime, isReadOnly );
+                _update_file_stat_info_( fullPath, isDir, fileSize, modTime, creationTime, isReadOnly );
 
                 if (isHidden != nullptr)
                     *isHidden = FileHelpers::isHiddenFile( fullPath );
@@ -489,12 +512,12 @@ bool File::isBundle() const
 void File::addToDock() const
 {
 // check that it's not already there...
-    if ( !juce_getOutputFromCommand( "defaults read com.apple.dock persistent-apps" ).containsIgnoreCase( getFullPathName() ) )
+    if ( !_get_output_from_command_( "defaults read com.apple.dock persistent-apps" ).containsIgnoreCase( getFullPathName() ) )
     {
-        juce_runSystemCommand( "defaults write com.apple.dock persistent-apps -array-add \"<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>"
+        _run_system_command_( "defaults write com.apple.dock persistent-apps -array-add \"<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>"
                                + getFullPathName() + "</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>\"" );
 
-        juce_runSystemCommand( "osascript -e \"tell application \\\"Dock\\\" to quit\"" );
+        _run_system_command_( "osascript -e \"tell application \\\"Dock\\\" to quit\"" );
     }
 }
 #endif

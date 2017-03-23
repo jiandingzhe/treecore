@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_OWNEDARRAY_H_INCLUDED
-#define JUCE_OWNEDARRAY_H_INCLUDED
+#ifndef TREECORE_OWNEDARRAY_H
+#define TREECORE_OWNEDARRAY_H
 
 #include "treecore/ArrayAllocationBase.h"
 #include "treecore/ContainerDeletePolicy.h"
@@ -952,4 +952,4 @@ private:
 
 }
 
-#endif   // JUCE_OWNEDARRAY_H_INCLUDED
+#endif   // TREECORE_OWNEDARRAY_H

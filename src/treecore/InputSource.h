@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_INPUTSOURCE_H_INCLUDED
-#define JUCE_INPUTSOURCE_H_INCLUDED
+#ifndef TREECORE_INPUTSOURCE_H
+#define TREECORE_INPUTSOURCE_H
 
 #include "treecore/MathsFunctions.h"
 #include "treecore/LeakedObjectDetector.h"
@@ -83,4 +83,4 @@ private:
 
 }
 
-#endif   // JUCE_INPUTSOURCE_H_INCLUDED
+#endif   // TREECORE_INPUTSOURCE_H

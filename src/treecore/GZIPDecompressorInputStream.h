@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_GZIPDECOMPRESSORINPUTSTREAM_H_INCLUDED
-#define JUCE_GZIPDECOMPRESSORINPUTSTREAM_H_INCLUDED
+#ifndef TREECORE_GZIPDECOMPRESSORINPUTSTREAM_H
+#define TREECORE_GZIPDECOMPRESSORINPUTSTREAM_H
 
 #include "treecore/HeapBlock.h"
 #include "treecore/InputStream.h"
@@ -101,4 +101,4 @@ private:
 
 }
 
-#endif   // JUCE_GZIPDECOMPRESSORINPUTSTREAM_H_INCLUDED
+#endif   // TREECORE_GZIPDECOMPRESSORINPUTSTREAM_H

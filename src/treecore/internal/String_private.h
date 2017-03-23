@@ -16,7 +16,7 @@ struct EmptyString
     String::CharPointerType::CharType text;
 };
 
-extern const EmptyString emptyString;
+const EmptyString& emptyString();
 
 class StringHolder
 {
@@ -33,7 +33,7 @@ public:
     static CharPointerType createFromCharPointer( const CharPointer text )
     {
         if ( text.getAddress() == nullptr || text.isEmpty() )
-            return CharPointerType( &(emptyString.text) );
+            return CharPointerType( &(emptyString().text) );
 
         CharPointer t( text );
         size_t bytesNeeded = sizeof(CharType);
@@ -50,7 +50,7 @@ public:
     static CharPointerType createFromCharPointer( const CharPointer text, size_t maxChars )
     {
         if (text.getAddress() == nullptr || text.isEmpty() || maxChars == 0)
-            return CharPointerType( &(emptyString.text) );
+            return CharPointerType( &(emptyString().text) );
 
         CharPointer end( text );
         size_t numChars    = 0;
@@ -71,7 +71,7 @@ public:
     static CharPointerType createFromCharPointer( const CharPointer start, const CharPointer end )
     {
         if ( start.getAddress() == nullptr || start.isEmpty() )
-            return CharPointerType( &(emptyString.text) );
+            return CharPointerType( &(emptyString().text) );
 
         CharPointer e( start );
         int numChars = 0;
@@ -97,7 +97,7 @@ public:
 
     static inline void release( StringHolder* const b ) noexcept
     {
-        if (b != (StringHolder*) &emptyString)
+        if (b != (StringHolder*) &emptyString())
             if (--(b->refCount) == -1)
                 delete[] reinterpret_cast<char*>(b);
     }

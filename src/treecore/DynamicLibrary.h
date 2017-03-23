@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_DYNAMICLIBRARY_H_INCLUDED
-#define JUCE_DYNAMICLIBRARY_H_INCLUDED
+#ifndef TREECORE_DYNAMICLIBRARY_H
+#define TREECORE_DYNAMICLIBRARY_H
 
 #include "treecore/ClassUtils.h"
 #include "treecore/LeakedObjectDetector.h"
@@ -94,4 +94,4 @@ private:
 
 }
 
-#endif   // JUCE_DYNAMICLIBRARY_H_INCLUDED
+#endif   // TREECORE_DYNAMICLIBRARY_H

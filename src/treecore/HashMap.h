@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_HASHMAP_H_INCLUDED
-#define JUCE_HASHMAP_H_INCLUDED
+#ifndef TREECORE_HASHMAP_H
+#define TREECORE_HASHMAP_H
 
 #include "treecore/impl/HashImpl.h"
 #include "treecore/DummyCriticalSection.h"
@@ -756,4 +756,4 @@ private:
 
 #undef LOCK_HASH_MAP
 
-#endif   // JUCE_HASHMAP_H_INCLUDED
+#endif   // TREECORE_HASHMAP_H

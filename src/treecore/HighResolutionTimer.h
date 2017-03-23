@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_HIGHRESOLUTIONTIMER_H_INCLUDED
-#define JUCE_HIGHRESOLUTIONTIMER_H_INCLUDED
+#ifndef TREECORE_HIGHRESOLUTIONTIMER_H
+#define TREECORE_HIGHRESOLUTIONTIMER_H
 
 #include "treecore/ClassUtils.h"
 #include "treecore/LeakedObjectDetector.h"
@@ -113,4 +113,4 @@ private:
 
 }
 
-#endif   // JUCE_HIGHRESOLUTIONTIMER_H_INCLUDED
+#endif   // TREECORE_HIGHRESOLUTIONTIMER_H

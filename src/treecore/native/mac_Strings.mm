@@ -28,16 +28,12 @@
 
 #include "treecore/String.h"
 #include "treecore/StringCast.h"
-
-class CFStringRef;
-class CFString;
-class CFRange;
+#include "treecore/native/osx_ObjCHelpers.h"
 
 namespace treecore
 {
 
-template<>
-String toString<CFStringRef> (CFStringRef cfString)
+String String::fromCFString(CFStringRef cfString)
 {
     if (cfString == 0)
         return String();
@@ -50,12 +46,10 @@ String toString<CFStringRef> (CFStringRef cfString)
     return String (CharPointer_UTF16 ((const CharPointer_UTF16::CharType*) u.getData()));
 }
 
-template<>
-bool fromString<CFString>(const String& string, CFStringRef& result)
+CFStringRef String::toCFString() const
 {
-    CharPointer_UTF16 utf16 (string.toUTF16());
-    result = CFStringCreateWithCharacters (kCFAllocatorDefault, (const UniChar*) utf16.getAddress(), (CFIndex) utf16.length());
-    return true;
+    CharPointer_UTF16 utf16(toUTF16());
+    return CFStringCreateWithCharacters (kCFAllocatorDefault, (const UniChar*) utf16.getAddress(), (CFIndex) utf16.length());
 }
 
 String String::convertToPrecomposedUnicode() const

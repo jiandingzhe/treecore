@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_ZIPFILE_H_INCLUDED
-#define JUCE_ZIPFILE_H_INCLUDED
+#ifndef TREECORE_ZIPFILE_H
+#define TREECORE_ZIPFILE_H
 
 #include "treecore/CriticalSection.h"
 #include "treecore/OwnedArray.h"
@@ -270,4 +270,4 @@ private:
 
 }
 
-#endif   // JUCE_ZIPFILE_H_INCLUDED
+#endif   // TREECORE_ZIPFILE_H

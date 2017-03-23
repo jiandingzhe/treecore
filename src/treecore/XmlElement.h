@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_XMLELEMENT_H_INCLUDED
-#define JUCE_XMLELEMENT_H_INCLUDED
+#ifndef TREECORE_XMLELEMENT_H
+#define TREECORE_XMLELEMENT_H
 
 #include "treecore/HeapBlock.h"
 #include "treecore/Identifier.h"
@@ -768,4 +768,4 @@ private:
 
 }
 
-#endif   // JUCE_XMLELEMENT_H_INCLUDED
+#endif   // TREECORE_XMLELEMENT_H

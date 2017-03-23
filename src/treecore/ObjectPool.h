@@ -1,5 +1,5 @@
-﻿#ifndef ZObjPofdsfdseeee344ol_h__
-#define ZObjPofdsfdseeee344ol_h__
+﻿#ifndef TREECORE_OBJECT_POOL_H
+#define TREECORE_OBJECT_POOL_H
 
 #include "treecore/AlignedMalloc.h"
 #include "treecore/IntTypes.h"
@@ -147,4 +147,4 @@ private:
 
 } // namespace treecore
 
-#endif
+#endif // TREECORE_OBJECT_POOL_H

@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_BIGINTEGER_H_INCLUDED
-#define JUCE_BIGINTEGER_H_INCLUDED
+#ifndef TREECORE_BIGINTEGER_H
+#define TREECORE_BIGINTEGER_H
 
 #include "treecore/HeapBlock.h"
 #include "treecore/MathsFunctions.h"
@@ -340,4 +340,4 @@ OutputStream& TREECORE_STDCALL operator<< (OutputStream& stream, const BigIntege
 
 }
 
-#endif   // JUCE_BIGINTEGER_H_INCLUDED
+#endif   // TREECORE_BIGINTEGER_H

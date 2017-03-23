@@ -26,8 +26,8 @@
    ==============================================================================
  */
 
-#ifndef JUCE_OUTPUTSTREAM_H_INCLUDED
-#define JUCE_OUTPUTSTREAM_H_INCLUDED
+#ifndef TREECORE_OUTPUTSTREAM_H
+#define TREECORE_OUTPUTSTREAM_H
 
 #include "treecore/ClassUtils.h"
 #include "treecore/LeakedObjectDetector.h"
@@ -286,4 +286,4 @@ TREECORE_SHARED_API OutputStream& TREECORE_STDCALL operator << ( OutputStream& s
 
 }
 
-#endif   // JUCE_OUTPUTSTREAM_H_INCLUDED
+#endif   // TREECORE_OUTPUTSTREAM_H

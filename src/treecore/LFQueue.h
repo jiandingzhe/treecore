@@ -1,5 +1,5 @@
-﻿#ifndef ztd_ZlogfdssssssssssckfreeCgggggggggggggircularBuffer_h__ffffffffffffffff
-#define ztd_ZlogfdssssssssssckfreeCgggggggggggggircularBuffer_h__ffffffffffffffff
+﻿#ifndef TREECORE_LF_QUEUE_H
+#define TREECORE_LF_QUEUE_H
 
 #include "treecore/AtomicObject.h"
 #include "treecore/ClassUtils.h"
@@ -290,4 +290,4 @@ private:
 
 }
 
-#endif // ztd_ZLfQueue_h__
+#endif // TREECORE_LF_QUEUE_H

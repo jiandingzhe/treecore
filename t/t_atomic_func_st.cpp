@@ -21,12 +21,12 @@ void TestFramework::content( int argc, char** argv )
     // 32 bit primitive type
     {
         int32 var = 111;
-        IS(atomic_load(&var), 111);
+        IS(atomic_load(&var), int32(111));
 
-        atomic_store(&var, 123);
+        atomic_store(&var, int32(123));
         IS(var, 123);
 
-        IS(atomic_exchange(&var, 456), 123);
+        IS(atomic_exchange(&var, int32(456)), int32(123));
         IS(var, 456);
 
         // arithmetic and logic ops
@@ -71,45 +71,45 @@ void TestFramework::content( int argc, char** argv )
         uint64 var = 0xf0f000ffff000f0f;
         IS(atomic_load(&var), 0xf0f000ffff000f0f);
 
-        atomic_store(&var, 0xf0fff0f0ff0f0f0f);
+        atomic_store(&var, uint64(0xf0fff0f0ff0f0f0f));
         IS(var, 0xf0fff0f0ff0f0f0f);
 
-        IS(atomic_exchange(&var, 0xfff000f0000ff0ff), 0xf0fff0f0ff0f0f0f);
+        IS(atomic_exchange(&var, uint64(0xfff000f0000ff0ff)), 0xf0fff0f0ff0f0f0f);
         IS(var, 0xfff000f0000ff0ff);
 
         // arithmetic and logic ops
         // fetch-op
-        IS(atomic_fetch_add<uint64>(&var, 0x000ff00ff0000f00), 0xfff000f0000ff0ff);
+        IS(atomic_fetch_add<uint64>(&var, uint64(0x000ff00ff0000f00)), 0xfff000f0000ff0ff);
         IS(var, 0xfffff0fff00fffff);
-        IS(atomic_fetch_sub<uint64>(&var, 0x000ff00ff0000f00), 0xfffff0fff00fffff);
+        IS(atomic_fetch_sub<uint64>(&var, uint64(0x000ff00ff0000f00)), 0xfffff0fff00fffff);
         IS(var, 0xfff000f0000ff0ff);
-        IS(atomic_fetch_or<uint64>(&var, 0x00ff00ff00ff00ff), 0xfff000f0000ff0ff);
+        IS(atomic_fetch_or<uint64>(&var, uint64(0x00ff00ff00ff00ff)), 0xfff000f0000ff0ff);
         IS(var, 0xffff00ff00fff0ff);
-        IS(atomic_fetch_and<uint64>(&var, 0xf0f0f0f0f0f0f0f0), 0xffff00ff00fff0ff);
+        IS(atomic_fetch_and<uint64>(&var, uint64(0xf0f0f0f0f0f0f0f0)), 0xffff00ff00fff0ff);
         IS(var, 0xf0f000f000f0f0f0);
-        IS(atomic_fetch_xor<uint64>(&var, 0xffff0000ffff0000), 0xf0f000f000f0f0f0);
+        IS(atomic_fetch_xor<uint64>(&var, uint64(0xffff0000ffff0000)), 0xf0f000f000f0f0f0);
         IS(var, 0x0f0f00f0ff0ff0f0);
 
         // op-fetch
-        IS(atomic_add_fetch<uint64>(&var, 0xf0f0000000f00f00), 0xffff00f0fffffff0);
-        IS(atomic_sub_fetch<uint64>(&var, 0x0f0f00000f0f0000), 0xf0f000f0f0f0fff0);
-        IS(atomic_or_fetch<uint64>(&var, 0xff00ff00ff00ff00), 0xfff0fff0fff0fff0);
-        IS(atomic_and_fetch<uint64>(&var, 0x0f0f0f0f0f0f0f0f), 0x0f000f000f000f00);
-        IS(atomic_xor_fetch<uint64>(&var, 0x0fff0fff0fff0fff), 0x00ff00ff00ff00ff);
+        IS(atomic_add_fetch<uint64>(&var, uint64(0xf0f0000000f00f00)), 0xffff00f0fffffff0);
+        IS(atomic_sub_fetch<uint64>(&var, uint64(0x0f0f00000f0f0000)), 0xf0f000f0f0f0fff0);
+        IS(atomic_or_fetch<uint64>(&var, uint64(0xff00ff00ff00ff00)), 0xfff0fff0fff0fff0);
+        IS(atomic_and_fetch<uint64>(&var, uint64(0x0f0f0f0f0f0f0f0f)), 0x0f000f000f000f00);
+        IS(atomic_xor_fetch<uint64>(&var, uint64(0x0fff0fff0fff0fff)), 0x00ff00ff00ff00ff);
 
         // CAS
-        OK(atomic_compare_set<uint64>(&var, 0x00ff00ff00ff00ff, 0x0f1f3f7f0f1f3f7f));
+        OK(atomic_compare_set<uint64>(&var, uint64(0x00ff00ff00ff00ff), uint64(0x0f1f3f7f0f1f3f7f)));
         IS(var, 0x0f1f3f7f0f1f3f7f);
-        OK(!atomic_compare_set<uint64>(&var, 0xff00ff00ff00ff00, 0x0000000000000000));
+        OK(!atomic_compare_set<uint64>(&var, uint64(0xff00ff00ff00ff00), uint64(0x0000000000000000)));
         IS(var, 0x0f1f3f7f0f1f3f7f);
 
         uint64 target = 0x0f1f3f7f0f1f3f7f;
-        OK(atomic_compare_exchange<uint64>(&var, &target, 0xff7f3f0fff7f3f0f));
+        OK(atomic_compare_exchange<uint64>(&var, &target, uint64(0xff7f3f0fff7f3f0f)));
         IS(var, 0xff7f3f0fff7f3f0f);
         IS(target, 0x0f1f3f7f0f1f3f7f);
 
         target = 123;
-        OK(!atomic_compare_exchange<uint64>(&var, &target, 777));
+        OK(!atomic_compare_exchange<uint64>(&var, &target, uint64(777)));
         IS(var, 0xff7f3f0fff7f3f0f);
         IS(target, 0xff7f3f0fff7f3f0f);
     }

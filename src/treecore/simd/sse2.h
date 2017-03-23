@@ -308,19 +308,19 @@ template<> inline void simd_cmpl<int, 16>( SIMDType<16>& target ) noexcept
     target.simd_by_int = _mm_andnot_si128( target.simd_by_int, ones );
 }
 
-template<> inline void simd_and<int,    16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_and_si128( a.simd_by_int, b.simd_by_int );      }
-template<> inline void simd_and<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_and_ps( a.simd_by_float, b.simd_by_float );     }
+template<> inline void simd_and<int32,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_and_si128( a.simd_by_int,    b.simd_by_int );      }
+template<> inline void simd_and<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_and_ps( a.simd_by_float,  b.simd_by_float );     }
 template<> inline void simd_and<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_and_pd( a.simd_by_double, b.simd_by_double );   }
 
-template<> inline void simd_or<int,    16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_or_si128( a.simd_by_int, b.simd_by_int );       }
+template<> inline void simd_or<int32,   16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_or_si128( a.simd_by_int,    b.simd_by_int );       }
 template<> inline void simd_or<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_or_ps( a.simd_by_float, b.simd_by_float );      }
 template<> inline void simd_or<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_or_pd( a.simd_by_double, b.simd_by_double );    }
 
-template<> inline void simd_xor<int,    16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_xor_si128( a.simd_by_int, b.simd_by_int );      }
 template<> inline void simd_xor<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_xor_ps( a.simd_by_float, b.simd_by_float );     }
+template<> inline void simd_xor<int32,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_xor_si128( a.simd_by_int,    b.simd_by_int );      }
 template<> inline void simd_xor<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_xor_pd( a.simd_by_double, b.simd_by_double );   }
 
-template<> inline void simd_nand<int,    16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_andnot_si128( a.simd_by_int, b.simd_by_int );      }
+template<> inline void simd_nand<int32,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_int = _mm_andnot_si128( a.simd_by_int,    b.simd_by_int );      }
 template<> inline void simd_nand<float,  16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_float = _mm_andnot_ps( a.simd_by_float, b.simd_by_float );     }
 template<> inline void simd_nand<double, 16>( SIMDType<16>& target, const SIMDType<16>& a, const SIMDType<16>& b ) noexcept { target.simd_by_double = _mm_andnot_pd( a.simd_by_double, b.simd_by_double );   }
 

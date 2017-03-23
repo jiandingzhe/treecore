@@ -26,8 +26,8 @@
   ==============================================================================
 */
 
-#ifndef JUCE_ARRAYALLOCATIONBASE_H_INCLUDED
-#define JUCE_ARRAYALLOCATIONBASE_H_INCLUDED
+#ifndef TREECORE_ARRAYALLOCATIONBASE_H
+#define TREECORE_ARRAYALLOCATIONBASE_H
 
 #include "treecore/ClassUtils.h"
 #include "treecore/HeapBlock.h"
@@ -136,4 +136,4 @@ private:
 
 }
 
-#endif   // JUCE_ARRAYALLOCATIONBASE_H_INCLUDED
+#endif   // TREECORE_ARRAYALLOCATIONBASE_H
